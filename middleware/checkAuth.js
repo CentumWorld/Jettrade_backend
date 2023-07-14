@@ -28,45 +28,37 @@
 //     checkAuth:Auth
 // }
 
+const jwt = require("jsonwebtoken");
+require("dotenv").config();
 
-
-
-
-
-
-
-const jwt = require('jsonwebtoken');
-require('dotenv').config();
 function verifyToken(req, res, next) {
+  const token = req.headers.authorization?.split(" ")[1];
 
-    const token = req.headers['authorization']?.split(" ")[1];
-    //const token1 = token.split(" ")[1];
-    //console.log(token,'44');
-    if (!token) {
-        return res.status(403).json("Unauthorized");
-    }
-    try {
-        const decodeToken = jwt.verify(token, process.env.SECRET_KEY,(err, decoded)=>{
-            if(err){
-                return "Token Expired"
-            }
-            return decoded
-        });
-        console.log(decodeToken);
-        //req.token = decodeToken;
+  if (!token) {
+    return res.status(403).json("Unauthorized");
+  }
 
-        if(decodeToken == 'Token Expired'){
-            return res.send({status: "error" , data:"token expired"});
-        }
+  try {
+    jwt.verify(token, process.env.SECRET_KEY, (err, decoded) => {
+      if (err) {
+        return res.status(400).json({ status: false, message: err.message });
+      }
+      console.log(decoded);
+      req.token = decoded; // Set the decoded token on the request object for further use
 
+      // You can add additional checks or validations on the decoded token here
+      // if (decoded.exp < Date.now() / 1000) {
+      //   return res.status(401).json("Token Expired");
+      // }
 
-
-    } catch (error) {
-        return res.status(400).json("Invalid Token");
-    }
-    return next();
+      next(); // Proceed to the next middleware
+    });
+  } catch (error) {
+    return res.status(400).json("Invalid Token");
+  }
 }
+
 
 module.exports = {
-    checkAuth: verifyToken
-}
+  checkAuth: verifyToken,
+};

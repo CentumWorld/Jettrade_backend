@@ -17,6 +17,7 @@ const ChatType = require('../model/chatType');
 const chatMessage = require('../model/chatMessageSchema');
 const RefferalChatType = require('../model/refferalChatType');
 const RefferalChatMessage = require('../model/refferalChatMessageSchema');
+const Video = require("../model/videoModel");
 
 require('dotenv').config();
 
@@ -40,7 +41,7 @@ exports.adminLogin = async (req, res) => {
                 const token = jwt.sign(
                     { userId: adminLogin._id },
                     process.env.SECRET_KEY,
-                    { expiresIn: 6000 } // Set the token to expire in 1 hour
+                    { expiresIn: '8h' } // Set the token to expire in 1 hour
                   );
 
                 // console.log(token);
@@ -798,3 +799,35 @@ exports.fetchRefferalChatMessageAdmin = async (req, res) => {
         return res.status(500).json({ message: "Something went wrong" })
     }
 }
+
+
+// Create a new video
+exports.createVideo = async (req, res, next) => {
+  try {
+    const { title } = req.body;
+    const fileUrl = req.file.location; // Assuming your upload middleware sets the 'location' property
+    if (!title) {
+      return res
+        .status(400)
+        .send({ status: false, message: "title is required" });
+    }
+    if (!fileUrl) {
+      return res
+        .status(400)
+        .send({ status: false, message: "video file is required" });
+    }
+
+    // Save the video information to MongoDB
+    const video = new Video({
+      title,
+      videoOne: fileUrl,
+    });
+
+    const savedVideo = await video.save();
+
+    res.status(201).json({ status: true, savedVideo });
+  } catch (error) {
+    console.error("Failed to create video:", error);
+    res.status(500).json({ error: "Failed to create video" });
+  }
+};
