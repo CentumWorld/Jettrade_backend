@@ -30,22 +30,18 @@ exports.userRegistration = async (req, res) => {
     !req.files["aadhar_back_side"] ||
     !req.files["pan_card"]
   ) {
-    return res
-      .status(422)
-      .json({
-        message:
-          "Please upload all required files (aadhar_front_side, aadhar_back_side, pan_card)",
-      });
+    return res.status(422).json({
+      message:
+        "Please upload all required files (aadhar_front_side, aadhar_back_side, pan_card)",
+    });
   }
+
   const userType = "indian";
   const aadhar_front_side = req.files.aadhar_front_side[0].location;
   const aadhar_back_side = req.files.aadhar_back_side[0].location;
   const pan_card = req.files.pan_card[0].location;
   //console.log(aadhar_back, aadhar_front, pan_card,'140');
 
-  if (!aadhar_front_side || !aadhar_back_side || !pan_card) {
-    return res.status(422).json({ message: "All field required" });
-  }
   const requiredFields = [
     "fname",
     "lname",
@@ -84,8 +80,19 @@ exports.userRegistration = async (req, res) => {
   }
 
   if (!validator.isEmail(email)) {
-    return res.status(400).json({ message: "Invalid email address" });
+    return res
+      .status(400)
+      .json({ status: false, message: "Invalid email address" });
   }
+
+  // if (password.length >= 8) {
+  //   return res
+  //     .status(400)
+  //     .send({
+  //       status: false,
+  //       mewssage: "Password must be minimum lenght of 8 characters",
+  //     });
+  // }
 
   const aadhar_length = aadhar;
   const pan_length = pan;
@@ -153,9 +160,16 @@ exports.userRegistration = async (req, res) => {
       await user.save();
       const phone1 = "+" + user.phone;
       // SuccessfullRegistrationSms(phone1, { "userid": user.userid, "password": password })
+      const token = jwt.sign(
+        { userId: user._id },
+        process.env.SECRET_KEY,
+        { expiresIn: 6000 } // Set the token to expire in 1 hour
+      );
+      console.log(token, "270");
+
       res
-        .status(201)
-        .json({ message: "User registered successfully", userid, password });
+          .status(201)
+          .json({ message: "User registered successfully",  _id: user._id,fname,refferal_id,userType, userid,token, password });
     } catch (error) {
       console.log(error);
     }
@@ -192,9 +206,15 @@ exports.userRegistration = async (req, res) => {
       await user.save();
       const phone2 = "+" + user.phone;
       // SuccessfullRegistrationSms(phone2, { "userid": user.userid, "password": password })
+
+      const token = jwt.sign(
+        { userId: user._id },
+        process.env.SECRET_KEY,
+        { expiresIn: 6000 } // Set the token to expire in 1 hour
+      );
       res
-        .status(201)
-        .json({ message: "User registered successfully", userid, password });
+          .status(201)
+          .json({ message: "User registered successfully",  _id: user._id,fname,refferal_id,userType, userid,token, password });
     } catch (error) {
       console.log(error);
     }
@@ -215,6 +235,18 @@ exports.otherCountryUserRegistration = async (req, res) => {
     return res.status(422).json({ message: "All field required" });
   }
 
+  const requiredFields = [
+    "fname",
+    "lname",
+    "email",
+    "phone",
+    "address",
+    "gender",
+    "dob",
+    "Id_No",
+    "reffered_id",
+  ];
+
   const {
     fname,
     lname,
@@ -230,11 +262,28 @@ exports.otherCountryUserRegistration = async (req, res) => {
     doj,
   } = req.body;
 
-  //console.log(aadhar_length.length,'35');
-  if (!validator.isEmail(email)) {
-    return res.status(400).json({ message: "Invalid email address" });
+  // Check if any required field is missing
+  const missingFields = requiredFields.filter((field) => !req.body[field]);
+  if (missingFields.length > 0) {
+    return res.status(422).json({
+      message: `Please fill all details: ${missingFields.join(", ")}`,
+    });
   }
 
+  //console.log(aadhar_length.length,'35');
+  if (!validator.isEmail(email)) {
+    return res
+      .status(400)
+      .json({ status: false, message: "Invalid email address" });
+  }
+  if (password.length > 8) {
+    return res
+      .status(400)
+      .send({
+        status: false,
+        mewssage: "Password must be minimum lenght of 8 characters",
+      });
+  }
   if (userid === "" && password === "") {
     if (
       !fname ||
@@ -296,9 +345,15 @@ exports.otherCountryUserRegistration = async (req, res) => {
         await user.save();
         const phone3 = "+" + user.phone;
         // SuccessfullRegistrationSms(phone3, { "userid": user.userid, "password": password })
+
+        const token = jwt.sign(
+          { userId: user._id },
+          process.env.SECRET_KEY,
+          { expiresIn: 6000 } // Set the token to expire in 1 hour
+        );
         res
           .status(201)
-          .json({ message: "User registered successfully", userid, password });
+          .json({ message: "User registered successfully",  _id: user._id,fname,refferal_id,userType, userid,token, password });
       } catch (error) {
         console.log(error);
       }
@@ -349,9 +404,14 @@ exports.otherCountryUserRegistration = async (req, res) => {
         await user.save();
         const phone4 = "+" + user.phone;
         // SuccessfullRegistrationSms(phone4, { "userid": user.userid, "password": password })
+        const token = jwt.sign(
+          { userId: user._id },
+          process.env.SECRET_KEY,
+          { expiresIn: 6000 } // Set the token to expire in 1 hour
+        );
         res
           .status(201)
-          .json({ message: "User registered successfully", userid, password });
+          .json({ message: "User registered successfully", _id: user._id,fname,refferal_id,userType, userid,token, password });
       } catch (error) {
         console.log(error);
       }
@@ -409,25 +469,30 @@ exports.otherCountryUserRegistration = async (req, res) => {
 //   }
 // };
 
-
 exports.userLogin = async (req, res) => {
-  const { userid, password } = req.body;
-  if (!userid || !password) {
-    return res.status(422).json({status:false, message: "Please fill all details" });
-  }
-  const userLogin = await User.findOne({ userid: userid });
-  console.log(userLogin, "104");
-
-  if (!userLogin) {
-    return res.status(404).json({status:false, message: "Invalid Credential!" });
-  }
-  
-  const blocked = userLogin.isBlocked;
-  if (blocked) {
-    return res.status(403).json({status:false,message: "Your account is blocked!" });
-  }
-
   try {
+    const { userid, password } = req.body;
+    if (!userid || !password) {
+      return res
+        .status(422)
+        .json({ status: false, message: "Please fill all details" });
+    }
+    const userLogin = await User.findOne({ userid: userid });
+    console.log(userLogin, "104");
+
+    if (!userLogin) {
+      return res
+        .status(404)
+        .json({ status: false, message: "Invalid Credential!" });
+    }
+
+    const blocked = userLogin.isBlocked;
+    if (blocked) {
+      return res
+        .status(403)
+        .json({ status: false, message: "Your account is blocked!" });
+    }
+
     const isMatch = await bcrypt.compare(password, userLogin.password);
     const token = jwt.sign(
       { userId: userLogin._id },
@@ -437,7 +502,9 @@ exports.userLogin = async (req, res) => {
     console.log(token, "270");
 
     if (!isMatch) {
-      return res.status(404).json({ status:false,message: "Invalid Credential!" });
+      return res
+        .status(404)
+        .json({ status: false, message: "Invalid Credential!" });
     } else {
       return res.status(200).json({
         status: true,
@@ -449,7 +516,9 @@ exports.userLogin = async (req, res) => {
     }
   } catch (error) {
     console.log(error);
-    return res.status(500).json({status:false, message: "Internal Server Error" });
+    return res
+      .status(500)
+      .json({ status: false, message: "Internal Server Error" });
   }
 };
 
@@ -1346,5 +1415,3 @@ exports.userUpdateWalletAfterAdding = async (req, res) => {
     });
   }
 };
-
-
