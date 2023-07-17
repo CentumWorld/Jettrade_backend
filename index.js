@@ -40,6 +40,7 @@ const notificationForAllRefferal = require('./routes/notification-for-all-reffer
 const notificationForParticularTrader = require('./routes/notification-for-particular-trader');
 const notificationForParticularRefferal = require('./routes/notification-for-particular-refferal');
 const fetchUserNotification = require('./routes/users/fetch-user-notification');
+
 const paymentUseridVerify = require('./routes/users/payment-userid-verify');
 const changeUserPaymentStatus = require('./routes/users/change-user-payment-status');
 const fetchRefferalPayoutUser = require('./routes/fetch-refferal-payout-user');
@@ -111,6 +112,8 @@ const refferalMyTeam = require('./routes/refferal/refferal-my-team');
 
 const videoUpload = require('./routes/adminVideo')
 
+
+
  
 
 
@@ -165,7 +168,9 @@ app.use('/admin',notificationForAllRefferal);
 app.use('/admin',notificationForParticularTrader);
 app.use('/admin',notificationForParticularRefferal);
 app.use('/user',fetchUserNotification);
+
 app.use('/user',paymentUseridVerify);
+
 app.use('/user',changeUserPaymentStatus);
 app.use('/admin',fetchRefferalPayoutUser);
 app.use('/admin',fetchRefferalPayoutMember)

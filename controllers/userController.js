@@ -168,8 +168,17 @@ exports.userRegistration = async (req, res) => {
       console.log(token, "270");
 
       res
-          .status(201)
-          .json({ message: "User registered successfully",  _id: user._id,fname,refferal_id,userType, userid,token, password });
+        .status(201)
+        .json({
+          message: "User registered successfully",
+          _id: user._id,
+          fname,
+          refferal_id,
+          userType,
+          userid,
+          token,
+          password,
+        });
     } catch (error) {
       console.log(error);
     }
@@ -213,8 +222,17 @@ exports.userRegistration = async (req, res) => {
         { expiresIn: 6000 } // Set the token to expire in 1 hour
       );
       res
-          .status(201)
-          .json({ message: "User registered successfully",  _id: user._id,fname,refferal_id,userType, userid,token, password });
+        .status(201)
+        .json({
+          message: "User registered successfully",
+          _id: user._id,
+          fname,
+          refferal_id,
+          userType,
+          userid,
+          token,
+          password,
+        });
     } catch (error) {
       console.log(error);
     }
@@ -277,12 +295,10 @@ exports.otherCountryUserRegistration = async (req, res) => {
       .json({ status: false, message: "Invalid email address" });
   }
   if (password.length > 8) {
-    return res
-      .status(400)
-      .send({
-        status: false,
-        mewssage: "Password must be minimum lenght of 8 characters",
-      });
+    return res.status(400).send({
+      status: false,
+      mewssage: "Password must be minimum lenght of 8 characters",
+    });
   }
   if (userid === "" && password === "") {
     if (
@@ -353,7 +369,16 @@ exports.otherCountryUserRegistration = async (req, res) => {
         );
         res
           .status(201)
-          .json({ message: "User registered successfully",  _id: user._id,fname,refferal_id,userType, userid,token, password });
+          .json({
+            message: "User registered successfully",
+            _id: user._id,
+            fname,
+            refferal_id,
+            userType,
+            userid,
+            token,
+            password,
+          });
       } catch (error) {
         console.log(error);
       }
@@ -411,7 +436,16 @@ exports.otherCountryUserRegistration = async (req, res) => {
         );
         res
           .status(201)
-          .json({ message: "User registered successfully", _id: user._id,fname,refferal_id,userType, userid,token, password });
+          .json({
+            message: "User registered successfully",
+            _id: user._id,
+            fname,
+            refferal_id,
+            userType,
+            userid,
+            token,
+            password,
+          });
       } catch (error) {
         console.log(error);
       }
@@ -524,8 +558,8 @@ exports.userLogin = async (req, res) => {
 
 // userFetchDeatils
 exports.userFetchDeatils = async (req, res) => {
-  token = req.token;
-  verifyToken = req.verifyToken;
+  let token = req.token;
+  let verifyToken = req.verifyToken;
   //console.log(token,verifyToken);
 
   const userFetchDetails = await User.findOne({ token });
@@ -949,19 +983,43 @@ exports.paymentUseridVerify = async (req, res) => {
       });
     }
   }
-
-  // if (user) {
-  //     res.status(200).json({
-  //         message: "User id verified",
-  //         user
-  //     })
-  // } else {
-  //     res.status(400).json({
-  //         message: "User Id not found",
-
-  //     })
-  // }
 };
+
+//=================
+exports.fetchUserid = async (req, res) => {
+  try {
+    const userId = req.user.userId;
+
+    const user = await User.findById(userId);
+    if (!user) {
+      return res.status(404).json({ statusCode: 404, message: "User not found" });
+    }
+
+    let paymentValue = 0;
+    if (user.paymentCount) {
+      paymentValue = user.paymentCount;
+    }
+
+    if (paymentValue > 0) {
+      return res.status(200).json({
+        message: "Please Login and Renewal",
+        statusCode: 200,
+      });
+    } else if (paymentValue === 0) {
+      return res.status(200).json({
+        message: "User ID verified",
+        user,
+        statusCode: 201,
+      });
+    }
+    res.status(200).json({ statusCode: 200, userid: user.userid });
+  } catch (error) {
+    res.status(500).json({ statusCode: 500, message: error.message });
+  }
+};
+
+
+//=================
 
 // changeUserPaymentStatus
 exports.changeUserPaymentStatus = async (req, res) => {

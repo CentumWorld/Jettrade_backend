@@ -43,13 +43,17 @@ function verifyToken(req, res, next) {
       if (err) {
         return res.status(400).json({ status: false, message: err.message });
       }
-      console.log(decoded);
-      req.token = decoded; // Set the decoded token on the request object for further use
+      console.log(decoded, "==========");
+      req.user = decoded; // Set the decoded token on the request object for further use
 
-      // You can add additional checks or validations on the decoded token here
-      // if (decoded.exp < Date.now() / 1000) {
-      //   return res.status(401).json("Token Expired");
-      // }
+      console.log(req.user, "00000000000")
+
+
+
+      const userId = req.user.userId; // Extract the user ID from req.user
+
+      console.log(userId, "---------"); // You can access the user ID here
+
 
       next(); // Proceed to the next middleware
     });
