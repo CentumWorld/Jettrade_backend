@@ -20,9 +20,11 @@ const PasswordReset = require("../utils/password-reset");
 const ChangePassword = require("../utils/change-password");
 const validator = require("validator");
 
+const { isValidPassword, isValidPhone } = require("../validation/validation");
+
 //const profilePhoto = require('../model/profilePhotoSchema');
 
-//userRegistartion
+// userRegistartion
 exports.userRegistration = async (req, res) => {
   if (
     !req.files ||
@@ -85,15 +87,6 @@ exports.userRegistration = async (req, res) => {
       .json({ status: false, message: "Invalid email address" });
   }
 
-  // if (password.length >= 8) {
-  //   return res
-  //     .status(400)
-  //     .send({
-  //       status: false,
-  //       mewssage: "Password must be minimum lenght of 8 characters",
-  //     });
-  // }
-
   const aadhar_length = aadhar;
   const pan_length = pan;
   //console.log(aadhar_length.length,'35');
@@ -135,7 +128,13 @@ exports.userRegistration = async (req, res) => {
 
       const userExist = await User.findOne({ userid: userid });
       if (userExist) {
-        return res.status(400).json({ message: "User already exist!" });
+        return res
+          .status(400)
+          .json({ message: "this userId is already taken" });
+      }
+
+      if (!isValidPhone(phone)) {
+        return res.status(400).json({ message: "Invalid phone." });
       }
 
       const user = new User({
@@ -167,18 +166,16 @@ exports.userRegistration = async (req, res) => {
       );
       console.log(token, "270");
 
-      res
-        .status(201)
-        .json({
-          message: "User registered successfully",
-          _id: user._id,
-          fname,
-          refferal_id,
-          userType,
-          userid,
-          token,
-          password,
-        });
+      res.status(201).json({
+        message: "User registered successfully",
+        _id: user._id,
+        fname,
+        refferal_id,
+        userType,
+        userid,
+        token,
+        password,
+      });
     } catch (error) {
       console.log(error);
     }
@@ -190,7 +187,21 @@ exports.userRegistration = async (req, res) => {
 
       const userExist = await User.findOne({ userid: userid });
       if (userExist) {
-        return res.status(400).json({ message: "User already exist!" });
+        return res
+          .status(400)
+          .json({ message: "this userId is already taken" });
+      }
+
+      if (!isValidPassword(password)) {
+        return res
+          .status(400)
+          .json({
+            message: "Invalid password. Please provide a strong password.",
+          });
+      }
+
+      if (!isValidPhone(phone)) {
+        return res.status(400).json({ message: "Invalid phone." });
       }
 
       const user = new User({
@@ -221,18 +232,16 @@ exports.userRegistration = async (req, res) => {
         process.env.SECRET_KEY,
         { expiresIn: 6000 } // Set the token to expire in 1 hour
       );
-      res
-        .status(201)
-        .json({
-          message: "User registered successfully",
-          _id: user._id,
-          fname,
-          refferal_id,
-          userType,
-          userid,
-          token,
-          password,
-        });
+      res.status(201).json({
+        message: "User registered successfully",
+        _id: user._id,
+        fname,
+        refferal_id,
+        userType,
+        userid,
+        token,
+        password,
+      });
     } catch (error) {
       console.log(error);
     }
@@ -294,12 +303,7 @@ exports.otherCountryUserRegistration = async (req, res) => {
       .status(400)
       .json({ status: false, message: "Invalid email address" });
   }
-  if (password.length > 8) {
-    return res.status(400).send({
-      status: false,
-      mewssage: "Password must be minimum lenght of 8 characters",
-    });
-  }
+
   if (userid === "" && password === "") {
     if (
       !fname ||
@@ -334,12 +338,17 @@ exports.otherCountryUserRegistration = async (req, res) => {
         }
 
         const password = makepassword(8);
-        //const userid = userid;
-        // const pass = password;
+       
 
         const userExist = await User.findOne({ userid: userid });
         if (userExist) {
-          return res.status(400).json({ message: "User already exist!" });
+          return res
+            .status(400)
+            .json({ message: "this userId is already taken" });
+        }
+
+        if (!isValidPhone(phone)) {
+          return res.status(400).json({ message: "Invalid phone." });
         }
 
         const user = new User({
@@ -367,18 +376,16 @@ exports.otherCountryUserRegistration = async (req, res) => {
           process.env.SECRET_KEY,
           { expiresIn: 6000 } // Set the token to expire in 1 hour
         );
-        res
-          .status(201)
-          .json({
-            message: "User registered successfully",
-            _id: user._id,
-            fname,
-            refferal_id,
-            userType,
-            userid,
-            token,
-            password,
-          });
+        res.status(201).json({
+          message: "User registered successfully",
+          _id: user._id,
+          fname,
+          refferal_id,
+          userType,
+          userid,
+          token,
+          password,
+        });
       } catch (error) {
         console.log(error);
       }
@@ -400,14 +407,24 @@ exports.otherCountryUserRegistration = async (req, res) => {
     } else {
       try {
         const refferal_id = userid + Math.floor(Math.random() * 100000 + 1);
-        // const userid = userid;
-        // const password = password;
 
         const userExist = await User.findOne({ userid: userid });
         if (userExist) {
           return res
             .status(400)
-            .json({ message: "Something went wrong try again!" });
+            .json({ message: "this userId is already taken" });
+        }
+
+        if (!isValidPassword(password)) {
+          return res
+            .status(400)
+            .json({
+              message: "Invalid password. Please provide a strong password.",
+            });
+        }
+
+        if (!isValidPhone(phone)) {
+          return res.status(400).json({ message: "Invalid phone." });
         }
 
         const user = new User({
@@ -434,18 +451,16 @@ exports.otherCountryUserRegistration = async (req, res) => {
           process.env.SECRET_KEY,
           { expiresIn: 6000 } // Set the token to expire in 1 hour
         );
-        res
-          .status(201)
-          .json({
-            message: "User registered successfully",
-            _id: user._id,
-            fname,
-            refferal_id,
-            userType,
-            userid,
-            token,
-            password,
-          });
+        res.status(201).json({
+          message: "User registered successfully",
+          _id: user._id,
+          fname,
+          refferal_id,
+          userType,
+          userid,
+          token,
+          password,
+        });
       } catch (error) {
         console.log(error);
       }
@@ -992,7 +1007,9 @@ exports.fetchUserid = async (req, res) => {
 
     const user = await User.findById(userId);
     if (!user) {
-      return res.status(404).json({ statusCode: 404, message: "User not found" });
+      return res
+        .status(404)
+        .json({ statusCode: 404, message: "User not found" });
     }
 
     let paymentValue = 0;
@@ -1017,7 +1034,6 @@ exports.fetchUserid = async (req, res) => {
     res.status(500).json({ statusCode: 500, message: error.message });
   }
 };
-
 
 //=================
 
