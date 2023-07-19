@@ -74,11 +74,7 @@ exports.userRegistration = async (req, res) => {
     doj,
   } = req.body;
   
-  if(password.length < 8 ){
-    return res.status(400).json({
-      message:"Password must be minimum length of 8 charector!"
-    })
-  }
+ 
 
   // Check if any required field is missing
   const missingFields = requiredFields.filter((field) => !req.body[field]);
@@ -130,6 +126,11 @@ exports.userRegistration = async (req, res) => {
       }
 
       const password = makepassword(8);
+      if(password.length < 8 ){
+        return res.status(400).json({
+          message:"Password must be minimum length of 8 charector!"
+        })
+      }
       //const userid = userid;
       // const pass = password;
 
@@ -199,7 +200,11 @@ exports.userRegistration = async (req, res) => {
           .json({ message: "this userId is already taken" });
       }
 
- 
+      if(password.length < 8 ){
+        return res.status(400).json({
+          message:"Password must be minimum length of 8 charector!"
+        })
+      }
       
       const user = new User({
         fname,
@@ -286,12 +291,7 @@ exports.otherCountryUserRegistration = async (req, res) => {
     doj,
   } = req.body;
 
-  if(password.length < 8 ){
-    return res.status(400).json({
-      message:"Password must be minimum length of 8 charector!"
-    })
-  }
-
+  
 
   // Check if any required field is missing
   const missingFields = requiredFields.filter((field) => !req.body[field]);
@@ -342,6 +342,12 @@ exports.otherCountryUserRegistration = async (req, res) => {
         }
 
         const password = makepassword(8);
+        if(password.length < 8 ){
+          return res.status(400).json({
+            message:"Password must be minimum length of 8 charector!"
+          })
+        }
+      
        
 
         const userExist = await User.findOne({ userid: userid });
@@ -422,7 +428,11 @@ exports.otherCountryUserRegistration = async (req, res) => {
         if (!isValidPhone(phone)) {
           return res.status(400).json({ message: "Invalid phone." });
         }
-
+        if(password.length < 8 ){
+          return res.status(400).json({
+            message:"Password must be minimum length of 8 charector!"
+          })
+        }
         const user = new User({
           fname,
           lname,
