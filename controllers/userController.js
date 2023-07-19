@@ -26,6 +26,7 @@ const { isValidPassword, isValidPhone } = require("../validation/validation");
 
 // userRegistartion
 exports.userRegistration = async (req, res) => {
+  console.log("askgha")
   if (
     !req.files ||
     !req.files["aadhar_front_side"] ||
@@ -72,6 +73,12 @@ exports.userRegistration = async (req, res) => {
     password,
     doj,
   } = req.body;
+  
+  if(password.length < 8 ){
+    return res.status(400).json({
+      message:"Password must be minimum length of 8 charector!"
+    })
+  }
 
   // Check if any required field is missing
   const missingFields = requiredFields.filter((field) => !req.body[field]);
@@ -192,18 +199,8 @@ exports.userRegistration = async (req, res) => {
           .json({ message: "this userId is already taken" });
       }
 
-      if (!isValidPassword(password)) {
-        return res
-          .status(400)
-          .json({
-            message: "Invalid password. Please provide a strong password.",
-          });
-      }
-
-      if (!isValidPhone(phone)) {
-        return res.status(400).json({ message: "Invalid phone." });
-      }
-
+ 
+      
       const user = new User({
         fname,
         lname,
@@ -259,7 +256,7 @@ exports.otherCountryUserRegistration = async (req, res) => {
   //console.log(aadhar_back, aadhar_front, pan_card,'140');
 
   if (!ID_Card) {
-    return res.status(422).json({ message: "All field required" });
+    return res.status(422).json({ message: "Id card is required" });
   }
 
   const requiredFields = [
@@ -288,6 +285,13 @@ exports.otherCountryUserRegistration = async (req, res) => {
     password,
     doj,
   } = req.body;
+
+  if(password.length < 8 ){
+    return res.status(400).json({
+      message:"Password must be minimum length of 8 charector!"
+    })
+  }
+
 
   // Check if any required field is missing
   const missingFields = requiredFields.filter((field) => !req.body[field]);
@@ -413,14 +417,6 @@ exports.otherCountryUserRegistration = async (req, res) => {
           return res
             .status(400)
             .json({ message: "this userId is already taken" });
-        }
-
-        if (!isValidPassword(password)) {
-          return res
-            .status(400)
-            .json({
-              message: "Invalid password. Please provide a strong password.",
-            });
         }
 
         if (!isValidPhone(phone)) {
