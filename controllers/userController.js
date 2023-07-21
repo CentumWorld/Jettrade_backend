@@ -19,6 +19,7 @@ const SuccessfullRegistrationSms = require("../utils/successfull-registration");
 const PasswordReset = require("../utils/password-reset");
 const ChangePassword = require("../utils/change-password");
 const validator = require("validator");
+const Video = require("../model/videoModel");
 
 const { isValidPassword, isValidPhone } = require("../validation/validation");
 
@@ -1543,3 +1544,13 @@ exports.updateExpireUser = async (req,res) => {
   }
 }
 
+exports.getAllVideos = async (req, res,) => {
+  try {
+    const videos = await Video.find(); // Find all videos in the MongoDB database
+    res.status(200).json({ videos });
+    
+  } catch (error) {
+    console.error('Failed to fetch video:', error);
+    res.status(500).json({ error: 'Failed to fetch video' });
+  }
+};

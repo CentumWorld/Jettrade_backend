@@ -113,7 +113,7 @@ const refferalMyTeam = require('./routes/refferal/refferal-my-team');
 
 
 const videoUpload = require('./routes/adminVideo')
-
+const getVideo = require("./routes/users/video")
 
 
  
@@ -208,7 +208,11 @@ app.use('/user',updateDayCount);
 app.use('/user',updateExpire);
 
 
+
+
 app.use('/admin', videoUpload)
+
+app.use('/user', getVideo)
 
 
 // refferal

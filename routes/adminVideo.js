@@ -8,4 +8,5 @@ const checkMiddleware = require('../middleware/checkAuth')
 // Create a new video
 router.post('/createvideo', upload.single('videoOne'),checkMiddleware.checkAuth, adminController.createVideo);
 
+
 module.exports = router;
