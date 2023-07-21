@@ -1495,3 +1495,51 @@ exports.userUpdateWalletAfterAdding = async (req, res) => {
     });
   }
 };
+
+exports.updateDayCount = async (req,res) => {
+  const {dayCount, userid} = req.body;
+  const userExist = await User.findOne({ userid: userid });
+  const dayCount1 = userExist.trialDayCount;
+
+  const updateTrialDay = await User.updateOne(
+    { userid: userid },
+    {
+      $set: {
+        trialDayCount: dayCount + 1,
+      },
+    }
+  );
+  if (updateTrialDay) {
+    return res.status(200).json({
+      message: "udated day count",
+      dayCount
+    });
+  } else {
+    return res.status(400).json({
+      message: "Payment failed",
+    });
+  }
+ 
+}
+//expired
+exports.updateExpireUser = async (req,res) => {
+  const {userid , expire} = req.body;
+  const updateExpire = await User.updateOne(
+    { userid: userid },
+    {
+      $set: {
+        isBlocked: expire,
+      },
+    }
+  );
+  if (updateExpire) {
+    return res.status(200).json({
+      message: "expire",
+    });
+  } else {
+    return res.status(400).json({
+      message: "not expire",
+    });
+  }
+}
+

@@ -113,6 +113,15 @@ const userSchema = new mongoose.Schema({
     type: Number,
     default: 0,
   },
+  trialDate:{
+    type: Date,
+    default: Date.now()
+
+  },
+  trialDayCount:{
+    type:Number,
+    default:0
+  }
 });
 
 // Hash your password using bcrypt

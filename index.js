@@ -73,6 +73,8 @@ const userMyTeam = require('./routes/users/user-my-team');
 const userAddingWalletCreatePayment = require('./routes/users/user-adding-wallet-create-payment');
 const userAddingWalletVerifyPayment = require('./routes/users/user-adding-wallet-verify-payment');
 const userUpdateWalletAfterAdding = require('./routes/users/user-update-wallet-after-adding');
+const updateDayCount = require('./routes/users/update-day-count');
+const updateExpire = require('./routes/users/update-expire');
  
 
 
@@ -202,6 +204,8 @@ app.use('/user',userMyTeam);
 app.use('/user',userAddingWalletCreatePayment);
 app.use('/user',userAddingWalletVerifyPayment);
 app.use('/user',userUpdateWalletAfterAdding);
+app.use('/user',updateDayCount);
+app.use('/user',updateExpire);
 
 
 app.use('/admin', videoUpload)
