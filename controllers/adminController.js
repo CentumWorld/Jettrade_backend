@@ -803,33 +803,73 @@ exports.fetchRefferalChatMessageAdmin = async (req, res) => {
 
 // Create a new video
 
+// exports.createVideo = async (req, res, next) => {
+//   try {
+//     const { title } = req.body;
+//     const fileUrl = req.file.location; // Assuming your upload middleware sets the 'location' property
+//     if (!title) {
+//       return res
+//         .status(400)
+//         .send({ status: false, message: "title is required" });
+//     }
+//     if (!fileUrl) {
+//       return res
+//         .status(400)
+//         .send({ status: false, message: "video file is required" });
+//     }
+
+//     // Save the video information to MongoDB
+//     const video = new Video({
+//       title,
+//       videoOne: fileUrl,
+//     });
+
+//     const savedVideo = await video.save();
+
+//     res.status(201).json({ status: true, savedVideo });
+//   } catch (error) {
+//     console.error("Failed to create video:", error);
+//     res.status(500).json({ error: "Failed to create video" });
+//   }
+// };
+
+//===========
+
 exports.createVideo = async (req, res, next) => {
   try {
     const { title } = req.body;
-    const fileUrl = req.file.location; // Assuming your upload middleware sets the 'location' property
+    const videoLocation = req.files['videoOne'][0].location;
+    const thumbnailLocation = req.files['thumbnail'][0].location;
+
     if (!title) {
       return res
         .status(400)
-        .send({ status: false, message: "title is required" });
+        .send({ status: false, message: 'Title is required' });
     }
-    if (!fileUrl) {
+    if (!videoLocation) {
       return res
         .status(400)
-        .send({ status: false, message: "video file is required" });
+        .send({ status: false, message: 'Video file is required' });
+    }
+    if (!thumbnailLocation) {
+      return res
+        .status(400)
+        .send({ status: false, message: 'Thumbnail file is required' });
     }
 
     // Save the video information to MongoDB
     const video = new Video({
       title,
-      videoOne: fileUrl,
+      videoOne: videoLocation,
+      thumbnail: thumbnailLocation,
     });
 
     const savedVideo = await video.save();
 
     res.status(201).json({ status: true, savedVideo });
   } catch (error) {
-    console.error("Failed to create video:", error);
-    res.status(500).json({ error: "Failed to create video" });
+    console.error('Failed to create video:', error);
+    res.status(500).json({message: error.message });
   }
 };
 
