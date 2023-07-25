@@ -1506,7 +1506,7 @@ exports.updateDayCount = async (req,res) => {
     { userid: userid },
     {
       $set: {
-        trialDayCount: dayCount + 1,
+        trialDayCount: dayCount,
       },
     }
   );
