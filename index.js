@@ -77,6 +77,8 @@ const userUpdateWalletAfterAdding = require('./routes/users/user-update-wallet-a
 const updateDayCount = require('./routes/users/update-day-count');
 const updateExpire = require('./routes/users/update-expire');
 const addingAmountToTradingWallet = require('./routes/users/adding-amount-to-trading-wallet');
+
+const withdrawlAmountFromTradingWallet = require('./routes/users/withdrawl-Amount-From-Tranding-Wallet');
  
 
 
@@ -214,6 +216,7 @@ app.use('/user',updateExpire);
 app.use('/admin', videoUpload);
 app.use('/user', getVideo);
 app.use('/user',addingAmountToTradingWallet);
+app.use('/user',withdrawlAmountFromTradingWallet);
 
 
 // refferal

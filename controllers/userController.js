@@ -28,7 +28,7 @@ const { isValidPassword, isValidPhone } = require("../validation/validation");
 
 // userRegistartion
 exports.userRegistration = async (req, res) => {
-  console.log("askgha")
+  console.log("askgha");
   if (
     !req.files ||
     !req.files["aadhar_front_side"] ||
@@ -75,8 +75,6 @@ exports.userRegistration = async (req, res) => {
     password,
     doj,
   } = req.body;
-  
- 
 
   // Check if any required field is missing
   const missingFields = requiredFields.filter((field) => !req.body[field]);
@@ -128,10 +126,10 @@ exports.userRegistration = async (req, res) => {
       }
 
       const password = makepassword(8);
-      if(password.length < 8 ){
+      if (password.length < 8) {
         return res.status(400).json({
-          message:"Password must be minimum length of 8 charector!"
-        })
+          message: "Password must be minimum length of 8 charector!",
+        });
       }
       //const userid = userid;
       // const pass = password;
@@ -202,12 +200,12 @@ exports.userRegistration = async (req, res) => {
           .json({ message: "this userId is already taken" });
       }
 
-      if(password.length < 8 ){
+      if (password.length < 8) {
         return res.status(400).json({
-          message:"Password must be minimum length of 8 charector!"
-        })
+          message: "Password must be minimum length of 8 charector!",
+        });
       }
-      
+
       const user = new User({
         fname,
         lname,
@@ -293,8 +291,6 @@ exports.otherCountryUserRegistration = async (req, res) => {
     doj,
   } = req.body;
 
-  
-
   // Check if any required field is missing
   const missingFields = requiredFields.filter((field) => !req.body[field]);
   if (missingFields.length > 0) {
@@ -344,13 +340,11 @@ exports.otherCountryUserRegistration = async (req, res) => {
         }
 
         const password = makepassword(8);
-        if(password.length < 8 ){
+        if (password.length < 8) {
           return res.status(400).json({
-            message:"Password must be minimum length of 8 charector!"
-          })
+            message: "Password must be minimum length of 8 charector!",
+          });
         }
-      
-       
 
         const userExist = await User.findOne({ userid: userid });
         if (userExist) {
@@ -430,10 +424,10 @@ exports.otherCountryUserRegistration = async (req, res) => {
         if (!isValidPhone(phone)) {
           return res.status(400).json({ message: "Invalid phone." });
         }
-        if(password.length < 8 ){
+        if (password.length < 8) {
           return res.status(400).json({
-            message:"Password must be minimum length of 8 charector!"
-          })
+            message: "Password must be minimum length of 8 charector!",
+          });
         }
         const user = new User({
           fname,
@@ -1498,8 +1492,8 @@ exports.userUpdateWalletAfterAdding = async (req, res) => {
   }
 };
 
-exports.updateDayCount = async (req,res) => {
-  const {dayCount, userid} = req.body;
+exports.updateDayCount = async (req, res) => {
+  const { dayCount, userid } = req.body;
   const userExist = await User.findOne({ userid: userid });
   const dayCount1 = userExist.trialDayCount;
 
@@ -1507,25 +1501,24 @@ exports.updateDayCount = async (req,res) => {
     { userid: userid },
     {
       $set: {
-        trialDayCount: dayCount +1,
+        trialDayCount: dayCount + 1,
       },
     }
   );
   if (updateTrialDay) {
     return res.status(200).json({
       message: "udated day count",
-      dayCount
+      dayCount,
     });
   } else {
     return res.status(400).json({
       message: "Payment failed",
     });
   }
- 
-}
+};
 //expired
-exports.updateExpireUser = async (req,res) => {
-  const {userid , expire} = req.body;
+exports.updateExpireUser = async (req, res) => {
+  const { userid, expire } = req.body;
   const updateExpire = await User.updateOne(
     { userid: userid },
     {
@@ -1543,54 +1536,90 @@ exports.updateExpireUser = async (req,res) => {
       message: "not expire",
     });
   }
-}
+};
 
-exports.getAllVideos = async (req, res,) => {
+exports.getAllVideos = async (req, res) => {
   try {
     const videos = await Video.find(); // Find all videos in the MongoDB database
     res.status(200).json({ videos });
-    
   } catch (error) {
-    console.error('Failed to fetch video:', error);
-    res.status(500).json({ error: 'Failed to fetch video' });
+    console.error("Failed to fetch video:", error);
+    res.status(500).json({ error: "Failed to fetch video" });
+  }
+};
+
+// addingAmountToTradingWallet
+
+exports.addingAmountToTradingWallet = async (req, res) => {
+  try {
+    const { userid, amount } = req.body;
+    const userExist = await TraderWallet.findOne({ userid: userid });
+    const walletAmount = userExist.walletAmount;
+    if (!userExist) {
+      const tradingWallet = await TraderWallet.create({
+        userid: userid,
+        walletAmount: amount,
+      });
+      return res.status(201).json({
+        message: "Wallet added Successfully",
+        tradingWallet,
+      });
+    } else {
+      await TraderWallet.updateOne(
+        { userid: userid },
+        {
+          $set: {
+            walletAmount: walletAmount + amount,
+          },
+        }
+      );
+      const updatedWallet = await TraderWallet.findOne({ userid: userid });
+      return res.status(200).json({
+        message: "Wallet updated Successfully",
+        walletAmount: updatedWallet.walletAmount,
+      });
+    }
+  } catch (error) {
+    console.log(error.message)
+    return res.status(500).json({ message: "Internal server error" });
   }
 };
 
 
-// addingAmountToTradingWallet
-exports.addingAmountToTradingWallet = async (req,res) => {
+exports.withdrawlAmountFromTradingWallet = async (req, res) => {
+  try {
+    const { userid, amount } = req.body;
+    const userExist = await TraderWallet.findOne({ userid: userid });
 
- try {
-   
-   const { userid, amount } = req.body;
-   console.log(req.body);
-   const userExist = await TraderWallet.findOne({ userid: userid });
-     const walletAmount = userExist.walletAmount;
-   if(!userExist){
-    
-     const tradingWallet = await TraderWallet.create({userid:userid,walletAmount:amount});
-     return res.status(201).json({
-       message:"Wallet added Successfully",
-       tradingWallet
-     })
-   }else{
-     await TraderWallet.updateOne(
-       { userid: userid },
-       {
-         $set: {
-           walletAmount: walletAmount + amount,
-         },
-       }
-     );
-     const updatedWallet = await TraderWallet.findOne({ userid: userid });
-     return res.status(200).json({
-       message:"Wallet updated Successfully",
-       walletAmount:updatedWallet.walletAmount
-     })
-   }
- 
- } catch (error) {
-    
-   return res.status(500).json({message:"Internal server error"})
- }
-}
+    if (!userExist) {
+      return res.status(404).json({ message: "User not found" });
+    }
+
+    const walletAmount = userExist.walletAmount;
+
+    if (amount > walletAmount) {
+      return res.status(400).json({ message: "Insufficient balance" });
+    }
+
+    const updatedWalletAmount = walletAmount - amount;
+
+    await TraderWallet.updateOne(
+      { userid: userid },
+      {
+        $set: {
+          walletAmount: updatedWalletAmount,
+        },
+      }
+    );
+
+    const updatedWallet = await TraderWallet.findOne({ userid: userid });
+
+    return res.status(200).json({
+      message: "Amount withdrawn successfully",
+      walletAmount: updatedWallet.walletAmount,
+    });
+  } catch (error) {
+    console.error("Error withdrawing amount from trading wallet:", error.message);
+    return res.status(500).json({ message: "Internal server error" });
+  }
+};
