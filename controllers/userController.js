@@ -20,6 +20,7 @@ const PasswordReset = require("../utils/password-reset");
 const ChangePassword = require("../utils/change-password");
 const validator = require("validator");
 const Video = require("../model/videoModel");
+const TraderWallet = require("../model/traderWalletSchema");
 
 const { isValidPassword, isValidPhone } = require("../validation/validation");
 
@@ -1506,7 +1507,7 @@ exports.updateDayCount = async (req,res) => {
     { userid: userid },
     {
       $set: {
-        trialDayCount: dayCount,
+        trialDayCount: dayCount +1,
       },
     }
   );
@@ -1554,3 +1555,42 @@ exports.getAllVideos = async (req, res,) => {
     res.status(500).json({ error: 'Failed to fetch video' });
   }
 };
+
+
+// addingAmountToTradingWallet
+exports.addingAmountToTradingWallet = async (req,res) => {
+
+ try {
+   
+   const { userid, amount } = req.body;
+   console.log(req.body);
+   const userExist = await TraderWallet.findOne({ userid: userid });
+     const walletAmount = userExist.walletAmount;
+   if(!userExist){
+    
+     const tradingWallet = await TraderWallet.create({userid:userid,walletAmount:amount});
+     return res.status(201).json({
+       message:"Wallet added Successfully",
+       tradingWallet
+     })
+   }else{
+     await TraderWallet.updateOne(
+       { userid: userid },
+       {
+         $set: {
+           walletAmount: walletAmount + amount,
+         },
+       }
+     );
+     const updatedWallet = await TraderWallet.findOne({ userid: userid });
+     return res.status(200).json({
+       message:"Wallet updated Successfully",
+       walletAmount:updatedWallet.walletAmount
+     })
+   }
+ 
+ } catch (error) {
+    
+   return res.status(500).json({message:"Internal server error"})
+ }
+}

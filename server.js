@@ -23,9 +23,12 @@ const Admin = require('./model/adminSchema');
 const Member = require('./model/memberSchema');
 const RefferalChatMessage = require('./model/refferalChatMessageSchema');
 
-app.use(cors());
 
 
+// app.use((req, res, next) => {
+//     res.header('Access-Control-Allow-Origin', '*');
+//     next();
+//   });
 
 const server = http.createServer(app);
 

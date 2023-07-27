@@ -4,6 +4,7 @@ const bodyParser = require('body-parser');
 const cookieParser = require("cookie-parser");
 require('./database/conn');
 const path = require('path');
+const cors = require('cors');
 
 
 const adminLogin = require('./routes/adminLogin');
@@ -75,6 +76,7 @@ const userAddingWalletVerifyPayment = require('./routes/users/user-adding-wallet
 const userUpdateWalletAfterAdding = require('./routes/users/user-update-wallet-after-adding');
 const updateDayCount = require('./routes/users/update-day-count');
 const updateExpire = require('./routes/users/update-expire');
+const addingAmountToTradingWallet = require('./routes/users/adding-amount-to-trading-wallet');
  
 
 
@@ -123,8 +125,13 @@ const getVideo = require("./routes/users/video")
 const app = express();
 
 app.use(bodyParser.json());
-
-
+app.use(cors());
+// app.use(
+//   cors({
+//     origin:"http://trader.jettradefx.in",
+//     methods:["GET","POST","PUT","DELETE"]
+//   })
+// );
 
 
 
@@ -170,9 +177,7 @@ app.use('/admin',notificationForAllRefferal);
 app.use('/admin',notificationForParticularTrader);
 app.use('/admin',notificationForParticularRefferal);
 app.use('/user',fetchUserNotification);
-
 app.use('/user',paymentUseridVerify);
-
 app.use('/user',changeUserPaymentStatus);
 app.use('/admin',fetchRefferalPayoutUser);
 app.use('/admin',fetchRefferalPayoutMember)
@@ -206,13 +211,9 @@ app.use('/user',userAddingWalletVerifyPayment);
 app.use('/user',userUpdateWalletAfterAdding);
 app.use('/user',updateDayCount);
 app.use('/user',updateExpire);
-
-
-
-
-app.use('/admin', videoUpload)
-
-app.use('/user', getVideo)
+app.use('/admin', videoUpload);
+app.use('/user', getVideo);
+app.use('/user',addingAmountToTradingWallet);
 
 
 // refferal
