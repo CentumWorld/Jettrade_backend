@@ -1506,16 +1506,18 @@ exports.getAllVideos = async (req, res) => {
 // addingAmountToTradingWallet
 
 // Function to add money to user's wallet and create a transaction document
-const addMoneyToWallet = async (userid, amountAdded) => {
+const addMoneyToWallet = async (userid, amountAdded, date) => {
   try {
     // Find the user by their ID
-    const user = await User.findOne({userid:userid});
+    const user = await User.findOne({ userid: userid });
     if (!user) {
-       new Error('User not found');
+      throw new Error('User not found'); // Use "throw" instead of "new Error()" to throw the error
     }
-console.log(user, "uyuhyu")
+
+    console.log(user, "uyuhyu");
+
     // Update the wallet balance for the user
-    user.wallet += amountAdded;
+    user.tradingWallet += amountAdded;
 
     // Save the updated user document
     await user.save();
@@ -1524,6 +1526,7 @@ console.log(user, "uyuhyu")
     const transaction = new WalletTransaction({
       userid: userid,
       amountAdded,
+      date: date, // Include the provided date in the transaction document
     });
 
     // Save the transaction document
@@ -1538,16 +1541,19 @@ console.log(user, "uyuhyu")
 
 // Controller function for adding money to trading wallet
 exports.addingAmountToTradingWallet = async (req, res) => {
-  const { userid, amountAdded } = req.body;
+  const { userid, amountAdded, date } = req.body;
 
   // Validate that the "amountAdded" is a valid number
   if (isNaN(amountAdded) || amountAdded <= 0) {
     return res.status(400).json({ error: 'Invalid amount added' });
   }
 
+  // If the "date" is not provided in the request body, use the current date by default
+  const transactionDate = date ? new Date(date) : new Date();
+
   try {
     // Call the function to add money to the wallet and create a transaction
-    const updatedUser = await addMoneyToWallet(userid, amountAdded);
+    const updatedUser = await addMoneyToWallet(userid, amountAdded, transactionDate);
 
     // Respond with the updated user document or any other appropriate response
     res.json({ message: 'Money added successfully', user: updatedUser });
@@ -1559,43 +1565,85 @@ exports.addingAmountToTradingWallet = async (req, res) => {
 };
 
 
-
-
-
 exports.withdrawlAmountFromTradingWallet = async (req, res) => {
+  const { userid, amountWithdrawn } = req.body;
+
+  // Validate that the "amountWithdrawn" is a valid number and greater than zero
+  if (isNaN(amountWithdrawn) || amountWithdrawn <= 0) {
+    return res.status(400).json({ error: 'Invalid amount withdrawn' });
+  }
+
   try {
-    const { userid, amount } = req.body;
-    const userExist = await TraderWallet.findOne({ userid: userid });
-
-    if (!userExist) {
-      return res.status(404).json({ message: "User not found" });
+    // Find the user by their ID
+    const user = await User.findOne({userid:userid});
+    if (!user) {
+      return res.status(404).json({ error: 'User not found' });
     }
 
-    const walletAmount = userExist.walletAmount;
-
-    if (amount > walletAmount) {
-      return res.status(400).json({ message: "Insufficient balance" });
+    // Check if the user has sufficient balance in the trading wallet
+    if (user.tradingWallet < amountWithdrawn) {
+      return res.status(400).json({ error: 'Insufficient balance in the trading wallet' });
     }
 
-    const updatedWalletAmount = walletAmount - amount;
+    // Update the wallet balance for the user
+    user.tradingWallet -= amountWithdrawn;
 
-    await TraderWallet.updateOne(
-      { userid: userid },
-      {
-        $set: {
-          walletAmount: updatedWalletAmount,
-        },
-      }
-    );
+    // Save the updated user document
+    await user.save();
 
-    const updatedWallet = await TraderWallet.findOne({ userid: userid });
-
-    return res.status(200).json({
-      message: "Amount withdrawn successfully",
-      walletAmount: updatedWallet.walletAmount,
+    // Create a transaction document for the withdrawal
+    const transaction = new WalletTransaction({
+      userid: userid,
+      amountAdded: -amountWithdrawn, // Negative value to indicate a withdrawal
     });
+
+    // Save the transaction document
+    await transaction.save();
+
+    // Respond with the updated user document or any other appropriate response
+    res.json({ message: 'Amount withdrawn successfully', user: user });
   } catch (error) {
-    console.error("Error withdrawing amount from trading wallet:", error.message);
-    return res.status(500).json({ message: "Internal server error" });
+    console.error('Error withdrawing amount from trading wallet:', error.message);
+    res.status(500).json({ message: 'Internal server error' });
+  }
+};
+
+
+exports.filterTransactionsWithYearMonthWeek = async (req, res) => {
+  const { year, month } = req.query;
+
+  // Validate that the provided year is a valid number
+  if (isNaN(year)) {
+    return res.status(400).json({ error: 'Invalid input. Year must be a number.' });
+  }
+
+  try {
+    let filteredTransactions;
+
+    // If both year and month are provided, fetch transactions for the specific month in the specified year
+    if (month) {
+      // Validate that the provided month is a valid number
+      if (isNaN(month)) {
+        return res.status(400).json({ error: 'Invalid input. Month must be a number.' });
+      }
+
+      // Construct the date range based on the provided year and month
+      const startDate = new Date(year, month - 1, 1); // Note: Month is zero-based, so subtract 1
+      const endDate = new Date(year, month, 0); // Get the last day of the month
+
+      filteredTransactions = await WalletTransaction.find({
+        date: { $gte: startDate, $lte: endDate },
+      }).exec();
+    } else {
+      // If only year is provided, fetch transactions for that year
+      filteredTransactions = await WalletTransaction.find({
+        date: { $gte: new Date(`${year}-01-01`), $lte: new Date(`${year}-12-31`) },
+      }).exec();
+    }
+
+    res.json({ transactions: filteredTransactions });
+  } catch (error) {
+    console.error('Error filtering transactions:', error.message);
+    res.status(500).json({ message: 'Internal server error' });
   }
 };

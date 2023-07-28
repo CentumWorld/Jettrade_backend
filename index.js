@@ -79,6 +79,8 @@ const updateExpire = require('./routes/users/update-expire');
 const addingAmountToTradingWallet = require('./routes/users/adding-amount-to-trading-wallet');
 
 const withdrawlAmountFromTradingWallet = require('./routes/users/withdrawl-Amount-From-Tranding-Wallet');
+
+const filterTransactionsWithYearMonthWeek = require('./routes/users/filter-Transactions-With-Year-Month-Week')
  
 
 
@@ -217,6 +219,7 @@ app.use('/admin', videoUpload);
 app.use('/user', getVideo);
 app.use('/user',addingAmountToTradingWallet);
 app.use('/user',withdrawlAmountFromTradingWallet);
+app.use('/user',filterTransactionsWithYearMonthWeek);
 
 
 // refferal
