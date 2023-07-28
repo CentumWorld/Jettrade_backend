@@ -1039,3 +1039,17 @@ exports.createVideo = async (req, res, next) => {
     res.status(500).json({ message: error.message });
   }
 };
+
+exports.fetchParticularUserDetailsFromAdminUsingUserid = async (req,res) => {
+  const {userid} = req.body;
+  User.findOne({userid})
+    .then((result) => {
+      res.status(200).json({
+        message: `${userid}`+" details fetched",
+        result,
+      });
+    })
+    .catch((err) => {
+      res.status(500).json({ error: err });
+    });
+}
