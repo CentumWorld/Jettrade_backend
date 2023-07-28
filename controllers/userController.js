@@ -21,7 +21,7 @@ const ChangePassword = require("../utils/change-password");
 const validator = require("validator");
 const Video = require("../model/videoModel");
 const WalletTransaction = require("../model/transactionSchema");
-const UserRenewal = require('../model/userRenewelSchema');
+const UserRenewal = require("../model/userRenewelSchema");
 
 const { isValidPassword, isValidPhone } = require("../validation/validation");
 
@@ -471,7 +471,6 @@ exports.otherCountryUserRegistration = async (req, res) => {
   }
 };
 
-
 exports.userLogin = async (req, res) => {
   try {
     const { userid, password } = req.body;
@@ -778,7 +777,7 @@ exports.fetchUserDetailsUserside = async (req, res) => {
     .catch((err) => {
       res.status(500).json({ error: err });
     });
-};                                      
+};
 // fetchProfilePhotoUser
 exports.fetchProfilePhotoUser = async (req, res) => {
   const { userid } = req.body;
@@ -1011,7 +1010,10 @@ exports.changeUserPaymentStatus = async (req, res) => {
     }
   );
 
-  const userRenewal = new UserRenewal({userid:userid,renewalAmount:renewAmount})
+  const userRenewal = new UserRenewal({
+    userid: userid,
+    renewalAmount: renewAmount,
+  });
   userRenewal.save();
   if (reffered_id === "admin@123") {
     return res.status(200).json({ message: "Your paymnet successfull" });
@@ -1511,7 +1513,7 @@ const addMoneyToWallet = async (userid, amountAdded, date) => {
     // Find the user by their ID
     const user = await User.findOne({ userid: userid });
     if (!user) {
-      throw new Error('User not found'); // Use "throw" instead of "new Error()" to throw the error
+      throw new Error("User not found"); // Use "throw" instead of "new Error()" to throw the error
     }
 
     console.log(user, "uyuhyu");
@@ -1545,7 +1547,7 @@ exports.addingAmountToTradingWallet = async (req, res) => {
 
   // Validate that the "amountAdded" is a valid number
   if (isNaN(amountAdded) || amountAdded <= 0) {
-    return res.status(400).json({ error: 'Invalid amount added' });
+    return res.status(400).json({ error: "Invalid amount added" });
   }
 
   // If the "date" is not provided in the request body, use the current date by default
@@ -1553,36 +1555,41 @@ exports.addingAmountToTradingWallet = async (req, res) => {
 
   try {
     // Call the function to add money to the wallet and create a transaction
-    const updatedUser = await addMoneyToWallet(userid, amountAdded, transactionDate);
+    const updatedUser = await addMoneyToWallet(
+      userid,
+      amountAdded,
+      transactionDate
+    );
 
     // Respond with the updated user document or any other appropriate response
-    res.json({ message: 'Money added successfully', user: updatedUser });
+    res.json({ message: "Money added successfully", user: updatedUser });
   } catch (error) {
     // Handle errors appropriately
     console.error(error);
-    res.status(500).json({ error: 'Internal server error' });
+    res.status(500).json({ error: "Internal server error" });
   }
 };
-
 
 exports.withdrawlAmountFromTradingWallet = async (req, res) => {
   const { userid, amountWithdrawn } = req.body;
 
   // Validate that the "amountWithdrawn" is a valid number and greater than zero
   if (isNaN(amountWithdrawn) || amountWithdrawn <= 0) {
-    return res.status(400).json({ error: 'Invalid amount withdrawn' });
+    return res.status(400).json({ error: "Invalid amount withdrawn" });
   }
 
   try {
     // Find the user by their ID
-    const user = await User.findOne({userid:userid});
+    const user = await User.findOne({ userid: userid });
     if (!user) {
-      return res.status(404).json({ error: 'User not found' });
+      return res.status(404).json({ error: "User not found" });
     }
 
     // Check if the user has sufficient balance in the trading wallet
     if (user.tradingWallet < amountWithdrawn) {
-      return res.status(400).json({ error: 'Insufficient balance in the trading wallet' });
+      return res
+        .status(400)
+        .json({ error: "Insufficient balance in the trading wallet" });
     }
 
     // Update the wallet balance for the user
@@ -1601,30 +1608,40 @@ exports.withdrawlAmountFromTradingWallet = async (req, res) => {
     await transaction.save();
 
     // Respond with the updated user document or any other appropriate response
-    res.json({ message: 'Amount withdrawn successfully', user: user });
+    res.json({ message: "Amount withdrawn successfully", user: user });
   } catch (error) {
-    console.error('Error withdrawing amount from trading wallet:', error.message);
-    res.status(500).json({ message: 'Internal server error' });
+    console.error(
+      "Error withdrawing amount from trading wallet:",
+      error.message
+    );
+    res.status(500).json({ message: "Internal server error" });
   }
 };
 
-
 exports.filterTransactionsWithYearMonthWeek = async (req, res) => {
-  const { year, month } = req.query;
-
-  // Validate that the provided year is a valid number
-  if (isNaN(year)) {
-    return res.status(400).json({ error: 'Invalid input. Year must be a number.' });
-  }
-
   try {
+    const { year, month } = req.query;
+    if (!year && !month) {
+      let allData = await WalletTransaction.find();
+      return res.status(200).json({ message: "all transaction of data fetched", allData });
+    }
+
+    // Validate that the provided year is a valid number
+    if (isNaN(year)) {
+      return res
+        .status(400)
+        .json({ error: "Invalid input. Year must be a number." });
+    }
+
     let filteredTransactions;
 
     // If both year and month are provided, fetch transactions for the specific month in the specified year
     if (month) {
       // Validate that the provided month is a valid number
       if (isNaN(month)) {
-        return res.status(400).json({ error: 'Invalid input. Month must be a number.' });
+        return res
+          .status(400)
+          .json({ error: "Invalid input. Month must be a number." });
       }
 
       // Construct the date range based on the provided year and month
@@ -1637,13 +1654,16 @@ exports.filterTransactionsWithYearMonthWeek = async (req, res) => {
     } else {
       // If only year is provided, fetch transactions for that year
       filteredTransactions = await WalletTransaction.find({
-        date: { $gte: new Date(`${year}-01-01`), $lte: new Date(`${year}-12-31`) },
+        date: {
+          $gte: new Date(`${year}-01-01`),
+          $lte: new Date(`${year}-12-31`),
+        },
       }).exec();
     }
 
     res.json({ transactions: filteredTransactions });
   } catch (error) {
-    console.error('Error filtering transactions:', error.message);
-    res.status(500).json({ message: 'Internal server error' });
+    console.error("Error filtering transactions:", error.message);
+    res.status(500).json({ message: "Internal server error" });
   }
 };
