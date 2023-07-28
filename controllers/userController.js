@@ -21,6 +21,7 @@ const ChangePassword = require("../utils/change-password");
 const validator = require("validator");
 const Video = require("../model/videoModel");
 const WalletTransaction = require("../model/transactionSchema");
+const UserRenewal = require('../model/userRenewelSchema');
 
 const { isValidPassword, isValidPhone } = require("../validation/validation");
 
@@ -470,55 +471,6 @@ exports.otherCountryUserRegistration = async (req, res) => {
   }
 };
 
-// // userLogin
-
-// exports.userLogin = async (req, res) => {
-//   const { userid, password } = req.body;
-//   if (!userid || !password) {
-//     return res.status(422).json({ message: "Please fill all details" });
-//   }
-//   const userLogin = await User.findOne({ userid: userid });
-//   console.log(userLogin, "104");
-
-//   if (!userLogin) {
-//     return res.status(404).json({ message: "Invalid Credential1!" });
-//   }
-//   const blocked = userLogin.isBlocked;
-//   if (blocked) {
-//     return res.status(403).json({ message: "Your account is blocked!" });
-//   }
-
-//   if (!blocked) {
-//     try {
-//       const isMatch = await bcrypt.compare(password, userLogin.password);
-//       //const token = await userLogin.generateAuthToken();
-//       const token = jwt.sign(
-//         { userId: userLogin._id },
-//         process.env.SECRET_KEY,
-//         { expiresIn: 6000 } // Set the token to expire in 1 hour
-//       );
-//       console.log(token, "270");
-//       // res.cookie("jwtoken", token, {
-//       //   expires: new Date(Date.now() + 20000),
-//       //   httpOnly: true,
-//       // });
-//       if (!isMatch) {
-//         return res.status(404).json({ message: "Invalid Credential2!" });
-//       } else {
-//         return res.status(200).json({
-//           message: "User Login successfully",
-//           token: token,
-//           userLogin,
-//           expires: new Date().getTime() + 60000,
-//         });
-//       }
-//     } catch (error) {
-//       console.log(error);
-//     }
-//   } else {
-//     return res.status(404).json({ message: "Your account is blocked!" });
-//   }
-// };
 
 exports.userLogin = async (req, res) => {
   try {
@@ -1041,6 +993,7 @@ exports.fetchUserid = async (req, res) => {
 // changeUserPaymentStatus
 exports.changeUserPaymentStatus = async (req, res) => {
   const { userid } = req.body;
+  const renewAmount = 1500;
 
   const userExist = await User.find({ userid: userid });
   const payment = userExist[0].paymentCount;
@@ -1057,6 +1010,9 @@ exports.changeUserPaymentStatus = async (req, res) => {
       },
     }
   );
+
+  const userRenewal = new UserRenewal({userid:userid,renewalAmount:renewAmount})
+  userRenewal.save();
   if (reffered_id === "admin@123") {
     return res.status(200).json({ message: "Your paymnet successfull" });
   } else {
