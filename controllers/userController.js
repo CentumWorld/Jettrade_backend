@@ -20,7 +20,7 @@ const PasswordReset = require("../utils/password-reset");
 const ChangePassword = require("../utils/change-password");
 const validator = require("validator");
 const Video = require("../model/videoModel");
-const TraderWallet = require("../model/traderWalletSchema");
+const WalletTransaction = require("../model/transactionSchema");
 
 const { isValidPassword, isValidPhone } = require("../validation/validation");
 
@@ -826,8 +826,7 @@ exports.fetchUserDetailsUserside = async (req, res) => {
     .catch((err) => {
       res.status(500).json({ error: err });
     });
-};
-
+};                                      
 // fetchProfilePhotoUser
 exports.fetchProfilePhotoUser = async (req, res) => {
   const { userid } = req.body;
@@ -1550,40 +1549,61 @@ exports.getAllVideos = async (req, res) => {
 
 // addingAmountToTradingWallet
 
-exports.addingAmountToTradingWallet = async (req, res) => {
+// Function to add money to user's wallet and create a transaction document
+const addMoneyToWallet = async (userid, amountAdded) => {
   try {
-    const { userid, amount } = req.body;
-    const userExist = await TraderWallet.findOne({ userid: userid });
-    const walletAmount = userExist.walletAmount;
-    if (!userExist) {
-      const tradingWallet = await TraderWallet.create({
-        userid: userid,
-        walletAmount: amount,
-      });
-      return res.status(201).json({
-        message: "Wallet added Successfully",
-        tradingWallet,
-      });
-    } else {
-      await TraderWallet.updateOne(
-        { userid: userid },
-        {
-          $set: {
-            walletAmount: walletAmount + amount,
-          },
-        }
-      );
-      const updatedWallet = await TraderWallet.findOne({ userid: userid });
-      return res.status(200).json({
-        message: "Wallet updated Successfully",
-        walletAmount: updatedWallet.walletAmount,
-      });
+    // Find the user by their ID
+    const user = await User.findOne({userid:userid});
+    if (!user) {
+       new Error('User not found');
     }
+console.log(user, "uyuhyu")
+    // Update the wallet balance for the user
+    user.wallet += amountAdded;
+
+    // Save the updated user document
+    await user.save();
+
+    // Create a transaction document
+    const transaction = new WalletTransaction({
+      userid: userid,
+      amountAdded,
+    });
+
+    // Save the transaction document
+    await transaction.save();
+
+    return user;
   } catch (error) {
-    console.log(error.message)
-    return res.status(500).json({ message: "Internal server error" });
+    console.error(error);
+    throw error;
   }
 };
+
+// Controller function for adding money to trading wallet
+exports.addingAmountToTradingWallet = async (req, res) => {
+  const { userid, amountAdded } = req.body;
+
+  // Validate that the "amountAdded" is a valid number
+  if (isNaN(amountAdded) || amountAdded <= 0) {
+    return res.status(400).json({ error: 'Invalid amount added' });
+  }
+
+  try {
+    // Call the function to add money to the wallet and create a transaction
+    const updatedUser = await addMoneyToWallet(userid, amountAdded);
+
+    // Respond with the updated user document or any other appropriate response
+    res.json({ message: 'Money added successfully', user: updatedUser });
+  } catch (error) {
+    // Handle errors appropriately
+    console.error(error);
+    res.status(500).json({ error: 'Internal server error' });
+  }
+};
+
+
+
 
 
 exports.withdrawlAmountFromTradingWallet = async (req, res) => {
