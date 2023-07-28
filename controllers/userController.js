@@ -1618,52 +1618,5 @@ exports.withdrawlAmountFromTradingWallet = async (req, res) => {
   }
 };
 
-exports.filterTransactionsWithYearMonthWeek = async (req, res) => {
-  try {
-    const { year, month } = req.query;
-    if (!year && !month) {
-      let allData = await WalletTransaction.find();
-      return res.status(200).json({ message: "all transaction of data fetched", allData });
-    }
 
-    // Validate that the provided year is a valid number
-    if (isNaN(year)) {
-      return res
-        .status(400)
-        .json({ error: "Invalid input. Year must be a number." });
-    }
 
-    let filteredTransactions;
-
-    // If both year and month are provided, fetch transactions for the specific month in the specified year
-    if (month) {
-      // Validate that the provided month is a valid number
-      if (isNaN(month)) {
-        return res
-          .status(400)
-          .json({ error: "Invalid input. Month must be a number." });
-      }
-
-      // Construct the date range based on the provided year and month
-      const startDate = new Date(year, month - 1, 1); // Note: Month is zero-based, so subtract 1
-      const endDate = new Date(year, month, 0); // Get the last day of the month
-
-      filteredTransactions = await WalletTransaction.find({
-        date: { $gte: startDate, $lte: endDate },
-      }).exec();
-    } else {
-      // If only year is provided, fetch transactions for that year
-      filteredTransactions = await WalletTransaction.find({
-        date: {
-          $gte: new Date(`${year}-01-01`),
-          $lte: new Date(`${year}-12-31`),
-        },
-      }).exec();
-    }
-
-    res.json({ transactions: filteredTransactions });
-  } catch (error) {
-    console.error("Error filtering transactions:", error.message);
-    res.status(500).json({ message: "Internal server error" });
-  }
-};
