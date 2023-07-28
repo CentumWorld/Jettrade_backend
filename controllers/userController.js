@@ -22,6 +22,8 @@ const validator = require("validator");
 const Video = require("../model/videoModel");
 const WalletTransaction = require("../model/transactionSchema");
 const UserRenewal = require("../model/userRenewelSchema");
+const  MoneyWithdrawalTransaction  = require('../model/withDrawlSchema'); // Adjust the path to the correct location of your models file.
+
 
 const { isValidPassword, isValidPhone } = require("../validation/validation");
 
@@ -1569,7 +1571,6 @@ exports.addingAmountToTradingWallet = async (req, res) => {
     res.status(500).json({ error: "Internal server error" });
   }
 };
-
 exports.withdrawlAmountFromTradingWallet = async (req, res) => {
   const { userid, amountWithdrawn } = req.body;
 
@@ -1599,9 +1600,9 @@ exports.withdrawlAmountFromTradingWallet = async (req, res) => {
     await user.save();
 
     // Create a transaction document for the withdrawal
-    const transaction = new WalletTransaction({
+    const transaction = new MoneyWithdrawalTransaction({
       userid: userid,
-      amountAdded: -amountWithdrawn, // Negative value to indicate a withdrawal
+      amountWithdrawn: amountWithdrawn, // Use the correct field name here
     });
 
     // Save the transaction document

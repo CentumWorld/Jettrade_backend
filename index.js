@@ -78,17 +78,9 @@ const updateDayCount = require('./routes/users/update-day-count');
 const updateExpire = require('./routes/users/update-expire');
 const addingAmountToTradingWallet = require('./routes/users/adding-amount-to-trading-wallet');
 const withdrawlAmountFromTradingWallet = require('./routes/users/withdrawl-Amount-From-Tranding-Wallet');
-<<<<<<< Updated upstream
-const filterTransactionsWithYearMonthWeek = require('./routes/users/filter-Transactions-With-Year-Month-Week');
 const fetchParticularUserDetailsFromAdminUsingUserid = require('./routes/fetch-particular-user-details-from-admin-using-userid');
-=======
-
-const filterTransactionsWithYearMonthWeek = require('./routes/filter-Transactions-With-Year-Month-Week')
->>>>>>> Stashed changes
+const filterTransactionsWithYearMonthWeek = require('./routes/filter-Transactions-With-Year-Month-Week');
  
-
-
-
 // refferal
 const memberRegistration = require('./routes/refferal/member-registration');
 const memberLogin = require('./routes/refferal/member-login');
@@ -223,12 +215,8 @@ app.use('/admin', videoUpload);
 app.use('/user', getVideo);
 app.use('/user',addingAmountToTradingWallet);
 app.use('/user',withdrawlAmountFromTradingWallet);
-<<<<<<< Updated upstream
-app.use('/user',filterTransactionsWithYearMonthWeek);
 app.use('/admin',fetchParticularUserDetailsFromAdminUsingUserid);
-=======
 app.use('/admin',filterTransactionsWithYearMonthWeek);
->>>>>>> Stashed changes
 
 
 // refferal

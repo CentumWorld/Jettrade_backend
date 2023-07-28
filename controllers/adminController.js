@@ -1041,7 +1041,6 @@ exports.createVideo = async (req, res, next) => {
   }
 };
 
-<<<<<<< Updated upstream
 exports.fetchParticularUserDetailsFromAdminUsingUserid = async (req,res) => {
   const {userid} = req.body;
   User.findOne({userid})
@@ -1055,7 +1054,6 @@ exports.fetchParticularUserDetailsFromAdminUsingUserid = async (req,res) => {
       res.status(500).json({ error: err });
     });
 }
-=======
 exports.filterTransactionsWithYearMonthWeek = async (req, res) => {
   try {
     const { userid,  year, month } = req.body;
@@ -1107,4 +1105,3 @@ exports.filterTransactionsWithYearMonthWeek = async (req, res) => {
     res.status(500).json({ message: "Internal server error" });
   }
 };
->>>>>>> Stashed changes
