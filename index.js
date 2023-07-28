@@ -80,6 +80,7 @@ const addingAmountToTradingWallet = require('./routes/users/adding-amount-to-tra
 const withdrawlAmountFromTradingWallet = require('./routes/users/withdrawl-Amount-From-Tranding-Wallet');
 const fetchParticularUserDetailsFromAdminUsingUserid = require('./routes/fetch-particular-user-details-from-admin-using-userid');
 const filterTransactionsWithYearMonthWeek = require('./routes/filter-Transactions-With-Year-Month-Week');
+const filterTransactionsForWithdrawlWithYearMonth = require('./routes/filter-Transactions-For-Withdrawl-With-Year-Month')
  
 // refferal
 const memberRegistration = require('./routes/refferal/member-registration');
@@ -217,6 +218,9 @@ app.use('/user',addingAmountToTradingWallet);
 app.use('/user',withdrawlAmountFromTradingWallet);
 app.use('/admin',fetchParticularUserDetailsFromAdminUsingUserid);
 app.use('/admin',filterTransactionsWithYearMonthWeek);
+
+app.use('/admin',filterTransactionsForWithdrawlWithYearMonth);
+
 
 
 // refferal

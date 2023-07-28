@@ -22,8 +22,7 @@ const validator = require("validator");
 const Video = require("../model/videoModel");
 const WalletTransaction = require("../model/transactionSchema");
 const UserRenewal = require("../model/userRenewelSchema");
-const  MoneyWithdrawalTransaction  = require('../model/withDrawlSchema'); // Adjust the path to the correct location of your models file.
-
+const  MoneyWithdrawalTransaction  = require('../model/withDrawlSchema'); 
 
 const { isValidPassword, isValidPhone } = require("../validation/validation");
 
@@ -1572,11 +1571,16 @@ exports.addingAmountToTradingWallet = async (req, res) => {
   }
 };
 exports.withdrawlAmountFromTradingWallet = async (req, res) => {
-  const { userid, amountWithdrawn } = req.body;
+  const { userid, amountWithdrawn, date } = req.body;
 
   // Validate that the "amountWithdrawn" is a valid number and greater than zero
   if (isNaN(amountWithdrawn) || amountWithdrawn <= 0) {
     return res.status(400).json({ error: "Invalid amount withdrawn" });
+  }
+
+  // Validate that the "date" is a valid date
+  if (!Date.parse(date)) {
+    return res.status(400).json({ error: "Invalid date format" });
   }
 
   try {
@@ -1602,7 +1606,8 @@ exports.withdrawlAmountFromTradingWallet = async (req, res) => {
     // Create a transaction document for the withdrawal
     const transaction = new MoneyWithdrawalTransaction({
       userid: userid,
-      amountWithdrawn: amountWithdrawn, // Use the correct field name here
+      amountWithdrawn: amountWithdrawn,
+      date: date,
     });
 
     // Save the transaction document
