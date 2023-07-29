@@ -1787,5 +1787,38 @@ exports.changePaymentStatusForRenewal = async (req,res) => {
   }
 }
 
+//send money to any user that exis in database
 
+exports.tradingWalletTransferFromOneUserToAnother = async (req, res) => {
+  const { amount,fromUser, toUser } = req.body;
+
+  try {
+    const sender = await User.findOne({ userid: fromUser });
+    const receiver = await User.findOne({ userid: toUser});
+
+    if (!sender ) {
+      return res.status(404).json({ error: 'Senderr not found' });
+    }
+    console.log(sender)
+    
+    if (!receiver ) {
+      return res.status(404).json({ error: 'Reciever not found' });
+    }
+    console.log(receiver, "reciever")
+
+    if (sender.tradingWallet < amount) {
+      return res.status(400).json({ error: 'Insufficient balance' });
+    }
+
+    sender.tradingWallet -= amount;
+    receiver.tradingWallet += amount;
+
+    await sender.save();
+    await receiver.save();
+
+    return res.status(200).json({ message: 'Money transferred successfully' });
+  } catch (error) {
+    return res.status(500).json({ error: 'An error occurred while processing the request' });
+  }
+};
 

@@ -86,7 +86,7 @@ const fetchAllNewPaidUser = require('./routes/fetch-all-new-paid-user');
 const changePaymentStatusForRenewal = require('./routes/users/change-payment-status-for-renewal');
 const adminSumOfAllNewRenewalUserAmount = require('./routes/admin-sum-of-all-new-renewal-user-amount');
 const filterTransactionsForWithdrawlWithYearMonth = require('./routes/filter-Transactions-For-Withdrawl-With-Year-Month')
-
+const tradingWalletTransferFromOneUserToAnother = require('./routes/users/trading-wallet-transfer-from-one-user-to-another')
  
 // refferal
 const memberRegistration = require('./routes/refferal/member-registration');
@@ -230,7 +230,7 @@ app.use('/admin',fetchAllNewPaidUser);
 app.use('/user',changePaymentStatusForRenewal);
 app.use('/admin',adminSumOfAllNewRenewalUserAmount);
 app.use('/admin', filterTransactionsForWithdrawlWithYearMonth)
-
+app.use('/user', tradingWalletTransferFromOneUserToAnother)
 
 
 // refferal
