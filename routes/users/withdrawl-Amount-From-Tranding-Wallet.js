@@ -7,6 +7,6 @@ const checkMiddleware = require('../../middleware/checkAuth');
 
 
 // Route for withdrawing amount from trading wallet
-router.post('/users/withdrawl-amount-from-trading-wallet',userController.withdrawlAmountFromTradingWallet);
+router.post('/users/withdrawl-amount-from-trading-wallet',checkMiddleware.checkAuth,userController.withdrawlAmountFromTradingWallet);
 
 module.exports = router;
