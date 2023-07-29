@@ -5,7 +5,7 @@ require('dotenv').config();
 const adminController = require('../controllers/adminController');
 const checkMiddleware = require('../middleware/checkAuth');
 
-router.post('/admin-fetch-all-renewal-user',checkMiddleware.checkAuth, adminController.adminFetchAllRenewalUser);
+router.post('/admin-fetch-all-renewal-user',adminController.adminFetchAllRenewalUser);
 
 
 module.exports = router;

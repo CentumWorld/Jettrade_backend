@@ -19,6 +19,7 @@ const RefferalChatType = require("../model/refferalChatType");
 const RefferalChatMessage = require("../model/refferalChatMessageSchema");
 const Video = require("../model/videoModel");
 const WalletTransaction = require("../model/transactionSchema");
+const MoneyWithdrawlTransaction = require('../model/withDrawlSchema')
 const UserRenewal = require('../model/userRenewelSchema');
 const AllNewPaidUser = require('../model/allNewPaidUserSchema');
 
@@ -1175,5 +1176,59 @@ exports.adminSumOfAllNewRenewalUserAmount = async (req, res) => {
     return res.status(500).json({ message: "Internal server error" });
   }
 };
+
+
+//filter for withdrawl
+exports.filterTransactionsForWithdrawlWithYearMonth = async (req, res) => {
+  try {
+    const { userid,  year, month } = req.body;
+
+    if (!year && !month) {
+      const allData = await MoneyWithdrawlTransaction.find({ userid });
+      return res.status(200).json({ message: "All Withdrawl fetched", allData });
+    }
+
+    // Validate that the provided year is a valid number
+    if (year && isNaN(year)) {
+      return res.status(400).json({ error: "Invalid input. Year must be a number." });
+    }
+
+    // If month is provided, validate that it is a valid number
+    if (month && isNaN(month)) {
+      return res.status(400).json({ error: "Invalid input. Month must be a number." });
+    }
+
+    let startDate, endDate;
+    let filteredTransactions;
+
+    if (year && month) {
+      // Construct the date range based on the provided year and month
+      startDate = new Date(year, month - 1, 1);
+      endDate = new Date(year, month, 0);
+
+      filteredTransactions = await MoneyWithdrawlTransaction.find({
+        userid,
+        date: { $gte: startDate, $lte: endDate },
+      }).exec();
+    } else if (year) {
+      // If only year is provided, fetch transactions for that year
+      startDate = new Date(`${year}-01-01`);
+      endDate = new Date(`${year}-12-31`);
+
+      filteredTransactions = await MoneyWithdrawlTransaction.find({
+        userid,
+        date: { $gte: startDate, $lte: endDate },
+      }).exec();
+    } else {
+      // Handle the case where neither year nor month is provided
+      return res.status(400).json({ error: "Invalid input. Year or month is required." });
+    }
+
+    res.json({ transactions: filteredTransactions });
+  } catch (error) {
+    console.error("Error filtering transactions:", error.message);
+    res.status(500).json({ message: "Internal server error" });
+  }
+}
 
  
