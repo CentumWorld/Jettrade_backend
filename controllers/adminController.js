@@ -1137,4 +1137,43 @@ exports.fetchAllNewPaidUser = async (req,res) => {
     return res.status(500).json({message:"Internal Server Error"})
   }
 }
+
+// adminSumOfAllNewRenewalUserAmount
+exports.adminSumOfAllNewRenewalUserAmount = async (req, res) => {
+  try {
+    // Calculate the sum of activationAmount from AllNewPaidUser collection
+    const activationResult = await AllNewPaidUser.aggregate([
+      {
+        $group: {
+          _id: null,
+          activationAmountSum: { $sum: '$activationAmount' },
+        },
+      },
+    ]);
+
+    // Calculate the sum of renewalAmount from UserRenewal collection
+    const renewalResult = await UserRenewal.aggregate([
+      {
+        $group: {
+          _id: null,
+          renewalAmountSum: { $sum: '$renewalAmount' },
+        },
+      },
+    ]);
+
+    // Get the sum of activationAmount and renewalAmount
+    const sumOfActivationAmount = activationResult.length > 0 ? activationResult[0].activationAmountSum : 0;
+    const sumOfRenewalAmount = renewalResult.length > 0 ? renewalResult[0].renewalAmountSum : 0;
+
+    const totalSubscriptionAmount = sumOfActivationAmount + sumOfRenewalAmount;
+    return res.status(200).json({
+      message: "Sum of subscription amount for users",
+      totalSubscriptionAmount,
+    });
+  } catch (error) {
+    console.error('Error:', error);
+    return res.status(500).json({ message: "Internal server error" });
+  }
+};
+
  

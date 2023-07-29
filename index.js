@@ -84,6 +84,7 @@ const userTotalWithdrawalFromTradingWallet = require('./routes/users/user-total-
 const adminFetchAllRenewalUser = require('./routes/admin-fetch-all-renewal-user');
 const fetchAllNewPaidUser = require('./routes/fetch-all-new-paid-user');
 const changePaymentStatusForRenewal = require('./routes/users/change-payment-status-for-renewal');
+const adminSumOfAllNewRenewalUserAmount = require('./routes/admin-sum-of-all-new-renewal-user-amount');
 
  
 // refferal
@@ -226,6 +227,7 @@ app.use('/user',userTotalWithdrawalFromTradingWallet);
 app.use('/admin',adminFetchAllRenewalUser);
 app.use('/admin',fetchAllNewPaidUser);
 app.use('/user',changePaymentStatusForRenewal);
+app.use('/admin',adminSumOfAllNewRenewalUserAmount);
 
 
 
