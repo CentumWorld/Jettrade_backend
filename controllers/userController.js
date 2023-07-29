@@ -22,9 +22,8 @@ const validator = require("validator");
 const Video = require("../model/videoModel");
 const WalletTransaction = require("../model/transactionSchema");
 const UserRenewal = require("../model/userRenewelSchema");
-const MoneyWithdrawalTransaction = require('../model/withDrawlSchema');
-const AllNewPaidUser = require('../model/allNewPaidUserSchema');
-
+const MoneyWithdrawalTransaction = require("../model/withDrawlSchema");
+const AllNewPaidUser = require("../model/allNewPaidUserSchema");
 
 const { isValidPassword, isValidPhone } = require("../validation/validation");
 
@@ -1610,7 +1609,7 @@ exports.withdrawlAmountFromTradingWallet = async (req, res) => {
     const transaction = new MoneyWithdrawalTransaction({
       userid: userid,
       amountWithdrawn: amountWithdrawn,
-      date: date
+      date: date,
     });
 
     // Save the transaction document
@@ -1629,17 +1628,17 @@ exports.withdrawlAmountFromTradingWallet = async (req, res) => {
 
 // userTotalWithdrawalFromTradingWallet
 exports.userTotalWithdrawalFromTradingWallet = async (req, res) => {
-  const {userid} = req.body;
+  const { userid } = req.body;
   MoneyWithdrawalTransaction.aggregate([
     {
       $match: {
-        userid:userid,
+        userid: userid,
       },
     },
     {
       $group: {
         _id: null, // Group all filtered documents together as there is no specific grouping criteria
-        totalAmountWithdrawn: { $sum: '$amountWithdrawn' }, // Calculate the sum of 'amountWithdrawn'
+        totalAmountWithdrawn: { $sum: "$amountWithdrawn" }, // Calculate the sum of 'amountWithdrawn'
       },
     },
   ])
@@ -1648,23 +1647,23 @@ exports.userTotalWithdrawalFromTradingWallet = async (req, res) => {
         const sumOfAmountWithdrawn = result[0].totalAmountWithdrawn;
         // console.log(`Sum of amountWithdrawn for user ${userid}:`, sumOfAmountWithdrawn);
         return res.status(200).json({
-          message:"Sum of amountWithdrawn for user"+ " " + `${userid}`,
-          sumOfAmountWithdrawn
-        })
+          message: "Sum of amountWithdrawn for user" + " " + `${userid}`,
+          sumOfAmountWithdrawn,
+        });
       } else {
         // console.log('User not found or no data available for the user.');
         res.status(200).json({
-          message:"User not found or no data available for the user"
-        })
+          message: "User not found or no data available for the user",
+        });
       }
     })
     .catch((error) => {
-      console.error('Error:', error);
+      console.error("Error:", error);
     });
-}
+};
 
 // changePaymentStatusForRenewal
-exports.changePaymentStatusForRenewal = async (req,res) => {
+exports.changePaymentStatusForRenewal = async (req, res) => {
   const { userid } = req.body;
   const renewAmount = 1500;
 
@@ -1785,29 +1784,31 @@ exports.changePaymentStatusForRenewal = async (req,res) => {
       });
     }
   }
-}
+};
 
 //send money to any user that exis in database
-
 exports.tradingWalletTransferFromOneUserToAnother = async (req, res) => {
-  const { amount,fromUser, toUser } = req.body;
+  const { amount, fromUser, toUser } = req.body;
 
   try {
     const sender = await User.findOne({ userid: fromUser });
-    const receiver = await User.findOne({ userid: toUser});
+    const receiver = await User.findOne({ userid: toUser });
 
-    if (!sender ) {
-      return res.status(404).json({ error: 'Senderr not found' });
+    if (!sender) {
+      return res.status(404).json({ message: "Sender not found" });
     }
-    console.log(sender)
-    
-    if (!receiver ) {
-      return res.status(404).json({ error: 'Reciever not found' });
+
+    if (!receiver) {
+      return res.status(404).json({ message: "Reciever not found" });
     }
-    console.log(receiver, "reciever")
+    if (fromUser === toUser) {
+      return res
+        .status(400)
+        .json({ message: "Cannot transfer money to the same user" });
+    }
 
     if (sender.tradingWallet < amount) {
-      return res.status(400).json({ error: 'Insufficient balance' });
+      return res.status(400).json({ message: "Insufficient balance" });
     }
 
     sender.tradingWallet -= amount;
@@ -1816,9 +1817,9 @@ exports.tradingWalletTransferFromOneUserToAnother = async (req, res) => {
     await sender.save();
     await receiver.save();
 
-    return res.status(200).json({ message: 'Money transferred successfully' });
+    return res.status(200).json({ message: "Money transferred successfully" });
   } catch (error) {
-    return res.status(500).json({ error: 'An error occurred while processing the request' });
+    console.log(error.message);
+    return res.status(500).json({ error: "Internal server error" });
   }
 };
-
