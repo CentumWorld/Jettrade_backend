@@ -22,7 +22,9 @@ const validator = require("validator");
 const Video = require("../model/videoModel");
 const WalletTransaction = require("../model/transactionSchema");
 const UserRenewal = require("../model/userRenewelSchema");
-const  MoneyWithdrawalTransaction  = require('../model/withDrawlSchema'); 
+const MoneyWithdrawalTransaction = require('../model/withDrawlSchema');
+const AllNewPaidUser = require('../model/allNewPaidUserSchema');
+
 
 const { isValidPassword, isValidPhone } = require("../validation/validation");
 
@@ -993,7 +995,7 @@ exports.fetchUserid = async (req, res) => {
 // changeUserPaymentStatus
 exports.changeUserPaymentStatus = async (req, res) => {
   const { userid } = req.body;
-  const renewAmount = 1500;
+  const serviceAmount = 3500;
 
   const userExist = await User.find({ userid: userid });
   const payment = userExist[0].paymentCount;
@@ -1011,11 +1013,11 @@ exports.changeUserPaymentStatus = async (req, res) => {
     }
   );
 
-  const userRenewal = new UserRenewal({
+  const userActivate = new AllNewPaidUser({
     userid: userid,
-    renewalAmount: renewAmount,
+    activationAmount: serviceAmount,
   });
-  userRenewal.save();
+  userActivate.save();
   if (reffered_id === "admin@123") {
     return res.status(200).json({ message: "Your paymnet successfull" });
   } else {
@@ -1570,6 +1572,7 @@ exports.addingAmountToTradingWallet = async (req, res) => {
     res.status(500).json({ error: "Internal server error" });
   }
 };
+
 exports.withdrawlAmountFromTradingWallet = async (req, res) => {
   const { userid, amountWithdrawn, date } = req.body;
 
@@ -1607,7 +1610,7 @@ exports.withdrawlAmountFromTradingWallet = async (req, res) => {
     const transaction = new MoneyWithdrawalTransaction({
       userid: userid,
       amountWithdrawn: amountWithdrawn,
-      date: date,
+      date: date
     });
 
     // Save the transaction document
@@ -1623,6 +1626,166 @@ exports.withdrawlAmountFromTradingWallet = async (req, res) => {
     res.status(500).json({ message: "Internal server error" });
   }
 };
+
+// userTotalWithdrawalFromTradingWallet
+exports.userTotalWithdrawalFromTradingWallet = async (req, res) => {
+  const {userid} = req.body;
+  MoneyWithdrawalTransaction.aggregate([
+    {
+      $match: {
+        userid:userid,
+      },
+    },
+    {
+      $group: {
+        _id: null, // Group all filtered documents together as there is no specific grouping criteria
+        totalAmountWithdrawn: { $sum: '$amountWithdrawn' }, // Calculate the sum of 'amountWithdrawn'
+      },
+    },
+  ])
+    .then((result) => {
+      if (result.length > 0) {
+        const sumOfAmountWithdrawn = result[0].totalAmountWithdrawn;
+        // console.log(`Sum of amountWithdrawn for user ${userid}:`, sumOfAmountWithdrawn);
+        return res.status(200).json({
+          message:"Sum of amountWithdrawn for user"+ " " + `${userid}`,
+          sumOfAmountWithdrawn
+        })
+      } else {
+        // console.log('User not found or no data available for the user.');
+        res.status(200).json({
+          message:"User not found or no data available for the user"
+        })
+      }
+    })
+    .catch((error) => {
+      console.error('Error:', error);
+    });
+}
+
+// changePaymentStatusForRenewal
+exports.changePaymentStatusForRenewal = async (req,res) => {
+  const { userid } = req.body;
+  const renewAmount = 1500;
+
+  const userExist = await User.find({ userid: userid });
+  const payment = userExist[0].paymentCount;
+  const reffered_id = userExist[0].reffered_id;
+  console.log(reffered_id, "582");
+
+  const user = await User.updateOne(
+    { userid: userid },
+    {
+      $set: {
+        paymentStatus: true,
+        paymentCount: payment + 1,
+        doj: new Date(),
+      },
+    }
+  );
+
+  const userRenewal = new UserRenewal({
+    userid: userid,
+    renewalAmount: renewAmount,
+  });
+  userRenewal.save();
+  if (reffered_id === "admin@123") {
+    return res.status(200).json({ message: "Your paymnet successfull" });
+  } else {
+    if (user) {
+      const findUserFromRefferedId = await User.find({
+        refferal_id: reffered_id,
+      });
+      console.log(findUserFromRefferedId, "592");
+
+      if (findUserFromRefferedId.length > 0) {
+        const findUserfromUser = await User.find({ refferal_id: reffered_id });
+        if (findUserfromUser.length > 0 && payment < 1) {
+          const userid = findUserFromRefferedId[0].userid;
+          let wallet = findUserFromRefferedId[0].wallet;
+          wallet = wallet + 1200;
+          console.log(wallet);
+          const insertUserWalletAmount = await User.updateOne(
+            { userid: userid },
+            {
+              $set: {
+                wallet: wallet,
+              },
+            }
+          );
+          if (insertUserWalletAmount) {
+            return res.status(200).json({
+              message: "Payment Successfull",
+            });
+          }
+        } else {
+          const userid = findUserFromRefferedId[0].userid;
+          let wallet = findUserFromRefferedId[0].wallet;
+          wallet = wallet + 700;
+          console.log(wallet);
+          const insertUserWalletAmount = await User.updateOne(
+            { userid: userid },
+            {
+              $set: {
+                wallet: wallet,
+              },
+            }
+          );
+          if (insertUserWalletAmount) {
+            return res.status(200).json({
+              message: "Payment Successfull",
+            });
+          }
+        }
+      } else {
+        const findUserFromMemberRefferedId = await Member.find({
+          refferal_id: reffered_id,
+        });
+        if (findUserFromMemberRefferedId.length > 0 && payment < 1) {
+          const memberid = findUserFromMemberRefferedId[0].memberid;
+          let wallet = findUserFromMemberRefferedId[0].wallet;
+          wallet = wallet + 1200;
+          console.log(wallet);
+          const insertWalletAmount = await Member.updateOne(
+            { memberid: memberid },
+            {
+              $set: {
+                wallet: wallet,
+              },
+            }
+          );
+          if (insertWalletAmount) {
+            return res.status(200).json({
+              message: "Payment Successfull",
+            });
+          }
+        } else {
+          const memberid = findUserFromMemberRefferedId[0].memberid;
+          let wallet = findUserFromMemberRefferedId[0].wallet;
+          wallet = wallet + 700;
+          console.log(wallet);
+          const insertWalletAmount = await Member.updateOne(
+            { memberid: memberid },
+            {
+              $set: {
+                wallet: wallet,
+              },
+            }
+          );
+          if (insertWalletAmount) {
+            return res.status(200).json({
+              message: "Payment Successfull",
+            });
+          }
+        }
+      }
+    } else {
+      return res.status(500).json({
+        message: "Payment failed",
+      });
+    }
+  }
+}
 
 
 

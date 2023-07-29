@@ -80,7 +80,11 @@ const addingAmountToTradingWallet = require('./routes/users/adding-amount-to-tra
 const withdrawlAmountFromTradingWallet = require('./routes/users/withdrawl-Amount-From-Tranding-Wallet');
 const fetchParticularUserDetailsFromAdminUsingUserid = require('./routes/fetch-particular-user-details-from-admin-using-userid');
 const filterTransactionsWithYearMonthWeek = require('./routes/filter-Transactions-With-Year-Month-Week');
-const filterTransactionsForWithdrawlWithYearMonth = require('./routes/filter-Transactions-For-Withdrawl-With-Year-Month')
+const userTotalWithdrawalFromTradingWallet = require('./routes/users/user-total-withdrawal-from-trading-wallet');
+const adminFetchAllRenewalUser = require('./routes/admin-fetch-all-renewal-user');
+const fetchAllNewPaidUser = require('./routes/fetch-all-new-paid-user');
+const changePaymentStatusForRenewal = require('./routes/users/change-payment-status-for-renewal');
+
  
 // refferal
 const memberRegistration = require('./routes/refferal/member-registration');
@@ -218,8 +222,10 @@ app.use('/user',addingAmountToTradingWallet);
 app.use('/user',withdrawlAmountFromTradingWallet);
 app.use('/admin',fetchParticularUserDetailsFromAdminUsingUserid);
 app.use('/admin',filterTransactionsWithYearMonthWeek);
-
-app.use('/admin',filterTransactionsForWithdrawlWithYearMonth);
+app.use('/user',userTotalWithdrawalFromTradingWallet);
+app.use('/admin',adminFetchAllRenewalUser);
+app.use('/admin',fetchAllNewPaidUser);
+app.use('/user',changePaymentStatusForRenewal);
 
 
 
