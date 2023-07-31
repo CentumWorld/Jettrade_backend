@@ -768,7 +768,7 @@ exports.fetchRefferalPayoutMember = async (req, res) => {
 
 // fetchRefferalPayoutWithdrawalRequest
 exports.fetchRefferalPayoutWithdrawalRequest = async (req, res) => {
-  userRefferalPayoutRequest.find((err, result) => {
+  MoneyWithdrawlTransaction.find((err, result) => {
     if (err) {
       return res.status(500).json({ message: "Something went wrong" });
     } else {
