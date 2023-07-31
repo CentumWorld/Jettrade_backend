@@ -124,7 +124,8 @@ const refferalMyTeam = require('./routes/refferal/refferal-my-team');
 const videoUpload = require('./routes/adminVideo')
 const getVideo = require("./routes/users/video")
 
-
+const withdrawlFromWalletAndTradingWallet = require("./routes/users/withdrawl-From-Wallet-And-TradingWallet")
+const fetchWalletWithdrawalHistory = require("./routes/users/fetch-Wallet-Withdrawal-History")
  
 
 
@@ -231,7 +232,8 @@ app.use('/user',changePaymentStatusForRenewal);
 app.use('/admin',adminSumOfAllNewRenewalUserAmount);
 app.use('/admin', filterTransactionsForWithdrawlWithYearMonth)
 app.use('/user', tradingWalletTransferFromOneUserToAnother)
-
+app.use('/user', withdrawlFromWalletAndTradingWallet)
+app.use('/user', fetchWalletWithdrawalHistory)
 
 // refferal
 app.use('/member',memberRegistration);

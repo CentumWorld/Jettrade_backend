@@ -1823,3 +1823,68 @@ exports.tradingWalletTransferFromOneUserToAnother = async (req, res) => {
     return res.status(500).json({ error: "Internal server error" });
   }
 };
+
+exports.withdrawlFromWalletAndTradingWallet = async (req, res) => {
+  try {
+    let { userid, requestAmount, date } = req.body;
+
+    if (requestAmount < 500) {
+      return res
+        .status(400)
+        .json({ message: "Minimum amount should be 500 rupees" });
+    }
+
+    let existUser = await User.findOne({ userid: userid });
+    if (!existUser) {
+      return res.status(404).json({ message: "User not found" });
+    }
+
+    const tradingWallet = existUser.tradingWallet;
+    const referralWallet = existUser.wallet;
+    const totalWallet = tradingWallet + referralWallet;
+
+    if (requestAmount <= tradingWallet) {
+      existUser.tradingWallet -= requestAmount;
+    } else if (requestAmount <= totalWallet) {
+      const remainingAmount = requestAmount - tradingWallet;
+      existUser.tradingWallet = 0;
+      existUser.wallet -= remainingAmount;
+    } else {
+      // Insufficient funds in both the trading wallet and wallet.
+      return res
+        .status(400)
+        .json({ message: "Insufficient funds for withdrawal" });
+    }
+
+    await existUser.save();
+
+    // Create and save a new withdrawal transaction record
+    const withdrawalTransaction = new MoneyWithdrawalTransaction({
+      userid: userid,
+      amountWithdrawn: requestAmount,
+      date: new Date(), // You can use the current date for the transaction date
+    });
+
+    await withdrawalTransaction.save();
+
+    return res.status(200).json({
+      message: "Withdrawn successfully",
+    });
+  } catch (error) {
+    console.log(error.message);
+    return res.status(500).json({ message: "Internal server error" });
+  }
+};
+
+exports.fetchWalletWithdrawalHistory = async (req, res) => {
+  try {
+    let {userid} = req.body
+    const walletHistory = await MoneyWithdrawalTransaction.find({userid:userid});
+    return res
+      .status(200)
+      .json({ message: "Fetch withdrawal list", walletHistory });
+  } catch (error) {
+    console.log(error.message);
+    return res.status(500).json({ message: "Internal server error" });
+  }
+};
