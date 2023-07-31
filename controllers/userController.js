@@ -24,7 +24,7 @@ const WalletTransaction = require("../model/transactionSchema");
 const UserRenewal = require("../model/userRenewelSchema");
 const MoneyWithdrawalTransaction = require("../model/withDrawlSchema");
 const AllNewPaidUser = require("../model/allNewPaidUserSchema");
-
+const MyReferral = require("../model/myReferralSchema")
 const { isValidPassword, isValidPhone } = require("../validation/validation");
 
 //const profilePhoto = require('../model/profilePhotoSchema');
@@ -996,11 +996,14 @@ exports.changeUserPaymentStatus = async (req, res) => {
   const { userid } = req.body;
   const serviceAmount = 3500;
 
-  const userExist = await User.find({ userid: userid });
-  const payment = userExist[0].paymentCount;
-  const reffered_id = userExist[0].reffered_id;
-  console.log(reffered_id, "582");
+  const userExist = await User.findOne({ userid: userid });
+  console.log(userExist, "[[[[[[[")
+  const payment = userExist.paymentCount;
+  console.log(payment, "uuu")
+  const reffered_id = userExist.reffered_id;
+  // console.log(reffered_id, "582");
 
+ 
   const user = await User.updateOne(
     { userid: userid },
     {
@@ -1012,6 +1015,16 @@ exports.changeUserPaymentStatus = async (req, res) => {
     }
   );
 
+
+  const myReferralDetails =  new MyReferral({
+    userid:userExist.userid,
+    joininigDate:userExist.doj,
+    refferal_id: userExist.reffered_id,
+    referralAmount : 1200,
+    userType: "New"
+  })
+  myReferralDetails.save()
+  
   const userActivate = new AllNewPaidUser({
     userid: userid,
     activationAmount: serviceAmount,
@@ -1415,12 +1428,20 @@ exports.userMyTeam = async (req, res) => {
   const { refferal_id } = req.body;
   // const query = { referral_id:reffered_id };
 
-  const myteam = await User.find({ reffered_id: refferal_id }).select("userid");
-  const myteamDetails = myteam.map((user) => user.userid);
-  console.log(myteamDetails);
+  const myteam = await MyReferral.find({ reffered_id: refferal_id });
+  console.log(myteam, "+++++++++");
+  // const myteamDetails = myteam.map((user) => user.userid);
+ 
+  // const myteamDetails = myteam.map((user) => ({
+  //   userid: user.userid,
+  //   date: user.doj,
+  // }));
+
+  // console.log(myteamDetails);
   return res.status(200).json({
     message: "My Team fetched",
-    teamMembers: myteamDetails,
+    teamMembers: myteam,
+   
   });
 };
 
@@ -1667,9 +1688,9 @@ exports.changePaymentStatusForRenewal = async (req, res) => {
   const { userid } = req.body;
   const renewAmount = 1500;
 
-  const userExist = await User.find({ userid: userid });
-  const payment = userExist[0].paymentCount;
-  const reffered_id = userExist[0].reffered_id;
+  const userExist = await User.findOne({ userid: userid });
+  const payment = userExist.paymentCount;
+  const reffered_id = userExist.reffered_id;
   console.log(reffered_id, "582");
 
   const user = await User.updateOne(
@@ -1682,7 +1703,15 @@ exports.changePaymentStatusForRenewal = async (req, res) => {
       },
     }
   );
-
+  const myReferralDetails =  new MyReferral({
+    userid:userExist.userid,
+    joininigDate:userExist.doj,
+    refferal_id: userExist.reffered_id,
+    referralAmount : 700,
+    userType: "Renewal"
+  })
+  myReferralDetails.save()
+  
   const userRenewal = new UserRenewal({
     userid: userid,
     renewalAmount: renewAmount,
@@ -1850,7 +1879,6 @@ exports.withdrawlFromWalletAndTradingWallet = async (req, res) => {
       existUser.tradingWallet = 0;
       existUser.wallet -= remainingAmount;
     } else {
-      // Insufficient funds in both the trading wallet and wallet.
       return res
         .status(400)
         .json({ message: "Insufficient funds for withdrawal" });
@@ -1858,11 +1886,10 @@ exports.withdrawlFromWalletAndTradingWallet = async (req, res) => {
 
     await existUser.save();
 
-    // Create and save a new withdrawal transaction record
     const withdrawalTransaction = new MoneyWithdrawalTransaction({
       userid: userid,
       amountWithdrawn: requestAmount,
-      date: new Date(), // You can use the current date for the transaction date
+      date: date || Date.now(),
     });
 
     await withdrawalTransaction.save();
@@ -1876,15 +1903,49 @@ exports.withdrawlFromWalletAndTradingWallet = async (req, res) => {
   }
 };
 
+//withdrawal History
 exports.fetchWalletWithdrawalHistory = async (req, res) => {
   try {
-    let {userid} = req.body
-    const walletHistory = await MoneyWithdrawalTransaction.find({userid:userid});
-    return res
-      .status(200)
-      .json({ message: "Fetch withdrawal list", walletHistory });
+    let { userid } = req.body;
+    const walletHistory = await MoneyWithdrawalTransaction.find({
+      userid: userid,
+    });
+    if (walletHistory.length === 0) {
+      return res
+        .status(404)
+        .json({ message: "No withdrawal history found for the user" });
+    }
+
+    return res.status(200).json({
+      message: "Withdrawal history fetched successfully",
+      walletHistory,
+    });
   } catch (error) {
     console.log(error.message);
     return res.status(500).json({ message: "Internal server error" });
   }
 };
+
+// wallet Add money history
+exports.fetchWalletHistory = async (req, res) => {
+  try {
+    let { userid } = req.body;
+    const walletHistory = await WalletTransaction.find({
+      userid: userid,
+    });
+    if (walletHistory.length === 0) {
+      return res
+        .status(404)
+        .json({ message: "No Wallet history found for the user" });
+    }
+
+    return res.status(200).json({
+      message: "Wallet history fetched successfully",
+      walletHistory,
+    });
+  } catch (error) {
+    console.log(error.message);
+    return res.status(500).json({ message: "Internal server error" });
+  }
+};
+

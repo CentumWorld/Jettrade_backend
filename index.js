@@ -126,6 +126,8 @@ const getVideo = require("./routes/users/video")
 
 const withdrawlFromWalletAndTradingWallet = require("./routes/users/withdrawl-From-Wallet-And-TradingWallet")
 const fetchWalletWithdrawalHistory = require("./routes/users/fetch-Wallet-Withdrawal-History")
+
+const fetchWalletHistory = require("./routes/users/fetch-Wallet-History")
  
 
 
@@ -234,6 +236,7 @@ app.use('/admin', filterTransactionsForWithdrawlWithYearMonth)
 app.use('/user', tradingWalletTransferFromOneUserToAnother)
 app.use('/user', withdrawlFromWalletAndTradingWallet)
 app.use('/user', fetchWalletWithdrawalHistory)
+app.use('/user', fetchWalletHistory)
 
 // refferal
 app.use('/member',memberRegistration);
