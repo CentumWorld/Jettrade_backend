@@ -19,9 +19,9 @@ const RefferalChatType = require("../model/refferalChatType");
 const RefferalChatMessage = require("../model/refferalChatMessageSchema");
 const Video = require("../model/videoModel");
 const WalletTransaction = require("../model/transactionSchema");
-const MoneyWithdrawlTransaction = require('../model/withDrawlSchema')
-const UserRenewal = require('../model/userRenewelSchema');
-const AllNewPaidUser = require('../model/allNewPaidUserSchema');
+const MoneyWithdrawlTransaction = require("../model/withDrawlSchema");
+const UserRenewal = require("../model/userRenewelSchema");
+const AllNewPaidUser = require("../model/allNewPaidUserSchema");
 
 require("dotenv").config();
 
@@ -42,21 +42,18 @@ exports.adminLogin = async (req, res) => {
       res.status(404).json({ message: "Invalid Credentials" });
     } else {
       if (password === adminLogin.password) {
-     
         const token = jwt.sign(
           { userId: adminLogin._id },
           process.env.SECRET_KEY,
           { expiresIn: "8h" }
         );
         const admin_id = adminLogin.admin_id;
-        res
-          .status(201)
-          .json({
-            message: "Admin Login Successfully",
-            token: token,
-            admin_id,
-            expires: new Date().getTime() + 60000,
-          });
+        res.status(201).json({
+          message: "Admin Login Successfully",
+          token: token,
+          admin_id,
+          expires: new Date().getTime() + 60000,
+        });
       } else {
         return res.status(404).json({ error: "Invalid Credentials" });
       }
@@ -82,7 +79,6 @@ exports.fetchUserDetails = (req, res) => {
     }
   });
 };
-
 
 // fetchParticularUserDetails
 exports.fetchParticularUserDetails = (req, res) => {
@@ -1044,38 +1040,44 @@ exports.createVideo = async (req, res, next) => {
   }
 };
 
-exports.fetchParticularUserDetailsFromAdminUsingUserid = async (req,res) => {
-  const {userid} = req.body;
-  User.findOne({userid})
+exports.fetchParticularUserDetailsFromAdminUsingUserid = async (req, res) => {
+  const { userid } = req.body;
+  User.findOne({ userid })
     .then((result) => {
       res.status(200).json({
-        message: `${userid}`+" details fetched",
+        message: `${userid}` + " details fetched",
         result,
       });
     })
     .catch((err) => {
       res.status(500).json({ error: err });
     });
-}
+};
 
 //filter for add money
 exports.filterTransactionsWithYearMonthWeek = async (req, res) => {
   try {
-    const { userid,  year, month } = req.body;
+    const { userid, year, month } = req.body;
 
     if (!year && !month) {
       const allData = await WalletTransaction.find({ userid });
-      return res.status(200).json({ message: "All transactions fetched", allData });
+      return res
+        .status(200)
+        .json({ message: "All transactions fetched", allData });
     }
 
     // Validate that the provided year is a valid number
     if (year && isNaN(year)) {
-      return res.status(400).json({ error: "Invalid input. Year must be a number." });
+      return res
+        .status(400)
+        .json({ error: "Invalid input. Year must be a number." });
     }
 
     // If month is provided, validate that it is a valid number
     if (month && isNaN(month)) {
-      return res.status(400).json({ error: "Invalid input. Month must be a number." });
+      return res
+        .status(400)
+        .json({ error: "Invalid input. Month must be a number." });
     }
 
     let startDate, endDate;
@@ -1101,7 +1103,9 @@ exports.filterTransactionsWithYearMonthWeek = async (req, res) => {
       }).exec();
     } else {
       // Handle the case where neither year nor month is provided
-      return res.status(400).json({ error: "Invalid input. Year or month is required." });
+      return res
+        .status(400)
+        .json({ error: "Invalid input. Year or month is required." });
     }
 
     res.json({ transactions: filteredTransactions });
@@ -1112,32 +1116,32 @@ exports.filterTransactionsWithYearMonthWeek = async (req, res) => {
 };
 
 // adminFetchAllRenewalUser
-exports.adminFetchAllRenewalUser = async (req,res) => {
-    const getAllRenewalUser = await UserRenewal.find()
+exports.adminFetchAllRenewalUser = async (req, res) => {
+  const getAllRenewalUser = await UserRenewal.find();
 
-    if(getAllRenewalUser){
-      return res.status(200).json({
-        message:"All renewal user fetched",
-        data : getAllRenewalUser
-      })
-    }else{
-      return res.status(500).json({message:"Internal Server Error"})
-    }
-}
+  if (getAllRenewalUser) {
+    return res.status(200).json({
+      message: "All renewal user fetched",
+      data: getAllRenewalUser,
+    });
+  } else {
+    return res.status(500).json({ message: "Internal Server Error" });
+  }
+};
 
 // fetchAllNewPaidUser
-exports.fetchAllNewPaidUser = async (req,res) => {
-  const getAllPaidUser = await AllNewPaidUser.find()
+exports.fetchAllNewPaidUser = async (req, res) => {
+  const getAllPaidUser = await AllNewPaidUser.find();
 
-  if(getAllPaidUser){
+  if (getAllPaidUser) {
     return res.status(200).json({
-      message:"All paid user fetched",
-      data : getAllPaidUser
-    })
-  }else{
-    return res.status(500).json({message:"Internal Server Error"})
+      message: "All paid user fetched",
+      data: getAllPaidUser,
+    });
+  } else {
+    return res.status(500).json({ message: "Internal Server Error" });
   }
-}
+};
 
 // adminSumOfAllNewRenewalUserAmount
 exports.adminSumOfAllNewRenewalUserAmount = async (req, res) => {
@@ -1147,7 +1151,7 @@ exports.adminSumOfAllNewRenewalUserAmount = async (req, res) => {
       {
         $group: {
           _id: null,
-          activationAmountSum: { $sum: '$activationAmount' },
+          activationAmountSum: { $sum: "$activationAmount" },
         },
       },
     ]);
@@ -1157,14 +1161,16 @@ exports.adminSumOfAllNewRenewalUserAmount = async (req, res) => {
       {
         $group: {
           _id: null,
-          renewalAmountSum: { $sum: '$renewalAmount' },
+          renewalAmountSum: { $sum: "$renewalAmount" },
         },
       },
     ]);
 
     // Get the sum of activationAmount and renewalAmount
-    const sumOfActivationAmount = activationResult.length > 0 ? activationResult[0].activationAmountSum : 0;
-    const sumOfRenewalAmount = renewalResult.length > 0 ? renewalResult[0].renewalAmountSum : 0;
+    const sumOfActivationAmount =
+      activationResult.length > 0 ? activationResult[0].activationAmountSum : 0;
+    const sumOfRenewalAmount =
+      renewalResult.length > 0 ? renewalResult[0].renewalAmountSum : 0;
 
     const totalSubscriptionAmount = sumOfActivationAmount + sumOfRenewalAmount;
     return res.status(200).json({
@@ -1172,30 +1178,35 @@ exports.adminSumOfAllNewRenewalUserAmount = async (req, res) => {
       totalSubscriptionAmount,
     });
   } catch (error) {
-    console.error('Error:', error);
+    console.error("Error:", error);
     return res.status(500).json({ message: "Internal server error" });
   }
 };
 
-
 //filter for withdrawl
 exports.filterTransactionsForWithdrawlWithYearMonth = async (req, res) => {
   try {
-    const { userid,  year, month } = req.body;
+    const { userid, year, month } = req.body;
 
     if (!year && !month) {
       const allData = await MoneyWithdrawlTransaction.find({ userid });
-      return res.status(200).json({ message: "All Withdrawl fetched", allData });
+      return res
+        .status(200)
+        .json({ message: "All Withdrawl fetched", allData });
     }
 
     // Validate that the provided year is a valid number
     if (year && isNaN(year)) {
-      return res.status(400).json({ error: "Invalid input. Year must be a number." });
+      return res
+        .status(400)
+        .json({ error: "Invalid input. Year must be a number." });
     }
 
     // If month is provided, validate that it is a valid number
     if (month && isNaN(month)) {
-      return res.status(400).json({ error: "Invalid input. Month must be a number." });
+      return res
+        .status(400)
+        .json({ error: "Invalid input. Month must be a number." });
     }
 
     let startDate, endDate;
@@ -1221,7 +1232,9 @@ exports.filterTransactionsForWithdrawlWithYearMonth = async (req, res) => {
       }).exec();
     } else {
       // Handle the case where neither year nor month is provided
-      return res.status(400).json({ error: "Invalid input. Year or month is required." });
+      return res
+        .status(400)
+        .json({ error: "Invalid input. Year or month is required." });
     }
 
     res.json({ transactions: filteredTransactions });
@@ -1229,6 +1242,33 @@ exports.filterTransactionsForWithdrawlWithYearMonth = async (req, res) => {
     console.error("Error filtering transactions:", error.message);
     res.status(500).json({ message: "Internal server error" });
   }
-}
+};
 
- 
+exports.totalWithdrawalMoney = async (req, res) => {
+  try {
+    const { userid } = req.body;
+
+    const user = await User.findOne({ userid: userid });
+
+    if (!user) {
+      return res.status(404).json({ message: "User not found" });
+    }
+
+    const totalWithdrawnAmount = await MoneyWithdrawlTransaction.aggregate([
+      { $match: { userid: userid } },
+      {
+        $group: {
+          _id: null,
+          totalAmount: { $sum: "$amountWithdrawn" },
+        },
+      },
+    ]);
+
+    const result = totalWithdrawnAmount[0]?.totalAmount || 0;
+
+    res.status(200).json({ totalWithdrawnAmount: result });
+  } catch (error) {
+    console.log(error.message);
+    res.status(500).json({ message: "Internal server error" });
+  }
+};
