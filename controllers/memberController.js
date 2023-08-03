@@ -17,6 +17,7 @@ const ReffrealChatMessage = require('../model/refferalChatMessageSchema');
 const Admin = require('../model/adminSchema');
 const User = require('../model/userSchema');
 const validator = require('validator');
+const MyReferral = require('../model/myReferralSchema');
 
 // refferalRegistration
 exports.memberRegistration = async (req, res) => {
@@ -739,13 +740,11 @@ exports.refferalTotalWithdrawal = async (req, res) => {
 // refferalMyTeam
 exports.refferalMyTeam = async (req, res) => {
     const { refferal_id } = req.body;
-    // const query = { referral_id:reffered_id };
 
-    const myteam = await User.find({ reffered_id: refferal_id }).select('userid')
-    const myteamDetails = myteam.map(user => user.userid)
-    console.log(myteamDetails);
+    const myteam = await MyReferral.find({ refferal_id: refferal_id })
+    console.log(myteam);
     return res.status(200).json({
         message: "My Team fetched",
-        teamMembers: myteamDetails
+        teamMembers: myteam
     })
 }

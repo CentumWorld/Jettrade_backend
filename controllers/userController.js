@@ -997,9 +997,9 @@ exports.changeUserPaymentStatus = async (req, res) => {
   const serviceAmount = 3500;
 
   const userExist = await User.findOne({ userid: userid });
-  console.log(userExist, "[[[[[[[")
+  
   const payment = userExist.paymentCount;
-  console.log(payment, "uuu")
+
   const reffered_id = userExist.reffered_id;
   // console.log(reffered_id, "582");
 
@@ -1428,7 +1428,7 @@ exports.userMyTeam = async (req, res) => {
   const { refferal_id } = req.body;
   // const query = { referral_id:reffered_id };
 
-  const myteam = await MyReferral.find({ reffered_id: refferal_id });
+  const myteam = await MyReferral.find({ refferal_id: refferal_id });
   console.log(myteam, "+++++++++");
   // const myteamDetails = myteam.map((user) => user.userid);
  
