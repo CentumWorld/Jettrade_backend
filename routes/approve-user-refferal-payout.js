@@ -3,9 +3,9 @@ const router = express.Router();
 require('dotenv').config();
 
 const adminController = require('../controllers/adminController');
-const checkMiddleware = require('../middleware/checkAuth');
+const {authenticateAdmin, authorizeAdmin} = require('../middleware/checkAuth');
 
-router.post('/approve-user-refferal-payout',checkMiddleware.checkAuth, adminController.approveUserRefferalPayout);
+router.post('/approve-user-refferal-payout',authenticateAdmin,authorizeAdmin,adminController.approveUserRefferalPayout);
 
 
 module.exports = router;

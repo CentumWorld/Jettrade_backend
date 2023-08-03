@@ -3,9 +3,9 @@ const router = express.Router();
 require('dotenv').config();
 
 const adminController = require('../controllers/adminController');
-const checkMiddleware = require('../middleware/checkAuth');
+const {authenticateAdmin, authorizeAdmin} = require('../middleware/checkAuth');
 
-router.get('/fetch-member-details',checkMiddleware.checkAuth, adminController.fetchMemberDetails);
+router.get('/fetch-member-details',authenticateAdmin,authorizeAdmin, adminController.fetchMemberDetails);
 
 
 module.exports = router;

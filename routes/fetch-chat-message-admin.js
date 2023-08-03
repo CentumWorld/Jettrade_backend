@@ -3,9 +3,9 @@ const router = express.Router();
 require('dotenv').config();
 
 const adminController = require('../controllers/adminController');
-const checkMiddleware = require('../middleware/checkAuth');
+const {authenticateAdmin, authorizeAdmin} = require('../middleware/checkAuth');
 
-router.post('/fetch-chat-message-admin',checkMiddleware.checkAuth, adminController.fetchChatMessageAdmin);
+router.post('/fetch-chat-message-admin',authenticateAdmin,authorizeAdmin, adminController.fetchChatMessageAdmin);
 
 
 module.exports = router;

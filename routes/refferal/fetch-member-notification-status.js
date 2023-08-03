@@ -1,11 +1,17 @@
-const express = require('express');
+const express = require("express");
 const router = express.Router();
-require('dotenv').config();
 
-const memberController = require('../../controllers/memberController');
-const checkMiddleware = require('../../middleware/checkAuth');
+const memberController = require("../../controllers/memberController");
+const {
+  authenticateMember,
+  authorizeMember,
+} = require("../../middleware/checkAuth");
 
-router.post('/refferal/fetch-member-notification-status',checkMiddleware.checkAuth, memberController.fetchMemberNotificationStatus);
-
+router.post(
+  "/refferal/fetch-member-notification-status",
+  authenticateMember,
+  authorizeMember,
+  memberController.fetchMemberNotificationStatus
+);
 
 module.exports = router;

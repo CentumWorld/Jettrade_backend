@@ -3,7 +3,7 @@ const router = express.Router();
 
 
 const paymentController = require('../../controllers/paymentController');
-const checkMiddleware = require('../../middleware/checkAuth');
+const {authenticateUser,authorizeUser} = require('../../middleware/checkAuth');
 
 router.post('/users/user-create-payment', paymentController.userCreatePayment);
 

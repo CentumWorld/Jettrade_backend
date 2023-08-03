@@ -1,13 +1,17 @@
-const express = require('express');
-//const connection = require('../database/conn')
+const express = require("express");
 const router = express.Router();
-const jwt = require('jsonwebtoken');
-require('dotenv').config();
 
-const memberController = require('../../controllers/memberController');
-const checkMiddleware = require('../../middleware/checkAuth');
+const memberController = require("../../controllers/memberController");
+const {
+  authenticateMember,
+  authorizeMember,
+} = require("../../middleware/checkAuth");
 
-router.post('/fetch-member-details-member-side',checkMiddleware.checkAuth, memberController.fetchMemberDetailsMemberSide);
-
+router.post(
+  "/fetch-member-details-member-side",
+  authenticateMember,
+  authorizeMember,
+  memberController.fetchMemberDetailsMemberSide
+);
 
 module.exports = router;

@@ -5,9 +5,9 @@ const jwt = require('jsonwebtoken');
 require('dotenv').config();
 
 const adminController = require('../controllers/adminController');
-const checkMiddleware = require('../middleware/checkAuth');
+const {authenticateAdmin, authorizeAdmin} = require('../middleware/checkAuth');
 
-router.post('/verify-user',checkMiddleware.checkAuth, adminController.verifyUser);
+router.post('/verify-user',authenticateAdmin,authorizeAdmin, adminController.verifyUser);
 
 
 module.exports = router;

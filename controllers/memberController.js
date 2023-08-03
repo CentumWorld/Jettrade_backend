@@ -191,49 +191,49 @@ exports.otherCountryMemberRegistration = async (req, res) => {
 exports.memberLogin = async (req, res) => {
     const { memberid, password } = req.body;
     if (!memberid || !password) {
-        return res.status(422).json({ message: "Please fill all details" });
+      return res.status(422).json({ message: "Please fill all details" });
     }
-    const memberLogin = await Member.findOne({ memberid: memberid });
-
-    if (!memberLogin) {
+    try {
+      const memberLogin = await Member.findOne({ memberid: memberid });
+  
+      if (!memberLogin) {
         return res.status(404).json({ message: "Invalid Credential!" });
-
+      }
+  
+      const blocked = memberLogin.isBlocked;
+      if (blocked) {
+        return res.status(401).json({ message: "Your Account is blocked!" });
+      }
+  
+      const isMatch = await bcrypt.compare(password, memberLogin.password);
+      const token = jwt.sign(
+        { userId: memberLogin._id },
+        process.env.SECRET_KEY,
+        { expiresIn: "8h" }
+      );
+      console.log(token);
+  
+      res.cookie("jwtoken", token, {
+        expires: new Date(Date.now() + 60000),
+        httpOnly: true
+      });
+  
+      if (!isMatch) {
+        return res.status(404).json({ message: "Invalid Credential!" });
+      } else {
+        return res.status(200).json({
+          message: "Member Login successfully",
+          token: token,
+          memberLogin,
+          expires: new Date().getTime() + 60000
+        });
+      }
+    } catch (error) {
+      console.log(error);
+      return res.status(500).json({ message: "Internal Server Error" });
     }
-    const blocked = memberLogin.isBlocked;
-    if (!blocked) {
-        try {
-            const isMatch = await bcrypt.compare(password, memberLogin.password);
-            // const token = await memberLogin.generateAuthToken();
-            const token = jwt.sign(
-                { userId: memberLogin._id },
-                process.env.SECRET_KEY,
-                { expiresIn: 60 } // Set the token to expire in 1 hour
-              );
-            console.log(token);
-
-            res.cookie("jwtoken", token, {
-                expires: new Date(Date.now() + 60000),
-                httpOnly: true
-            });
-            if (!isMatch) {
-                return res.status(404).json({ message: "Invalid Credential!" })
-            } else {
-                return res.status(200).json({
-                    message: "Member Login successfully",
-                    token: token,
-                    memberLogin,
-                    expires: new Date().getTime() + 60000
-                })
-            }
-        } catch (error) {
-            console.log(error);
-        }
-    }
-    else {
-        return res.status(401).json({ message: "Your Account is blocked!" })
-    }
-
-}
+  };
+  
 
 // memberProfileVerification
 exports.memberProfileVerification = async (req, res) => {

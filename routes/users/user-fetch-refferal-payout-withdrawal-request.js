@@ -1,10 +1,18 @@
-const express = require('express');
+const express = require("express");
 const router = express.Router();
-require('dotenv').config();
+require("dotenv").config();
 
-const userController = require('../../controllers/userController');
-const checkMiddleware = require('../../middleware/checkAuth');
+const userController = require("../../controllers/userController");
+const {
+  authenticateUser,
+  authorizeUser,
+} = require("../../middleware/checkAuth");
 
-router.post('/users/user-fetch-refferal-payout-withdrawal-request',checkMiddleware.checkAuth,userController.userFetchRefferalPayoutWithdrawalRequest);
+router.post(
+  "/users/user-fetch-refferal-payout-withdrawal-request",
+  authenticateUser,
+  authorizeUser,
+  userController.userFetchRefferalPayoutWithdrawalRequest
+);
 
 module.exports = router;

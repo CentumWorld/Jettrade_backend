@@ -2,11 +2,11 @@ const express = require('express');
 const router = express.Router();
 
 const userController = require('../../controllers/userController');
-const checkMiddleware = require('../../middleware/checkAuth');
+const {authenticateUser,authorizeUser} = require('../../middleware/checkAuth');
 
 
 
 // Route for withdrawing amount from trading wallet
-router.post('/users/withdrawl-amount-from-trading-wallet',checkMiddleware.checkAuth,userController.withdrawlAmountFromTradingWallet);
+router.post('/users/withdrawl-amount-from-trading-wallet',authenticateUser,authorizeUser,userController.withdrawlAmountFromTradingWallet);
 
 module.exports = router;

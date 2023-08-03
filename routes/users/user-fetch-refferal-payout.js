@@ -3,8 +3,8 @@ const router = express.Router();
 require('dotenv').config();
 
 const userController = require('../../controllers/userController');
-const checkMiddleware = require('../../middleware/checkAuth');
+const {authenticateUser,authorizeUser} = require('../../middleware/checkAuth');
 
-router.post('/users/user-fetch-refferal-payout',checkMiddleware.checkAuth,userController.userfetchRefferalPayout);
+router.post('/users/user-fetch-refferal-payout',authenticateUser,authorizeUser,userController.userfetchRefferalPayout);
 
 module.exports = router;

@@ -3,9 +3,9 @@ const router = express.Router();
 require('dotenv').config();
 
 const adminController = require('../controllers/adminController');
-const checkMiddleware = require('../middleware/checkAuth');
+const {authenticateAdmin, authorizeAdmin} = require('../middleware/checkAuth');
 
-router.post('/admin-fetch-all-renewal-user',checkMiddleware.checkAuth,adminController.adminFetchAllRenewalUser);
+router.post('/admin-fetch-all-renewal-user',authenticateAdmin,authorizeAdmin,adminController.adminFetchAllRenewalUser);
 
 
 module.exports = router;

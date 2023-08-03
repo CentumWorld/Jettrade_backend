@@ -3,8 +3,8 @@ const router = express.Router();
 require('dotenv').config();
 
 const userController = require('../../controllers/userController');
-const checkMiddleware = require('../../middleware/checkAuth');
+const {authenticateUser,authorizeUser} = require('../../middleware/checkAuth');
 
-router.post('/users/user-my-team',checkMiddleware.checkAuth,userController.userMyTeam);
+router.post('/users/user-my-team',authenticateUser,authorizeUser,userController.userMyTeam);
 
 module.exports = router;

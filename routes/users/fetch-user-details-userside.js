@@ -1,13 +1,20 @@
-const express = require('express');
+const express = require("express");
 //const connection = require('../database/conn')
 const router = express.Router();
-const jwt = require('jsonwebtoken');
-require('dotenv').config();
+const jwt = require("jsonwebtoken");
+require("dotenv").config();
 
-const userController = require('../../controllers/userController');
-const checkMiddleware = require('../../middleware/checkAuth');
+const userController = require("../../controllers/userController");
+const {
+  authenticateUser,
+  authorizeUser,
+} = require("../../middleware/checkAuth");
 
-router.post('/fetch-user-details-userside',checkMiddleware.checkAuth, userController.fetchUserDetailsUserside);
-
+router.post(
+  "/fetch-user-details-userside",
+  authenticateUser,
+  authorizeUser,
+  userController.fetchUserDetailsUserside
+);
 
 module.exports = router;

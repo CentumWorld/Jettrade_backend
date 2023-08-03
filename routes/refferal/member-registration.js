@@ -8,15 +8,7 @@ const multerS3 = require('multer-s3');
 
 const memberController = require('../../controllers/memberController');
 
-//  set storage
-// var storage = multer.diskStorage({
-//     destination: function (req, file, cb) {
-//         cb(null, 'public/img/users')
-//     },
-//     filename: function (req, file, cb) {
-//         cb(null, Date.now() + '_' + file.originalname)
-//     }
-// })
+
 
 AWS.config.update({
     accessKeyId: process.env.AWS_ACCESS_KEY_ID,

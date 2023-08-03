@@ -3,9 +3,9 @@ const router = express.Router();
 require('dotenv').config();
 
 const adminController = require('../controllers/adminController');
-const checkMiddleware = require('../middleware/checkAuth');
+const {authenticateAdmin, authorizeAdmin} = require('../middleware/checkAuth');
 
-router.post('/delete-user-admin',checkMiddleware.checkAuth, adminController.deleteUserAdmin);
+router.post('/delete-user-admin',authenticateAdmin,authorizeAdmin, adminController.deleteUserAdmin);
 
 
 module.exports = router;

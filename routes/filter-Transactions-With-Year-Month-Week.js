@@ -3,9 +3,9 @@ const router = express.Router();
 
 
 const adminController = require('../controllers/adminController');
-const checkMiddleware = require('../middleware/checkAuth');
+const {authenticateAdmin, authorizeAdmin} = require('../middleware/checkAuth');
 
-router.post('/filter-Transactions-With-Year-Month-Week',checkMiddleware.checkAuth, adminController.filterTransactionsWithYearMonthWeek);
+router.post('/filter-Transactions-With-Year-Month-Week',authenticateAdmin,authorizeAdmin, adminController.filterTransactionsWithYearMonthWeek);
 
 
 module.exports = router;

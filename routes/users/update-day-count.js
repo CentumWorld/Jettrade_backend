@@ -1,11 +1,17 @@
-const express = require('express');
+const express = require("express");
 const router = express.Router();
 
+const userController = require("../../controllers/userController");
+const {
+  authenticateUser,
+  authorizeUser,
+} = require("../../middleware/checkAuth");
 
-const userController = require('../../controllers/userController');
-const checkMiddleware = require('../../middleware/checkAuth');
-
-router.post('/users/update-day-count',checkMiddleware.checkAuth, userController.updateDayCount);
-
+router.post(
+  "/users/update-day-count",
+  authenticateUser,
+  authorizeUser,
+  userController.updateDayCount
+);
 
 module.exports = router;

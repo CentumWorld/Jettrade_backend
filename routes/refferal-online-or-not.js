@@ -3,8 +3,8 @@ const router = express.Router();
 require('dotenv').config();
 
 const adminController = require('../controllers/adminController');
-const checkMiddleware = require('../middleware/checkAuth');
-router.post('/refferal-online-or-not',checkMiddleware.checkAuth, adminController.refferalOnlineOrNot);
+const {authenticateAdmin, authorizeAdmin} = require('../middleware/checkAuth');
+router.post('/refferal-online-or-not',authenticateAdmin,authorizeAdmin, adminController.refferalOnlineOrNot);
 
 
 module.exports = router;

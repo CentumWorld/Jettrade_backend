@@ -1,11 +1,17 @@
-const express = require('express');
+const express = require("express");
 const router = express.Router();
-//require('dotenv').config();
 
-const memberController = require('../../controllers/memberController');
-const checkMiddleware = require('../../middleware/checkAuth');
+const memberController = require("../../controllers/memberController");
+const {
+  authenticateMember,
+  authorizeMember,
+} = require("../../middleware/checkAuth");
 
-router.post('/refferal/edit-member-details',checkMiddleware.checkAuth, memberController.editMemberDetails);
-
+router.post(
+  "/refferal/edit-member-details",
+  authenticateMember,
+  authorizeMember,
+  memberController.editMemberDetails
+);
 
 module.exports = router;

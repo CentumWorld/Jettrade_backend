@@ -3,8 +3,8 @@ const router = express.Router();
 require('dotenv').config();
 
 const adminController = require('../controllers/adminController');
-const checkMiddleware = require('../middleware/checkAuth');
-router.post('/notification-for-all',checkMiddleware.checkAuth, adminController.notificationForAll);
+const {authenticateAdmin, authorizeAdmin} = require('../middleware/checkAuth');
+router.post('/notification-for-all',authenticateAdmin,authorizeAdmin, adminController.notificationForAll);
 
 
 module.exports = router;

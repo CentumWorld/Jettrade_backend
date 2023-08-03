@@ -3,9 +3,9 @@ const router = express.Router();
 
 
 const userController = require('../../controllers/userController');
-const checkMiddleware = require('../../middleware/checkAuth');
+const {authenticateUser,authorizeUser} = require('../../middleware/checkAuth');
 
-router.get('/getallvideos',checkMiddleware.checkAuth, userController.getAllVideos);
+router.get('/getallvideos',authenticateUser,authorizeUser, userController.getAllVideos);
 
 
 module.exports = router;

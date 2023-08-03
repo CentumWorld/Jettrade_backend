@@ -5,8 +5,8 @@ const jwt = require('jsonwebtoken');
 require('dotenv').config();
 
 const userController = require('../../controllers/userController');
-const checkMiddleware = require('../../middleware/checkAuth');
+const {authenticateUser,authorizeUser} = require('../../middleware/checkAuth');
 
-router.get('/userFetchDeatils',checkMiddleware.checkAuth,userController.userFetchDeatils);
+router.get('/userFetchDeatils',authenticateUser,authorizeUser,userController.userFetchDeatils);
 
 module.exports = router;

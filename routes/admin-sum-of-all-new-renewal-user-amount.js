@@ -3,9 +3,9 @@ const router = express.Router();
 require('dotenv').config();
 
 const adminController = require('../controllers/adminController');
-const checkMiddleware = require('../middleware/checkAuth');
+const {authenticateAdmin, authorizeAdmin} = require('../middleware/checkAuth');
 
-router.get('/admin-sum-of-all-new-renewal-user-amount',checkMiddleware.checkAuth, adminController.adminSumOfAllNewRenewalUserAmount);
+router.get('/admin-sum-of-all-new-renewal-user-amount',authenticateAdmin,authorizeAdmin, adminController.adminSumOfAllNewRenewalUserAmount);
 
 
 module.exports = router;

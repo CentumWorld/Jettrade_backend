@@ -1,11 +1,17 @@
-const express = require('express');
+const express = require("express");
 const router = express.Router();
-require('dotenv').config();
 
-const memberController = require('../../controllers/memberController');
-const checkMiddleware = require('../../middleware/checkAuth');
+const memberController = require("../../controllers/memberController");
+const {
+  authenticateMember,
+  authorizeMember,
+} = require("../../middleware/checkAuth");
 
-router.post('/refferal/fetch-chat-message-refferal',checkMiddleware.checkAuth, memberController.fetchChatMessageRefferal);
-
+router.post(
+  "/refferal/fetch-chat-message-refferal",
+  authenticateMember,
+  authorizeMember,
+  memberController.fetchChatMessageRefferal
+);
 
 module.exports = router;
