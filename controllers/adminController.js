@@ -22,6 +22,7 @@ const WalletTransaction = require("../model/transactionSchema");
 const MoneyWithdrawlTransaction = require("../model/withDrawlSchema");
 const UserRenewal = require("../model/userRenewelSchema");
 const AllNewPaidUser = require("../model/allNewPaidUserSchema");
+const MyReferral = require('../model/myReferralSchema');
 
 require("dotenv").config();
 
@@ -1272,3 +1273,48 @@ exports.totalWithdrawalMoney = async (req, res) => {
     res.status(500).json({ message: "Internal server error" });
   }
 };
+
+// fetchRefferalPayoutOnRoleBasis
+exports.fetchRefferalPayoutOnRoleBasis = async(req,res) => {
+  try {
+    const {role} = req.body;
+    const refferalUserOnRole = await MyReferral.find({role:role})
+    if(refferalUserOnRole){
+        return res.status(200).json({
+          message:"Refferal Fetched on role basis",
+          data : refferalUserOnRole
+        })
+    }else{
+      return res.status(400).json({
+        message:"No user Found"
+      })
+    }
+  } catch (error) {
+    return res.status(500).json({
+      message:"Internal Server error"
+    })
+  }
+}
+
+// searchRefferalPayoutByRefferUserid
+exports.searchRefferalPayoutByRefferUserid = async(req,res) => {
+  try {
+    const {role} = req.body;
+    const refferalUserOnRole = await MyReferral.find({role:role})
+    if(refferalUserOnRole){
+      const refferUserIDs = refferalUserOnRole.map((user) => user.refferUserID);
+        return res.status(200).json({
+          message:"Refferal Fetched on role basis",
+          data : refferUserIDs
+        })
+    }else{
+      return res.status(400).json({
+        message:"No user Found"
+      })
+    }
+  } catch (error) {
+    return res.status(500).json({
+      message:"Internal Server error"
+    })
+  }
+}

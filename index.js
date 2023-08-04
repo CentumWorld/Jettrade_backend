@@ -88,6 +88,8 @@ const adminSumOfAllNewRenewalUserAmount = require('./routes/admin-sum-of-all-new
 const filterTransactionsForWithdrawlWithYearMonth = require('./routes/filter-Transactions-For-Withdrawl-With-Year-Month')
 const tradingWalletTransferFromOneUserToAnother = require('./routes/users/trading-wallet-transfer-from-one-user-to-another')
 const totalWithdrawalMoney = require('./routes/total-Withdrawal-Money')
+const fetchRefferalPayoutOnRoleBasis = require('./routes/fetch-refferal-payout-on-role-basis');
+const searchRefferalPayoutByRefferUserid = require('./routes/search-refferal-payout-by-reffer-userid');
  
 // refferal
 const memberRegistration = require('./routes/refferal/member-registration');
@@ -239,6 +241,8 @@ app.use('/user', withdrawlFromWalletAndTradingWallet)
 app.use('/user', fetchWalletWithdrawalHistory)
 app.use('/user', fetchWalletHistory)
 app.use('/admin', totalWithdrawalMoney)
+app.use('/admin',fetchRefferalPayoutOnRoleBasis);
+app.use('/admin',searchRefferalPayoutByRefferUserid);
 
 // refferal
 app.use('/member',memberRegistration);

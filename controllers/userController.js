@@ -1016,14 +1016,14 @@ exports.changeUserPaymentStatus = async (req, res) => {
   );
 
 
-  const myReferralDetails =  new MyReferral({
-    userid:userExist.userid,
-    joininigDate:userExist.doj,
-    refferal_id: userExist.reffered_id,
-    referralAmount : 1200,
-    userType: "New"
-  })
-  myReferralDetails.save()
+  // const myReferralDetails =  new MyReferral({
+  //   userid:userExist.userid,
+  //   joininigDate:userExist.doj,
+  //   refferal_id: userExist.reffered_id,
+  //   referralAmount : 1200,
+  //   userType: "New"
+  // })
+  // myReferralDetails.save()
   
   const userActivate = new AllNewPaidUser({
     userid: userid,
@@ -1054,6 +1054,16 @@ exports.changeUserPaymentStatus = async (req, res) => {
               },
             }
           );
+          const myReferralDetails =  new MyReferral({
+            userid:userExist.userid,
+            joininigDate:userExist.doj,
+            refferal_id: userExist.reffered_id,
+            referralAmount : 1200,
+            userType: "New",
+            role:"User",
+            refferUserID:userid
+          })
+          myReferralDetails.save()
           if (insertUserWalletAmount) {
             return res.status(200).json({
               message: "Payment Successfull",
@@ -1072,6 +1082,16 @@ exports.changeUserPaymentStatus = async (req, res) => {
               },
             }
           );
+          const myReferralDetails =  new MyReferral({
+            userid:userExist.userid,
+            joininigDate:userExist.doj,
+            refferal_id: userExist.reffered_id,
+            referralAmount : 700,
+            userType: "Renewal",
+            role:"User",
+            refferUserID:userid
+          })
+          myReferralDetails.save()
           if (insertUserWalletAmount) {
             return res.status(200).json({
               message: "Payment Successfull",
@@ -1095,6 +1115,16 @@ exports.changeUserPaymentStatus = async (req, res) => {
               },
             }
           );
+          const myReferralDetails =  new MyReferral({
+            userid:userExist.userid,
+            joininigDate:userExist.doj,
+            refferal_id: userExist.reffered_id,
+            referralAmount : 1200,
+            userType: "New",
+            role:"Member",
+            refferUserID:memberid
+          })
+          myReferralDetails.save()
           if (insertWalletAmount) {
             return res.status(200).json({
               message: "Payment Successfull",
@@ -1113,6 +1143,16 @@ exports.changeUserPaymentStatus = async (req, res) => {
               },
             }
           );
+          const myReferralDetails =  new MyReferral({
+            userid:userExist.userid,
+            joininigDate:userExist.doj,
+            refferal_id: userExist.reffered_id,
+            referralAmount : 700,
+            userType: "Renewal",
+            role:"Member",
+            refferUserID:memberid
+          })
+          myReferralDetails.save()
           if (insertWalletAmount) {
             return res.status(200).json({
               message: "Payment Successfull",
@@ -1703,14 +1743,14 @@ exports.changePaymentStatusForRenewal = async (req, res) => {
       },
     }
   );
-  const myReferralDetails =  new MyReferral({
-    userid:userExist.userid,
-    joininigDate:userExist.doj,
-    refferal_id: userExist.reffered_id,
-    referralAmount : 700,
-    userType: "Renewal"
-  })
-  myReferralDetails.save()
+  // const myReferralDetails =  new MyReferral({
+  //   userid:userExist.userid,
+  //   joininigDate:userExist.doj,
+  //   refferal_id: userExist.reffered_id,
+  //   referralAmount : 700,
+  //   userType: "Renewal"
+  // })
+  // myReferralDetails.save()
   
   const userRenewal = new UserRenewal({
     userid: userid,
@@ -1741,6 +1781,16 @@ exports.changePaymentStatusForRenewal = async (req, res) => {
               },
             }
           );
+          const myReferralDetails =  new MyReferral({
+            userid:userExist.userid,
+            joininigDate:userExist.doj,
+            refferal_id: userExist.reffered_id,
+            referralAmount : 1200,
+            userType: "New",
+            role:'User',
+            refferUserID:userid
+          })
+          myReferralDetails.save()
           if (insertUserWalletAmount) {
             return res.status(200).json({
               message: "Payment Successfull",
@@ -1759,6 +1809,16 @@ exports.changePaymentStatusForRenewal = async (req, res) => {
               },
             }
           );
+          const myReferralDetails =  new MyReferral({
+            userid:userExist.userid,
+            joininigDate:userExist.doj,
+            refferal_id: userExist.reffered_id,
+            referralAmount : 700,
+            userType: "Renewal",
+            role:"User",
+            refferUserID:userid
+          })
+          myReferralDetails.save();
           if (insertUserWalletAmount) {
             return res.status(200).json({
               message: "Payment Successfull",
@@ -1782,6 +1842,16 @@ exports.changePaymentStatusForRenewal = async (req, res) => {
               },
             }
           );
+          const myReferralDetails =  new MyReferral({
+            userid:userExist.userid,
+            joininigDate:userExist.doj,
+            refferal_id: userExist.reffered_id,
+            referralAmount : 1200,
+            userType: "New",
+            role:"Member",
+            refferUserID:memberid
+          })
+          myReferralDetails.save()
           if (insertWalletAmount) {
             return res.status(200).json({
               message: "Payment Successfull",
@@ -1800,6 +1870,16 @@ exports.changePaymentStatusForRenewal = async (req, res) => {
               },
             }
           );
+          const myReferralDetails =  new MyReferral({
+            userid:userExist.userid,
+            joininigDate:userExist.doj,
+            refferal_id: userExist.reffered_id,
+            referralAmount : 700,
+            userType: "Renewal",
+            role:"Member",
+            refferUserID:memberid
+          })
+          myReferralDetails.save()
           if (insertWalletAmount) {
             return res.status(200).json({
               message: "Payment Successfull",

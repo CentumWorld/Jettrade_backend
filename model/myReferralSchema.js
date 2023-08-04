@@ -4,10 +4,10 @@ const myReferralSchema = new mongoose.Schema({
     type: String,
   },
   refferal_id: {
-    type:String
+    type: String
   },
   userType: {
-    type:String
+    type: String
   },
   referralAmount: {
     type: Number,
@@ -17,6 +17,12 @@ const myReferralSchema = new mongoose.Schema({
     type: Date,
     default: Date.now,
   },
+  role: {
+    type: String
+  },
+  refferUserID: {
+    type: String
+  }
 });
 
 const myReferral = mongoose.model("myReferral", myReferralSchema);
