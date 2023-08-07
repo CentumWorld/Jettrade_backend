@@ -6,6 +6,10 @@ require('./database/conn');
 const path = require('path');
 const cors = require('cors');
 
+const app = express();
+
+app.use(bodyParser.json());
+app.use(cors());
 
 const adminLogin = require('./routes/adminLogin');
 const adminLogout = require('./routes/adminLogout');
@@ -90,6 +94,8 @@ const tradingWalletTransferFromOneUserToAnother = require('./routes/users/tradin
 const totalWithdrawalMoney = require('./routes/total-Withdrawal-Money')
 const fetchRefferalPayoutOnRoleBasis = require('./routes/fetch-refferal-payout-on-role-basis');
 const searchRefferalPayoutByRefferUserid = require('./routes/search-refferal-payout-by-reffer-userid');
+const searchNewUsers = require('./routes/search-new-users');
+const searchRenewalUsers = require('./routes/search-renewal-users');
  
 // refferal
 const memberRegistration = require('./routes/refferal/member-registration');
@@ -132,22 +138,6 @@ const fetchWalletWithdrawalHistory = require("./routes/users/fetch-Wallet-Withdr
 
 const fetchWalletHistory = require("./routes/users/fetch-Wallet-History")
  
-
-
-
-const app = express();
-
-app.use(bodyParser.json());
-app.use(cors());
-// app.use(
-//   cors({
-//     origin:"http://trader.jettradefx.in",
-//     methods:["GET","POST","PUT","DELETE"]
-//   })
-// );
-
-
-
 
 
 app.use(express.static(path.join(__dirname, 'public')));
@@ -243,7 +233,8 @@ app.use('/user', fetchWalletHistory)
 app.use('/admin', totalWithdrawalMoney)
 app.use('/admin',fetchRefferalPayoutOnRoleBasis);
 app.use('/admin',searchRefferalPayoutByRefferUserid);
-
+app.use('/admin',searchNewUsers);
+app.use('/admin',searchRenewalUsers);
 // refferal
 app.use('/member',memberRegistration);
 app.use('/member',memberLogin);

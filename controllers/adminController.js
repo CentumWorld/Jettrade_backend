@@ -1318,3 +1318,41 @@ exports.searchRefferalPayoutByRefferUserid = async(req,res) => {
     })
   }
 }
+
+// searchNewUsers
+exports.searchNewUsers = async(req,res) => {
+  try {
+    const {userid} = req.body
+  
+    const newSearchUser = await AllNewPaidUser.find({userid:userid})
+      if(newSearchUser.length > 0){
+        return res.status(200).json({
+          message:" Details fetched",
+          newSearchUser
+        })
+      }else{
+        return res.status(400).json({message:'Not found'})
+      }
+  } catch (error) {
+    return res.status(500).json({message:"Internal server error"})
+  }
+}
+
+// searchRenewalUsers
+exports.searchRenewalUsers = async (req,res) => {
+  try {
+    const {userid} = req.body
+  
+    const renewalSearchUser = await UserRenewal.find({userid:userid})
+      if(renewalSearchUser.length > 0){
+        return res.status(200).json({
+          message:" Renewal Details fetched",
+          renewalSearchUser
+        })
+      }else{
+        return res.status(400).json({message:'Not found'})
+      }
+  } catch (error) {
+    return res.status(500).json({message:"Internal server error"})
+  }
+}
