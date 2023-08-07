@@ -1299,7 +1299,6 @@ exports.fetchRefferalPayoutOnRoleBasis = async (req, res) => {
 // searchRefferalPayoutByRefferUserid
 exports.searchRefferalPayoutByRefferUserid = async (req, res) => {
   try {
-<<<<<<< Updated upstream
     const { role, refferUserID } = req.body;
     const users = await MyReferral.find(
       { role: role },
@@ -1309,19 +1308,6 @@ exports.searchRefferalPayoutByRefferUserid = async (req, res) => {
     if (users.length === 0) {
       return res.status(404).json({
         message: "No data found",
-=======
-    const { role } = req.body;
-    const refferalUserOnRole = await MyReferral.find({ role: role });
-    if (refferalUserOnRole) {
-      const refferUserIDs = refferalUserOnRole.map((user) => user.refferUserID);
-      return res.status(200).json({
-        message: "Refferal Fetched on role basis",
-        data: refferUserIDs,
-      });
-    } else {
-      return res.status(400).json({
-        message: "No user Found",
->>>>>>> Stashed changes
       });
     }
     const filterData = await MyReferral.find({ refferUserID: users[0].refferUserID });
