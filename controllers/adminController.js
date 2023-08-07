@@ -1299,23 +1299,28 @@ exports.fetchRefferalPayoutOnRoleBasis = async(req,res) => {
 // searchRefferalPayoutByRefferUserid
 exports.searchRefferalPayoutByRefferUserid = async(req,res) => {
   try {
-    const {role} = req.body;
-    const refferalUserOnRole = await MyReferral.find({role:role})
-    if(refferalUserOnRole){
-      const refferUserIDs = refferalUserOnRole.map((user) => user.refferUserID);
-        return res.status(200).json({
-          message:"Refferal Fetched on role basis",
-          data : refferUserIDs
-        })
-    }else{
-      return res.status(400).json({
-        message:"No user Found"
-      })
+    const { role, refferUserID } = req.body;
+    const users = await MyReferral.find(
+      { role: role },
+      { refferUserID: refferUserID }
+    );
+    console.log(users);
+    if (users.length === 0) {
+      return res.status(404).json({
+        message: "No data found",
+      });
     }
+    const filterData = await MyReferral.find({ refferUserID: users[0].refferUserID });
+    if (filterData.length === 0) {
+      return res.status(404).json({
+        message: "No data found",
+      });
+    }
+    return res.status(200).json({ message: "All data fetched", filterData });
   } catch (error) {
     return res.status(500).json({
-      message:"Internal Server error"
-    })
+      message: "Internal Server error",
+    });
   }
 }
 
