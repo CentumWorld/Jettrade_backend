@@ -1329,7 +1329,7 @@ exports.searchRefferalPayoutByRefferUserid = async (req, res) => {
  exports.totalCountOfPaymentStatusOfUser = async (req, res) => {
    try {
      const totalUsers = await User.find();
-     const totalCount = totalUsers.length;
+     let totalCount = totalUsers.length;
  
      let runningCount = 0;
      let expiredCount = 0;

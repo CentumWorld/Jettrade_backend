@@ -2033,7 +2033,7 @@ exports.fetchWalletHistory = async (req, res) => {
  exports.totalCountOfPaymentStatusOfUseruser = async (req, res) => {
   try {
     const totalUsers = await User.find();
-    const totalCount = totalUsers.length;
+    let totalCount = totalUsers.length;
 
     let runningCount = 0;
     let expiredCount = 0;
