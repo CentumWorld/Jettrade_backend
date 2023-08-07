@@ -2029,3 +2029,56 @@ exports.fetchWalletHistory = async (req, res) => {
   }
 };
 
+ // Total count of payment status
+ exports.totalCountOfPaymentStatusOfUseruser = async (req, res) => {
+  try {
+    const totalUsers = await User.find();
+    const totalCount = totalUsers.length;
+
+    let runningCount = 0;
+    let expiredCount = 0;
+    let inactiveCount = 0;
+
+    totalUsers.forEach((user) => {
+      if (user.isBlocked === true) {
+        totalCount--;
+      } else if (
+        user.paymentCount === 0 &&
+        user.paymentStatus === false &&
+        user.isBlocked === false
+      ) {
+        inactiveCount++;
+      } else if (
+        user.paymentCount > 0 &&
+        user.paymentStatus === true &&
+        user.isBlocked === false
+      ) {
+        runningCount++;
+      } else if (
+        user.paymentCount > 0 &&
+        user.paymentStatus === false &&
+        user.isBlocked === false
+      ) {
+        expiredCount++;
+      }
+    });
+
+  
+    const runningPercentage = ((runningCount / totalCount) * 100).toFixed(2);
+    const expiredPercentage = ((expiredCount / totalCount) * 100).toFixed(2);
+    const inactivePercentage = ((inactiveCount / totalCount) * 100).toFixed(2);
+
+    return res.status(200).json({
+      totalCount,
+      runningCount,
+      runningPercentage,
+      expiredCount,
+      expiredPercentage,
+      inactiveCount,
+      inactivePercentage,
+    });
+  } catch (error) {
+    console.error(error);
+    return res.status(500).json({ message: "Internal Server Error" });
+  }
+};

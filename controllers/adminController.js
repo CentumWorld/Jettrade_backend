@@ -22,7 +22,7 @@ const WalletTransaction = require("../model/transactionSchema");
 const MoneyWithdrawlTransaction = require("../model/withDrawlSchema");
 const UserRenewal = require("../model/userRenewelSchema");
 const AllNewPaidUser = require("../model/allNewPaidUserSchema");
-const MyReferral = require('../model/myReferralSchema');
+const MyReferral = require("../model/myReferralSchema");
 
 require("dotenv").config();
 
@@ -1275,30 +1275,31 @@ exports.totalWithdrawalMoney = async (req, res) => {
 };
 
 // fetchRefferalPayoutOnRoleBasis
-exports.fetchRefferalPayoutOnRoleBasis = async(req,res) => {
+exports.fetchRefferalPayoutOnRoleBasis = async (req, res) => {
   try {
-    const {role} = req.body;
-    const refferalUserOnRole = await MyReferral.find({role:role})
-    if(refferalUserOnRole){
-        return res.status(200).json({
-          message:"Refferal Fetched on role basis",
-          data : refferalUserOnRole
-        })
-    }else{
+    const { role } = req.body;
+    const refferalUserOnRole = await MyReferral.find({ role: role });
+    if (refferalUserOnRole) {
+      return res.status(200).json({
+        message: "Refferal Fetched on role basis",
+        data: refferalUserOnRole,
+      });
+    } else {
       return res.status(400).json({
-        message:"No user Found"
-      })
+        message: "No user Found",
+      });
     }
   } catch (error) {
     return res.status(500).json({
-      message:"Internal Server error"
-    })
+      message: "Internal Server error",
+    });
   }
-}
+};
 
 // searchRefferalPayoutByRefferUserid
-exports.searchRefferalPayoutByRefferUserid = async(req,res) => {
+exports.searchRefferalPayoutByRefferUserid = async (req, res) => {
   try {
+<<<<<<< Updated upstream
     const { role, refferUserID } = req.body;
     const users = await MyReferral.find(
       { role: role },
@@ -1308,6 +1309,19 @@ exports.searchRefferalPayoutByRefferUserid = async(req,res) => {
     if (users.length === 0) {
       return res.status(404).json({
         message: "No data found",
+=======
+    const { role } = req.body;
+    const refferalUserOnRole = await MyReferral.find({ role: role });
+    if (refferalUserOnRole) {
+      const refferUserIDs = refferalUserOnRole.map((user) => user.refferUserID);
+      return res.status(200).json({
+        message: "Refferal Fetched on role basis",
+        data: refferUserIDs,
+      });
+    } else {
+      return res.status(400).json({
+        message: "No user Found",
+>>>>>>> Stashed changes
       });
     }
     const filterData = await MyReferral.find({ refferUserID: users[0].refferUserID });
@@ -1322,8 +1336,63 @@ exports.searchRefferalPayoutByRefferUserid = async(req,res) => {
       message: "Internal Server error",
     });
   }
-}
+};
 
+
+
+ exports.totalCountOfPaymentStatusOfUser = async (req, res) => {
+   try {
+     const totalUsers = await User.find();
+     const totalCount = totalUsers.length;
+ 
+     let runningCount = 0;
+     let expiredCount = 0;
+     let inactiveCount = 0;
+ 
+     totalUsers.forEach((user) => {
+       if (user.isBlocked === true) {
+         totalCount--;
+       } else if (
+         user.paymentCount === 0 &&
+         user.paymentStatus === false &&
+         user.isBlocked === false
+       ) {
+         inactiveCount++;
+       } else if (
+         user.paymentCount > 0 &&
+         user.paymentStatus === true &&
+         user.isBlocked === false
+       ) {
+         runningCount++;
+       } else if (
+         user.paymentCount > 0 &&
+         user.paymentStatus === false &&
+         user.isBlocked === false
+       ) {
+         expiredCount++;
+       }
+     });
+ 
+   
+     const runningPercentage = ((runningCount / totalCount) * 100).toFixed(2);
+     const expiredPercentage = ((expiredCount / totalCount) * 100).toFixed(2);
+     const inactivePercentage = ((inactiveCount / totalCount) * 100).toFixed(2);
+ 
+     return res.status(200).json({
+       totalCount,
+       runningCount,
+       runningPercentage,
+       expiredCount,
+       expiredPercentage,
+       inactiveCount,
+       inactivePercentage,
+     });
+   } catch (error) {
+     console.error(error);
+     return res.status(500).json({ message: "Internal Server Error" });
+   }
+ };
+ 
 // searchNewUsers
 exports.searchNewUsers = async(req,res) => {
   try {

@@ -96,6 +96,8 @@ const fetchRefferalPayoutOnRoleBasis = require('./routes/fetch-refferal-payout-o
 const searchRefferalPayoutByRefferUserid = require('./routes/search-refferal-payout-by-reffer-userid');
 const searchNewUsers = require('./routes/search-new-users');
 const searchRenewalUsers = require('./routes/search-renewal-users');
+const totalCountOfPaymentStatusOfUser = require('./routes/total_Count_Of_Payment_Status_Of_User')
+const totalCountOfPaymentStatusOfUseruser = require('./routes/users/total_Count_Of_Payment_Status_Of_User_user')
  
 // refferal
 const memberRegistration = require('./routes/refferal/member-registration');
@@ -235,6 +237,10 @@ app.use('/admin',fetchRefferalPayoutOnRoleBasis);
 app.use('/admin',searchRefferalPayoutByRefferUserid);
 app.use('/admin',searchNewUsers);
 app.use('/admin',searchRenewalUsers);
+app.use('/admin', totalCountOfPaymentStatusOfUser)
+
+app.use('/user', totalCountOfPaymentStatusOfUseruser)
+
 // refferal
 app.use('/member',memberRegistration);
 app.use('/member',memberLogin);
