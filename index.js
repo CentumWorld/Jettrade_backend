@@ -98,6 +98,7 @@ const searchNewUsers = require('./routes/search-new-users');
 const searchRenewalUsers = require('./routes/search-renewal-users');
 const totalCountOfPaymentStatusOfUser = require('./routes/total_Count_Of_Payment_Status_Of_User')
 const totalCountOfPaymentStatusOfUseruser = require('./routes/users/total_Count_Of_Payment_Status_Of_User_user')
+const findUsersOnTheBasisOfPaymentStatus = require('./routes/find_Users_On_The_Basis_Of_Payment_Status')
  
 // refferal
 const memberRegistration = require('./routes/refferal/member-registration');
@@ -240,6 +241,7 @@ app.use('/admin',searchRenewalUsers);
 app.use('/admin', totalCountOfPaymentStatusOfUser)
 
 app.use('/user', totalCountOfPaymentStatusOfUseruser)
+app.use('/admin', findUsersOnTheBasisOfPaymentStatus )
 
 // refferal
 app.use('/member',memberRegistration);

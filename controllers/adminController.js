@@ -1310,7 +1310,9 @@ exports.searchRefferalPayoutByRefferUserid = async (req, res) => {
         message: "No data found",
       });
     }
-    const filterData = await MyReferral.find({ refferUserID: users[0].refferUserID });
+    const filterData = await MyReferral.find({
+      refferUserID: users[0].refferUserID,
+    });
     if (filterData.length === 0) {
       return res.status(404).json({
         message: "No data found",
@@ -1324,95 +1326,153 @@ exports.searchRefferalPayoutByRefferUserid = async (req, res) => {
   }
 };
 
-
-
- exports.totalCountOfPaymentStatusOfUser = async (req, res) => {
-   try {
-     const totalUsers = await User.find();
-     let totalCount = totalUsers.length;
- 
-     let runningCount = 0;
-     let expiredCount = 0;
-     let inactiveCount = 0;
- 
-     totalUsers.forEach((user) => {
-       if (user.isBlocked === true) {
-         totalCount--;
-       } else if (
-         user.paymentCount === 0 &&
-         user.paymentStatus === false &&
-         user.isBlocked === false
-       ) {
-         inactiveCount++;
-       } else if (
-         user.paymentCount > 0 &&
-         user.paymentStatus === true &&
-         user.isBlocked === false
-       ) {
-         runningCount++;
-       } else if (
-         user.paymentCount > 0 &&
-         user.paymentStatus === false &&
-         user.isBlocked === false
-       ) {
-         expiredCount++;
-       }
-     });
- 
-   
-     const runningPercentage = ((runningCount / totalCount) * 100).toFixed(2);
-     const expiredPercentage = ((expiredCount / totalCount) * 100).toFixed(2);
-     const inactivePercentage = ((inactiveCount / totalCount) * 100).toFixed(2);
- 
-     return res.status(200).json({
-       totalCount,
-       runningCount,
-       runningPercentage,
-       expiredCount,
-       expiredPercentage,
-       inactiveCount,
-       inactivePercentage,
-     });
-   } catch (error) {
-     console.error(error);
-     return res.status(500).json({ message: "Internal Server Error" });
-   }
- };
- 
-// searchNewUsers
-exports.searchNewUsers = async(req,res) => {
+exports.totalCountOfPaymentStatusOfUser = async (req, res) => {
   try {
-    const {userid} = req.body
-  
-    const newSearchUser = await AllNewPaidUser.find({userid:userid})
-      if(newSearchUser.length > 0){
-        return res.status(200).json({
-          message:" Details fetched",
-          newSearchUser
-        })
-      }else{
-        return res.status(400).json({message:'Not found'})
+    const totalUsers = await User.find();
+    let totalCount = totalUsers.length;
+
+    let runningCount = 0;
+    let expiredCount = 0;
+    let inactiveCount = 0;
+
+    totalUsers.forEach((user) => {
+      if (user.isBlocked === true) {
+        totalCount--;
+      } else if (
+        user.paymentCount === 0 &&
+        user.paymentStatus === false &&
+        user.isBlocked === false
+      ) {
+        inactiveCount++;
+      } else if (
+        user.paymentCount > 0 &&
+        user.paymentStatus === true &&
+        user.isBlocked === false
+      ) {
+        runningCount++;
+      } else if (
+        user.paymentCount > 0 &&
+        user.paymentStatus === false &&
+        user.isBlocked === false
+      ) {
+        expiredCount++;
       }
+    });
+
+    const runningPercentage = ((runningCount / totalCount) * 100).toFixed(2);
+    const expiredPercentage = ((expiredCount / totalCount) * 100).toFixed(2);
+    const inactivePercentage = ((inactiveCount / totalCount) * 100).toFixed(2);
+
+    return res.status(200).json({
+      totalCount,
+      runningCount,
+      runningPercentage,
+      expiredCount,
+      expiredPercentage,
+      inactiveCount,
+      inactivePercentage,
+    });
   } catch (error) {
-    return res.status(500).json({message:"Internal server error"})
+    console.error(error);
+    return res.status(500).json({ message: "Internal Server Error" });
   }
-}
+};
+
+// searchNewUsers
+exports.searchNewUsers = async (req, res) => {
+  try {
+    const { userid } = req.body;
+
+    const newSearchUser = await AllNewPaidUser.find({ userid: userid });
+    if (newSearchUser.length > 0) {
+      return res.status(200).json({
+        message: " Details fetched",
+        newSearchUser,
+      });
+    } else {
+      return res.status(400).json({ message: "Not found" });
+    }
+  } catch (error) {
+    return res.status(500).json({ message: "Internal server error" });
+  }
+};
 
 // searchRenewalUsers
-exports.searchRenewalUsers = async (req,res) => {
+exports.searchRenewalUsers = async (req, res) => {
   try {
-    const {userid} = req.body
-  
-    const renewalSearchUser = await UserRenewal.find({userid:userid})
-      if(renewalSearchUser.length > 0){
-        return res.status(200).json({
-          message:" Renewal Details fetched",
-          renewalSearchUser
-        })
-      }else{
-        return res.status(400).json({message:'Not found'})
-      }
+    const { userid } = req.body;
+
+    const renewalSearchUser = await UserRenewal.find({ userid: userid });
+    if (renewalSearchUser.length > 0) {
+      return res.status(200).json({
+        message: " Renewal Details fetched",
+        renewalSearchUser,
+      });
+    } else {
+      return res.status(400).json({ message: "Not found" });
+    }
   } catch (error) {
-    return res.status(500).json({message:"Internal server error"})
+    return res.status(500).json({ message: "Internal server error" });
   }
-}
+};
+
+//find the users on the basis of payment status
+exports.findUsersOnTheBasisOfPaymentStatus = async (req, res) => {
+  try {
+    const users = await User.find();
+
+    if (users.length === 0) {
+      return res
+        .status(404)
+        .json({ message: "No users found in the database" });
+    }
+
+    const filteredInactiveUsers = users.filter(
+      (user) =>
+        user.paymentCount === 0 &&
+        user.paymentStatus === false &&
+        user.isBlocked === false
+    );
+
+    const filteredRunningUsers = users.filter(
+      (user) =>
+        user.paymentCount > 0 &&
+        user.paymentStatus === true &&
+        user.isBlocked === false
+    );
+
+    const filteredExpiredUsers = users.filter(
+      (user) =>
+        user.paymentCount > 0 &&
+        user.paymentStatus === false &&
+        user.isBlocked === false
+    );
+
+    if (filteredInactiveUsers.length === 0) {
+      return res
+        .status(404)
+        .json({ message: "No users found with inactive payment statuses" });
+    }
+    if (filteredRunningUsers.length === 0) {
+      return res
+        .status(404)
+        .json({ message: "No users found with Running payment statuses" });
+    }
+    if (filteredExpiredUsers.length === 0) {
+      return res
+        .status(404)
+        .json({ message: "No users found with expired payment statuses" });
+    }
+
+    return res.status(200).json({
+      message:
+        "Successfully fetched all users with different payment statuses.",
+      inactiveUsers: filteredInactiveUsers,
+      runningUsers: filteredRunningUsers,
+      expiredUsers: filteredExpiredUsers,
+    });
+  } catch (error) {
+    console.log(error.message);
+    return res.status(500).json({ message: "Internal server error" });
+  }
+};
