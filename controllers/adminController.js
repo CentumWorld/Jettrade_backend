@@ -1499,7 +1499,7 @@ exports.fetchParticularUserPaymentStatus = async (req, res) => {
       paymentStatus = "Running";
     }
 
-    return res.status(200).json({messagr: "particular user and their payment status fetched" ,user, paymentStatus });
+    return res.status(200).json({message: "particular user and their payment status fetched" ,user, paymentStatus });
   } catch (error) {
     console.log(error.message)
     return res.status(500).json({ message: "Internal server error" });
