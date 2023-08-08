@@ -140,7 +140,7 @@ const withdrawlFromWalletAndTradingWallet = require("./routes/users/withdrawl-Fr
 const fetchWalletWithdrawalHistory = require("./routes/users/fetch-Wallet-Withdrawal-History")
 
 const fetchWalletHistory = require("./routes/users/fetch-Wallet-History")
- 
+ const fetchParticularUserPaymentStatus = require('./routes/fetch_Particular_User_Payment_Status')
 
 
 app.use(express.static(path.join(__dirname, 'public')));
@@ -242,6 +242,7 @@ app.use('/admin', totalCountOfPaymentStatusOfUser)
 
 app.use('/user', totalCountOfPaymentStatusOfUseruser)
 app.use('/admin', findUsersOnTheBasisOfPaymentStatus )
+app.use('/admin', fetchParticularUserPaymentStatus)
 
 // refferal
 app.use('/member',memberRegistration);

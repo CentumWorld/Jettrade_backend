@@ -1476,3 +1476,29 @@ exports.findUsersOnTheBasisOfPaymentStatus = async (req, res) => {
     return res.status(500).json({ message: "Internal server error" });
   }
 };
+
+//fetch particular user payment status
+
+exports.fetchParticularUserPaymentStatus = async (req, res) => {
+  try {
+    const userid = req.body.userid;
+
+    const user = await User.findOne({ userid: userid });
+    if (!user) {
+      return res.status(404).json({ message: "User not found" });
+    }
+    let paymentStatus;
+    if (user.paymentCount === 0 && user.paymentStatus === false) {
+      paymentStatus = "Inactive";
+    } else if (user.paymentCount > 0 && user.paymentStatus === false) {
+      paymentStatus = "Expired";
+    } else {
+      paymentStatus = "Running";
+    }
+
+    return res.status(200).json({messagr: "particular user and their payment status fetched" ,user, paymentStatus });
+  } catch (error) {
+    console.log(error.message)
+    return res.status(500).json({ message: "Internal server error" });
+  }
+};
