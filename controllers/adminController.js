@@ -1482,6 +1482,9 @@ exports.findUsersOnTheBasisOfPaymentStatus = async (req, res) => {
 exports.fetchParticularUserPaymentStatus = async (req, res) => {
   try {
     const userid = req.body.userid;
+    if(!userid){
+      return req.status(422).json({message: "Userid is required"})
+    }
 
     const user = await User.findOne({ userid: userid });
     if (!user) {
