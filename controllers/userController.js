@@ -1011,6 +1011,7 @@ exports.changeUserPaymentStatus = async (req, res) => {
       $set: {
         paymentStatus: true,
         paymentCount: payment + 1,
+        isBlocked:false,
         doj: new Date(),
       },
     }
