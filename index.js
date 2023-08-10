@@ -100,10 +100,10 @@ const totalCountOfPaymentStatusOfUser = require("./routes/total_Count_Of_Payment
 const totalCountOfPaymentStatusOfUseruser = require("./routes/users/total_Count_Of_Payment_Status_Of_User_user");
 const findUsersOnTheBasisOfPaymentStatus = require("./routes/find_Users_On_The_Basis_Of_Payment_Status");
 const manageSubAdminRole = require("./routes/manage_subAdmin");
-const getvideos = require('./routes/get_all_video')
-const subAdminLogin = require("./routes/sub_Admin_Login")
+const getvideos = require("./routes/get_all_video");
+const subAdminLogin = require("./routes/sub_Admin_Login");
 const interactWithVideo = require("./routes/users/interact_with_video");
-
+const fetchOneVideoDetail = require("./routes/users/fetch_one_video_details");
 
 // refferal
 const memberRegistration = require("./routes/refferal/member-registration");
@@ -145,8 +145,6 @@ const fetchWalletWithdrawalHistory = require("./routes/users/fetch-Wallet-Withdr
 
 const fetchWalletHistory = require("./routes/users/fetch-Wallet-History");
 const fetchParticularUserPaymentStatus = require("./routes/fetch_Particular_User_Payment_Status");
-
-
 
 app.use(express.static(path.join(__dirname, "public")));
 //app.use(cors());
@@ -252,9 +250,10 @@ app.use("/admin", manageSubAdminRole);
 
 app.use("/user", interactWithVideo);
 
-app.use("/admin", getvideos)
+app.use("/admin", getvideos);
 
-app.use("/admin", subAdminLogin)
+app.use("/admin", subAdminLogin);
+app.use("/user", fetchOneVideoDetail);
 
 // refferal
 app.use("/member", memberRegistration);
