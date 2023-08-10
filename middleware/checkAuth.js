@@ -72,6 +72,9 @@ exports.authenticateUser = async (req, res, next) => {
   try {
     const decoded = jwt.verify(token, process.env.SECRET_KEY);
     req.userId = decoded.userId; // Save the user ID from the token in the request object
+
+    console.log(userId, "jjjjjjjjj")
+
     next();
   } catch (error) {
     console.log(error.message);

@@ -1536,14 +1536,14 @@ exports.manageSubAdminRole = async (req, res) => {
         { isSubAdmin: true },
         { new: true }
       );
-      message = "SubAdmin role created successfully";
+      message = "Now you are an SubAdmin";
     } else if (isSubAdmin === false) {
       updatedSubAdmin = await User.findOneAndUpdate(
         { _id: user._id },
         { isSubAdmin: false },
         { new: true }
       );
-      message = "SubAdmin role removed successfully";
+      message = "You are removed from SubAdmin role";
     } else {
       return res.status(400).json({ message: "Invalid action" });
     }

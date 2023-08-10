@@ -2098,7 +2098,7 @@ exports.interactWithVideo = async (req, res) => {
     if (!video) {
       return res.status(404).json({ message: "Video not found" });
     }
-    const userId = req.user._id
+    const userId = req.user.userId
     console.log(userId, "userId")
     if (action === "like") {
       if (!video.likes) {
