@@ -924,16 +924,17 @@ exports.fetchUserNotification = async (req, res) => {
 // paymentUseridVerify
 exports.paymentUseridVerify = async (req, res) => {
   const { userid } = req.body;
+  console.log(userid,'927')
   let paymentValue = 0;
   if (!userid) {
-    res.status(400).json({
+    res.status(404).json({
       message: "Please enter user ID",
     });
   } else {
     const user = await User.findOne({ userid: userid });
 
     if (!user) {
-      return res.status(400).json({
+      return res.status(422).json({
         message: "Invalid User ID",
       });
     } else {
@@ -1009,6 +1010,7 @@ exports.changeUserPaymentStatus = async (req, res) => {
       $set: {
         paymentStatus: true,
         paymentCount: payment + 1,
+        isBlocked:false,
         doj: new Date(),
       },
     }
