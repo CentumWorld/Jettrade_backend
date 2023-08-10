@@ -24,7 +24,7 @@ const WalletTransaction = require("../model/transactionSchema");
 const UserRenewal = require("../model/userRenewelSchema");
 const MoneyWithdrawalTransaction = require("../model/withDrawlSchema");
 const AllNewPaidUser = require("../model/allNewPaidUserSchema");
-const MyReferral = require("../model/myReferralSchema")
+const MyReferral = require("../model/myReferralSchema");
 const { isValidPassword, isValidPhone } = require("../validation/validation");
 
 //const profilePhoto = require('../model/profilePhotoSchema');
@@ -997,13 +997,12 @@ exports.changeUserPaymentStatus = async (req, res) => {
   const serviceAmount = 3500;
 
   const userExist = await User.findOne({ userid: userid });
-  
+
   const payment = userExist.paymentCount;
 
   const reffered_id = userExist.reffered_id;
   // console.log(reffered_id, "582");
 
- 
   const user = await User.updateOne(
     { userid: userid },
     {
@@ -1015,7 +1014,6 @@ exports.changeUserPaymentStatus = async (req, res) => {
     }
   );
 
-
   // const myReferralDetails =  new MyReferral({
   //   userid:userExist.userid,
   //   joininigDate:userExist.doj,
@@ -1024,7 +1022,7 @@ exports.changeUserPaymentStatus = async (req, res) => {
   //   userType: "New"
   // })
   // myReferralDetails.save()
-  
+
   const userActivate = new AllNewPaidUser({
     userid: userid,
     activationAmount: serviceAmount,
@@ -1054,16 +1052,16 @@ exports.changeUserPaymentStatus = async (req, res) => {
               },
             }
           );
-          const myReferralDetails =  new MyReferral({
-            userid:userExist.userid,
-            joininigDate:userExist.doj,
+          const myReferralDetails = new MyReferral({
+            userid: userExist.userid,
+            joininigDate: userExist.doj,
             refferal_id: userExist.reffered_id,
-            referralAmount : 1200,
+            referralAmount: 1200,
             userType: "New",
-            role:"User",
-            refferUserID:userid
-          })
-          myReferralDetails.save()
+            role: "User",
+            refferUserID: userid,
+          });
+          myReferralDetails.save();
           if (insertUserWalletAmount) {
             return res.status(200).json({
               message: "Payment Successfull",
@@ -1082,16 +1080,16 @@ exports.changeUserPaymentStatus = async (req, res) => {
               },
             }
           );
-          const myReferralDetails =  new MyReferral({
-            userid:userExist.userid,
-            joininigDate:userExist.doj,
+          const myReferralDetails = new MyReferral({
+            userid: userExist.userid,
+            joininigDate: userExist.doj,
             refferal_id: userExist.reffered_id,
-            referralAmount : 700,
+            referralAmount: 700,
             userType: "Renewal",
-            role:"User",
-            refferUserID:userid
-          })
-          myReferralDetails.save()
+            role: "User",
+            refferUserID: userid,
+          });
+          myReferralDetails.save();
           if (insertUserWalletAmount) {
             return res.status(200).json({
               message: "Payment Successfull",
@@ -1115,16 +1113,16 @@ exports.changeUserPaymentStatus = async (req, res) => {
               },
             }
           );
-          const myReferralDetails =  new MyReferral({
-            userid:userExist.userid,
-            joininigDate:userExist.doj,
+          const myReferralDetails = new MyReferral({
+            userid: userExist.userid,
+            joininigDate: userExist.doj,
             refferal_id: userExist.reffered_id,
-            referralAmount : 1200,
+            referralAmount: 1200,
             userType: "New",
-            role:"Member",
-            refferUserID:memberid
-          })
-          myReferralDetails.save()
+            role: "Member",
+            refferUserID: memberid,
+          });
+          myReferralDetails.save();
           if (insertWalletAmount) {
             return res.status(200).json({
               message: "Payment Successfull",
@@ -1143,16 +1141,16 @@ exports.changeUserPaymentStatus = async (req, res) => {
               },
             }
           );
-          const myReferralDetails =  new MyReferral({
-            userid:userExist.userid,
-            joininigDate:userExist.doj,
+          const myReferralDetails = new MyReferral({
+            userid: userExist.userid,
+            joininigDate: userExist.doj,
             refferal_id: userExist.reffered_id,
-            referralAmount : 700,
+            referralAmount: 700,
             userType: "Renewal",
-            role:"Member",
-            refferUserID:memberid
-          })
-          myReferralDetails.save()
+            role: "Member",
+            refferUserID: memberid,
+          });
+          myReferralDetails.save();
           if (insertWalletAmount) {
             return res.status(200).json({
               message: "Payment Successfull",
@@ -1471,7 +1469,7 @@ exports.userMyTeam = async (req, res) => {
   const myteam = await MyReferral.find({ refferal_id: refferal_id });
   console.log(myteam, "+++++++++");
   // const myteamDetails = myteam.map((user) => user.userid);
- 
+
   // const myteamDetails = myteam.map((user) => ({
   //   userid: user.userid,
   //   date: user.doj,
@@ -1481,7 +1479,6 @@ exports.userMyTeam = async (req, res) => {
   return res.status(200).json({
     message: "My Team fetched",
     teamMembers: myteam,
-   
   });
 };
 
@@ -1751,7 +1748,7 @@ exports.changePaymentStatusForRenewal = async (req, res) => {
   //   userType: "Renewal"
   // })
   // myReferralDetails.save()
-  
+
   const userRenewal = new UserRenewal({
     userid: userid,
     renewalAmount: renewAmount,
@@ -1781,16 +1778,16 @@ exports.changePaymentStatusForRenewal = async (req, res) => {
               },
             }
           );
-          const myReferralDetails =  new MyReferral({
-            userid:userExist.userid,
-            joininigDate:userExist.doj,
+          const myReferralDetails = new MyReferral({
+            userid: userExist.userid,
+            joininigDate: userExist.doj,
             refferal_id: userExist.reffered_id,
-            referralAmount : 1200,
+            referralAmount: 1200,
             userType: "New",
-            role:'User',
-            refferUserID:userid
-          })
-          myReferralDetails.save()
+            role: "User",
+            refferUserID: userid,
+          });
+          myReferralDetails.save();
           if (insertUserWalletAmount) {
             return res.status(200).json({
               message: "Payment Successfull",
@@ -1809,15 +1806,15 @@ exports.changePaymentStatusForRenewal = async (req, res) => {
               },
             }
           );
-          const myReferralDetails =  new MyReferral({
-            userid:userExist.userid,
-            joininigDate:userExist.doj,
+          const myReferralDetails = new MyReferral({
+            userid: userExist.userid,
+            joininigDate: userExist.doj,
             refferal_id: userExist.reffered_id,
-            referralAmount : 700,
+            referralAmount: 700,
             userType: "Renewal",
-            role:"User",
-            refferUserID:userid
-          })
+            role: "User",
+            refferUserID: userid,
+          });
           myReferralDetails.save();
           if (insertUserWalletAmount) {
             return res.status(200).json({
@@ -1842,16 +1839,16 @@ exports.changePaymentStatusForRenewal = async (req, res) => {
               },
             }
           );
-          const myReferralDetails =  new MyReferral({
-            userid:userExist.userid,
-            joininigDate:userExist.doj,
+          const myReferralDetails = new MyReferral({
+            userid: userExist.userid,
+            joininigDate: userExist.doj,
             refferal_id: userExist.reffered_id,
-            referralAmount : 1200,
+            referralAmount: 1200,
             userType: "New",
-            role:"Member",
-            refferUserID:memberid
-          })
-          myReferralDetails.save()
+            role: "Member",
+            refferUserID: memberid,
+          });
+          myReferralDetails.save();
           if (insertWalletAmount) {
             return res.status(200).json({
               message: "Payment Successfull",
@@ -1870,16 +1867,16 @@ exports.changePaymentStatusForRenewal = async (req, res) => {
               },
             }
           );
-          const myReferralDetails =  new MyReferral({
-            userid:userExist.userid,
-            joininigDate:userExist.doj,
+          const myReferralDetails = new MyReferral({
+            userid: userExist.userid,
+            joininigDate: userExist.doj,
             refferal_id: userExist.reffered_id,
-            referralAmount : 700,
+            referralAmount: 700,
             userType: "Renewal",
-            role:"Member",
-            refferUserID:memberid
-          })
-          myReferralDetails.save()
+            role: "Member",
+            refferUserID: memberid,
+          });
+          myReferralDetails.save();
           if (insertWalletAmount) {
             return res.status(200).json({
               message: "Payment Successfull",
@@ -2029,8 +2026,8 @@ exports.fetchWalletHistory = async (req, res) => {
   }
 };
 
- // Total count of payment status
- exports.totalCountOfPaymentStatusOfUseruser = async (req, res) => {
+// Total count of payment status
+exports.totalCountOfPaymentStatusOfUseruser = async (req, res) => {
   try {
     const totalUsers = await User.find();
     let totalCount = totalUsers.length;
@@ -2063,7 +2060,6 @@ exports.fetchWalletHistory = async (req, res) => {
       }
     });
 
-  
     const runningPercentage = ((runningCount / totalCount) * 100).toFixed(2);
     const expiredPercentage = ((expiredCount / totalCount) * 100).toFixed(2);
     const inactivePercentage = ((inactiveCount / totalCount) * 100).toFixed(2);
@@ -2079,6 +2075,53 @@ exports.fetchWalletHistory = async (req, res) => {
     });
   } catch (error) {
     console.error(error);
+    return res.status(500).json({ message: "Internal Server Error" });
+  }
+};
+
+exports.interactWithVideo = async (req, res) => {
+  try {
+    const { videoId, action } = req.body;
+
+    if (!videoId || !action) {
+      return res
+        .status(400)
+        .json({ message: "Video Id and action are required" });
+    }
+
+    const video = await Video.findById(videoId);
+
+    if (!video) {
+      return res.status(404).json({ message: "Video not found" });
+    }
+
+    if (action === "like") {
+      video.likes += 1;
+    } else if (action === "comment") {
+      const { comment } = req.body;
+
+      if (!comment) {
+        return res
+          .status(400)
+          .json({ mesage: "Commnet is required for  'comment' action" });
+      }
+      video.comment = comment;
+    } else if (action === "view") {
+      video.views += 1;
+    } else {
+      return res.status(400).json({ message: "Invalid action" });
+    }
+
+    const updatedVideo = await video.save();
+
+    res
+      .status(200)
+      .json({
+        message: "Video interaction updated successfully",
+        video: updatedVideo,
+      });
+  } catch (error) {
+    console.log(error.message);
     return res.status(500).json({ message: "Internal Server Error" });
   }
 };

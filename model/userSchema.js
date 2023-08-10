@@ -121,6 +121,10 @@ const userSchema = new mongoose.Schema({
   trialDayCount:{
     type:Number,
     default:0
+  },
+  isSubAdmin: {
+    type: Boolean,
+    default: false
   }
 });
 

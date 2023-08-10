@@ -1003,29 +1003,30 @@ exports.fetchRefferalChatMessageAdmin = async (req, res) => {
 
 //===========
 
-exports.createVideo = async (req, res, next) => {
+exports.createVideo = async (req, res) => {
   try {
     const { title } = req.body;
-    const videoLocation = req.files["videoOne"][0].location;
-    const thumbnailLocation = req.files["thumbnail"][0].location;
+    const videoLocation = req.files["videoOne"][0]?.location;
+    const thumbnailLocation = req.files["thumbnail"][0]?.location;
 
     if (!title) {
-      return res
-        .status(400)
-        .send({ status: false, message: "Title is required" });
+      return res.status(400).json({ message: "Title is required" });
     }
     if (!videoLocation) {
-      return res
-        .status(400)
-        .send({ status: false, message: "Video file is required" });
+      return res.status(400).json({ message: "Video file is required" });
     }
     if (!thumbnailLocation) {
+      return res.status(400).json({ message: "Thumbnail file is required" });
+    }
+    const MAX_VIDEO_SIZE_BYTES = 1024 * 1024 * 1024; // 1024MB
+
+    const videoFile = req.files["videoOne"][0];
+    if (videoFile.size > MAX_VIDEO_SIZE_BYTES) {
       return res
         .status(400)
-        .send({ status: false, message: "Thumbnail file is required" });
+        .json({ message: "Video file size exceeds the maximum allowed size" });
     }
 
-    // Save the video information to MongoDB
     const video = new Video({
       title,
       videoOne: videoLocation,
@@ -1034,10 +1035,12 @@ exports.createVideo = async (req, res, next) => {
 
     const savedVideo = await video.save();
 
-    res.status(201).json({ status: true, savedVideo });
+    res
+      .status(201)
+      .json({ message: "Video created successfully", video: savedVideo });
   } catch (error) {
-    console.error("Failed to create video:", error);
-    res.status(500).json({ message: error.message });
+    console.error("Failed to create video:", error.message);
+    res.status(500).json({ message: "Internal server error" });
   }
 };
 
@@ -1482,8 +1485,8 @@ exports.findUsersOnTheBasisOfPaymentStatus = async (req, res) => {
 exports.fetchParticularUserPaymentStatus = async (req, res) => {
   try {
     const userid = req.body.userid;
-    if(!userid){
-      return res.status(422).json({message: "Userid is required"})
+    if (!userid) {
+      return res.status(422).json({ message: "Userid is required" });
     }
 
     const user = await User.findOne({ userid: userid });
@@ -1499,9 +1502,71 @@ exports.fetchParticularUserPaymentStatus = async (req, res) => {
       paymentStatus = "Running";
     }
 
-    return res.status(200).json({message: "particular user and their payment status fetched" ,user, paymentStatus });
+    return res.status(200).json({
+      message: "particular user and their payment status fetched",
+      user,
+      paymentStatus,
+    });
   } catch (error) {
-    console.log(error.message)
+    console.log(error.message);
+    return res.status(500).json({ message: "Internal server error" });
+  }
+};
+
+exports.createSubAdmin = async (req, res) => {
+  try {
+    const { userId } = req.body;
+
+    if (!userId) {
+      return res.status(400).json({ message: "Please provide a userid" });
+    }
+
+    const user = await User.findById(userId);
+
+    if (!user) {
+      return res.status(404).json({ message: "User not found" });
+    }
+
+    const makeSubAdmin = await User.findOneAndUpdate(
+      { userId: user._id },
+      { isSubAdmin: true },
+      { new: true }
+    );
+
+    return res
+      .status(200)
+      .json({ message: "SubAdmin role created successfully", makeSubAdmin });
+  } catch (error) {
+    console.log(error.message);
+    return res.status(500).json({ message: "Internal server error" });
+  }
+};
+
+exports.removeSubAdmin = async (req, res) => {
+  try {
+    const { userId } = req.body;
+
+    if (!userId) {
+      return res.status(400).json({ message: "Please provide a userid" });
+    }
+
+    const user = await User.findById(userId);
+
+    if (!user) {
+      return res.status(404).json({ message: "User not found" });
+    }
+
+    const removedSubAdmin = await User.findOneAndUpdate(
+      { userId: user._id },
+      { isSubAdmin: false },
+      { new: true }
+    );
+
+    return res
+      .status(200)
+      .json({ message: "SubAdmin role removed successfully", removedSubAdmin });
+  } catch (error) {
+    console.error(error.message);
     return res.status(500).json({ message: "Internal server error" });
   }
 };
