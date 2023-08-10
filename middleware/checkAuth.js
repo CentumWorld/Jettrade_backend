@@ -73,26 +73,29 @@ exports.authenticateAdmin = async (req, res, next) => {
 
   try {
     const decoded = jwt.verify(token, process.env.SECRET_KEY);
-    console.log(decoded, "dddddd")
+    console.log(decoded.userId, "dddddd");
     req.userId = decoded.userId; // Save the user ID from the token in the request object
-    console.log(req.userId, "uuuuu")
+
+    console.log(req.userId, "uuuuu");
 
     const user = await User.findById(decoded.userId);
-    console.log(user._id, "uhihiuhi")
+
     const admin = await Admin.findById(decoded.userId);
 
+    console.log(admin, "4444444444");
+
+    console.log(admin, "admin");
+
     if (!user && !admin) {
-      return res.status(403).json({ message: "You are not authorized" });
+      return res.status(403).json({ message: "You are not authorized1111" });
     }
 
-    req.adminId = admin ? admin._id : user._id; // Set adminId if user is admin
-
- 
-
+    req.adminId = admin ? admin._id : user._id; 
+    
     next();
   } catch (error) {
     console.log(error.message);
-    return res.status(401).json({ message: "Invalid Token" });
+    return res.status(500).json({ message: "Internal Server Error" });
   }
 };
 
@@ -105,20 +108,21 @@ exports.authorizeAdmin = async (req, res, next) => {
 
   try {
     const user = await User.findById(adminId);
+    const admin = await Admin.findById(adminId);
+   
 
     if (user && user.isSubAdmin) {
-      // If the user is a subadmin, they are authorized
+      next();
+    } else if (admin) {
       next();
     } else {
-      return res.status(403).json({ message: "You are not authorized" });
+      return res.status(403).json({ message: "You are not authorized as an admin or a sub admin" });
     }
   } catch (error) {
     console.error(error.message);
     return res.status(500).json({ message: "Internal Server Error" });
   }
 };
-
-
 
 //======
 exports.authenticateUser = async (req, res, next) => {
@@ -185,12 +189,10 @@ exports.authorizeMember = async (req, res, next) => {
     const member = await Member.findById(memberId);
     console.log(member, "-------");
     if (!member) {
-      return res
-        .status(403)
-        .json({
-          status: false,
-          message: "You are not authorized as an member",
-        });
+      return res.status(403).json({
+        status: false,
+        message: "You are not authorized as an member",
+      });
     }
     next();
   } catch (error) {

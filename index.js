@@ -102,6 +102,7 @@ const findUsersOnTheBasisOfPaymentStatus = require("./routes/find_Users_On_The_B
 const manageSubAdminRole = require("./routes/manage_subAdmin");
 const getvideos = require('./routes/get_all_video')
 const subAdminLogin = require("./routes/sub_Admin_Login")
+const interactWithVideo = require("./routes/users/interact_with_video");
 
 
 // refferal
@@ -144,7 +145,7 @@ const fetchWalletWithdrawalHistory = require("./routes/users/fetch-Wallet-Withdr
 
 const fetchWalletHistory = require("./routes/users/fetch-Wallet-History");
 const fetchParticularUserPaymentStatus = require("./routes/fetch_Particular_User_Payment_Status");
-const interactWithVideo = require("./routes/users/interact_with_video");
+
 
 
 app.use(express.static(path.join(__dirname, "public")));
@@ -250,6 +251,7 @@ app.use("/admin", fetchParticularUserPaymentStatus);
 app.use("/admin", manageSubAdminRole);
 
 app.use("/user", interactWithVideo);
+
 app.use("/admin", getvideos)
 
 app.use("/admin", subAdminLogin)
