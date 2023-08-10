@@ -1513,9 +1513,9 @@ exports.fetchParticularUserPaymentStatus = async (req, res) => {
   }
 };
 
-exports.createSubAdmin = async (req, res) => {
+exports.manageSubAdminRole = async (req, res) => {
   try {
-    const { userId } = req.body;
+    const { userId, isSubAdmin } = req.body;
 
     if (!userId) {
       return res.status(400).json({ message: "Please provide a userid" });
@@ -1527,46 +1527,42 @@ exports.createSubAdmin = async (req, res) => {
       return res.status(404).json({ message: "User not found" });
     }
 
-    const makeSubAdmin = await User.findOneAndUpdate(
-      { userId: user._id },
-      { isSubAdmin: true },
-      { new: true }
-    );
+    let updatedSubAdmin;
+    let message;
 
-    return res
-      .status(200)
-      .json({ message: "SubAdmin role created successfully", makeSubAdmin });
+    if (isSubAdmin === true) {
+      updatedSubAdmin = await User.findOneAndUpdate(
+        { _id: user._id },
+        { isSubAdmin: true },
+        { new: true }
+      );
+      message = "SubAdmin role created successfully";
+    } else if (isSubAdmin === false) {
+      updatedSubAdmin = await User.findOneAndUpdate(
+        { _id: user._id },
+        { isSubAdmin: false },
+        { new: true }
+      );
+      message = "SubAdmin role removed successfully";
+    } else {
+      return res.status(400).json({ message: "Invalid action" });
+    }
+
+    return res.status(200).json({ message, updatedSubAdmin });
   } catch (error) {
-    console.log(error.message);
+    console.error(error.message);
     return res.status(500).json({ message: "Internal server error" });
   }
 };
 
-exports.removeSubAdmin = async (req, res) => {
+
+//get all video
+exports.getVideos = async (req, res) => {
   try {
-    const { userId } = req.body;
-
-    if (!userId) {
-      return res.status(400).json({ message: "Please provide a userid" });
-    }
-
-    const user = await User.findById(userId);
-
-    if (!user) {
-      return res.status(404).json({ message: "User not found" });
-    }
-
-    const removedSubAdmin = await User.findOneAndUpdate(
-      { userId: user._id },
-      { isSubAdmin: false },
-      { new: true }
-    );
-
-    return res
-      .status(200)
-      .json({ message: "SubAdmin role removed successfully", removedSubAdmin });
+    const videos = await Video.find();
+    res.status(200).json({ videos });
   } catch (error) {
-    console.error(error.message);
-    return res.status(500).json({ message: "Internal server error" });
+    console.error("Failed to fetch video:", error);
+    res.status(500).json({ error: "Failed to fetch video" });
   }
 };

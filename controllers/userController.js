@@ -1557,9 +1557,10 @@ exports.updateExpireUser = async (req, res) => {
   }
 };
 
+//get all video
 exports.getAllVideos = async (req, res) => {
   try {
-    const videos = await Video.find(); // Find all videos in the MongoDB database
+    const videos = await Video.find();
     res.status(200).json({ videos });
   } catch (error) {
     console.error("Failed to fetch video:", error);
@@ -2081,6 +2082,7 @@ exports.totalCountOfPaymentStatusOfUseruser = async (req, res) => {
   }
 };
 
+
 exports.interactWithVideo = async (req, res) => {
   try {
     const { videoId, action } = req.body;
@@ -2096,10 +2098,20 @@ exports.interactWithVideo = async (req, res) => {
     if (!video) {
       return res.status(404).json({ message: "Video not found" });
     }
-
+    const userId = req.user._id
+    console.log(userId, "userId")
     if (action === "like") {
-      video.likes += 1;
-    } else if (action === "comment") {
+      if (!video.likes) {
+        video.likes = 1;
+      } else {
+        return res.status(400).json({ message: "You've already liked this video" });
+      }
+    }else if(action === "unlike"){
+      if(video.likes>0){
+      video.likes -= 1;
+    }
+  }
+     else if (action === "comment") {
       const { comment } = req.body;
 
       if (!comment) {

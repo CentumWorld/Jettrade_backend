@@ -6,7 +6,7 @@ const videoSchema = new mongoose.Schema({
   thumbnail: { type: String, required: true },
   likes: { type: Number, default: 0 },
   comment: {type: String},
-  views: {type: String}
+  views: {type: Number, default:0}
 });
 
 module.exports = mongoose.model('video', videoSchema)

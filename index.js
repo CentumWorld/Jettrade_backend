@@ -99,8 +99,8 @@ const searchRenewalUsers = require("./routes/search-renewal-users");
 const totalCountOfPaymentStatusOfUser = require("./routes/total_Count_Of_Payment_Status_Of_User");
 const totalCountOfPaymentStatusOfUseruser = require("./routes/users/total_Count_Of_Payment_Status_Of_User_user");
 const findUsersOnTheBasisOfPaymentStatus = require("./routes/find_Users_On_The_Basis_Of_Payment_Status");
-const createSubAdmin = require("./routes/create_subAdmin");
-const removeSubAdmin = require("./routes/remove_subAdmin");
+const manageSubAdminRole = require("./routes/manage_subAdmin");
+
 
 // refferal
 const memberRegistration = require("./routes/refferal/member-registration");
@@ -143,6 +143,7 @@ const fetchWalletWithdrawalHistory = require("./routes/users/fetch-Wallet-Withdr
 const fetchWalletHistory = require("./routes/users/fetch-Wallet-History");
 const fetchParticularUserPaymentStatus = require("./routes/fetch_Particular_User_Payment_Status");
 const interactWithVideo = require("./routes/users/interact_with_video");
+const getvideos = require("./routes/get_all_video")
 
 app.use(express.static(path.join(__dirname, "public")));
 //app.use(cors());
@@ -244,9 +245,10 @@ app.use("/admin", totalCountOfPaymentStatusOfUser);
 app.use("/user", totalCountOfPaymentStatusOfUseruser);
 app.use("/admin", findUsersOnTheBasisOfPaymentStatus);
 app.use("/admin", fetchParticularUserPaymentStatus);
-app.use("/admin", createSubAdmin);
-app.use("/admin", removeSubAdmin);
+app.use("/admin", manageSubAdminRole);
+
 app.use("/user", interactWithVideo);
+app.use("/user", getvideos)
 
 // refferal
 app.use("/member", memberRegistration);
