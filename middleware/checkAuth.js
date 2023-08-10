@@ -78,13 +78,16 @@ exports.authenticateAdmin = async (req, res, next) => {
     console.log(req.userId, "uuuuu")
 
     const user = await User.findById(decoded.userId);
+    console.log(user._id, "uhihiuhi")
     const admin = await Admin.findById(decoded.userId);
 
     if (!user && !admin) {
       return res.status(403).json({ message: "You are not authorized" });
     }
 
-    req.adminId = admin ? admin._id : null; // Set adminId if user is admin
+    req.adminId = admin ? admin._id : user._id; // Set adminId if user is admin
+
+ 
 
     next();
   } catch (error) {
