@@ -73,7 +73,7 @@ exports.authenticateAdmin = async (req, res, next) => {
 
   try {
     const decoded = jwt.verify(token, process.env.SECRET_KEY);
-    console.log(decoded, "ddddddd")
+    console.log(decoded, "dddddd")
     req.userId = decoded.userId; // Save the user ID from the token in the request object
     console.log(req.userId, "uuuuu")
 

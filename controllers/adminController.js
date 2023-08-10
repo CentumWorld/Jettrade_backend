@@ -1577,7 +1577,7 @@ exports.subAdminLogin = async (req, res) => {
       return res.status(400).json({ message: "Please provide User Id and password" });
     }
 
-    const user = await User.findOne({ userid: userid }); // Find user by _id
+    const user = await User.findOne({ userid: userid }); 
 
     if (!user) {
       return res.status(404).json({ message: "User not found" });
@@ -1590,7 +1590,7 @@ exports.subAdminLogin = async (req, res) => {
     const passwordMatch = await bcrypt.compare(password, user.password);
 
     if (!passwordMatch) {
-      return res.status(401).json({ message: "Incorrect password" });
+      return res.status(401).json({ message: "Incorrect userId and password" });
     }
 
     console.log(user._id, "[[[[[]]")
@@ -1603,7 +1603,7 @@ exports.subAdminLogin = async (req, res) => {
 
     return res.status(200).json({
       message: "Sub admin login successful",
-      userId: user._id,
+      user: user,
       token: token
     });
   } catch (error) {
