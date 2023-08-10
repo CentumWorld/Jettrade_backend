@@ -1,6 +1,7 @@
 const Admin = require("../model/adminSchema");
 const User = require("../model/userSchema");
 const jwt = require("jsonwebtoken");
+const bcrypt = require("bcrypt")
 const Userdocument = require("../model/userDocumentSchema");
 const Member = require("../model/memberSchema");
 const Memberdocument = require("../model/memberDocumentSchema");
@@ -1566,3 +1567,48 @@ exports.getVideos = async (req, res) => {
     res.status(500).json({ error: "Failed to fetch video" });
   }
 };
+
+
+exports.subAdminLogin = async (req, res) => {
+  try {
+    const { userid, password } = req.body;
+
+    if (!userid || !password) {
+      return res.status(400).json({ message: "Please provide User Id and password" });
+    }
+
+    const user = await User.findOne({ userid: userid }); // Find user by _id
+
+    if (!user) {
+      return res.status(404).json({ message: "User not found" });
+    }
+
+    if (user.isSubAdmin === false) {
+      return res.status(400).json({ message: "You are not a sub admin" });
+    }
+  
+    const passwordMatch = await bcrypt.compare(password, user.password);
+
+    if (!passwordMatch) {
+      return res.status(401).json({ message: "Incorrect password" });
+    }
+
+    console.log(user._id, "[[[[[]]")
+
+    const token = jwt.sign(
+      { userId: user._id },
+      process.env.SECRET_KEY,
+      { expiresIn: "8h" }
+    );
+
+    return res.status(200).json({
+      message: "Sub admin login successful",
+      userId: user._id,
+      token: token
+    });
+  } catch (error) {
+    console.error(error.message);
+    return res.status(500).json({ message: "Internal server error" });
+  }
+};
+

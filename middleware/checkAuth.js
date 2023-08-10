@@ -26,6 +26,44 @@ const Member = require("../model/memberSchema");
 //   }
 // };
 
+// exports.authenticateAdmin = async (req, res, next) => {
+//   const token = req.headers.authorization?.split(" ")[1];
+
+//   if (!token) {
+//     return res.status(401).json({ message: "Unauthorized" });
+//   }
+
+//   try {
+//     const decoded = jwt.verify(token, process.env.SECRET_KEY);
+//     req.adminId = decoded.userId; // Save the admin ID from the token in the request object
+//     next();
+//   } catch (error) {
+//     console.log(error.message);
+//     return res.status(401).json({ message: "Invalid Token" });
+//   }
+// };
+
+// exports.authorizeAdmin = async (req, res, next) => {
+//   const adminId = req.adminId;
+//   console.log(adminId);
+
+//   try {
+//     const admin = await Admin.findOne({ _id: adminId });
+
+//     if (!admin) {
+//       return res
+//         .status(403)
+//         .json({ message: "You are not authorized as an admin" });
+//     }
+//     next();
+//   } catch (error) {
+//     console.log(error.message);
+//     return res.status(500).json({ message: "Internal Server Error" });
+//   }
+// };
+
+//==========
+
 exports.authenticateAdmin = async (req, res, next) => {
   const token = req.headers.authorization?.split(" ")[1];
 
@@ -35,7 +73,19 @@ exports.authenticateAdmin = async (req, res, next) => {
 
   try {
     const decoded = jwt.verify(token, process.env.SECRET_KEY);
-    req.adminId = decoded.userId; // Save the admin ID from the token in the request object
+    console.log(decoded, "ddddddd")
+    req.userId = decoded.userId; // Save the user ID from the token in the request object
+    console.log(req.userId, "uuuuu")
+
+    const user = await User.findById(decoded.userId);
+    const admin = await Admin.findById(decoded.userId);
+
+    if (!user && !admin) {
+      return res.status(403).json({ message: "You are not authorized" });
+    }
+
+    req.adminId = admin ? admin._id : null; // Set adminId if user is admin
+
     next();
   } catch (error) {
     console.log(error.message);
@@ -45,23 +95,29 @@ exports.authenticateAdmin = async (req, res, next) => {
 
 exports.authorizeAdmin = async (req, res, next) => {
   const adminId = req.adminId;
-  console.log(adminId);
+
+  if (!adminId) {
+    return res.status(403).json({ message: "You are not authorized" });
+  }
 
   try {
-    const admin = await Admin.findOne({ _id: adminId });
+    const user = await User.findById(adminId);
 
-    if (!admin) {
-      return res
-        .status(403)
-        .json({ message: "You are not authorized as an admin" });
+    if (user && user.isSubAdmin) {
+      // If the user is a subadmin, they are authorized
+      next();
+    } else {
+      return res.status(403).json({ message: "You are not authorized" });
     }
-    next();
   } catch (error) {
-    console.log(error.message);
+    console.error(error.message);
     return res.status(500).json({ message: "Internal Server Error" });
   }
 };
 
+
+
+//======
 exports.authenticateUser = async (req, res, next) => {
   const token = req.headers.authorization?.split(" ")[1];
 
@@ -72,9 +128,6 @@ exports.authenticateUser = async (req, res, next) => {
   try {
     const decoded = jwt.verify(token, process.env.SECRET_KEY);
     req.userId = decoded.userId; // Save the user ID from the token in the request object
-
-    console.log(userId, "jjjjjjjjj")
-
     next();
   } catch (error) {
     console.log(error.message);

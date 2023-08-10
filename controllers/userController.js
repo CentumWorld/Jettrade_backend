@@ -25,6 +25,7 @@ const UserRenewal = require("../model/userRenewelSchema");
 const MoneyWithdrawalTransaction = require("../model/withDrawlSchema");
 const AllNewPaidUser = require("../model/allNewPaidUserSchema");
 const MyReferral = require("../model/myReferralSchema");
+const Like = require("../model/likeModel");
 const { isValidPassword, isValidPhone } = require("../validation/validation");
 
 //const profilePhoto = require('../model/profilePhotoSchema');
@@ -924,7 +925,7 @@ exports.fetchUserNotification = async (req, res) => {
 // paymentUseridVerify
 exports.paymentUseridVerify = async (req, res) => {
   const { userid } = req.body;
-  console.log(userid,'927')
+  console.log(userid, "927");
   let paymentValue = 0;
   if (!userid) {
     res.status(404).json({
@@ -1010,7 +1011,7 @@ exports.changeUserPaymentStatus = async (req, res) => {
       $set: {
         paymentStatus: true,
         paymentCount: payment + 1,
-        isBlocked:false,
+        isBlocked: false,
         doj: new Date(),
       },
     }
@@ -2082,15 +2083,13 @@ exports.totalCountOfPaymentStatusOfUseruser = async (req, res) => {
   }
 };
 
-
 exports.interactWithVideo = async (req, res) => {
   try {
-    const { videoId, action } = req.body;
+    const { videoId, action, comments, replyTo } = req.body;
+    const userId = req.userId;
 
     if (!videoId || !action) {
-      return res
-        .status(400)
-        .json({ message: "Video Id and action are required" });
+      return res.status(400).json({ message: "Video Id and action are required" });
     }
 
     const video = await Video.findById(videoId);
@@ -2098,28 +2097,50 @@ exports.interactWithVideo = async (req, res) => {
     if (!video) {
       return res.status(404).json({ message: "Video not found" });
     }
-    const userId = req.user.userId
-    console.log(userId, "userId")
+
+    if (!userId) {
+      return res.status(400).json({ message: "User Id is required" });
+    }
+
     if (action === "like") {
-      if (!video.likes) {
-        video.likes = 1;
+      const existingLike = await Like.findOne({ userId, videoId });
+
+      if (!existingLike) {
+        video.likes += 1;
+        const newLike = new Like({ userId, videoId });
+        await newLike.save();
       } else {
         return res.status(400).json({ message: "You've already liked this video" });
       }
-    }else if(action === "unlike"){
-      if(video.likes>0){
-      video.likes -= 1;
-    }
-  }
-     else if (action === "comment") {
-      const { comment } = req.body;
+    } else if (action === "unlike") {
+      const existingLike = await Like.findOne({ userId, videoId });
 
-      if (!comment) {
-        return res
-          .status(400)
-          .json({ mesage: "Commnet is required for  'comment' action" });
+      if (existingLike) {
+        video.likes -= 1;
+        await existingLike.remove();
       }
-      video.comment = comment;
+    } else if (action === "comment") {
+      if (!comments) {
+        return res.status(400).json({ message: "Comments are required for 'comment' action" });
+      }
+
+      if (replyTo) {
+        const commentToReply = video.comments.find((c) => c._id.toString() === replyTo);
+
+        if (commentToReply) {
+          commentToReply.replies.push({
+            text: comments,
+            userId: userId,
+          });
+        } else {
+          return res.status(400).json({ message: "Comment to reply not found" });
+        }
+      } else {
+        video.comments.push({
+          text: comments,
+          userId: userId,
+        });
+      }
     } else if (action === "view") {
       video.views += 1;
     } else {
@@ -2128,12 +2149,10 @@ exports.interactWithVideo = async (req, res) => {
 
     const updatedVideo = await video.save();
 
-    res
-      .status(200)
-      .json({
-        message: "Video interaction updated successfully",
-        video: updatedVideo,
-      });
+    res.status(200).json({
+      message: "Video interaction updated successfully",
+      video: updatedVideo,
+    });
   } catch (error) {
     console.log(error.message);
     return res.status(500).json({ message: "Internal Server Error" });

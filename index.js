@@ -101,6 +101,7 @@ const totalCountOfPaymentStatusOfUseruser = require("./routes/users/total_Count_
 const findUsersOnTheBasisOfPaymentStatus = require("./routes/find_Users_On_The_Basis_Of_Payment_Status");
 const manageSubAdminRole = require("./routes/manage_subAdmin");
 const getvideos = require('./routes/get_all_video')
+const subAdminLogin = require("./routes/sub_Admin_Login")
 
 
 // refferal
@@ -250,6 +251,8 @@ app.use("/admin", manageSubAdminRole);
 
 app.use("/user", interactWithVideo);
 app.use("/admin", getvideos)
+
+app.use("/admin", subAdminLogin)
 
 // refferal
 app.use("/member", memberRegistration);
