@@ -81,7 +81,7 @@ const subadminSchema = new mongoose.Schema({
   },
   isSubAdmin: {
     type: Boolean,
-    default: false
+    default: true
   }
 });
 

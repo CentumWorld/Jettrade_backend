@@ -1582,7 +1582,7 @@ exports.subAdminLogin = async (req, res) => {
     const subadmin = await subAdmin.findOne({ subAdminId: subAdminId }); 
 
     if (!subadmin) {
-      return res.status(404).json({ message: "User not found" });
+      return res.status(404).json({ message: "Sub admin not found" });
     }
 
     // if (subadmin.isSubAdmin === false) {
@@ -1606,7 +1606,7 @@ exports.subAdminLogin = async (req, res) => {
     return res.status(200).json({
       message: "Sub admin login successful",
       subadmin: subadmin,
-      token: token
+      subAdmintoken: token
     });
   } catch (error) {
     console.error(error.message);
