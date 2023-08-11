@@ -111,6 +111,7 @@ const fetchWalletHistory = require("./routes/users/fetch-Wallet-History");
 const fetchParticularUserPaymentStatus = require("./routes/fetch_Particular_User_Payment_Status");
 
 const fetchOneVideoDetail = require("./routes/users/fetch_one_video_details");
+const createSubAdminInsideAdmin = require('./routes/create-sub-admin-inside-admin');
 
 // refferal
 const memberRegistration = require("./routes/refferal/member-registration");
@@ -249,10 +250,12 @@ app.use("/user", userFetchAllVideo);
 app.use("/admin", subAdminLogin);
 
 
+
 app.use("/admin", getvideos);
 
 app.use("/admin", subAdminLogin);
 app.use("/user", fetchOneVideoDetail);
+app.use('/admin',createSubAdminInsideAdmin);
 
 // refferal
 app.use("/member", memberRegistration);

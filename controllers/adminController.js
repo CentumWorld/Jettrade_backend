@@ -24,6 +24,8 @@ const MoneyWithdrawlTransaction = require("../model/withDrawlSchema");
 const UserRenewal = require("../model/userRenewelSchema");
 const AllNewPaidUser = require("../model/allNewPaidUserSchema");
 const MyReferral = require("../model/myReferralSchema");
+const subAdmin = require('../model/subadminSchema');
+const validator = require("validator");
 
 require("dotenv").config();
 
@@ -1571,39 +1573,39 @@ exports.getVideos = async (req, res) => {
 
 exports.subAdminLogin = async (req, res) => {
   try {
-    const { userid, password } = req.body;
+    const { subAdminId, password } = req.body;
 
-    if (!userid || !password) {
+    if (!subAdminId || !password) {
       return res.status(400).json({ message: "Please provide User Id and password" });
     }
 
-    const user = await User.findOne({ userid: userid }); 
+    const subadmin = await subAdmin.findOne({ subAdminId: subAdminId }); 
 
-    if (!user) {
+    if (!subadmin) {
       return res.status(404).json({ message: "User not found" });
     }
 
-    if (user.isSubAdmin === false) {
-      return res.status(400).json({ message: "You are not a sub admin" });
-    }
+    // if (subadmin.isSubAdmin === false) {
+    //   return res.status(400).json({ message: "You are not a sub admin" });
+    // }
   
-    const passwordMatch = await bcrypt.compare(password, user.password);
+    const passwordMatch = await bcrypt.compare(password, subadmin.password);
 
     if (!passwordMatch) {
       return res.status(401).json({ message: "Incorrect userId and password" });
     }
 
-    console.log(user._id, "[[[[[]]")
+    
 
     const token = jwt.sign(
-      { userId: user._id },
+      { subAdminId: subadmin._id },
       process.env.SECRET_KEY,
       { expiresIn: "8h" }
     );
 
     return res.status(200).json({
       message: "Sub admin login successful",
-      user: user,
+      subadmin: subadmin,
       token: token
     });
   } catch (error) {
@@ -1611,4 +1613,129 @@ exports.subAdminLogin = async (req, res) => {
     return res.status(500).json({ message: "Internal server error" });
   }
 };
+
+// createSubAdminInsideAdmin
+exports.createSubAdminInsideAdmin = async (req,res) => {
+  if (
+    !req.files ||
+    !req.files["aadhar_front_side"] ||
+    !req.files["aadhar_back_side"] ||
+    !req.files["pan_card"]
+  ) {
+    return res.status(422).json({
+      message:
+        "Please upload all required files (aadhar_front_side, aadhar_back_side, pan_card)",
+    });
+  }
+
+  // const userType = "indian";
+  const aadhar_front_side = req.files.aadhar_front_side[0].location;
+  const aadhar_back_side = req.files.aadhar_back_side[0].location;
+  const pan_card = req.files.pan_card[0].location;
+  //console.log(aadhar_back, aadhar_front, pan_card,'140');
+
+  const requiredFields = [
+    "fname",
+    "lname",
+    "email",
+    "phone",
+    "gender",
+    "dob",
+    "aadhar",
+    "pan",
+  ];
+
+  const {
+    fname,
+    lname,
+    email,
+    phone,
+    gender,
+    dob,
+    aadhar,
+    pan,
+    subAdminId,
+    password,
+  } = req.body;
+
+  // Check if any required field is missing
+  const missingFields = requiredFields.filter((field) => !req.body[field]);
+  if (missingFields.length > 0) {
+    return res.status(422).json({
+      message: `Please fill all details: ${missingFields.join(", ")}`,
+    });
+  }
+
+  if (!validator.isEmail(email)) {
+    return res
+      .status(400)
+      .json({ status: false, message: "Invalid email address" });
+  }
+
+  const aadhar_length = aadhar;
+  const pan_length = pan;
+  //console.log(aadhar_length.length,'35');
+  if (aadhar_length.length < 12 || aadhar_length.length > 12) {
+    return res.status(422).json({
+      message: "Inavlid Aadhar !",
+    });
+  }
+
+  if (pan_length.length < 10 || pan_length.length > 10) {
+    return res.status(422).json({
+      message: "Invalid Pan !",
+    });
+  }
+    try {
+      const subAdminExist = await subAdmin.findOne({ subAdminId: subAdminId });
+      if (subAdminExist) {
+        return res
+          .status(400)
+          .json({ message: "this SubAdminId is already taken" });
+      }
+
+      if (password.length < 8) {
+        return res.status(400).json({
+          message: "Password must be minimum length of 8 charector!",
+        });
+      }
+
+      const subadmin = new subAdmin({
+        fname,
+        lname,
+        email,
+        phone,
+        gender,
+        dob,
+        aadhar,
+        pan,
+        aadhar_front_side,
+        aadhar_back_side,
+        pan_card,
+        subAdminId,
+        password,
+      });
+      await subadmin.save();
+      const phone2 = "+" + subadmin.phone;
+      // SuccessfullRegistrationSms(phone2, { "userid": user.userid, "password": password })
+
+      const token = jwt.sign(
+        { subAdminId: subadmin._id },
+        process.env.SECRET_KEY,
+        { expiresIn: 6000 } // Set the token to expire in 1 hour
+      );
+      res.status(201).json({
+        message: "Sub-admin registered successfully",
+        _id: subadmin._id,
+        fname,
+        subAdminId,
+        token,
+        password,
+      });
+    } catch (error) {
+      console.log(error);
+    }
+  }
+
+
 
