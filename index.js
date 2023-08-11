@@ -100,9 +100,10 @@ const totalCountOfPaymentStatusOfUser = require("./routes/total_Count_Of_Payment
 const totalCountOfPaymentStatusOfUseruser = require("./routes/users/total_Count_Of_Payment_Status_Of_User_user");
 const findUsersOnTheBasisOfPaymentStatus = require("./routes/find_Users_On_The_Basis_Of_Payment_Status");
 const manageSubAdminRole = require("./routes/manage_subAdmin");
-const getvideos = require('./routes/get_all_video')
-const subAdminLogin = require("./routes/sub_Admin_Login")
+const getvideos = require("./routes/get_all_video");
+const subAdminLogin = require("./routes/sub_Admin_Login");
 const interactWithVideo = require("./routes/users/interact_with_video");
+<<<<<<< HEAD
 const videoUpload = require("./routes/adminVideo");
 const getVideo = require("./routes/users/video");
 const withdrawlFromWalletAndTradingWallet = require("./routes/users/withdrawl-From-Wallet-And-TradingWallet");
@@ -110,6 +111,9 @@ const fetchWalletWithdrawalHistory = require("./routes/users/fetch-Wallet-Withdr
 const fetchWalletHistory = require("./routes/users/fetch-Wallet-History");
 const fetchParticularUserPaymentStatus = require("./routes/fetch_Particular_User_Payment_Status");
 
+=======
+const fetchOneVideoDetail = require("./routes/users/fetch_one_video_details");
+>>>>>>> a23e8695639ae22ad8b46f578ad6f8cd0908ab11
 
 // refferal
 const memberRegistration = require("./routes/refferal/member-registration");
@@ -142,8 +146,6 @@ const fetchChatMessageRefferal = require("./routes/refferal/fetch-chat-message-r
 const adminOnlineOrNotRefferal = require("./routes/refferal/admin-online-or-not-refferal");
 const refferalTotalWithdrawal = require("./routes/refferal/refferal-total-withdrawal");
 const refferalMyTeam = require("./routes/refferal/refferal-my-team");
-
-
 
 
 app.use(express.static(path.join(__dirname, "public")));
@@ -249,7 +251,14 @@ app.use("/user", interactWithVideo);
 app.use("/admin", getvideos);
 app.use("/admin", subAdminLogin);
 
+<<<<<<< HEAD
 
+=======
+app.use("/admin", getvideos);
+
+app.use("/admin", subAdminLogin);
+app.use("/user", fetchOneVideoDetail);
+>>>>>>> a23e8695639ae22ad8b46f578ad6f8cd0908ab11
 
 // refferal
 app.use("/member", memberRegistration);

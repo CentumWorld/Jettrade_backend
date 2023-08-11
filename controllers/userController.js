@@ -2086,6 +2086,7 @@ exports.totalCountOfPaymentStatusOfUseruser = async (req, res) => {
 exports.interactWithVideo = async (req, res) => {
   try {
     const { videoId, action, comments, replyTo } = req.body;
+
     const userId = req.userId;
 
     if (!videoId || !action) {
@@ -2158,3 +2159,24 @@ exports.interactWithVideo = async (req, res) => {
     return res.status(500).json({ message: "Internal Server Error" });
   }
 };
+
+
+exports.fetchOneVideoDetail = async(req, res) => {
+  try {
+    const {videoId} = req.body
+
+    if(!videoId){
+      return res.status(400).json({message: "Video Id is required"})
+
+    }
+
+    const video = await Video.findById(videoId)
+
+    if(!video){
+      return res.status(404).json({message: "Video not found"})
+    }
+    return res.status(200).json({message: "video details fetched", video})
+  } catch (error) {
+    
+  }
+}
