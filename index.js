@@ -103,6 +103,12 @@ const manageSubAdminRole = require("./routes/manage_subAdmin");
 const getvideos = require('./routes/get_all_video')
 const subAdminLogin = require("./routes/sub_Admin_Login")
 const interactWithVideo = require("./routes/users/interact_with_video");
+const videoUpload = require("./routes/adminVideo");
+const getVideo = require("./routes/users/video");
+const withdrawlFromWalletAndTradingWallet = require("./routes/users/withdrawl-From-Wallet-And-TradingWallet");
+const fetchWalletWithdrawalHistory = require("./routes/users/fetch-Wallet-Withdrawal-History");
+const fetchWalletHistory = require("./routes/users/fetch-Wallet-History");
+const fetchParticularUserPaymentStatus = require("./routes/fetch_Particular_User_Payment_Status");
 
 
 // refferal
@@ -137,19 +143,10 @@ const adminOnlineOrNotRefferal = require("./routes/refferal/admin-online-or-not-
 const refferalTotalWithdrawal = require("./routes/refferal/refferal-total-withdrawal");
 const refferalMyTeam = require("./routes/refferal/refferal-my-team");
 
-const videoUpload = require("./routes/adminVideo");
-const getVideo = require("./routes/users/video");
-
-const withdrawlFromWalletAndTradingWallet = require("./routes/users/withdrawl-From-Wallet-And-TradingWallet");
-const fetchWalletWithdrawalHistory = require("./routes/users/fetch-Wallet-Withdrawal-History");
-
-const fetchWalletHistory = require("./routes/users/fetch-Wallet-History");
-const fetchParticularUserPaymentStatus = require("./routes/fetch_Particular_User_Payment_Status");
 
 
 
 app.use(express.static(path.join(__dirname, "public")));
-//app.use(cors());
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
 app.use(cookieParser());
@@ -244,17 +241,15 @@ app.use("/admin", searchRefferalPayoutByRefferUserid);
 app.use("/admin", searchNewUsers);
 app.use("/admin", searchRenewalUsers);
 app.use("/admin", totalCountOfPaymentStatusOfUser);
-
 app.use("/user", totalCountOfPaymentStatusOfUseruser);
 app.use("/admin", findUsersOnTheBasisOfPaymentStatus);
 app.use("/admin", fetchParticularUserPaymentStatus);
 app.use("/admin", manageSubAdminRole);
-
 app.use("/user", interactWithVideo);
+app.use("/admin", getvideos);
+app.use("/admin", subAdminLogin);
 
-app.use("/admin", getvideos)
 
-app.use("/admin", subAdminLogin)
 
 // refferal
 app.use("/member", memberRegistration);
