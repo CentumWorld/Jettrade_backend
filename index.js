@@ -103,17 +103,14 @@ const manageSubAdminRole = require("./routes/manage_subAdmin");
 const getvideos = require("./routes/get_all_video");
 const subAdminLogin = require("./routes/sub_Admin_Login");
 const interactWithVideo = require("./routes/users/interact_with_video");
-<<<<<<< HEAD
 const videoUpload = require("./routes/adminVideo");
-const getVideo = require("./routes/users/video");
+const userFetchAllVideo = require("./routes/users/user-fetch-all-videos");
 const withdrawlFromWalletAndTradingWallet = require("./routes/users/withdrawl-From-Wallet-And-TradingWallet");
 const fetchWalletWithdrawalHistory = require("./routes/users/fetch-Wallet-Withdrawal-History");
 const fetchWalletHistory = require("./routes/users/fetch-Wallet-History");
 const fetchParticularUserPaymentStatus = require("./routes/fetch_Particular_User_Payment_Status");
 
-=======
 const fetchOneVideoDetail = require("./routes/users/fetch_one_video_details");
->>>>>>> a23e8695639ae22ad8b46f578ad6f8cd0908ab11
 
 // refferal
 const memberRegistration = require("./routes/refferal/member-registration");
@@ -222,7 +219,7 @@ app.use("/user", userUpdateWalletAfterAdding);
 app.use("/user", updateDayCount);
 app.use("/user", updateExpire);
 app.use("/admin", videoUpload);
-app.use("/user", getVideo);
+// app.use("/user", getVideo);
 app.use("/user", addingAmountToTradingWallet);
 app.use("/user", withdrawlAmountFromTradingWallet);
 app.use("/admin", fetchParticularUserDetailsFromAdminUsingUserid);
@@ -248,17 +245,14 @@ app.use("/admin", findUsersOnTheBasisOfPaymentStatus);
 app.use("/admin", fetchParticularUserPaymentStatus);
 app.use("/admin", manageSubAdminRole);
 app.use("/user", interactWithVideo);
-app.use("/admin", getvideos);
+app.use("/user", userFetchAllVideo);
 app.use("/admin", subAdminLogin);
 
-<<<<<<< HEAD
 
-=======
 app.use("/admin", getvideos);
 
 app.use("/admin", subAdminLogin);
 app.use("/user", fetchOneVideoDetail);
->>>>>>> a23e8695639ae22ad8b46f578ad6f8cd0908ab11
 
 // refferal
 app.use("/member", memberRegistration);

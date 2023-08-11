@@ -1559,7 +1559,7 @@ exports.updateExpireUser = async (req, res) => {
 };
 
 //get all video
-exports.getAllVideos = async (req, res) => {
+exports.userFetchAllVideo = async (req, res) => {
   try {
     const videos = await Video.find();
     res.status(200).json({ videos });
