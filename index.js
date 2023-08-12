@@ -111,13 +111,11 @@ const fetchWalletHistory = require("./routes/users/fetch-Wallet-History");
 const fetchParticularUserPaymentStatus = require("./routes/fetch_Particular_User_Payment_Status");
 
 const fetchOneVideoDetail = require("./routes/users/fetch_one_video_details");
-<<<<<<< Updated upstream
 const createSubAdminInsideAdmin = require('./routes/create-sub-admin-inside-admin');
-=======
 const fetchUserOneVideoLike = require("./routes/users/fetch-User-One-Video-Like")
 const fetchUserOneVideoDisLike = require('./routes/users/fetch-User-One-Video-DisLike')
->>>>>>> Stashed changes
-
+const  createStateHandler = require("./routes/create_State_Handler");
+const createFrenchise = require("./routes/create-frenchise")
 // refferal
 const memberRegistration = require("./routes/refferal/member-registration");
 const memberLogin = require("./routes/refferal/member-login");
@@ -149,6 +147,7 @@ const fetchChatMessageRefferal = require("./routes/refferal/fetch-chat-message-r
 const adminOnlineOrNotRefferal = require("./routes/refferal/admin-online-or-not-refferal");
 const refferalTotalWithdrawal = require("./routes/refferal/refferal-total-withdrawal");
 const refferalMyTeam = require("./routes/refferal/refferal-my-team");
+
 
 
 app.use(express.static(path.join(__dirname, "public")));
@@ -260,12 +259,11 @@ app.use("/admin", getvideos);
 
 app.use("/admin", subAdminLogin);
 app.use("/user", fetchOneVideoDetail);
-<<<<<<< Updated upstream
 app.use('/admin',createSubAdminInsideAdmin);
-=======
 app.use("/user", fetchUserOneVideoLike)
 app.use("/user", fetchUserOneVideoDisLike)
->>>>>>> Stashed changes
+app.use("/admin", createStateHandler)
+app.use("/admin", createFrenchise)
 
 // refferalin
 app.use("/member", memberRegistration);

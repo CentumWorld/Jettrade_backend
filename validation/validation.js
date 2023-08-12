@@ -5,9 +5,10 @@
 }
 
 function isValidPhone(phone) {
-    const re = /^[+\d][\d-]{7,}$/;
-    return re.test(phone);
-  }
+  const re = /^(\+91[\d]{10}|\d{10})$/;
+  return re.test(phone);
+}
+
   
 
 const isValidBody = function (Stringvalue) {
@@ -39,4 +40,11 @@ const isValidInstallments = (value) => { return (/^\d*\.?\d*$/).test(value) }
 const isValidImage = (value) => { return (/\.(gif|jpe?g|tiff?|png|webp|bmp)$/).test(value) }
 
 
-module.exports={isValidEmail,isValidPhone,isValidName,isValidPassword,isValidCity,isValidPinCode,isValidProductName,isValidPrice,isValidateSize,isValidCurrencyId,isValidNo,isValidImage,isValidInstallments,isValidBody,checkSpaceBtwWord}
+function isValidUserId(value) {
+  const re = /^(?=.*[a-zA-Z])(?=.*\d)[a-zA-Z\d]{6,}$/; // Should have at least 1 letter and 1 digit, minimum length 6
+  return re.test(value);
+}
+
+
+
+module.exports={isValidEmail,isValidPhone,isValidName,isValidPassword,isValidCity,isValidPinCode,isValidProductName,isValidPrice,isValidateSize,isValidCurrencyId,isValidNo,isValidImage,isValidInstallments,isValidBody,checkSpaceBtwWord,isValidUserId}

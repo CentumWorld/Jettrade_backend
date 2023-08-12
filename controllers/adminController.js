@@ -1,7 +1,7 @@
 const Admin = require("../model/adminSchema");
 const User = require("../model/userSchema");
 const jwt = require("jsonwebtoken");
-const bcrypt = require("bcrypt")
+const bcrypt = require("bcrypt");
 const Userdocument = require("../model/userDocumentSchema");
 const Member = require("../model/memberSchema");
 const Memberdocument = require("../model/memberDocumentSchema");
@@ -24,8 +24,18 @@ const MoneyWithdrawlTransaction = require("../model/withDrawlSchema");
 const UserRenewal = require("../model/userRenewelSchema");
 const AllNewPaidUser = require("../model/allNewPaidUserSchema");
 const MyReferral = require("../model/myReferralSchema");
-const subAdmin = require('../model/subadminSchema');
+const subAdmin = require("../model/subadminSchema");
 const validator = require("validator");
+const StateHandler = require("../model/stateHandlerSchema");
+const Frenchise = require("../model/frenchiseSchema")
+const {
+  isValidPassword,
+  isValidName,
+  isValidImage,
+  isValidPhone,
+  isValidEmail,
+  isValidUserId,
+} = require("../validation/validation");
 
 require("dotenv").config();
 
@@ -1558,7 +1568,6 @@ exports.manageSubAdminRole = async (req, res) => {
   }
 };
 
-
 //get all video
 exports.getVideos = async (req, res) => {
   try {
@@ -1570,16 +1579,17 @@ exports.getVideos = async (req, res) => {
   }
 };
 
-
 exports.subAdminLogin = async (req, res) => {
   try {
     const { subAdminId, password } = req.body;
 
     if (!subAdminId || !password) {
-      return res.status(400).json({ message: "Please provide User Id and password" });
+      return res
+        .status(400)
+        .json({ message: "Please provide User Id and password" });
     }
 
-    const subadmin = await subAdmin.findOne({ subAdminId: subAdminId }); 
+    const subadmin = await subAdmin.findOne({ subAdminId: subAdminId });
 
     if (!subadmin) {
       return res.status(404).json({ message: "Sub admin not found" });
@@ -1588,14 +1598,12 @@ exports.subAdminLogin = async (req, res) => {
     // if (subadmin.isSubAdmin === false) {
     //   return res.status(400).json({ message: "You are not a sub admin" });
     // }
-  
+
     const passwordMatch = await bcrypt.compare(password, subadmin.password);
 
     if (!passwordMatch) {
       return res.status(401).json({ message: "Incorrect userId and password" });
     }
-
-    
 
     const token = jwt.sign(
       { subAdminId: subadmin._id },
@@ -1606,7 +1614,7 @@ exports.subAdminLogin = async (req, res) => {
     return res.status(200).json({
       message: "Sub admin login successful",
       subadmin: subadmin,
-      subAdmintoken: token
+      subAdmintoken: token,
     });
   } catch (error) {
     console.error(error.message);
@@ -1615,7 +1623,7 @@ exports.subAdminLogin = async (req, res) => {
 };
 
 // createSubAdminInsideAdmin
-exports.createSubAdminInsideAdmin = async (req,res) => {
+exports.createSubAdminInsideAdmin = async (req, res) => {
   if (
     !req.files ||
     !req.files["aadhar_front_side"] ||
@@ -1686,56 +1694,339 @@ exports.createSubAdminInsideAdmin = async (req,res) => {
       message: "Invalid Pan !",
     });
   }
-    try {
-      const subAdminExist = await subAdmin.findOne({ subAdminId: subAdminId });
-      if (subAdminExist) {
-        return res
-          .status(400)
-          .json({ message: "this SubAdminId is already taken" });
-      }
-
-      if (password.length < 8) {
-        return res.status(400).json({
-          message: "Password must be minimum length of 8 charector!",
-        });
-      }
-
-      const subadmin = new subAdmin({
-        fname,
-        lname,
-        email,
-        phone,
-        gender,
-        dob,
-        aadhar,
-        pan,
-        aadhar_front_side,
-        aadhar_back_side,
-        pan_card,
-        subAdminId,
-        password,
-      });
-      await subadmin.save();
-      const phone2 = "+" + subadmin.phone;
-      // SuccessfullRegistrationSms(phone2, { "userid": user.userid, "password": password })
-
-      const token = jwt.sign(
-        { subAdminId: subadmin._id },
-        process.env.SECRET_KEY,
-        { expiresIn: 6000 } // Set the token to expire in 1 hour
-      );
-      res.status(201).json({
-        message: "Sub-admin registered successfully",
-        _id: subadmin._id,
-        fname,
-        subAdminId,
-        token,
-        password,
-      });
-    } catch (error) {
-      console.log(error);
+  try {
+    const subAdminExist = await subAdmin.findOne({ subAdminId: subAdminId });
+    if (subAdminExist) {
+      return res
+        .status(400)
+        .json({ message: "this SubAdminId is already taken" });
     }
+
+    if (password.length < 8) {
+      return res.status(400).json({
+        message: "Password must be minimum length of 8 charector!",
+      });
+    }
+
+    const subadmin = new subAdmin({
+      fname,
+      lname,
+      email,
+      phone,
+      gender,
+      dob,
+      aadhar,
+      pan,
+      aadhar_front_side,
+      aadhar_back_side,
+      pan_card,
+      subAdminId,
+      password,
+    });
+    await subadmin.save();
+    const phone2 = "+" + subadmin.phone;
+    // SuccessfullRegistrationSms(phone2, { "userid": user.userid, "password": password })
+
+    const token = jwt.sign(
+      { subAdminId: subadmin._id },
+      process.env.SECRET_KEY,
+      { expiresIn: 6000 } // Set the token to expire in 1 hour
+    );
+    res.status(201).json({
+      message: "Sub-admin registered successfully",
+      _id: subadmin._id,
+      fname,
+      subAdminId,
+      token,
+      password,
+    });
+  } catch (error) {
+    console.log(error);
   }
+};
+   
+
+//register state handler
+
+exports.createStateHandler = async (req, res) => {
+  try {
+    const {
+      fname,
+      lname,
+      phone,
+      email,
+      gender,
+      password,
+      address,
+      dob,
+      selectedState,
+      stateHandlerId,
+    } = req.body;
+
+    const adharCardFile = req.files["adharCard"][0];
+    const panCardFile = req.files["panCard"][0];
+
+    // Check if adharCard image is valid using isValidImage function
+    if (!isValidImage(adharCardFile.originalname)) {
+      return res.status(422).json({
+        message:
+          "Invalid adharCard image format, image must be in jpeg, jpg, tiff, png, webp, or bmp format.",
+      });
+    }
+
+    // Check if panCard image is valid using isValidImage function
+    if (!isValidImage(panCardFile.originalname)) {
+      return res.status(422).json({
+        message:
+          "Invalid panCard image format, image must be in jpeg, jpg, tiff, png, webp, or bmp format.",
+      });
+    }
+
+    const adharCardLocation = adharCardFile.location;
+    const panCardLocation = panCardFile.location;
+    const requiredFields = [
+      "fname",
+      "lname",
+      "email",
+      "phone",
+      "address",
+      "gender",
+      "dob",
+      "selectedState",
+      "stateHandlerId",
+    ];
+
+    const missingFields = requiredFields.filter((field) => !req.body[field]);
+    if (missingFields.length > 0) {
+      return res.status(422).json({
+        message: `Please fill all details: ${missingFields.join(", ")}`,
+      });
+    }
+
+    // Validate stateHandlerId uniqueness
+    const existingStateHandler = await StateHandler.findOne({
+      stateHandlerId: stateHandlerId,
+    });
+    if (existingStateHandler) {
+      return res.status(422).json({
+        message: "State handler ID already exists. Please choose a unique ID.",
+      });
+    }
+
+   
+    if (!isValidPhone(phone)) {
+      return res.status(422).json({
+        message:
+          "Invalid phone number format. Use 10 digits or include country code.",
+      });
+    }
+
+    if (!isValidName(fname) || !isValidName(lname)) {
+      return res.status(422).json({
+        message: "Invalid name format.",
+      });
+    }
+
+    if (!isValidEmail(email)) {
+      return res.status(422).json({
+        message: "Invalid email format.",
+      });
+    }
+
+    if (!isValidPassword(password)) {
+      return res.status(422).json({
+        message:
+          "Password must be 8 to 15 characters long and contain at least one lowercase letter, one uppercase letter, and one digit.",
+      });
+    }
+
+    if (!isValidUserId(stateHandlerId)) {
+      return res.status(422).json({
+        message:
+          "StateHandlerId Should have at least 1 letter and 1 digit, minimum length 6.",
+      });
+    }
+
+    const randomDigits = Math.floor(1000 + Math.random() * 9000);
+
+    const referralId = `${fname.toLowerCase()}${randomDigits}`;
+    console.log(referralId);
+
+    const newStateHandler = new StateHandler({
+      fname,
+      lname,
+      phone,
+      email,
+      password,
+      address,
+      gender,
+      dob,
+      selectedState,
+      stateHandlerId,
+      adharCard: adharCardLocation,
+      panCard: panCardLocation,
+      referralId,
+    });
+
+    const savedStateHandler = await newStateHandler.save();
+
+    return res.status(201).json({
+      message: "User created successfully",
+     
+      savedStateHandler,
+    });
+  } catch (error) {
+    console.error(error);
+    return res.status(500).json({
+      message: "Internal Server Error",
+    });
+  }
+};
 
 
+
+exports.createFrenchise = async (req, res) => {
+  try {
+    const {
+      fname,
+      lname,
+      phone,
+      email,
+      gender,
+      password,
+      address,
+      dob,
+      frenchiseId,
+      referredId
+    } = req.body;
+
+    const adharCardFile = req.files["adharCard"][0];
+    const panCardFile = req.files["panCard"][0];
+
+    // Check if adharCard image is valid using isValidImage function
+    if (!isValidImage(adharCardFile.originalname)) {
+      return res.status(422).json({
+        message:
+          "Invalid adharCard image format, image must be in jpeg, jpg, tiff, png, webp, or bmp format.",
+      });
+    }
+
+    // Check if panCard image is valid using isValidImage function
+    if (!isValidImage(panCardFile.originalname)) {
+      return res.status(422).json({
+        message:
+          "Invalid panCard image format, image must be in jpeg, jpg, tiff, png, webp, or bmp format.",
+      });
+    }
+
+    const adharCardLocation = adharCardFile.location;
+    const panCardLocation = panCardFile.location;
+    const requiredFields = [
+      "fname",
+      "lname",
+      "email",
+      "phone",
+      "address",
+      "gender",
+      "dob",
+      "frenchiseId",
+      "referredId",
+    ];
+
+    const missingFields = requiredFields.filter((field) => !req.body[field]);
+    if (missingFields.length > 0) {
+      return res.status(422).json({
+        message: `Please fill all details: ${missingFields.join(", ")}`,
+      });
+    }
+
+    // Validate stateHandlerId uniqueness
+    const existingFrenchiseId = await Frenchise.findOne({
+      frenchiseId: frenchiseId,
+    });
+    if (existingFrenchiseId) {
+      return res.status(422).json({
+        message: "This Frenchise ID already exists. Please choose a unique ID.",
+      });
+    }
+
+    // Is referred id exist in state handler collection
+
+    const existReferredId = await StateHandler.findOne({referralId:referredId})
+
+    console.log(existReferredId)
+
+    if(!existReferredId){
+      return res.status(400).json({message: "invalid reffered Id"})
+    }
+
+   
+    if (!isValidPhone(phone)) {
+      return res.status(422).json({
+        message:
+          "Invalid phone number format. Use 10 digits or include country code.",
+      });
+    }
+
+    if (!isValidName(fname) || !isValidName(lname)) {
+      return res.status(422).json({
+        message: "Invalid name format.",
+      });
+    }
+
+    if (!isValidEmail(email)) {
+      return res.status(422).json({
+        message: "Invalid email format.",
+      });
+    }
+
+    if (!isValidPassword(password)) {
+      return res.status(422).json({
+        message:
+          "Password must be 8 to 15 characters long and contain at least one lowercase letter, one uppercase letter, and one digit.",
+      });
+    }
+
+    // if (!isValidStateHandlerId(stateHandlerId)) {
+    //   return res.status(422).json({
+    //     message:
+    //       "StateHandlerId Should have at least 1 letter and 1 digit, minimum length 6.",
+    //   });
+    // }
+
+    const randomDigits = Math.floor(1000 + Math.random() * 9000);
+
+    const referralId = `${fname.toLowerCase()}${randomDigits}`;
+    console.log(referralId);
+
+    const newFrenchise = new Frenchise({
+      fname,
+      lname,
+      phone,
+      email,
+      password,
+      address,
+      gender,
+      dob,
+      frenchiseId,
+      adharCard: adharCardLocation,
+      panCard: panCardLocation,
+      referralId,
+      referredId
+    });
+
+    const savedFrenchise = await newFrenchise.save();
+
+    return res.status(201).json({
+      message: "User created successfully",
+      referralId: referralId,
+      savedFrenchise,
+    });
+  } catch (error) {
+    console.error(error);
+    return res.status(500).json({
+      message: "Internal Server Error",
+    });
+  }
+};
 
