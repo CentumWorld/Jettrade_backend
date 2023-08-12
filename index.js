@@ -116,6 +116,12 @@ const fetchUserOneVideoLike = require("./routes/users/fetch-User-One-Video-Like"
 const fetchUserOneVideoDisLike = require('./routes/users/fetch-User-One-Video-DisLike')
 const  createStateHandler = require("./routes/create_State_Handler");
 const createFrenchise = require("./routes/create-frenchise")
+const createBusinnesDeveloper = require("./routes/create-business-developer")
+const stateHandlerLogin = require("./routes/state_handler-login")
+const frenchiseLogin = require("./routes/frenchise_login")
+const businessDeveloperLogin = require("./routes/business-developer-login")
+
+//======================================================================
 // refferal
 const memberRegistration = require("./routes/refferal/member-registration");
 const memberLogin = require("./routes/refferal/member-login");
@@ -264,6 +270,10 @@ app.use("/user", fetchUserOneVideoLike)
 app.use("/user", fetchUserOneVideoDisLike)
 app.use("/admin", createStateHandler)
 app.use("/admin", createFrenchise)
+app.use("/admin", createBusinnesDeveloper)
+app.use("/admin", stateHandlerLogin)
+app.use("/admin", businessDeveloperLogin)
+app.use("/admin",frenchiseLogin)
 
 // refferalin
 app.use("/member", memberRegistration);

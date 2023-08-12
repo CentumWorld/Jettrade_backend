@@ -27,7 +27,8 @@ const MyReferral = require("../model/myReferralSchema");
 const subAdmin = require("../model/subadminSchema");
 const validator = require("validator");
 const StateHandler = require("../model/stateHandlerSchema");
-const Frenchise = require("../model/frenchiseSchema")
+const Frenchise = require("../model/frenchiseSchema");
+const BusinessDeveloper = require("../model/businessDeveloperSchema");
 const {
   isValidPassword,
   isValidName,
@@ -1744,8 +1745,8 @@ exports.createSubAdminInsideAdmin = async (req, res) => {
     console.log(error);
   }
 };
-   
 
+//===================================================================
 //register state handler
 
 exports.createStateHandler = async (req, res) => {
@@ -1762,6 +1763,14 @@ exports.createStateHandler = async (req, res) => {
       selectedState,
       stateHandlerId,
     } = req.body;
+
+    if (!req.files["adharCard"] || req.files["adharCard"].length === 0) {
+      return res.status(400).json({ message: "Adhar card file is missing." });
+    }
+
+    if (!req.files["panCard"] || req.files["panCard"].length === 0) {
+      return res.status(400).json({ message: "Pan card file is missing." });
+    }
 
     const adharCardFile = req.files["adharCard"][0];
     const panCardFile = req.files["panCard"][0];
@@ -1789,6 +1798,7 @@ exports.createStateHandler = async (req, res) => {
       "lname",
       "email",
       "phone",
+      "password",
       "address",
       "gender",
       "dob",
@@ -1813,7 +1823,6 @@ exports.createStateHandler = async (req, res) => {
       });
     }
 
-   
     if (!isValidPhone(phone)) {
       return res.status(422).json({
         message:
@@ -1847,6 +1856,8 @@ exports.createStateHandler = async (req, res) => {
       });
     }
 
+    const hashedPassword = await bcrypt.hash(password, 10);
+
     const randomDigits = Math.floor(1000 + Math.random() * 9000);
 
     const referralId = `${fname.toLowerCase()}${randomDigits}`;
@@ -1857,7 +1868,7 @@ exports.createStateHandler = async (req, res) => {
       lname,
       phone,
       email,
-      password,
+      password: hashedPassword,
       address,
       gender,
       dob,
@@ -1871,8 +1882,8 @@ exports.createStateHandler = async (req, res) => {
     const savedStateHandler = await newStateHandler.save();
 
     return res.status(201).json({
-      message: "User created successfully",
-     
+      message: "State handler created successfully",
+
       savedStateHandler,
     });
   } catch (error) {
@@ -1883,8 +1894,8 @@ exports.createStateHandler = async (req, res) => {
   }
 };
 
-
-
+//=================================================================
+//create Frenchise
 exports.createFrenchise = async (req, res) => {
   try {
     const {
@@ -1897,8 +1908,16 @@ exports.createFrenchise = async (req, res) => {
       address,
       dob,
       frenchiseId,
-      referredId
+      referredId,
     } = req.body;
+
+    if (!req.files["adharCard"] || req.files["adharCard"].length === 0) {
+      return res.status(400).json({ message: "Adhar card file is missing." });
+    }
+
+    if (!req.files["panCard"] || req.files["panCard"].length === 0) {
+      return res.status(400).json({ message: "Pan card file is missing." });
+    }
 
     const adharCardFile = req.files["adharCard"][0];
     const panCardFile = req.files["panCard"][0];
@@ -1926,6 +1945,7 @@ exports.createFrenchise = async (req, res) => {
       "lname",
       "email",
       "phone",
+      "password",
       "address",
       "gender",
       "dob",
@@ -1952,15 +1972,16 @@ exports.createFrenchise = async (req, res) => {
 
     // Is referred id exist in state handler collection
 
-    const existReferredId = await StateHandler.findOne({referralId:referredId})
+    const existReferredId = await StateHandler.findOne({
+      referralId: referredId,
+    });
 
-    console.log(existReferredId)
+    console.log(existReferredId);
 
-    if(!existReferredId){
-      return res.status(400).json({message: "invalid reffered Id"})
+    if (!existReferredId) {
+      return res.status(400).json({ message: "invalid reffered Id" });
     }
 
-   
     if (!isValidPhone(phone)) {
       return res.status(422).json({
         message:
@@ -1987,12 +2008,14 @@ exports.createFrenchise = async (req, res) => {
       });
     }
 
-    // if (!isValidStateHandlerId(stateHandlerId)) {
-    //   return res.status(422).json({
-    //     message:
-    //       "StateHandlerId Should have at least 1 letter and 1 digit, minimum length 6.",
-    //   });
-    // }
+    if (!isValidUserId(frenchiseId)) {
+      return res.status(422).json({
+        message:
+          "Frenchise Id Should have at least 1 letter and 1 digit, minimum length 6.",
+      });
+    }
+
+    const hashedPassword = await bcrypt.hash(password, 10);
 
     const randomDigits = Math.floor(1000 + Math.random() * 9000);
 
@@ -2004,7 +2027,7 @@ exports.createFrenchise = async (req, res) => {
       lname,
       phone,
       email,
-      password,
+      password: hashedPassword,
       address,
       gender,
       dob,
@@ -2012,13 +2035,13 @@ exports.createFrenchise = async (req, res) => {
       adharCard: adharCardLocation,
       panCard: panCardLocation,
       referralId,
-      referredId
+      referredId,
     });
 
     const savedFrenchise = await newFrenchise.save();
 
     return res.status(201).json({
-      message: "User created successfully",
+      message: "Frenchise created successfully",
       referralId: referralId,
       savedFrenchise,
     });
@@ -2030,3 +2053,314 @@ exports.createFrenchise = async (req, res) => {
   }
 };
 
+//======================================================================
+//cretae Business Developer
+exports.createBusinnesDeveloper = async (req, res) => {
+  try {
+    const {
+      fname,
+      lname,
+      phone,
+      email,
+      gender,
+      password,
+      address,
+      dob,
+      businessDeveloperId,
+      referredId,
+    } = req.body;
+
+    if (!req.files["adharCard"] || req.files["adharCard"].length === 0) {
+      return res.status(400).json({ message: "Adhar card file is missing." });
+    }
+
+    if (!req.files["panCard"] || req.files["panCard"].length === 0) {
+      return res.status(400).json({ message: "Pan card file is missing." });
+    }
+
+    const adharCardFile = req.files["adharCard"][0];
+    const panCardFile = req.files["panCard"][0];
+
+    // Check if adharCard image is valid using isValidImage function
+    if (!isValidImage(adharCardFile.originalname)) {
+      return res.status(422).json({
+        message:
+          "Invalid adharCard image format, image must be in jpeg, jpg, tiff, png, webp, or bmp format.",
+      });
+    }
+
+    // Check if panCard image is valid using isValidImage function
+    if (!isValidImage(panCardFile.originalname)) {
+      return res.status(422).json({
+        message:
+          "Invalid panCard image format, image must be in jpeg, jpg, tiff, png, webp, or bmp format.",
+      });
+    }
+
+    const adharCardLocation = adharCardFile.location;
+    const panCardLocation = panCardFile.location;
+    const requiredFields = [
+      "fname",
+      "lname",
+      "email",
+      "phone",
+      "password",
+      "address",
+      "gender",
+      "dob",
+      "businessDeveloperId",
+      "referredId",
+    ];
+
+    const missingFields = requiredFields.filter((field) => !req.body[field]);
+    if (missingFields.length > 0) {
+      return res.status(422).json({
+        message: `Please fill all details: ${missingFields.join(", ")}`,
+      });
+    }
+
+    // Validate stateHandlerId uniqueness
+    const existingBusinessDeveloperId = await BusinessDeveloper.findOne({
+      businessDeveloperId: businessDeveloperId,
+    });
+    if (existingBusinessDeveloperId) {
+      return res.status(422).json({
+        message:
+          "This Business Developer ID already exists. Please choose a unique ID.",
+      });
+    }
+
+    // Is referred id exist in Frenchise collection
+
+    const existReferredId = await Frenchise.findOne({ referralId: referredId });
+
+    if (!existReferredId) {
+      return res.status(400).json({ message: "invalid reffered Id" });
+    }
+
+    if (!isValidPhone(phone)) {
+      return res.status(422).json({
+        message:
+          "Invalid phone number format. Use 10 digits or include country code.",
+      });
+    }
+
+    if (!isValidName(fname) || !isValidName(lname)) {
+      return res.status(422).json({
+        message: "Invalid name format.",
+      });
+    }
+
+    if (!isValidEmail(email)) {
+      return res.status(422).json({
+        message: "Invalid email format.",
+      });
+    }
+
+    if (!isValidPassword(password)) {
+      return res.status(422).json({
+        message:
+          "Password must be 8 to 15 characters long and contain at least one lowercase letter, one uppercase letter, and one digit.",
+      });
+    }
+
+    if (!isValidUserId(businessDeveloperId)) {
+      return res.status(422).json({
+        message:
+          "Business Developer Id Should have at least 1 letter and 1 digit, minimum length 6.",
+      });
+    }
+
+    const hashedPassword = await bcrypt.hash(password, 10);
+
+    const randomDigits = Math.floor(1000 + Math.random() * 9000);
+
+    const referralId = `${fname.toLowerCase()}${randomDigits}`;
+    console.log(referralId);
+
+    const newBusinessDeveloper = new BusinessDeveloper({
+      fname,
+      lname,
+      phone,
+      email,
+      password: hashedPassword,
+      address,
+      gender,
+      dob,
+      businessDeveloperId,
+      adharCard: adharCardLocation,
+      panCard: panCardLocation,
+      referralId,
+      referredId,
+    });
+
+    const savedBusinessDeveloper = await newBusinessDeveloper.save();
+
+    return res.status(201).json({
+      message: "Business Developer created successfully",
+
+      savedBusinessDeveloper,
+    });
+  } catch (error) {
+    console.log(error.message);
+    return res.status(500).json({ message: "Internal server error" });
+  }
+};
+
+//===========================================================================
+//state handler login
+exports.stateHandlerLogin = async (req, res) => {
+  try {
+    const { stateHandlerId, password } = req.body;
+
+    if (!stateHandlerId || !password) {
+      return res
+        .status(400)
+        .json({ message: "Please provide state handler Id and password" });
+    }
+
+    const existingStateHandler = await StateHandler.findOne({
+      stateHandlerId: stateHandlerId,
+    });
+
+    if (!existingStateHandler) {
+      return res
+        .status(400)
+        .json({ message: "Invalid State handler Id or Password" });
+    }
+
+    const isPasswordValid = await bcrypt.compare(
+      password,
+      existingStateHandler.password
+    );
+
+    if (!isPasswordValid) {
+      return res
+        .status(400)
+        .json({ message: "Invalid State handler Id or Password" });
+    }
+    const token = jwt.sign(
+      { stateHandlerId: existingStateHandler._id },
+      process.env.SECRET_KEY,
+      {
+        expiresIn: "8h",
+      }
+    );
+
+    return res
+      .status(200)
+      .json({
+        message: "State handler login successful",
+        statehandlerToken: token,
+        stateHandlerDetails: existingStateHandler,
+      });
+  } catch (error) {
+    console.error(error);
+    return res.status(500).json({ message: "Internal Server Error" });
+  }
+};
+
+//============================================================================
+//frenchise login
+exports.frenchiseLogin = async (req, res) => {
+  try {
+    const { frenchiseId, password } = req.body;
+
+    if (!frenchiseId || !password) {
+      return res
+        .status(400)
+        .json({ message: "Please provide  frenchise Id and password" });
+    }
+
+    const existingFrenchiseId = await Frenchise.findOne({
+      frenchiseId: frenchiseId,
+    });
+
+    if (!existingFrenchiseId) {
+      return res
+        .status(400)
+        .json({ message: "Invalid frenchise Id or Password" });
+    }
+
+    const isPasswordValid = await bcrypt.compare(
+      password,
+      existingFrenchiseId.password
+    );
+
+    if (!isPasswordValid) {
+      return res
+        .status(400)
+        .json({ message: "Invalid frenchise Id or Password" });
+    }
+    const token = jwt.sign(
+      { fenchiseId: existingFrenchiseId._id },
+      process.env.SECRET_KEY,
+      {
+        expiresIn: "8h",
+      }
+    );
+
+    return res
+      .status(200)
+      .json({
+        message: "Frenchise login successful",
+        frenchiseToken: token,
+        frenchiseDetails: existingFrenchiseId,
+      });
+  } catch (error) {
+    console.error(error);
+    return res.status(500).json({ message: "Internal Server Error" });
+  }
+};
+//============================================================================
+// business developer login
+exports.businessDeveloperLogin = async (req, res) => {
+  try {
+    const { businessDeveloperId, password } = req.body;
+
+    if (!businessDeveloperId || !password) {
+      return res
+        .status(400)
+        .json({ message: "Please provide business developer Id and password" });
+    }
+
+    const existingBusinessDeveloper = await BusinessDeveloper.findOne({
+      businessDeveloperId: businessDeveloperId,
+    });
+
+    if (!existingBusinessDeveloper) {
+      return res
+        .status(400)
+        .json({ message: "Invalid business developer Id or Password" });
+    }
+
+    const isPasswordValid = await bcrypt.compare(
+      password,
+      existingBusinessDeveloper.password
+    );
+
+    if (!isPasswordValid) {
+      return res
+        .status(400)
+        .json({ message: "Invalid Business Developer Id or Password" });
+    }
+    const token = jwt.sign(
+      { businessDeveloperId: existingBusinessDeveloper._id },
+      process.env.SECRET_KEY,
+      {
+        expiresIn: "8h",
+      }
+    );
+
+    return res
+      .status(200)
+      .json({
+        message: "Business developer login successful",
+        businessDeveloperToken: token,
+        businessDeveloperDetails: existingBusinessDeveloper,
+      });
+  } catch (error) {
+    console.error(error);
+    return res.status(500).json({ message: "Internal Server Error" });
+  }
+};
