@@ -111,7 +111,12 @@ const fetchWalletHistory = require("./routes/users/fetch-Wallet-History");
 const fetchParticularUserPaymentStatus = require("./routes/fetch_Particular_User_Payment_Status");
 
 const fetchOneVideoDetail = require("./routes/users/fetch_one_video_details");
+<<<<<<< Updated upstream
 const createSubAdminInsideAdmin = require('./routes/create-sub-admin-inside-admin');
+=======
+const fetchUserOneVideoLike = require("./routes/users/fetch-User-One-Video-Like")
+const fetchUserOneVideoDisLike = require('./routes/users/fetch-User-One-Video-DisLike')
+>>>>>>> Stashed changes
 
 // refferal
 const memberRegistration = require("./routes/refferal/member-registration");
@@ -255,9 +260,14 @@ app.use("/admin", getvideos);
 
 app.use("/admin", subAdminLogin);
 app.use("/user", fetchOneVideoDetail);
+<<<<<<< Updated upstream
 app.use('/admin',createSubAdminInsideAdmin);
+=======
+app.use("/user", fetchUserOneVideoLike)
+app.use("/user", fetchUserOneVideoDisLike)
+>>>>>>> Stashed changes
 
-// refferal
+// refferalin
 app.use("/member", memberRegistration);
 app.use("/member", memberLogin);
 app.use("/admin", fetchMemberDetails);

@@ -1,13 +1,13 @@
 const mongoose = require('mongoose');
 
-const likeSchema = new mongoose.Schema({
+const disLikeSchema = new mongoose.Schema({
   userId: { type: mongoose.Schema.Types.ObjectId, ref: 'User', required: true },
   videoId: { type: mongoose.Schema.Types.ObjectId, ref: 'Video', required: true },
-  likeType:{
+  disLikeType:{
     type:Boolean,
     default:false,
   }
 });
 
-const Like = mongoose.model('Like', likeSchema);
-module.exports = Like
+const Disike = mongoose.model('Dislike', disLikeSchema);
+module.exports = Disike

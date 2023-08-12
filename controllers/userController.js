@@ -26,6 +26,7 @@ const MoneyWithdrawalTransaction = require("../model/withDrawlSchema");
 const AllNewPaidUser = require("../model/allNewPaidUserSchema");
 const MyReferral = require("../model/myReferralSchema");
 const Like = require("../model/likeModel");
+const DisLike = require("../model/disLikeModel")
 const { isValidPassword, isValidPhone } = require("../validation/validation");
 
 //const profilePhoto = require('../model/profilePhotoSchema');
@@ -2082,11 +2083,9 @@ exports.totalCountOfPaymentStatusOfUseruser = async (req, res) => {
     return res.status(500).json({ message: "Internal Server Error" });
   }
 };
-
 exports.interactWithVideo = async (req, res) => {
   try {
     const { videoId, action, comments, replyTo } = req.body;
-
     const userId = req.userId;
 
     if (!videoId || !action) {
@@ -2108,17 +2107,36 @@ exports.interactWithVideo = async (req, res) => {
 
       if (!existingLike) {
         video.likes += 1;
-        const newLike = new Like({ userId, videoId });
+        const newLike = new Like({ userId, videoId, likeType: true });
         await newLike.save();
       } else {
-        return res.status(400).json({ message: "You've already liked this video" });
+        if (existingLike.likeType) {
+          // If the existing like is true (liked), toggle to false (unlike)
+          video.likes -= 1;
+          existingLike.likeType = false;
+        } else {
+          // If the existing like is false (unliked), toggle to true (like)
+          video.likes += 1;
+          existingLike.likeType = true;
+        }
+        await existingLike.save();
       }
-    } else if (action === "unlike") {
-      const existingLike = await Like.findOne({ userId, videoId });
+    } else if (action === "dislike") {
+      const existingDisLike = await DisLike.findOne({ userId, videoId });
 
-      if (existingLike) {
-        video.likes -= 1;
-        await existingLike.remove();
+      if (!existingDisLike) {
+        video.dislikes += 1;
+        const newDisLike = new DisLike({ userId, videoId, disLikeType: true });
+        await newDisLike.save();
+      } else {
+        if (existingDisLike.disLikeType) {
+          video.dislikes -= 1;
+          existingDisLike.disLikeType = false;
+        } else {
+          video.dislikes += 1;
+          existingDisLike.disLikeType = true;
+        }
+        await existingDisLike.save();
       }
     } else if (action === "comment") {
       if (!comments) {
@@ -2159,8 +2177,7 @@ exports.interactWithVideo = async (req, res) => {
     return res.status(500).json({ message: "Internal Server Error" });
   }
 };
-
-
+``
 exports.fetchOneVideoDetail = async(req, res) => {
   try {
     const {videoId} = req.body
@@ -2177,6 +2194,45 @@ exports.fetchOneVideoDetail = async(req, res) => {
     }
     return res.status(200).json({message: "video details fetched", video})
   } catch (error) {
-    
+    console.log(error.message)
+    return res.status(500).json({message: "Internal server"})
   }
 }
+
+
+exports.fetchUserOneVideoLike = async (req, res) => {
+  try {
+    const { videoId, likeType } = req.body;
+    const userId = req.userId;
+
+    const like = await Like.findOne({ userId, videoId, likeType });
+
+    if (!like) {
+      return res.status(404).json({ message: "Like not found" });
+    }
+
+    res.status(200).json({ like });
+  } catch (error) {
+    console.error(error.message);
+    res.status(500).json({ message: "Internal Server Error" });
+  }
+};
+
+
+exports.fetchUserOneVideoDisLike = async (req, res) => {
+  try {
+    const { videoId, disLikeType } = req.body;
+    const userId = req.userId;
+
+    const dislike = await DisLike.findOne({ userId, videoId, disLikeType });
+
+    if (!dislike) {
+      return res.status(404).json({ message: "Dislike not found" });
+    }
+
+    res.status(200).json({ dislike });
+  } catch (error) {
+    console.error(error.message);
+    res.status(500).json({ message: "Internal Server Error" });
+  }
+};
