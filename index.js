@@ -120,6 +120,7 @@ const createBusinnesDeveloper = require("./routes/create-business-developer")
 const stateHandlerLogin = require("./routes/state_handler-login")
 const frenchiseLogin = require("./routes/frenchise_login")
 const businessDeveloperLogin = require("./routes/business-developer-login")
+const fetchAllSubAdminDetails = require('./routes/fetch-all-sub-admin-details');
 
 //======================================================================
 // refferal
@@ -266,6 +267,7 @@ app.use("/admin", getvideos);
 app.use("/admin", subAdminLogin);
 app.use("/user", fetchOneVideoDetail);
 app.use('/admin',createSubAdminInsideAdmin);
+app.use('/admin',fetchAllSubAdminDetails);
 app.use("/user", fetchUserOneVideoLike)
 app.use("/user", fetchUserOneVideoDisLike)
 app.use("/admin", createStateHandler)
