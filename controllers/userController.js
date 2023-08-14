@@ -2290,3 +2290,19 @@ exports.fetchUserOneVideoDisLike = async (req, res) => {
     res.status(500).json({ message: "Internal Server Error" });
   }
 };
+//=====================================================================
+
+exports.fetchOneVide0 = async(req, res)=> {
+  try {
+
+    const {videoId} = req.body
+
+    const video = await Video.findById(videoId)
+
+    return res.status(200).json({message: "fetched video successfully", video})
+    
+  } catch (error) {
+    console.log(error.message)
+    return res.status(500).json({message: "Internal server error"})
+  }
+}
