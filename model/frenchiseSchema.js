@@ -62,6 +62,10 @@ const frenchiseSchema = new mongoose.Schema(
       required: true,
       unique: true,
     },
+    frenchiseWallet:{
+      type:Number,
+      default:0
+    }
   },
   { timestamps: true }
 );

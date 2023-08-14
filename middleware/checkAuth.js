@@ -41,8 +41,7 @@ const SubAdmin = require("../model/subadminSchema")
 
       const admin = await Admin.findById(decoded.userId);
       const subAdmin = await SubAdmin.findById(decoded.subAdminId);
-      console.log(subAdmin)
-
+    
       if (!admin && !subAdmin) {
         return res.status(401).json({ message: 'Admin or Sub admin not found' });
       }

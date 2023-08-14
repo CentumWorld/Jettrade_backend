@@ -1858,11 +1858,31 @@ exports.createStateHandler = async (req, res) => {
 
     const hashedPassword = await bcrypt.hash(password, 10);
 
-    const randomDigits = Math.floor(1000 + Math.random() * 9000);
+    const shortFname = fname.substring(0, 3).toUpperCase();
 
-    const referralId = `${fname.toLowerCase()}${randomDigits}`;
-    console.log(referralId);
+    const latestStateHandler = await StateHandler.findOne(
+      {},
+      { referralId: 1 }
+    ).sort({ _id: -1 });
 
+    let latestReferralSequence = 0;
+    if (latestStateHandler && latestStateHandler.referralId) {
+      const lastReferralSequence = Number(
+        latestStateHandler.referralId.slice(-3)
+      ); // Extract the last 3 digits
+      latestReferralSequence =
+        lastReferralSequence >= 1 ? lastReferralSequence : 0; // Make sure it's at least 0
+    }
+
+    const nextReferralSequence = latestReferralSequence + 1;
+    const formattedReferralSequence = String(nextReferralSequence).padStart(
+      3,
+      "0"
+    );
+    const referralId = `SH${shortFname}${formattedReferralSequence}`;
+
+    console.log(referralId, "///////");
+    const stateHandlerWallet = 0;
     const newStateHandler = new StateHandler({
       fname,
       lname,
@@ -1877,6 +1897,7 @@ exports.createStateHandler = async (req, res) => {
       adharCard: adharCardLocation,
       panCard: panCardLocation,
       referralId,
+      stateHandlerWallet,
     });
 
     const savedStateHandler = await newStateHandler.save();
@@ -2017,10 +2038,31 @@ exports.createFrenchise = async (req, res) => {
 
     const hashedPassword = await bcrypt.hash(password, 10);
 
-    const randomDigits = Math.floor(1000 + Math.random() * 9000);
+    const shortFname = fname.substring(0, 3).toUpperCase();
 
-    const referralId = `${fname.toLowerCase()}${randomDigits}`;
-    console.log(referralId);
+    const latestStateHandler = await StateHandler.findOne(
+      {},
+      { referralId: 1 }
+    ).sort({ _id: -1 });
+
+    let latestReferralSequence = 0;
+    if (latestStateHandler && latestStateHandler.referralId) {
+      const lastReferralSequence = Number(
+        latestStateHandler.referralId.slice(-3)
+      ); // Extract the last 3 digits
+      latestReferralSequence =
+        lastReferralSequence >= 1 ? lastReferralSequence : 0; // Make sure it's at least 0
+    }
+
+    const nextReferralSequence = latestReferralSequence + 1;
+    const formattedReferralSequence = String(nextReferralSequence).padStart(
+      5,
+      "0"
+    );
+    const referralId = `FC${shortFname}${formattedReferralSequence}`;
+
+    console.log(referralId, "///////");
+    const frenchiseWallet = 0; // or whatever initial value you want
 
     const newFrenchise = new Frenchise({
       fname,
@@ -2036,6 +2078,7 @@ exports.createFrenchise = async (req, res) => {
       panCard: panCardLocation,
       referralId,
       referredId,
+      frenchiseWallet,
     });
 
     const savedFrenchise = await newFrenchise.save();
@@ -2173,11 +2216,31 @@ exports.createBusinnesDeveloper = async (req, res) => {
 
     const hashedPassword = await bcrypt.hash(password, 10);
 
-    const randomDigits = Math.floor(1000 + Math.random() * 9000);
+    const shortFname = fname.substring(0, 3).toUpperCase();
 
-    const referralId = `${fname.toLowerCase()}${randomDigits}`;
-    console.log(referralId);
+    const latestStateHandler = await StateHandler.findOne(
+      {},
+      { referralId: 1 }
+    ).sort({ _id: -1 });
 
+    let latestReferralSequence = 0;
+    if (latestStateHandler && latestStateHandler.referralId) {
+      const lastReferralSequence = Number(
+        latestStateHandler.referralId.slice(-3)
+      ); // Extract the last 3 digits
+      latestReferralSequence =
+        lastReferralSequence >= 1 ? lastReferralSequence : 0; // Make sure it's at least 0
+    }
+
+    const nextReferralSequence = latestReferralSequence + 1;
+    const formattedReferralSequence = String(nextReferralSequence).padStart(
+      7,
+      "0"
+    );
+    const referralId = `BD${shortFname}${formattedReferralSequence}`;
+
+    console.log(referralId, "///////");
+    const businessDeveloperWallet = 0;
     const newBusinessDeveloper = new BusinessDeveloper({
       fname,
       lname,
@@ -2192,6 +2255,7 @@ exports.createBusinnesDeveloper = async (req, res) => {
       panCard: panCardLocation,
       referralId,
       referredId,
+      businessDeveloperWallet,
     });
 
     const savedBusinessDeveloper = await newBusinessDeveloper.save();
@@ -2247,13 +2311,11 @@ exports.stateHandlerLogin = async (req, res) => {
       }
     );
 
-    return res
-      .status(200)
-      .json({
-        message: "State handler login successful",
-        statehandlerToken: token,
-        stateHandlerDetails: existingStateHandler,
-      });
+    return res.status(200).json({
+      message: "State handler login successful",
+      statehandlerToken: token,
+      stateHandlerDetails: existingStateHandler,
+    });
   } catch (error) {
     console.error(error);
     return res.status(500).json({ message: "Internal Server Error" });
@@ -2300,13 +2362,11 @@ exports.frenchiseLogin = async (req, res) => {
       }
     );
 
-    return res
-      .status(200)
-      .json({
-        message: "Frenchise login successful",
-        frenchiseToken: token,
-        frenchiseDetails: existingFrenchiseId,
-      });
+    return res.status(200).json({
+      message: "Frenchise login successful",
+      frenchiseToken: token,
+      frenchiseDetails: existingFrenchiseId,
+    });
   } catch (error) {
     console.error(error);
     return res.status(500).json({ message: "Internal Server Error" });
@@ -2352,15 +2412,18 @@ exports.businessDeveloperLogin = async (req, res) => {
       }
     );
 
-    return res
-      .status(200)
-      .json({
-        message: "Business developer login successful",
-        businessDeveloperToken: token,
-        businessDeveloperDetails: existingBusinessDeveloper,
-      });
+    return res.status(200).json({
+      message: "Business developer login successful",
+      businessDeveloperToken: token,
+      businessDeveloperDetails: existingBusinessDeveloper,
+    });
   } catch (error) {
     console.error(error);
     return res.status(500).json({ message: "Internal Server Error" });
   }
 };
+
+//=====================================================================
+
+
+

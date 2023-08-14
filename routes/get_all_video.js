@@ -4,7 +4,7 @@ require('dotenv').config();
 
 const adminController = require('../controllers/adminController');
 const {authenticateAdmin, authorizeAdmin} = require('../middleware/checkAuth');
-router.get('/users/user-fetch-all-videos',authenticateAdmin,authorizeAdmin,adminController.getVideos);
+router.get('/fetch-all-videos',authenticateAdmin,authorizeAdmin,adminController.getVideos);
 
 
 module.exports = router;
