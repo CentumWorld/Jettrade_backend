@@ -1583,13 +1583,12 @@ exports.getVideos = async (req, res) => {
 exports.subAdminLogin = async (req, res) => {
   try {
     const { subAdminId, password } = req.body;
+
     if (!subAdminId || !password) {
       return res
         .status(400)
         .json({ message: "Please provide User Id and password" });
     }
-    const subadminLogin = await subAdmin.findOne({ subAdminId: subAdminId });
-    console.log(subadminLogin, "104");
 
     const subadmin = await subAdmin.findOne({ subAdminId: subAdminId });
 
@@ -1597,39 +1596,30 @@ exports.subAdminLogin = async (req, res) => {
       return res.status(404).json({ message: "Sub admin not found" });
     }
 
-    const blocked = subadminLogin.isBlocked;
-    if (blocked) {
-      return res
-        .status(403)
-        .json({ status: false, message: "Your account is blocked!" });
+    // if (subadmin.isSubAdmin === false) {
+    //   return res.status(400).json({ message: "You are not a sub admin" });
+    // }
+
+    const passwordMatch = await bcrypt.compare(password, subadmin.password);
+
+    if (!passwordMatch) {
+      return res.status(401).json({ message: "Incorrect userId and password" });
     }
 
-    const isMatch = await bcrypt.compare(password, subadminLogin.password);
     const token = jwt.sign(
-      { subAdminId: subadminLogin._id },
+      { subAdminId: subadmin._id },
       process.env.SECRET_KEY,
-      { expiresIn: "8h" } // Set the token to expire in 1 hour
+      { expiresIn: "8h" }
     );
-    console.log(token, "270");
 
-    if (!isMatch) {
-      return res
-        .status(404)
-        .json({ status: false, message: "Invalid Credential!" });
-    } else {
-      return res.status(200).json({
-        status: true,
-        message: "Sub-Admin Login successfully",
-        token: token,
-        subadminLogin,
-        expires: new Date().getTime() + 60000,
-      });
-    }
+    return res.status(200).json({
+      message: "Sub admin login successful",
+      subadmin: subadmin,
+      subAdmintoken: token,
+    });
   } catch (error) {
-    console.log(error);
-    return res
-      .status(500)
-      .json({ status: false, message: "Internal Server Error" });
+    console.error(error.message);
+    return res.status(500).json({ message: "Internal server error" });
   }
 };
 
@@ -1718,30 +1708,7 @@ exports.createSubAdminInsideAdmin = async (req, res) => {
         message: "Password must be minimum length of 8 charector!",
       });
     }
-    if (password.length < 8) {
-      return res.status(400).json({
-        message: "Password must be minimum length of 8 charector!",
-      });
-    }
 
-    const subadmin = new subAdmin({
-      fname,
-      lname,
-      email,
-      phone,
-      gender,
-      dob,
-      aadhar,
-      pan,
-      aadhar_front_side,
-      aadhar_back_side,
-      pan_card,
-      subAdminId,
-      password,
-    });
-    await subadmin.save();
-    const phone2 = "+" + subadmin.phone;
-    // SuccessfullRegistrationSms(phone2, { "userid": user.userid, "password": password })
     const subadmin = new subAdmin({
       fname,
       lname,
@@ -1778,7 +1745,19 @@ exports.createSubAdminInsideAdmin = async (req, res) => {
     console.log(error);
   }
 };
-
+//===================================================================
+exports.fetchAllSubAdminDetails = async(req, res)=> {
+  try {
+    let subAdmins = await subAdmin.find()
+    if(subAdmins.length ==0){
+      return res.status(404).json({message: "No sub admin found"})
+    }
+    return res.status(200).json({message: "Fetched all sub admins", subAdmins})
+  } catch (error) {
+    console.log(error.message)
+    return res.status(500).json({message: "Internal server error"})
+  }
+}
 //===================================================================
 //register state handler
 
@@ -1801,28 +1780,9 @@ exports.createStateHandler = async (req, res) => {
       return res.status(400).json({ message: "Adhar card file is missing." });
     }
 
-// fetchAllSubAdminDetails
-exports.fetchAllSubAdminDetails = async (req, res) => {
     if (!req.files["panCard"] || req.files["panCard"].length === 0) {
       return res.status(400).json({ message: "Pan card file is missing." });
     }
-
-
-  try {
-    const getAllSubAdmin = await subAdmin.find();
-    if (getAllSubAdmin) {
-      return res.status(200).json({
-        message: "All Subadmin  fetched",
-        data: getAllSubAdmin,
-      });
-    } else {
-      return res.status(404).json({ message: "Not Found" });
-    }
-  } catch (error) {
-    return res.status(500).json({ message: "Internal Server Error" })
-  }
-}
-
 
     const adharCardFile = req.files["adharCard"][0];
     const panCardFile = req.files["panCard"][0];
@@ -2477,5 +2437,39 @@ exports.businessDeveloperLogin = async (req, res) => {
 
 //=====================================================================
 
+exports.updateBusinessDeveloperWallet = async (req, res) => {
+  try {
+    const { businessDeveloperId, referralId } = req.body;
 
+    const referralUser = await User.findOne({ referralId });
 
+    if (!referralUser) {
+      return res.status(404).json({ message: "Referral user not found" });
+    }
+
+    if (referralUser.paymentCount > 0) {
+      // Assuming you have a way to verify successful payments
+      // If payment is successful, update the business developer's wallet balance
+      
+      const updatedBusinessDeveloper = await BusinessDeveloper.findOneAndUpdate(
+        { _id: businessDeveloperId },
+        { $inc: { businessDeveloperWallet: 500 } }, // Increment wallet balance by 500
+        { new: true }
+      );
+
+      if (!updatedBusinessDeveloper) {
+        return res.status(404).json({ message: "Business Developer not found" });
+      }
+
+      return res.status(200).json({
+        message: "Business Developer wallet balance updated successfully",
+        updatedBusinessDeveloper,
+      });
+    } else {
+      return res.status(400).json({ message: "Referral user has no payments" });
+    }
+  } catch (error) {
+    console.error(error.message);
+    return res.status(500).json({ message: "Internal server error" });
+  }
+};
