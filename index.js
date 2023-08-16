@@ -1,10 +1,18 @@
 //const mongoose = require('mongoose');
 const express = require("express");
+const app = express()
 const bodyParser = require("body-parser");
 const cookieParser = require("cookie-parser");
 require('./database/conn');
 const path = require('path');
 const cors = require('cors');
+app.use(express.static(path.join(__dirname, "public")));
+app.use(express.urlencoded({ extended: true }));
+app.use(express.json());
+app.use(cookieParser());
+
+
+
 const userRegistration = require('./routes/users/userRegistration');
 const userLogin = require('./routes/users/userLogin');
 const userFetchDeatils = require('./routes/users/userFetchDetails');
@@ -15,6 +23,7 @@ const resetPassword = require('./routes/users/resetPassword');
 const profileVerification = require('./routes/users/profileVerification');
 const profilePhotoUpload = require('./routes/users/profilePhotoUpload')
 const fetchUserDetailsUserside = require('./routes/users/fetch-user-details-userside');
+const adminLogin = require("./routes/adminLogin")
 const verifyUser = require('./routes/verify-user');
 const fetchUserDetails = require('./routes/fetch-user-details');
 const fetchParticularUserDetails = require('./routes/fetch-particular-user-details');
@@ -85,6 +94,11 @@ const filterTransactionsForWithdrawlWithYearMonth = require('./routes/filter-Tra
 const tradingWalletTransferFromOneUserToAnother = require('./routes/users/trading-wallet-transfer-from-one-user-to-another')
 const totalWithdrawalMoney = require('./routes/total-Withdrawal-Money')
  const deleteVideo = require("./routes/delete-video")
+ const adminLogout = require("./routes/adminLogout")
+ const getVideo = require("./routes/users/fetch_one_video_details")
+ const getvideos = require("./routes/users/user-fetch-all-videos")
+const subAdminLogin = require("./routes/sub_Admin_Login")
+
 // refferal
 const memberRegistration = require('./routes/refferal/member-registration');
 const memberLogin = require('./routes/refferal/member-login');
@@ -119,118 +133,13 @@ const refferalMyTeam = require('./routes/refferal/refferal-my-team');
 
 
 const videoUpload = require('./routes/adminVideo')
-const getVideo = require("./routes/users/video")
 
 const withdrawlFromWalletAndTradingWallet = require("./routes/users/withdrawl-From-Wallet-And-TradingWallet")
 const fetchWalletWithdrawalHistory = require("./routes/users/fetch-Wallet-Withdrawal-History")
 
 const fetchWalletHistory = require("./routes/users/fetch-Wallet-History")
- 
-
-
-
-const app = express();
-
-app.use(bodyParser.json());
-app.use(cors());
-
-const adminLogin = require("./routes/adminLogin");
-const adminLogout = require("./routes/adminLogout");
-const userRegistration = require("./routes/users/userRegistration");
-const userLogin = require("./routes/users/userLogin");
-const userFetchDeatils = require("./routes/users/userFetchDetails");
-const changePassword = require("./routes/users/changePassword");
-const forgetPassword = require("./routes/users/forgetPassword");
-const verifyOtp = require("./routes/users/verifyOtp");
-const resetPassword = require("./routes/users/resetPassword");
-const profileVerification = require("./routes/users/profileVerification");
-const profilePhotoUpload = require("./routes/users/profilePhotoUpload");
-const fetchUserDetailsUserside = require("./routes/users/fetch-user-details-userside");
-const verifyUser = require("./routes/verify-user");
-const fetchUserDetails = require("./routes/fetch-user-details");
-const fetchParticularUserDetails = require("./routes/fetch-particular-user-details");
-const fetchProfilePhotoUser = require("./routes/users/fetch-profile-photo-user");
-const fetchUserDocumentUser = require("./routes/users/fetch-user-document-user");
-const fetchUserDocumentAdmin = require("./routes/fetch-user-document-adminside");
-const editUserDetails = require("./routes/users/edit-user-details");
-const saveEditedUserDetails = require("./routes/users/save-user-edited-details");
-const userDetailsEditAdmin = require("./routes/user-details-edit-admin");
-const memberDetailsEditAdmin = require("./routes/member-details-edit-admin");
-const deleteUserAdmin = require("./routes/delete-user-admin");
-const blockMember = require("./routes/block-member");
-const userRegistrationByAdmin = require("./routes/user-registration-by-admin");
-const blockUser = require("./routes/block-user");
-const userCreatePayment = require("./routes/users/user-create-payment");
-const verifyPayment = require("./routes/users/verify-payment");
-const notificationForAll = require("./routes/notification-for-all");
-const notificationForAllTraders = require("./routes/notification-for-all-traders");
-const notificationForAllRefferal = require("./routes/notification-for-all-refferal");
-const notificationForParticularTrader = require("./routes/notification-for-particular-trader");
-const notificationForParticularRefferal = require("./routes/notification-for-particular-refferal");
-const fetchUserNotification = require("./routes/users/fetch-user-notification");
-
-const paymentUseridVerify = require("./routes/users/payment-userid-verify");
-const changeUserPaymentStatus = require("./routes/users/change-user-payment-status");
-const fetchRefferalPayoutUser = require("./routes/fetch-refferal-payout-user");
-const fetchRefferalPayoutMember = require("./routes/fetch-refferal-payout-member");
-const userfetchRefferalPayout = require("./routes/users/user-fetch-refferal-payout");
-const refferalPayoutRequestUser = require("./routes/users/refferal-payout-request-user");
-const fetchRefferalPayoutWithdrawalRequest = require("./routes/fetch-refferal-payout-withdrawal-request");
-const userFetchRefferalPayoutWithdrawalRequest = require("./routes/users/user-fetch-refferal-payout-withdrawal-request");
-const approveUserRefferalPayout = require("./routes/approve-user-refferal-payout");
-const fetchApproveRefferalPayoutUser = require("./routes/users/fetch-approve-refferal-payout-user");
-const fetchUserRefferalPayoutApproveWithdrawal = require("./routes/fetch-user-refferal-payout-approve-withdrawal");
-const adminFetchMemberRefferalPayoutRequest = require("./routes/admin-fetch-member-refferal-payout-request");
-const approveMemberRefferalPayout = require("./routes/approve-member-refferal-payout");
-const fetchMemberRefferalPayoutApproveWithdrawal = require("./routes/fetch-member-refferal-payout-approve-withdrawal");
-const fetchUserChatCount = require("./routes/fetch-user-chat-count");
-const fetchChatDetailsUser = require("./routes/users/fetch-chat-details-user");
-const fetchChatMessageUser = require("./routes/users/fetch-chat-message-user");
-const fetchChatMessageAdmin = require("./routes/fetch-chat-message-admin");
-const otherCountryUserRegistration = require("./routes/users/other-country-user-registration");
-const UserOnlineOrNot = require("./routes/user-online-or-not");
-const AdminOnlineOrNot = require("./routes/users/admin-online-or-not");
-const fetchUserNotificationStatus = require("./routes/users/fetch-user-notification-status");
-const setNotificationToFalseUser = require("./routes/users/set-notification-to-false-user");
-const fetchRefferalChatCount = require("./routes/fetch-refferal-chat-count");
-const refferalOnlineOrNot = require("./routes/refferal-online-or-not");
-const fetchRefferalChatMessageAdmin = require("./routes/fetch-refferal-chat-message-admin");
-const otherCountryProfileVerification = require("./routes/users/other-country-profile-verification");
-const userTotalWithdrawal = require("./routes/users/user-total-withdrawal");
-const userMyTeam = require("./routes/users/user-my-team");
-const userAddingWalletCreatePayment = require("./routes/users/user-adding-wallet-create-payment");
-const userAddingWalletVerifyPayment = require("./routes/users/user-adding-wallet-verify-payment");
-const userUpdateWalletAfterAdding = require("./routes/users/user-update-wallet-after-adding");
-const updateDayCount = require("./routes/users/update-day-count");
-const updateExpire = require("./routes/users/update-expire");
-const addingAmountToTradingWallet = require("./routes/users/adding-amount-to-trading-wallet");
-const withdrawlAmountFromTradingWallet = require("./routes/users/withdrawl-Amount-From-Tranding-Wallet");
-const fetchParticularUserDetailsFromAdminUsingUserid = require("./routes/fetch-particular-user-details-from-admin-using-userid");
-const filterTransactionsWithYearMonthWeek = require("./routes/filter-Transactions-With-Year-Month-Week");
-const userTotalWithdrawalFromTradingWallet = require("./routes/users/user-total-withdrawal-from-trading-wallet");
-const adminFetchAllRenewalUser = require("./routes/admin-fetch-all-renewal-user");
-const fetchAllNewPaidUser = require("./routes/fetch-all-new-paid-user");
-const changePaymentStatusForRenewal = require("./routes/users/change-payment-status-for-renewal");
-const adminSumOfAllNewRenewalUserAmount = require("./routes/admin-sum-of-all-new-renewal-user-amount");
-const filterTransactionsForWithdrawlWithYearMonth = require("./routes/filter-Transactions-For-Withdrawl-With-Year-Month");
-const tradingWalletTransferFromOneUserToAnother = require("./routes/users/trading-wallet-transfer-from-one-user-to-another");
-const totalWithdrawalMoney = require("./routes/total-Withdrawal-Money");
-const fetchRefferalPayoutOnRoleBasis = require("./routes/fetch-refferal-payout-on-role-basis");
-const searchRefferalPayoutByRefferUserid = require("./routes/search-refferal-payout-by-reffer-userid");
-const searchNewUsers = require("./routes/search-new-users");
-const searchRenewalUsers = require("./routes/search-renewal-users");
-const totalCountOfPaymentStatusOfUser = require("./routes/total_Count_Of_Payment_Status_Of_User");
-const totalCountOfPaymentStatusOfUseruser = require("./routes/users/total_Count_Of_Payment_Status_Of_User_user");
-const findUsersOnTheBasisOfPaymentStatus = require("./routes/find_Users_On_The_Basis_Of_Payment_Status");
-const manageSubAdminRole = require("./routes/manage_subAdmin");
-const getvideos = require("./routes/get_all_video");
-const subAdminLogin = require("./routes/sub_Admin_Login");
-const interactWithVideo = require("./routes/users/interact_with_video");
-const videoUpload = require("./routes/adminVideo");
 const userFetchAllVideo = require("./routes/users/user-fetch-all-videos");
-const withdrawlFromWalletAndTradingWallet = require("./routes/users/withdrawl-From-Wallet-And-TradingWallet");
-const fetchWalletWithdrawalHistory = require("./routes/users/fetch-Wallet-Withdrawal-History");
-const fetchWalletHistory = require("./routes/users/fetch-Wallet-History");
+
 const fetchParticularUserPaymentStatus = require("./routes/fetch_Particular_User_Payment_Status");
 
 const fetchOneVideoDetail = require("./routes/users/fetch_one_video_details");
@@ -248,36 +157,10 @@ const fetchOnecomment = require("./routes/users/fetch_one_comment")
 
 //======================================================================
 // refferal
-const memberRegistration = require("./routes/refferal/member-registration");
-const memberLogin = require("./routes/refferal/member-login");
-const fetchMemberDetails = require("./routes/fetch-member-details");
-const fetchParticularMemberDetails = require("./routes/fetch-particular-member-details");
-const verifyMember = require("./routes/verify-member");
-const memberProfileVerification = require("./routes/refferal/member-profile-verification");
-const fetchMemberDocumentAdminside = require("./routes/fetch-member-document-adminside");
-const fetchMemberDetailsMemberSide = require("./routes/refferal/fetch-member-details-member-side");
-const memberProfilePhotoUpload = require("./routes/refferal/member-profile-photo-upload");
-const fetchMemberProfilePhoto = require("./routes/refferal/fetch-member-profile-photo");
-const fetchMemberDocumentMemberSide = require("./routes/refferal/fetch-member-document-member-side");
-const memberChangePassword = require("./routes/refferal/member-change-password");
-const memberForgetPassword = require("./routes/refferal/member-forget-password");
-const memberVerifyOtp = require("./routes/refferal/member-verify-otp");
-const memberResetPassword = require("./routes/refferal/member-reset-password");
-const editMemberDetails = require("./routes/refferal/edit-member-details");
-const saveMemberEditedDetails = require("./routes/refferal/save-member-edited-details");
-const fetchRefferalNotification = require("./routes/refferal/fetch-refferal-notification");
-const memberFetchRefferalPayout = require("./routes/refferal/member-fetch-refferal-payout");
-const refferalPayoutRequestMember = require("./routes/refferal/refferal-payout-request-member");
-const fetchMemberRefferalPayoutRequestWithdrawal = require("./routes/refferal/fetch-member-refferal-payout-request-withdrawal");
-const memberFetchRefferalPayoutApproveWithdrawal = require("./routes/refferal/member-fetch-refferal-payout-approve-withdrawal");
-const otherCountryMemberRegistration = require("./routes/refferal/other-country-member-registration");
-const fetchMemberNotificationStatus = require("./routes/refferal/fetch-member-notification-status");
-const setNotificationToFalseMember = require("./routes/refferal/set-notification-to-false-member");
-const fetchChatDetailsRefferal = require("./routes/refferal/fetch-chat-details-refferal");
-const fetchChatMessageRefferal = require("./routes/refferal/fetch-chat-message-refferal");
-const adminOnlineOrNotRefferal = require("./routes/refferal/admin-online-or-not-refferal");
-const refferalTotalWithdrawal = require("./routes/refferal/refferal-total-withdrawal");
-const refferalMyTeam = require("./routes/refferal/refferal-my-team");
+
+
+
+
 
 
 
