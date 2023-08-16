@@ -153,7 +153,8 @@ const stateHandlerLogin = require("./routes/state_handler-login")
 const frenchiseLogin = require("./routes/frenchise_login")
 const businessDeveloperLogin = require("./routes/business-developer-login")
 const fetchAllSubAdminDetails = require('./routes/fetch-all-sub-admin-details');
-const fetchOnecomment = require("./routes/users/fetch_one_comment")
+const fetchOnecomment = require("./routes/users/fetch_one_comment");
+const interactWithVideo = require("./routes/users/interact_with_video");
 
 //======================================================================
 // refferal
@@ -305,6 +306,8 @@ app.use("/admin", stateHandlerLogin)
 app.use("/admin", businessDeveloperLogin)
 app.use("/admin",frenchiseLogin)
 app.use("/user", fetchOnecomment)
+app.use("/user", userFetchAllVideo);
+app.use("/user", interactWithVideo);
 
 // refferalin
 app.use("/member", memberRegistration);
