@@ -984,39 +984,6 @@ exports.fetchRefferalChatMessageAdmin = async (req, res) => {
 };
 
 // Create a new video
-
-// exports.createVideo = async (req, res, next) => {
-//   try {
-//     const { title } = req.body;
-//     const fileUrl = req.file.location; // Assuming your upload middleware sets the 'location' property
-//     if (!title) {
-//       return res
-//         .status(400)
-//         .send({ status: false, message: "title is required" });
-//     }
-//     if (!fileUrl) {
-//       return res
-//         .status(400)
-//         .send({ status: false, message: "video file is required" });
-//     }
-
-//     // Save the video information to MongoDB
-//     const video = new Video({
-//       title,
-//       videoOne: fileUrl,
-//     });
-
-//     const savedVideo = await video.save();
-
-//     res.status(201).json({ status: true, savedVideo });
-//   } catch (error) {
-//     console.error("Failed to create video:", error);
-//     res.status(500).json({ error: "Failed to create video" });
-//   }
-// };
-
-//===========
-
 exports.createVideo = async (req, res) => {
   try {
     const { title } = req.body;
@@ -1057,6 +1024,8 @@ exports.createVideo = async (req, res) => {
     res.status(500).json({ message: "Internal server error" });
   }
 };
+
+
 
 exports.fetchParticularUserDetailsFromAdminUsingUserid = async (req, res) => {
   const { userid } = req.body;
@@ -1687,6 +1656,8 @@ exports.createSubAdminInsideAdmin = async (req, res) => {
     pan,
     subAdminId,
     password,
+    isVideoCreator
+    
   } = req.body;
 
   // Check if any required field is missing
@@ -1745,6 +1716,8 @@ exports.createSubAdminInsideAdmin = async (req, res) => {
       pan_card,
       subAdminId,
       password,
+      isVideoCreator
+      
     });
     await subadmin.save();
     const phone2 = "+" + subadmin.phone;
@@ -2498,4 +2471,3 @@ exports.updateBusinessDeveloperWallet = async (req, res) => {
 
 
 //========================================================
-
