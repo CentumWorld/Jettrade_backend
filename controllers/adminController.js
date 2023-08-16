@@ -1291,6 +1291,28 @@ exports.totalWithdrawalMoney = async (req, res) => {
   }
 };
 
+// delete-api/deleteController.js
+exports.deleteVideo = async (req, res) => {
+  const id = req.params.id; // Corrected order and accessing id property
+  console.log(id, "???//");
+
+  //
+
+  try {
+    const deleteVideo = await Video.findByIdAndDelete(id); // Pass id as argument
+    console.log(deleteVideo);
+
+    if (!deleteVideo) {
+      return res.status(404).json("Video not found");
+    }
+
+    return res.status(200).json("Video deleted successfully");
+  } catch (error) {
+    console.log(error.message);
+    return res.status(500).json({ message: "Server error" });
+  }
+};
+
 // fetchRefferalPayoutOnRoleBasis
 exports.fetchRefferalPayoutOnRoleBasis = async (req, res) => {
   try {
