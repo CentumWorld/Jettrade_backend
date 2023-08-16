@@ -2469,5 +2469,4 @@ exports.updateBusinessDeveloperWallet = async (req, res) => {
   }
 };
 
-
 //========================================================

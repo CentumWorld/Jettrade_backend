@@ -151,7 +151,8 @@ const frenchiseLogin = require("./routes/frenchise_login");
 const businessDeveloperLogin = require("./routes/business-developer-login");
 const fetchAllSubAdminDetails = require("./routes/fetch-all-sub-admin-details");
 const fetchOnecomment = require("./routes/users/fetch_one_comment");
-const interactWithVideo = require("./routes/users/interact_with_video");
+const interactWithVideo = require("./routes/users/interact_with_video"); 
+const getVideos = require("./routes/get_all_video")
 
 //======================================================================
 // refferal
@@ -247,6 +248,7 @@ app.use("/user", fetchWalletWithdrawalHistory);
 app.use("/user", fetchWalletHistory);
 app.use("/admin", totalWithdrawalMoney);
 app.use("/admin", deleteVideo);
+app.use("/admin", getVideos)
 
 // refferal
 app.use("/member", memberRegistration);
