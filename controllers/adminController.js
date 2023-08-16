@@ -1268,7 +1268,7 @@ exports.deleteVideo = async (req, res) => {
   //
 
   try {
-    const deleteVideo = await Video.findByIdAndDelete(id); // Pass id as argument
+    const deleteVideo = await Video.findByIdAndDelete({_id:id}); // Pass id as argument
     console.log(deleteVideo);
 
     if (!deleteVideo) {

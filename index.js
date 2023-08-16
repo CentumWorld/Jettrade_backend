@@ -96,7 +96,7 @@ const totalWithdrawalMoney = require('./routes/total-Withdrawal-Money')
  const deleteVideo = require("./routes/delete-video")
  const adminLogout = require("./routes/adminLogout")
  const getVideo = require("./routes/users/fetch_one_video_details")
- const getvideos = require("./routes/users/user-fetch-all-videos")
+ const getvideos = require("./routes/get_all_video")
 const subAdminLogin = require("./routes/sub_Admin_Login")
 
 // refferal
