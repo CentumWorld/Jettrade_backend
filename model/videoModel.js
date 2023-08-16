@@ -20,6 +20,6 @@ const videoSchema = new mongoose.Schema({
   comments: [commentSchema],
   views: { type: Number, default: 0 },
   userId: { type: mongoose.Schema.Types.ObjectId, ref: 'User' },
-});
+},{timestamps: true});
 
 module.exports = mongoose.model('Video', videoSchema);
