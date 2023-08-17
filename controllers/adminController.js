@@ -2691,3 +2691,19 @@ exports.findAllState = async (req,res)=>{
     res.status(500).json({message:"an error occured", error:error.message})
   }
 }
+
+
+//==================================================================
+
+exports.findAllFrenchise = async (req,res)=>{
+  try {
+    const allFrenchise = await Frenchise.find();
+    if(!allFrenchise){
+      res.status(404).json({message:"no frenchise found"})
+    }
+    res.status(200).json({message:"frenchise find successfully",data:allFrenchise})
+  } catch (error) {
+    res.status(500).json({message:"an erro occured", error:error.message})
+  }
+}
+

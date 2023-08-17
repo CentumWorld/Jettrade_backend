@@ -161,6 +161,7 @@ const fetchOnecomment = require("./routes/users/fetch_one_comment");
 const interactWithVideo = require("./routes/users/interact_with_video"); 
 const getVideos = require("./routes/get_all_video");
 const  findAllState = require("./routes/fetch-all-state");
+const  findAllFrenchise  = require("./routes/fetch-all-frenchise");
 
 //======================================================================
 
@@ -310,6 +311,8 @@ app.use("/user", userFetchAllVideo);
 app.use("/user", interactWithVideo);;
 app.use('/admin',verifyFranchieBeforeRegistration);
 app.use('/admin',verifyBuisnessDeveloperBeforeRegistration);
+app.use('/admin',findAllState)
+app.use('/admin',findAllFrenchise)
 // refferalin
 app.use("/member", memberRegistration);
 app.use("/member", memberLogin);
@@ -341,6 +344,5 @@ app.use("/member", fetchChatMessageRefferal);
 app.use("/member", adminOnlineOrNotRefferal);
 app.use("/member", refferalTotalWithdrawal);
 app.use("/member", refferalMyTeam);
-app.use('/admin',findAllState)
 
 module.exports = app;
