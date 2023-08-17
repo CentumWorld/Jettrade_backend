@@ -51,8 +51,6 @@ const frenchiseSchema = new mongoose.Schema(
     },
     referralId: {
       type: String,
-      required: true,
-      unique: true,
     },
     frenchiseWallet:{
       type:Number,
@@ -64,12 +62,15 @@ const frenchiseSchema = new mongoose.Schema(
     },
     franchiseState:{
       type:String ,
-      required:true
     },
-
-  },
-  { timestamps: true }
-);
+    
+    adharCard: {
+      type: String,
+    },
+    panCard: {
+      type: String,
+    }
+    },{timestamps:true});
 
 const frenchise = mongoose.model("Frenchise", frenchiseSchema);
 

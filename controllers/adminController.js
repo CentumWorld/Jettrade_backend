@@ -1757,7 +1757,124 @@ exports.fetchAllSubAdminDetails = async(req, res)=> {
   }
 }
 //===================================================================
-//register state handler
+// register statte handler
+
+// exports.createStateHandler = async (req, res) => {
+//   try {
+//     if (
+//       !req.files ||
+//       !req.files["adharCard"] ||
+//       !req.files["panCard"]
+//     ) {
+//       return res.status(422).json({
+//         message: "Please upload all required files (adharCard, panCard)",
+//       });
+//     }
+
+//     const adharCard = req.files.adharCard[0].location;
+//     const panCard = req.files.panCard[0].location;
+
+//     const {
+//       fname,
+//       lname,
+//       phone,
+//       email,
+//       gender,
+//       password,
+//       selectedState,
+//       stateHandlerId,
+//     } = req.body;
+
+//     if (!req.files["adharCard"] || req.files["adharCard"].length === 0) {
+//       return res.status(400).json({ message: "Adhar card file is missing." });
+//     }
+
+//     if (!req.files["panCard"] || req.files["panCard"].length === 0) {
+//       return res.status(400).json({ message: "Pan card file is missing." });
+//     }
+
+//     // Validate phone number format
+//     if (!isValidPhone(phone)) {
+//       return res.status(422).json({
+//         message: "Invalid phone number format. Use 10 digits or include country code.",
+//       });
+//     }
+
+//     // Validate name format
+//     if (!isValidName(fname) || !isValidName(lname)) {
+//       return res.status(422).json({
+//         message: "Invalid name format.",
+//       });
+//     }
+
+//     // Validate email format
+//     if (!isValidEmail(email)) {
+//       return res.status(422).json({
+//         message: "Invalid email format.",
+//       });
+//     }
+
+//     // Validate password format
+//     if (!isValidPassword(password)) {
+//       return res.status(422).json({
+//         message: "Password must meet certain criteria.",
+//       });
+//     }
+
+//     // Validate stateHandlerId format
+//     if (!isValidUserId(stateHandlerId)) {
+//       return res.status(422).json({
+//         message: "StateHandlerId should meet certain criteria.",
+//       });
+//     }
+
+//     // Validate stateHandlerId uniqueness
+//     const existingStateHandler = await StateHandler.findOne({
+//       stateHandlerId: stateHandlerId,
+//     });
+
+//     if (existingStateHandler) {
+//       return res.status(422).json({
+//         message: "State handler ID already exists. Please choose a unique ID.",
+//       });
+//     }
+
+//     const hashedPassword = await bcrypt.hash(password, 10);
+
+//     const randomDigits = Math.floor(Math.random() * 10000); // Generate a random number between 0 and 9999
+//     const firstThreeDigits = `${fname.substring(0, 3).toUpperCase()}`;
+//     const referralId = "ST" + "-" + firstThreeDigits + randomDigits;
+
+//     const stateHandlerWallet = 0;
+//     const newStateHandler = new StateHandler({
+//       fname,
+//       lname,
+//       phone,
+//       email,
+//       password: hashedPassword,
+//       gender,
+//       selectedState,
+//       stateHandlerId,
+//       adharCard,
+//       panCard,
+//       referralId,
+//       stateHandlerWallet,
+//     });
+
+//     const savedStateHandler = await newStateHandler.save();
+
+//     return res.status(201).json({
+//       message: "State handler created successfully",
+//       savedStateHandler,
+//     });
+//   } catch (error) {
+//     console.error(error);
+//     return res.status(500).json({
+//       message: "Internal Server Error",
+//     });
+//   }
+// };
+
 exports.createStateHandler = async (req, res) => {
   try {
 
@@ -1772,50 +1889,39 @@ exports.createStateHandler = async (req, res) => {
       });
     }
 
-    // const userType = "indian";
+  
     const adharCard = req.files.adharCard[0].location;
     const panCard = req.files.panCard[0].location;
-    console.log(adharCard, panCard, '1782')
+
+
     const {
       fname,
       lname,
       phone,
       email,
       gender,
+      referredId,
       password,
-      selectedState,
       stateHandlerId,
+      selectedState
     } = req.body;
 
-    if (!req.files["adharCard"] || req.files["adharCard"].length === 0) {
-      return res.status(400).json({ message: "Adhar card file is missing." });
-    }
 
-    if (!req.files["panCard"] || req.files["panCard"].length === 0) {
-      return res.status(400).json({ message: "Pan card file is missing." });
-    }
+    const existingstateHandler= await StateHandler.findOne({
+      stateHandlerId: stateHandlerId,
+    });
 
-    const adharCardFile = req.files["adharCard"][0];
-    const panCardFile = req.files["panCard"][0];
+    console.log(existingstateHandler, ">>>>>>>>>>>>>>>>>>")
 
-    // Check if adharCard image is valid using isValidImage function
-    if (!isValidImage(adharCardFile.originalname)) {
+
+    if (existingstateHandler) {
       return res.status(422).json({
-        message:
-          "Invalid adharCard image format, image must be in jpeg, jpg, tiff, png, webp, or bmp format.",
+        message: "State Handler Id ID already exists. Please choose a unique ID.",
       });
     }
 
-    // Check if panCard image is valid using isValidImage function
-    if (!isValidImage(panCardFile.originalname)) {
-      return res.status(422).json({
-        message:
-          "Invalid panCard image format, image must be in jpeg, jpg, tiff, png, webp, or bmp format.",
-      });
-    }
 
-    const adharCardLocation = adharCardFile.location;
-    const panCardLocation = panCardFile.location;
+   
     const requiredFields = [
       "fname",
       "lname",
@@ -1823,8 +1929,9 @@ exports.createStateHandler = async (req, res) => {
       "phone",
       "password",
       "gender",
-      "selectedState",
+      "referredId",
       "stateHandlerId",
+      "selectedState"
     ];
 
     const missingFields = requiredFields.filter((field) => !req.body[field]);
@@ -1835,15 +1942,7 @@ exports.createStateHandler = async (req, res) => {
     }
 
     // Validate stateHandlerId uniqueness
-    const existingStateHandler = await StateHandler.findOne({
-      stateHandlerId: stateHandlerId,
-    });
-    if (existingStateHandler) {
-      return res.status(422).json({
-        message: "State handler ID already exists. Please choose a unique ID.",
-      });
-    }
-
+  
     if (!isValidPhone(phone)) {
       return res.status(422).json({
         message:
@@ -1873,18 +1972,23 @@ exports.createStateHandler = async (req, res) => {
     if (!isValidUserId(stateHandlerId)) {
       return res.status(422).json({
         message:
-          "StateHandlerId Should have at least 1 letter and 1 digit, minimum length 6.",
+          "frenchise Id Should have at least 1 letter and 1 digit, minimum length 6.",
       });
     }
 
     const hashedPassword = await bcrypt.hash(password, 10);
 
+    const shortFname = fname.substring(0, 3).toUpperCase();
+
     //const referralId = `${fname.toLowerCase()}${randomDigits}`;
+    const randomDigits = Math.floor(1000 + Math.random() * 9000);
+
     const firstThreeDigits = `${fname.substring(0, 3).toUpperCase()}`;
-    const referralId =  "ST"+ "-" + firstThreeDigits + randomDigits;
+    const referralId =  "FC"+ "-" + firstThreeDigits + randomDigits;
     console.log(referralId,'1886');
 
-  
+    const frenchiseWallet =0
+
     const newStateHandler = new StateHandler({
       fname,
       lname,
@@ -1892,20 +1996,18 @@ exports.createStateHandler = async (req, res) => {
       email,
       password: hashedPassword,
       gender,
-      selectedState,
       stateHandlerId,
-      adharCard,
-      panCard,
+      referredId,
+      frenchiseWallet,
       referralId,
-      stateHandlerWallet,
+      selectedState
     });
 
-    const savedStateHandler = newStateHandler.save();
+    const savedData = await newStateHandler.save();
 
     return res.status(201).json({
       message: "State handler created successfully",
-
-      savedStateHandler,
+      savedData,
     });
   } catch (error) {
     console.error(error);
@@ -1914,6 +2016,9 @@ exports.createStateHandler = async (req, res) => {
     });
   }
 };
+
+
+
 
 
 // fetchAllSubAdminDetails
@@ -1973,14 +2078,7 @@ exports.createFrenchise = async (req, res) => {
       franchiseState
     } = req.body;
 
-    console.log(fname,lname,phone,
-      email,
-      gender,
-      referredId,
-      password,
-      franchiseCity,
-      frenchiseId,
-      franchiseState,)
+   
     const requiredFields = [
       "fname",
       "lname",
@@ -2007,7 +2105,7 @@ exports.createFrenchise = async (req, res) => {
     });
     if (existingFrenchise) {
       return res.status(422).json({
-        message: "State handler ID already exists. Please choose a unique ID.",
+        message: "Frenchise ID already exists. Please choose a unique ID.",
       });
     }
 
@@ -2040,7 +2138,7 @@ exports.createFrenchise = async (req, res) => {
     if (!isValidUserId(frenchiseId)) {
       return res.status(422).json({
         message:
-          "StateHandlerId Should have at least 1 letter and 1 digit, minimum length 6.",
+          "frenchise Id Should have at least 1 letter and 1 digit, minimum length 6.",
       });
     }
 
@@ -2049,9 +2147,13 @@ exports.createFrenchise = async (req, res) => {
     const shortFname = fname.substring(0, 3).toUpperCase();
 
     //const referralId = `${fname.toLowerCase()}${randomDigits}`;
+    const randomDigits = Math.floor(1000 + Math.random() * 9000);
+
     const firstThreeDigits = `${fname.substring(0, 3).toUpperCase()}`;
     const referralId =  "FC"+ "-" + firstThreeDigits + randomDigits;
     console.log(referralId,'1886');
+
+    const frenchiseWallet =0
 
     const newFranchise = new Frenchise({
       fname,
@@ -2064,6 +2166,8 @@ exports.createFrenchise = async (req, res) => {
       frenchiseId,
       referredId,
       frenchiseWallet,
+      referralId,
+      franchiseState
     });
 
     const savedFranchise = newFranchise.save();
@@ -2108,20 +2212,20 @@ exports.createBusinnesDeveloper = async (req, res) => {
     const panCardFile = req.files["panCard"][0];
 
     // Check if adharCard image is valid using isValidImage function
-    // if (!isValidImage(adharCardFile.originalname)) {
-    //   return res.status(422).json({
-    //     message:
-    //       "Invalid adharCard image format, image must be in jpeg, jpg, tiff, png, webp, or bmp format.",
-    //   });
-    // }
+    if (!isValidImage(adharCardFile.originalname)) {
+      return res.status(422).json({
+        message:
+          "Invalid adharCard image format, image must be in jpeg, jpg, tiff, png, webp, or bmp format.",
+      });
+    }
 
     // Check if panCard image is valid using isValidImage function
-    // if (!isValidImage(panCardFile.originalname)) {
-    //   return res.status(422).json({
-    //     message:
-    //       "Invalid panCard image format, image must be in jpeg, jpg, tiff, png, webp, or bmp format.",
-    //   });
-    // }
+    if (!isValidImage(panCardFile.originalname)) {
+      return res.status(422).json({
+        message:
+          "Invalid panCard image format, image must be in jpeg, jpg, tiff, png, webp, or bmp format.",
+      });
+    }
 
     const adharCardLocation = adharCardFile.location;
     const panCardLocation = panCardFile.location;
@@ -2199,10 +2303,13 @@ exports.createBusinnesDeveloper = async (req, res) => {
 
     const shortFname = fname.substring(0, 3).toUpperCase();
 
+    const randomDigits = Math.floor(1000 + Math.random() * 9000);
+
     const firstThreeDigits = `${fname.substring(0, 3).toUpperCase()}`;
     const referralId =  "BD"+ "-" + firstThreeDigits + randomDigits;
     console.log(referralId);
     
+    const businessDeveloperWallet=0
     const newBusinessDeveloper = new BusinessDeveloper({
       fname,
       lname,

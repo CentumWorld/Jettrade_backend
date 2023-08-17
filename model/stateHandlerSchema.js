@@ -32,12 +32,18 @@ const stateHandlerSchema = new mongoose.Schema({
   },
   adharCard: {
     type: String,
-    required: true,
   },
   panCard: {
     type: String,
-    required: true,
   },
+  stateHandlerWallet: {
+    type: Number,
+    default: 0,
+  },
+  stateHandlerId: {
+    type: String, 
+    required: true
+  }
 
 }, {timestamps: true});
 
