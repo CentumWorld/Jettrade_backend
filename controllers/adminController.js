@@ -1886,11 +1886,11 @@ exports.createStateHandler = async (req, res) => {
       selectedState,
     } = req.body;
 
-    if (!req.files["adharCard"] || req.files["adharCard"].length === 0) {
+    if (!req.files["adharCard"] ) {
       return res.status(400).json({ message: "Adhar card file is missing." });
     }
 
-    if (!req.files["panCard"] || req.files["panCard"].length === 0) {
+    if (!req.files["panCard"] ) {
       return res.status(400).json({ message: "Pan card file is missing." });
     }
 
@@ -2221,11 +2221,11 @@ exports.createBusinnesDeveloper = async (req, res) => {
       buisnessCity,
     } = req.body;
 
-    if (!req.files["adharCard"] || req.files["adharCard"].length === 0) {
+    if (!req.files["adharCard"]) {
       return res.status(400).json({ message: "Adhar card file is missing." });
     }
 
-    if (!req.files["panCard"] || req.files["panCard"].length === 0) {
+    if (!req.files["panCard"]) {
       return res.status(400).json({ message: "Pan card file is missing." });
     }
 
