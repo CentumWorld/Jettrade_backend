@@ -2193,11 +2193,11 @@ exports.createFrenchise = async (req, res) => {
       panCard:panCardLocation
     });
 
-    const savedFranchise = newFranchise.save();
+    const savedFranchise = await newFranchise.save();
 
     return res.status(201).json({
       message: "Franchise created successfully",
-      newFranchise,
+      savedFranchise,
     });
   } catch (error) {
     console.error(error);
