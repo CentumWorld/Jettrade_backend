@@ -66,6 +66,9 @@ const businessDeveloperSchema = new mongoose.Schema({
   buisnessCity:{
     type:String,
     required:true
+  },businessDeveloperWallet:{
+    type:Number,
+    default:0
   }
 }, { timestamps: true });
 

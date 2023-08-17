@@ -984,39 +984,6 @@ exports.fetchRefferalChatMessageAdmin = async (req, res) => {
 };
 
 // Create a new video
-
-// exports.createVideo = async (req, res, next) => {
-//   try {
-//     const { title } = req.body;
-//     const fileUrl = req.file.location; // Assuming your upload middleware sets the 'location' property
-//     if (!title) {
-//       return res
-//         .status(400)
-//         .send({ status: false, message: "title is required" });
-//     }
-//     if (!fileUrl) {
-//       return res
-//         .status(400)
-//         .send({ status: false, message: "video file is required" });
-//     }
-
-//     // Save the video information to MongoDB
-//     const video = new Video({
-//       title,
-//       videoOne: fileUrl,
-//     });
-
-//     const savedVideo = await video.save();
-
-//     res.status(201).json({ status: true, savedVideo });
-//   } catch (error) {
-//     console.error("Failed to create video:", error);
-//     res.status(500).json({ error: "Failed to create video" });
-//   }
-// };
-
-//===========
-
 exports.createVideo = async (req, res) => {
   try {
     const { title } = req.body;
@@ -1057,6 +1024,8 @@ exports.createVideo = async (req, res) => {
     res.status(500).json({ message: "Internal server error" });
   }
 };
+
+
 
 exports.fetchParticularUserDetailsFromAdminUsingUserid = async (req, res) => {
   const { userid } = req.body;
@@ -1288,6 +1257,28 @@ exports.totalWithdrawalMoney = async (req, res) => {
   } catch (error) {
     console.log(error.message);
     res.status(500).json({ message: "Internal server error" });
+  }
+};
+
+// delete-api/deleteController.js
+exports.deleteVideo = async (req, res) => {
+  const id = req.params.id; // Corrected order and accessing id property
+  console.log(id, "???//");
+
+  //
+
+  try {
+    const deleteVideo = await Video.findByIdAndDelete({_id:id}); // Pass id as argument
+    console.log(deleteVideo);
+
+    if (!deleteVideo) {
+      return res.status(404).json("Video not found");
+    }
+
+    return res.status(200).json("Video deleted successfully");
+  } catch (error) {
+    console.log(error.message);
+    return res.status(500).json({ message: "Server error" });
   }
 };
 
@@ -1583,13 +1574,12 @@ exports.getVideos = async (req, res) => {
 exports.subAdminLogin = async (req, res) => {
   try {
     const { subAdminId, password } = req.body;
+
     if (!subAdminId || !password) {
       return res
         .status(400)
         .json({ message: "Please provide User Id and password" });
     }
-    const subadminLogin = await subAdmin.findOne({ subAdminId: subAdminId });
-    console.log(subadminLogin, "104");
 
     const subadmin = await subAdmin.findOne({ subAdminId: subAdminId });
 
@@ -1597,39 +1587,30 @@ exports.subAdminLogin = async (req, res) => {
       return res.status(404).json({ message: "Sub admin not found" });
     }
 
-    const blocked = subadminLogin.isBlocked;
-    if (blocked) {
-      return res
-        .status(403)
-        .json({ status: false, message: "Your account is blocked!" });
+    // if (subadmin.isSubAdmin === false) {
+    //   return res.status(400).json({ message: "You are not a sub admin" });
+    // }
+
+    const passwordMatch = await bcrypt.compare(password, subadmin.password);
+
+    if (!passwordMatch) {
+      return res.status(401).json({ message: "Incorrect userId and password" });
     }
 
-    const isMatch = await bcrypt.compare(password, subadminLogin.password);
     const token = jwt.sign(
-      { subAdminId: subadminLogin._id },
+      { subAdminId: subadmin._id },
       process.env.SECRET_KEY,
-      { expiresIn: "8h" } // Set the token to expire in 1 hour
+      { expiresIn: "8h" }
     );
-    console.log(token, "270");
 
-    if (!isMatch) {
-      return res
-        .status(404)
-        .json({ status: false, message: "Invalid Credential!" });
-    } else {
-      return res.status(200).json({
-        status: true,
-        message: "Sub-Admin Login successfully",
-        token: token,
-        subadminLogin,
-        expires: new Date().getTime() + 60000,
-      });
-    }
+    return res.status(200).json({
+      message: "Sub admin login successful",
+      subadmin: subadmin,
+      subAdmintoken: token,
+    });
   } catch (error) {
-    console.log(error);
-    return res
-      .status(500)
-      .json({ status: false, message: "Internal Server Error" });
+    console.error(error.message);
+    return res.status(500).json({ message: "Internal server error" });
   }
 };
 
@@ -1675,6 +1656,8 @@ exports.createSubAdminInsideAdmin = async (req, res) => {
     pan,
     subAdminId,
     password,
+    isVideoCreator
+    
   } = req.body;
 
   // Check if any required field is missing
@@ -1718,11 +1701,7 @@ exports.createSubAdminInsideAdmin = async (req, res) => {
         message: "Password must be minimum length of 8 charector!",
       });
     }
-    if (password.length < 8) {
-      return res.status(400).json({
-        message: "Password must be minimum length of 8 charector!",
-      });
-    }
+
     const subadmin = new subAdmin({
       fname,
       lname,
@@ -1737,6 +1716,8 @@ exports.createSubAdminInsideAdmin = async (req, res) => {
       pan_card,
       subAdminId,
       password,
+      isVideoCreator
+      
     });
     await subadmin.save();
     const phone2 = "+" + subadmin.phone;
@@ -1759,7 +1740,19 @@ exports.createSubAdminInsideAdmin = async (req, res) => {
     console.log(error);
   }
 };
-
+//===================================================================
+exports.fetchAllSubAdminDetails = async(req, res)=> {
+  try {
+    let subAdmins = await subAdmin.find()
+    if(subAdmins.length ==0){
+      return res.status(404).json({message: "No sub admin found"})
+    }
+    return res.status(200).json({message: "Fetched all sub admins", subAdmins})
+  } catch (error) {
+    console.log(error.message)
+    return res.status(500).json({message: "Internal server error"})
+  }
+}
 //===================================================================
 //register state handler
 exports.createStateHandler = async (req, res) => {
@@ -1791,7 +1784,35 @@ exports.createStateHandler = async (req, res) => {
       stateHandlerId,
     } = req.body;
 
-    console.log(selectedState.length, '1794');
+    if (!req.files["adharCard"] || req.files["adharCard"].length === 0) {
+      return res.status(400).json({ message: "Adhar card file is missing." });
+    }
+
+    if (!req.files["panCard"] || req.files["panCard"].length === 0) {
+      return res.status(400).json({ message: "Pan card file is missing." });
+    }
+
+    const adharCardFile = req.files["adharCard"][0];
+    const panCardFile = req.files["panCard"][0];
+
+    // Check if adharCard image is valid using isValidImage function
+    if (!isValidImage(adharCardFile.originalname)) {
+      return res.status(422).json({
+        message:
+          "Invalid adharCard image format, image must be in jpeg, jpg, tiff, png, webp, or bmp format.",
+      });
+    }
+
+    // Check if panCard image is valid using isValidImage function
+    if (!isValidImage(panCardFile.originalname)) {
+      return res.status(422).json({
+        message:
+          "Invalid panCard image format, image must be in jpeg, jpg, tiff, png, webp, or bmp format.",
+      });
+    }
+
+    const adharCardLocation = adharCardFile.location;
+    const panCardLocation = panCardFile.location;
     const requiredFields = [
       "fname",
       "lname",
@@ -1855,13 +1876,31 @@ exports.createStateHandler = async (req, res) => {
 
     const hashedPassword = await bcrypt.hash(password, 10);
 
-    const randomDigits = Math.floor(1000 + Math.random() * 9000);
+    const shortFname = fname.substring(0, 3).toUpperCase();
 
     //const referralId = `${fname.toLowerCase()}${randomDigits}`;
     const firstThreeDigits = `${fname.substring(0, 3).toUpperCase()}`;
     const referralId =  "ST"+ "-" + firstThreeDigits + randomDigits;
     console.log(referralId,'1886');
 
+    let latestReferralSequence = 0;
+    if (latestStateHandler && latestStateHandler.referralId) {
+      const lastReferralSequence = Number(
+        latestStateHandler.referralId.slice(-3)
+      ); // Extract the last 3 digits
+      latestReferralSequence =
+        lastReferralSequence >= 1 ? lastReferralSequence : 0; // Make sure it's at least 0
+    }
+
+    const nextReferralSequence = latestReferralSequence + 1;
+    const formattedReferralSequence = String(nextReferralSequence).padStart(
+      3,
+      "0"
+    );
+    const referralId = `SH${shortFname}${formattedReferralSequence}`;
+
+    console.log(referralId, "///////");
+    const stateHandlerWallet = 0;
     const newStateHandler = new StateHandler({
       fname,
       lname,
@@ -1874,6 +1913,7 @@ exports.createStateHandler = async (req, res) => {
       adharCard,
       panCard,
       referralId,
+      stateHandlerWallet,
     });
 
     const savedStateHandler = newStateHandler.save();
@@ -2022,7 +2062,7 @@ exports.createFrenchise = async (req, res) => {
 
     const hashedPassword = await bcrypt.hash(password, 10);
 
-    const randomDigits = Math.floor(1000 + Math.random() * 9000);
+    const shortFname = fname.substring(0, 3).toUpperCase();
 
     //const referralId = `${fname.toLowerCase()}${randomDigits}`;
     const firstThreeDigits = `${fname.substring(0, 3).toUpperCase()}`;
@@ -2039,10 +2079,7 @@ exports.createFrenchise = async (req, res) => {
       franchiseCity,
       frenchiseId,
       referredId,
-      adharCard,
-      panCard,
-      referralId,
-      franchiseState
+      frenchiseWallet,
     });
 
     const savedFranchise = newFranchise.save();
@@ -2176,12 +2213,30 @@ exports.createBusinnesDeveloper = async (req, res) => {
 
     const hashedPassword = await bcrypt.hash(password, 10);
 
-    const randomDigits = Math.floor(1000 + Math.random() * 9000);
+    const shortFname = fname.substring(0, 3).toUpperCase();
 
     const firstThreeDigits = `${fname.substring(0, 3).toUpperCase()}`;
     const referralId =  "BD"+ "-" + firstThreeDigits + randomDigits;
     console.log(referralId);
 
+    let latestReferralSequence = 0;
+    if (latestStateHandler && latestStateHandler.referralId) {
+      const lastReferralSequence = Number(
+        latestStateHandler.referralId.slice(-3)
+      ); // Extract the last 3 digits
+      latestReferralSequence =
+        lastReferralSequence >= 1 ? lastReferralSequence : 0; // Make sure it's at least 0
+    }
+
+    const nextReferralSequence = latestReferralSequence + 1;
+    const formattedReferralSequence = String(nextReferralSequence).padStart(
+      7,
+      "0"
+    );
+    const referralId = `BD${shortFname}${formattedReferralSequence}`;
+
+    console.log(referralId, "///////");
+    const businessDeveloperWallet = 0;
     const newBusinessDeveloper = new BusinessDeveloper({
       fname,
       lname,
@@ -2194,6 +2249,7 @@ exports.createBusinnesDeveloper = async (req, res) => {
       panCard: panCardLocation,
       referralId,
       referredId,
+      businessDeveloperWallet,
       buisnessCity
     });
 
@@ -2250,13 +2306,11 @@ exports.stateHandlerLogin = async (req, res) => {
       }
     );
 
-    return res
-      .status(200)
-      .json({
-        message: "State handler login successful",
-        statehandlerToken: token,
-        stateHandlerDetails: existingStateHandler,
-      });
+    return res.status(200).json({
+      message: "State handler login successful",
+      statehandlerToken: token,
+      stateHandlerDetails: existingStateHandler,
+    });
   } catch (error) {
     console.error(error);
     return res.status(500).json({ message: "Internal Server Error" });
@@ -2303,13 +2357,11 @@ exports.frenchiseLogin = async (req, res) => {
       }
     );
 
-    return res
-      .status(200)
-      .json({
-        message: "Frenchise login successful",
-        frenchiseToken: token,
-        frenchiseDetails: existingFrenchiseId,
-      });
+    return res.status(200).json({
+      message: "Frenchise login successful",
+      frenchiseToken: token,
+      frenchiseDetails: existingFrenchiseId,
+    });
   } catch (error) {
     console.error(error);
     return res.status(500).json({ message: "Internal Server Error" });
@@ -2355,13 +2407,11 @@ exports.businessDeveloperLogin = async (req, res) => {
       }
     );
 
-    return res
-      .status(200)
-      .json({
-        message: "Business developer login successful",
-        businessDeveloperToken: token,
-        businessDeveloperDetails: existingBusinessDeveloper,
-      });
+    return res.status(200).json({
+      message: "Business developer login successful",
+      businessDeveloperToken: token,
+      businessDeveloperDetails: existingBusinessDeveloper,
+    });
   } catch (error) {
     console.error(error);
     return res.status(500).json({ message: "Internal Server Error" });

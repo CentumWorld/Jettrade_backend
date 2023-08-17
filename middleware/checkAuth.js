@@ -41,8 +41,7 @@ const SubAdmin = require("../model/subadminSchema")
 
       const admin = await Admin.findById(decoded.userId);
       const subAdmin = await SubAdmin.findById(decoded.subAdminId);
-      console.log(subAdmin)
-
+    
       if (!admin && !subAdmin) {
         return res.status(401).json({ message: 'Admin or Sub admin not found' });
       }
@@ -52,7 +51,9 @@ const SubAdmin = require("../model/subadminSchema")
       }
 
       if (subAdmin) {
-        req.isSubAdmin = true; // Set isSubAdmin flag in the request object for subadmin user
+        req.isSubAdmin = true;
+        
+        req.isVideoCreator = subAdmin.isVideoCreator; 
       }
 
       next();
@@ -68,10 +69,10 @@ const SubAdmin = require("../model/subadminSchema")
         // If user is an admin, allow access
         next();
       }
-        else if(req.isSubAdmin){
-          next()
-        
-      } else {
+      else if (req.subAdmin) {
+        next()
+      }
+   else {
         return res.status(403).json({ message: "You are not authorized as an admin or a sub admin" });
       }
     } catch (error) {
@@ -79,6 +80,8 @@ const SubAdmin = require("../model/subadminSchema")
       return res.status(500).json({ message: "Internal Server Error" });
     }
   };
+
+
   
   exports.authorizeAdmin = async (req, res, next) => {
     try {
@@ -96,7 +99,22 @@ const SubAdmin = require("../model/subadminSchema")
   };
 
   
-  
+  //===================
+
+  exports.authorizeVideoUpload = async (req, res, next) => {
+    try {
+      if (req.isAdmin || (req.isSubAdmin && req.isVideoCreator)) {
+        // If user is an admin or a subadmin with isVideoCreator true, allow video upload
+        next();
+      } else {
+        return res.status(403).json({ message: "You are not authorized to upload videos" });
+      }
+    } catch (error) {
+      console.log(error.message);
+      return res.status(500).json({ message: "Internal Server Error" });
+    }
+  };
+  //==================
 
   
 

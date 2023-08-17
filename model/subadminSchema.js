@@ -82,7 +82,12 @@ const subadminSchema = new mongoose.Schema({
   isSubAdmin: {
     type: Boolean,
     default: true
+  },
+  isVideoCreator: {
+    type: Boolean,
+    default: false
   }
+  
 });
 
 // Hash your password using bcrypt

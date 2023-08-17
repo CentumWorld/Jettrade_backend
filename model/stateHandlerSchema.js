@@ -39,20 +39,6 @@ const stateHandlerSchema = new mongoose.Schema({
     required: true,
   },
 
-  stateHandlerId: {
-    type:String,
-    required:true,
-    unique: true
-  },
-  referralId: {
-    type: String,
-    required: true,
-    unique: true,
-  },
-  stateHandlerWallet:{
-    type : Number ,
-    default: 0
-  },
 }, {timestamps: true});
 
 const stateHandler = mongoose.model("StateHandler", stateHandlerSchema);

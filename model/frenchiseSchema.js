@@ -57,6 +57,10 @@ const frenchiseSchema = new mongoose.Schema(
     frenchiseWallet:{
       type:Number,
       default:0
+    }
+    frenchiseWallet:{
+      type:Number,
+      default:0
     },
     franchiseCity:{
       type :[String],

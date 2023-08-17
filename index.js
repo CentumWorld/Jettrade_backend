@@ -1,18 +1,16 @@
 //const mongoose = require('mongoose');
 const express = require("express");
+const app = express();
 const bodyParser = require("body-parser");
 const cookieParser = require("cookie-parser");
 require("./database/conn");
 const path = require("path");
 const cors = require("cors");
+app.use(express.static(path.join(__dirname, "public")));
+app.use(express.urlencoded({ extended: true }));
+app.use(express.json());
+app.use(cookieParser());
 
-const app = express();
-
-app.use(bodyParser.json());
-app.use(cors());
-
-const adminLogin = require("./routes/adminLogin");
-const adminLogout = require("./routes/adminLogout");
 const userRegistration = require("./routes/users/userRegistration");
 const userLogin = require("./routes/users/userLogin");
 const userFetchDeatils = require("./routes/users/userFetchDetails");
@@ -23,6 +21,7 @@ const resetPassword = require("./routes/users/resetPassword");
 const profileVerification = require("./routes/users/profileVerification");
 const profilePhotoUpload = require("./routes/users/profilePhotoUpload");
 const fetchUserDetailsUserside = require("./routes/users/fetch-user-details-userside");
+const adminLogin = require("./routes/adminLogin");
 const verifyUser = require("./routes/verify-user");
 const fetchUserDetails = require("./routes/fetch-user-details");
 const fetchParticularUserDetails = require("./routes/fetch-particular-user-details");
@@ -92,23 +91,11 @@ const adminSumOfAllNewRenewalUserAmount = require("./routes/admin-sum-of-all-new
 const filterTransactionsForWithdrawlWithYearMonth = require("./routes/filter-Transactions-For-Withdrawl-With-Year-Month");
 const tradingWalletTransferFromOneUserToAnother = require("./routes/users/trading-wallet-transfer-from-one-user-to-another");
 const totalWithdrawalMoney = require("./routes/total-Withdrawal-Money");
-const fetchRefferalPayoutOnRoleBasis = require("./routes/fetch-refferal-payout-on-role-basis");
-const searchRefferalPayoutByRefferUserid = require("./routes/search-refferal-payout-by-reffer-userid");
-const searchNewUsers = require("./routes/search-new-users");
-const searchRenewalUsers = require("./routes/search-renewal-users");
-const totalCountOfPaymentStatusOfUser = require("./routes/total_Count_Of_Payment_Status_Of_User");
-const totalCountOfPaymentStatusOfUseruser = require("./routes/users/total_Count_Of_Payment_Status_Of_User_user");
-const findUsersOnTheBasisOfPaymentStatus = require("./routes/find_Users_On_The_Basis_Of_Payment_Status");
-const manageSubAdminRole = require("./routes/manage_subAdmin");
-const getvideos = require("./routes/get_all_video");
+const deleteVideo = require("./routes/delete-video");
+const adminLogout = require("./routes/adminLogout");
+const getVideo = require("./routes/users/fetch_one_video_details");
+const getvideos = require("./routes/users/user-fetch-all-videos");
 const subAdminLogin = require("./routes/sub_Admin_Login");
-const interactWithVideo = require("./routes/users/interact_with_video");
-const videoUpload = require("./routes/adminVideo");
-const userFetchAllVideo = require("./routes/users/user-fetch-all-videos");
-const withdrawlFromWalletAndTradingWallet = require("./routes/users/withdrawl-From-Wallet-And-TradingWallet");
-const fetchWalletWithdrawalHistory = require("./routes/users/fetch-Wallet-Withdrawal-History");
-const fetchWalletHistory = require("./routes/users/fetch-Wallet-History");
-const fetchParticularUserPaymentStatus = require("./routes/fetch_Particular_User_Payment_Status");
 
 const fetchOneVideoDetail = require("./routes/users/fetch_one_video_details");
 const createSubAdminInsideAdmin = require('./routes/create-sub-admin-inside-admin');
@@ -124,7 +111,6 @@ const fetchAllSubAdminDetails = require('./routes/fetch-all-sub-admin-details');
 const verifyFranchieBeforeRegistration = require('./routes/verify-franchie-before-registration');
 const verifyBuisnessDeveloperBeforeRegistration = require('./routes/verify-buisness-developer-before-registration');
 
-//======================================================================
 // refferal
 const memberRegistration = require("./routes/refferal/member-registration");
 const memberLogin = require("./routes/refferal/member-login");
@@ -157,7 +143,33 @@ const adminOnlineOrNotRefferal = require("./routes/refferal/admin-online-or-not-
 const refferalTotalWithdrawal = require("./routes/refferal/refferal-total-withdrawal");
 const refferalMyTeam = require("./routes/refferal/refferal-my-team");
 
+const videoUpload = require("./routes/adminVideo");
 
+const withdrawlFromWalletAndTradingWallet = require("./routes/users/withdrawl-From-Wallet-And-TradingWallet");
+const fetchWalletWithdrawalHistory = require("./routes/users/fetch-Wallet-Withdrawal-History");
+
+const fetchWalletHistory = require("./routes/users/fetch-Wallet-History");
+const userFetchAllVideo = require("./routes/users/user-fetch-all-videos");
+
+const fetchParticularUserPaymentStatus = require("./routes/fetch_Particular_User_Payment_Status");
+
+const fetchOneVideoDetail = require("./routes/users/fetch_one_video_details");
+const createSubAdminInsideAdmin = require("./routes/create-sub-admin-inside-admin");
+const fetchUserOneVideoLike = require("./routes/users/fetch-User-One-Video-Like");
+const fetchUserOneVideoDisLike = require("./routes/users/fetch-User-One-Video-DisLike");
+const createStateHandler = require("./routes/create_State_Handler");
+const createFrenchise = require("./routes/create-frenchise");
+const createBusinnesDeveloper = require("./routes/create-business-developer");
+const stateHandlerLogin = require("./routes/state_handler-login");
+const frenchiseLogin = require("./routes/frenchise_login");
+const businessDeveloperLogin = require("./routes/business-developer-login");
+const fetchAllSubAdminDetails = require("./routes/fetch-all-sub-admin-details");
+const fetchOnecomment = require("./routes/users/fetch_one_comment");
+const interactWithVideo = require("./routes/users/interact_with_video"); 
+const getVideos = require("./routes/get_all_video")
+
+//======================================================================
+// refferal
 
 app.use(express.static(path.join(__dirname, "public")));
 app.use(express.urlencoded({ extended: true }));
@@ -233,7 +245,7 @@ app.use("/user", userUpdateWalletAfterAdding);
 app.use("/user", updateDayCount);
 app.use("/user", updateExpire);
 app.use("/admin", videoUpload);
-// app.use("/user", getVideo);
+app.use("/user", getVideo);
 app.use("/user", addingAmountToTradingWallet);
 app.use("/user", withdrawlAmountFromTradingWallet);
 app.use("/admin", fetchParticularUserDetailsFromAdminUsingUserid);
@@ -249,35 +261,58 @@ app.use("/user", withdrawlFromWalletAndTradingWallet);
 app.use("/user", fetchWalletWithdrawalHistory);
 app.use("/user", fetchWalletHistory);
 app.use("/admin", totalWithdrawalMoney);
-app.use("/admin", fetchRefferalPayoutOnRoleBasis);
-app.use("/admin", searchRefferalPayoutByRefferUserid);
-app.use("/admin", searchNewUsers);
-app.use("/admin", searchRenewalUsers);
-app.use("/admin", totalCountOfPaymentStatusOfUser);
-app.use("/user", totalCountOfPaymentStatusOfUseruser);
-app.use("/admin", findUsersOnTheBasisOfPaymentStatus);
-app.use("/admin", fetchParticularUserPaymentStatus);
-app.use("/admin", manageSubAdminRole);
-app.use("/user", interactWithVideo);
-app.use("/user", userFetchAllVideo);
-app.use("/admin", subAdminLogin);
+app.use("/admin", deleteVideo);
+app.use("/admin", getVideos)
 
-
+// refferal
+app.use("/member", memberRegistration);
+app.use("/member", memberLogin);
+app.use("/admin", fetchMemberDetails);
+app.use("/admin", fetchParticularMemberDetails);
+app.use("/admin", verifyMember);
+app.use("/member", memberProfileVerification);
+app.use("/admin", fetchMemberDocumentAdminside);
+app.use("/member", fetchMemberDetailsMemberSide);
+app.use("/member", memberProfilePhotoUpload);
+app.use("/member", fetchMemberProfilePhoto);
+app.use("/member", fetchMemberDocumentMemberSide);
+app.use("/member", memberChangePassword);
+app.use("/member", memberForgetPassword);
+app.use("/member", memberVerifyOtp);
+app.use("/member", memberResetPassword);
+app.use("/member", editMemberDetails);
+app.use("/member", saveMemberEditedDetails);
+app.use("/member", fetchRefferalNotification);
+app.use("/member", memberFetchRefferalPayout);
+app.use("/member", refferalPayoutRequestMember);
+app.use("/member", fetchMemberRefferalPayoutRequestWithdrawal);
+app.use("/member", memberFetchRefferalPayoutApproveWithdrawal);
+app.use("/member", otherCountryMemberRegistration);
+app.use("/member", fetchMemberNotificationStatus);
+app.use("/member", setNotificationToFalseMember);
+app.use("/member", fetchChatDetailsRefferal);
+app.use("/member", fetchChatMessageRefferal);
+app.use("/member", adminOnlineOrNotRefferal);
+app.use("/member", refferalTotalWithdrawal);
+app.use("/member", refferalMyTeam);
 
 app.use("/admin", getvideos);
 
 app.use("/admin", subAdminLogin);
 app.use("/user", fetchOneVideoDetail);
-app.use('/admin',createSubAdminInsideAdmin);
-app.use('/admin',fetchAllSubAdminDetails);
-app.use("/user", fetchUserOneVideoLike)
-app.use("/user", fetchUserOneVideoDisLike)
-app.use("/admin", createStateHandler)
-app.use("/admin", createFrenchise)
-app.use("/admin", createBusinnesDeveloper)
-app.use("/admin", stateHandlerLogin)
-app.use("/admin", businessDeveloperLogin)
-app.use("/admin",frenchiseLogin);
+app.use("/admin", createSubAdminInsideAdmin);
+app.use("/admin", fetchAllSubAdminDetails);
+app.use("/user", fetchUserOneVideoLike);
+app.use("/user", fetchUserOneVideoDisLike);
+app.use("/admin", createStateHandler);
+app.use("/admin", createFrenchise);
+app.use("/admin", createBusinnesDeveloper);
+app.use("/admin", stateHandlerLogin);
+app.use("/admin", businessDeveloperLogin);
+app.use("/admin", frenchiseLogin);
+app.use("/user", fetchOnecomment);
+app.use("/user", userFetchAllVideo);
+app.use("/user", interactWithVideo);;
 app.use('/admin',verifyFranchieBeforeRegistration);
 app.use('/admin',verifyBuisnessDeveloperBeforeRegistration);
 // refferalin

@@ -2256,7 +2256,7 @@ exports.interactWithVideo = async (req, res) => {
       video: updatedVideo,
     });
   } catch (error) {
-    console.log(error.message);
+    console.log(error.message, "//////////");
     return res.status(500).json({ message: "Internal Server Error" });
   }
 };
@@ -2317,5 +2317,28 @@ exports.fetchUserOneVideoDisLike = async (req, res) => {
   } catch (error) {
     console.error(error.message);
     res.status(500).json({ message: "Internal Server Error" });
+  }
+};
+
+//================================================================
+exports.fetchOnecomment = async (req, res) => {
+  try {
+    const { commentId, videoId } = req.body;
+    const video = await Video.findById(videoId);
+
+    if (!video) {
+      return res.status(404).json({ message: "Video not found" });
+    }
+
+    const comment = video.comments.find((c) => c._id.toString() === commentId);
+
+    if (!comment) {
+      return res.status(404).json({ message: "Comment not found" });
+    }
+
+    return res.status(200).json({ message: "Fetched comment successfully", comment });
+  } catch (error) {
+    console.error(error.message);
+    return res.status(500).json({ message: "Internal server error" });
   }
 };
