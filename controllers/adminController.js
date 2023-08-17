@@ -2674,3 +2674,20 @@ exports.interactWithVideoForAdmin = async (req, res) => {
     return res.status(500).json({ message: "Internal Server Error" });
   }
 };
+
+
+//==========================================================
+
+exports.findAllState = async (req,res)=>{
+  try {
+    const allstate = await StateHandler.find()
+    if(allstate.length===0){
+     return res.status(404).json({message:"no state found"})
+    }
+
+   res.status(200).json({message:"state find successfully", data:allstate})
+
+  } catch (error) {
+    res.status(500).json({message:"an error occured", error:error.message})
+  }
+}

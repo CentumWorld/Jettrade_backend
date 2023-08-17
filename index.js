@@ -159,7 +159,8 @@ const businessDeveloperLogin = require("./routes/business-developer-login");
 const fetchAllSubAdminDetails = require("./routes/fetch-all-sub-admin-details");
 const fetchOnecomment = require("./routes/users/fetch_one_comment");
 const interactWithVideo = require("./routes/users/interact_with_video"); 
-const getVideos = require("./routes/get_all_video")
+const getVideos = require("./routes/get_all_video");
+const  findAllState = require("./routes/fetch-all-state");
 
 //======================================================================
 
@@ -340,5 +341,6 @@ app.use("/member", fetchChatMessageRefferal);
 app.use("/member", adminOnlineOrNotRefferal);
 app.use("/member", refferalTotalWithdrawal);
 app.use("/member", refferalMyTeam);
+app.use('/admin',findAllState)
 
 module.exports = app;
