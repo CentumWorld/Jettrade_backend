@@ -29,6 +29,9 @@ const validator = require("validator");
 const StateHandler = require("../model/stateHandlerSchema");
 const Frenchise = require("../model/frenchiseSchema");
 const BusinessDeveloper = require("../model/businessDeveloperSchema");
+const Like = require('../model/likeModel'); 
+const DisLike = require('../model/disLikeModel'); 
+
 const {
   isValidPassword,
   isValidName,
@@ -2428,3 +2431,106 @@ exports.verifyBuisnessDeveloperBeforeRegistration = async(req,res) =>{
     })
   }
 }
+
+    console.log(userId, "///////")
+
+    if (!videoId || !action) {
+      return res.status(400).json({ message: "Video Id and action are required" });
+    }
+
+    const video = await Video.findById(videoId);
+
+    if (!video) {
+      return res.status(404).json({ message: "Video not found" });
+    }
+
+    if (!userId) {
+      return res.status(400).json({ message: "User Id is required" });
+    }
+    if (action === "like") {
+      const existingLike = await Like.findOne({ userId, videoId });
+      const existingDisLike = await DisLike.findOne({ userId, videoId });
+
+      if (!existingLike) {
+        video.likes += 1;
+        const newLike = new Like({ userId, videoId, likeType: true });
+        await newLike.save();
+      } else if (existingLike.likeType === false) {
+        video.likes += 1;
+        existingLike.likeType = true;
+        await existingLike.save();
+      } else if (existingLike.likeType === true) {
+        video.likes -= 1;
+        existingLike.likeType = false;
+        await existingLike.save();
+      }
+
+      if (existingDisLike && existingDisLike.disLikeType === true) {
+        video.dislikes -= 1;
+        existingDisLike.disLikeType = false;
+        await existingDisLike.save();
+      }
+    } else if (action === "dislike") {
+      const existingDisLike = await DisLike.findOne({ userId, videoId });
+      const existingLike = await Like.findOne({ userId, videoId });
+
+      if (!existingDisLike) {
+        video.dislikes += 1;
+        const newDisLike = new DisLike({ userId, videoId, disLikeType: true });
+        await newDisLike.save();
+      } else if (existingDisLike.disLikeType === false) {
+        video.dislikes += 1;
+        existingDisLike.disLikeType = true;
+        await existingDisLike.save();
+      } else if (existingDisLike.disLikeType === true) {
+        video.dislikes -= 1;
+        existingDisLike.disLikeType = false;
+        await existingDisLike.save();
+      }
+
+      if (existingLike && existingLike.likeType === true) {
+        video.likes -= 1;
+        existingLike.likeType = false;
+        await existingLike.save();
+      }
+  
+    //================
+    } else if (action === "comment") {
+      if (!comments) {
+        return res.status(400).json({ message: "Comments are required for 'comment' action" });
+      }
+
+      if (replyTo) {
+        const commentToReply = video.comments.find((c) => c._id.toString() === replyTo);
+
+        if (commentToReply) {
+          commentToReply.replies.push({
+            text: comments,
+            userId: userId,
+          });
+        } else {
+          return res.status(400).json({ message: "Comment to reply not found" });
+        }
+      } else {
+        video.comments.push({
+          text: comments,
+          userId: userId,
+        });
+      }
+    } else if (action === "view") {
+      video.views += 1;
+    } else {
+      return res.status(400).json({ message: "Invalid action" });
+    }
+
+    const updatedVideo = await video.save();
+
+    res.status(200).json({
+      message: "Video interaction updated successfully",
+      video: updatedVideo,
+    });
+  } catch (error) {
+    console.log(error.message, "//////////======");
+    return res.status(500).json({ message: "Internal Server Error" });
+  }
+};
