@@ -26,14 +26,6 @@ const frenchiseSchema = new mongoose.Schema(
       type: String,
       required: true,
     },
-    address: {
-      type: String,
-      required: true,
-    },
-    dob: {
-      type: Date,
-      required: true,
-    },
     gender: {
       type: String,
       required: true,
@@ -62,6 +54,19 @@ const frenchiseSchema = new mongoose.Schema(
       required: true,
       unique: true,
     },
+    frenchiseWallet:{
+      type:Number,
+      default:0
+    },
+    franchiseCity:{
+      type :[String],
+      required:true
+    },
+    franchiseState:{
+      type:String ,
+      required:true
+    },
+
   },
   { timestamps: true }
 );

@@ -121,6 +121,8 @@ const stateHandlerLogin = require("./routes/state_handler-login")
 const frenchiseLogin = require("./routes/frenchise_login")
 const businessDeveloperLogin = require("./routes/business-developer-login")
 const fetchAllSubAdminDetails = require('./routes/fetch-all-sub-admin-details');
+const verifyFranchieBeforeRegistration = require('./routes/verify-franchie-before-registration');
+const verifyBuisnessDeveloperBeforeRegistration = require('./routes/verify-buisness-developer-before-registration');
 
 //======================================================================
 // refferal
@@ -275,8 +277,9 @@ app.use("/admin", createFrenchise)
 app.use("/admin", createBusinnesDeveloper)
 app.use("/admin", stateHandlerLogin)
 app.use("/admin", businessDeveloperLogin)
-app.use("/admin",frenchiseLogin)
-
+app.use("/admin",frenchiseLogin);
+app.use('/admin',verifyFranchieBeforeRegistration);
+app.use('/admin',verifyBuisnessDeveloperBeforeRegistration);
 // refferalin
 app.use("/member", memberRegistration);
 app.use("/member", memberLogin);

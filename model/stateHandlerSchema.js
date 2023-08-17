@@ -21,16 +21,8 @@ const stateHandlerSchema = new mongoose.Schema({
     type: String,
     required: true,
   },
-  address: {
-    type: String,
-    required: true,
-  },
-  dob: {
-    type: Date,
-    required: true,
-  },
   selectedState: {
-    type: String,
+    type: [String],
     required: true,
   },
   gender:{
@@ -56,6 +48,10 @@ const stateHandlerSchema = new mongoose.Schema({
     type: String,
     required: true,
     unique: true,
+  },
+  stateHandlerWallet:{
+    type : Number ,
+    default: 0
   },
 }, {timestamps: true});
 

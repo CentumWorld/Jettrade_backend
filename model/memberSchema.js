@@ -54,9 +54,9 @@ const memberSchema = new mongoose.Schema({
     refferal_id:{
         type:String
     },
-    // reffered_id:{
-    //     type:String
-    // },
+    reffered_id:{
+        type:String
+    },
     status:{
         type:Boolean,
         default:false

@@ -5,8 +5,8 @@ const adminController = require('../controllers/adminController');
 const { authenticateAdmin, authorizeAdmin } = require('../middleware/checkAuth');
 
 router.post(
-  '/create-state-handler',
-  upload.fields([{ name: 'adharCard', maxCount: 1 }, { name: 'panCard', maxCount: 1 }]),
+  '/create_State_Handler',
+  upload.fields([{ name: 'adharCard' }, { name: 'panCard'}]),
   authenticateAdmin,
   authorizeAdmin,
   adminController.createStateHandler

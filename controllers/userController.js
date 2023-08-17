@@ -28,6 +28,8 @@ const MyReferral = require("../model/myReferralSchema");
 const Like = require("../model/likeModel");
 const DisLike = require("../model/disLikeModel")
 const { isValidPassword, isValidPhone } = require("../validation/validation");
+const BusinessDeveloper = require('../model/businessDeveloperSchema');
+const businessDeveloperCreditWalletTransaction = require('../model/businessDeveloperCreditWalletTransaction');
 
 //const profilePhoto = require('../model/profilePhotoSchema');
 
@@ -1106,6 +1108,33 @@ exports.changeUserPaymentStatus = async (req, res) => {
         });
         if (findUserFromMemberRefferedId.length > 0 && payment < 1) {
           const memberid = findUserFromMemberRefferedId[0].memberid;
+          const bdrefferid = findUserFromMemberRefferedId[0].reffered_id;
+         
+          const bdDetails = await BusinessDeveloper.findOne({bdrefferid})
+          if(bdDetails){
+            const bdUserid = bdDetails.businessDeveloperId
+            let businessDeveloperWallet = bdDetails.businessDeveloperWallet
+            businessDeveloperWallet = businessDeveloperWallet + 500
+            const insertDbWalletAmount = await BusinessDeveloper.updateOne(
+              {bdrefferid :bdrefferid},
+              {
+                $set:{
+                  businessDeveloperWallet:businessDeveloperWallet
+                },
+              }
+            );
+            const bdCreditWalletDetails = new  businessDeveloperCreditWalletTransaction({
+              businessDeveloperId:bdUserid,
+              creditAmount:500 ,
+              Type:"New",
+              refferUserId:memberid
+            })
+            bdCreditWalletDetails.save()
+          }
+          console.log(bdDetails,bdDetails.businessDeveloperId,bdDetails.businessDeveloperWallet,'1114')
+         
+            
+
           let wallet = findUserFromMemberRefferedId[0].wallet;
           wallet = wallet + 1200;
           console.log(wallet);

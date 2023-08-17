@@ -28,14 +28,6 @@ const businessDeveloperSchema = new mongoose.Schema({
     required: true,
    
   },
-  address: {
-    type: String,
-    required: true,
-  },
-  dob: {
-    type: Date,
-    required: true,
-  },
   gender: {
     type: String,
     required: true
@@ -66,6 +58,14 @@ const businessDeveloperSchema = new mongoose.Schema({
     type: String,
     required: true,
     unique: true
+  },
+  businessDeveloperWallet:{
+    type : Number ,
+    default:0
+  },
+  buisnessCity:{
+    type:String,
+    required:true
   }
 }, { timestamps: true });
 
