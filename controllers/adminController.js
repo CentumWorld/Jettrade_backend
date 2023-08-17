@@ -2707,3 +2707,17 @@ exports.findAllFrenchise = async (req,res)=>{
   }
 }
 
+//===========================================================================
+
+exports.findAllBusinessDeveloper=async (req,res)=>{
+  try {
+    const allBusinessDeveloper = await BusinessDeveloper.find()
+    if(!allBusinessDeveloper){
+      res.status(402).json({message:"no businessDeveloper found"})
+    }
+    res.status(200).json({message:"stateDeveloper found successfully",data:allBusinessDeveloper})
+    
+  } catch (error) {
+    res.status(500).json({message:"an error occured", error:error.message})
+  }
+}

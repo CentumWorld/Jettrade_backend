@@ -162,6 +162,7 @@ const interactWithVideo = require("./routes/users/interact_with_video");
 const getVideos = require("./routes/get_all_video");
 const  findAllState = require("./routes/fetch-all-state");
 const  findAllFrenchise  = require("./routes/fetch-all-frenchise");
+const  findAllBusinessDeveloper  = require("./routes/fetch-all-businessDeveloper");
 
 //======================================================================
 
@@ -313,6 +314,7 @@ app.use('/admin',verifyFranchieBeforeRegistration);
 app.use('/admin',verifyBuisnessDeveloperBeforeRegistration);
 app.use('/admin',findAllState)
 app.use('/admin',findAllFrenchise)
+app.use('/admin',findAllBusinessDeveloper)
 // refferalin
 app.use("/member", memberRegistration);
 app.use("/member", memberLogin);
