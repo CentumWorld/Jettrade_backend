@@ -29,8 +29,8 @@ const validator = require("validator");
 const StateHandler = require("../model/stateHandlerSchema");
 const Frenchise = require("../model/frenchiseSchema");
 const BusinessDeveloper = require("../model/businessDeveloperSchema");
-const Like = require('../model/likeModel'); 
-const DisLike = require('../model/disLikeModel'); 
+const Like = require("../model/likeModel");
+const DisLike = require("../model/disLikeModel");
 
 const {
   isValidPassword,
@@ -1028,8 +1028,6 @@ exports.createVideo = async (req, res) => {
   }
 };
 
-
-
 exports.fetchParticularUserDetailsFromAdminUsingUserid = async (req, res) => {
   const { userid } = req.body;
   User.findOne({ userid })
@@ -1271,7 +1269,7 @@ exports.deleteVideo = async (req, res) => {
   //
 
   try {
-    const deleteVideo = await Video.findByIdAndDelete({_id:id}); // Pass id as argument
+    const deleteVideo = await Video.findByIdAndDelete({ _id: id }); // Pass id as argument
     console.log(deleteVideo);
 
     if (!deleteVideo) {
@@ -1659,8 +1657,7 @@ exports.createSubAdminInsideAdmin = async (req, res) => {
     pan,
     subAdminId,
     password,
-    isVideoCreator
-    
+    isVideoCreator,
   } = req.body;
 
   // Check if any required field is missing
@@ -1719,8 +1716,7 @@ exports.createSubAdminInsideAdmin = async (req, res) => {
       pan_card,
       subAdminId,
       password,
-      isVideoCreator
-      
+      isVideoCreator,
     });
     await subadmin.save();
     const phone2 = "+" + subadmin.phone;
@@ -1744,18 +1740,20 @@ exports.createSubAdminInsideAdmin = async (req, res) => {
   }
 };
 //===================================================================
-exports.fetchAllSubAdminDetails = async(req, res)=> {
+exports.fetchAllSubAdminDetails = async (req, res) => {
   try {
-    let subAdmins = await subAdmin.find()
-    if(subAdmins.length ==0){
-      return res.status(404).json({message: "No sub admin found"})
+    let subAdmins = await subAdmin.find();
+    if (subAdmins.length == 0) {
+      return res.status(404).json({ message: "No sub admin found" });
     }
-    return res.status(200).json({message: "Fetched all sub admins", subAdmins})
+    return res
+      .status(200)
+      .json({ message: "Fetched all sub admins", subAdmins });
   } catch (error) {
-    console.log(error.message)
-    return res.status(500).json({message: "Internal server error"})
+    console.log(error.message);
+    return res.status(500).json({ message: "Internal server error" });
   }
-}
+};
 //===================================================================
 // register statte handler
 
@@ -1877,44 +1875,6 @@ exports.fetchAllSubAdminDetails = async(req, res)=> {
 
 exports.createStateHandler = async (req, res) => {
   try {
-
-    if (
-      !req.files ||
-      !req.files["adharCard"] ||
-      !req.files["panCard"]
-    ) {
-      return res.status(422).json({
-        message:
-          "Please upload all required files (adharCard, panCard)",
-      });
-    }
-
-  
-    const adharCardFile = req.files.adharCard[0].location;
-    const panCardFile = req.files.panCard[0].location;
-
-    // Check if adharCard image is valid using isValidImage function
-   // Check if adharCard image is valid using isValidImage function
-
-   console.log("adharCardFile:", adharCardFile); // Add this line
-
-   console.log("panCardFile:", panCardFile); // Add this line
-
-if (!adharCardFile || !isValidImage(adharCardFile.originalname)) {
-  return res.status(422).json({
-    message:
-      "Invalid adharCard image format, image must be in jpeg, jpg, tiff, png, webp, or bmp format.",
-  });
-}
-
-// Check if panCard image is valid using isValidImage function
-if (!panCardFile || !isValidImage(panCardFile.originalname)) {
-  return res.status(422).json({
-    message:
-      "Invalid panCard image format, image must be in jpeg, jpg, tiff, png, webp, or bmp format.",
-  });
-}
-
     const {
       fname,
       lname,
@@ -1923,22 +1883,50 @@ if (!panCardFile || !isValidImage(panCardFile.originalname)) {
       gender,
       password,
       stateHandlerId,
-      selectedState
+      selectedState,
     } = req.body;
 
+    if (!req.files["adharCard"] || req.files["adharCard"].length === 0) {
+      return res.status(400).json({ message: "Adhar card file is missing." });
+    }
 
-    const existingstateHandler= await StateHandler.findOne({
+    if (!req.files["panCard"] || req.files["panCard"].length === 0) {
+      return res.status(400).json({ message: "Pan card file is missing." });
+    }
+
+    const adharCardFile = req.files["adharCard"][0];
+    const panCardFile = req.files["panCard"][0];
+
+    // Check if adharCard image is valid using isValidImage function
+    if (!isValidImage(adharCardFile.originalname)) {
+      return res.status(422).json({
+        message:
+          "Invalid adharCard image format, image must be in jpeg, jpg, tiff, png, webp, or bmp format.",
+      });
+    }
+
+    // Check if panCard image is valid using isValidImage function
+    if (!isValidImage(panCardFile.originalname)) {
+      return res.status(422).json({
+        message:
+          "Invalid panCard image format, image must be in jpeg, jpg, tiff, png, webp, or bmp format.",
+      });
+    }
+
+    const adharCardLocation = adharCardFile.location;
+    const panCardLocation = panCardFile.location;
+
+    const existingstateHandler = await StateHandler.findOne({
       stateHandlerId: stateHandlerId,
     });
 
     if (existingstateHandler) {
       return res.status(422).json({
-        message: "State Handler Id ID already exists. Please choose a unique ID.",
+        message:
+          "State Handler Id ID already exists. Please choose a unique ID.",
       });
     }
 
-
-   
     const requiredFields = [
       "fname",
       "lname",
@@ -1947,7 +1935,7 @@ if (!panCardFile || !isValidImage(panCardFile.originalname)) {
       "password",
       "gender",
       "stateHandlerId",
-      "selectedState"
+      "selectedState",
     ];
 
     const missingFields = requiredFields.filter((field) => !req.body[field]);
@@ -1958,7 +1946,7 @@ if (!panCardFile || !isValidImage(panCardFile.originalname)) {
     }
 
     // Validate stateHandlerId uniqueness
-  
+
     if (!isValidPhone(phone)) {
       return res.status(422).json({
         message:
@@ -1994,16 +1982,15 @@ if (!panCardFile || !isValidImage(panCardFile.originalname)) {
 
     const hashedPassword = await bcrypt.hash(password, 10);
 
-    const shortFname = fname.substring(0, 3).toUpperCase();
 
     //const referralId = `${fname.toLowerCase()}${randomDigits}`;
     const randomDigits = Math.floor(1000 + Math.random() * 9000);
 
     const firstThreeDigits = `${fname.substring(0, 3).toUpperCase()}`;
-    const referralId =  "FC"+ "-" + firstThreeDigits + randomDigits;
-    console.log(referralId,'1886');
+    const referralId = "FC" + "-" + firstThreeDigits + randomDigits;
+    console.log(referralId, "1886");
 
-    const frenchiseWallet =0
+    const frenchiseWallet = 0;
 
     const newStateHandler = new StateHandler({
       fname,
@@ -2013,10 +2000,11 @@ if (!panCardFile || !isValidImage(panCardFile.originalname)) {
       password: hashedPassword,
       gender,
       stateHandlerId,
-      referredId,
       frenchiseWallet,
       referralId,
-      selectedState
+      selectedState,
+      adharCard: adharCardLocation,
+      panCard: panCardLocation,
     });
 
     const savedData = await newStateHandler.save();
@@ -2033,16 +2021,11 @@ if (!panCardFile || !isValidImage(panCardFile.originalname)) {
   }
 };
 
-
-
-
-
 // fetchAllSubAdminDetails
 exports.fetchAllSubAdminDetails = async (req, res) => {
   if (!req.files["panCard"] || req.files["panCard"].length === 0) {
     return res.status(400).json({ message: "Pan card file is missing." });
   }
-
 
   try {
     const getAllSubAdmin = await subAdmin.find();
@@ -2055,25 +2038,17 @@ exports.fetchAllSubAdminDetails = async (req, res) => {
       return res.status(404).json({ message: "Not Found" });
     }
   } catch (error) {
-    return res.status(500).json({ message: "Internal Server Error" })
+    return res.status(500).json({ message: "Internal Server Error" });
   }
-}
-
-
+};
 
 //=================================================================
 //create Frenchise
 exports.createFrenchise = async (req, res) => {
   try {
-
-    if (
-      !req.files ||
-      !req.files["adharCard"] ||
-      !req.files["panCard"]
-    ) {
+    if (!req.files || !req.files["adharCard"] || !req.files["panCard"]) {
       return res.status(422).json({
-        message:
-          "Please upload all required files (adharCard, panCard)",
+        message: "Please upload all required files (adharCard, panCard)",
       });
     }
 
@@ -2081,8 +2056,7 @@ exports.createFrenchise = async (req, res) => {
     const adharCard = req.files.adharCard[0].location;
     const panCard = req.files.panCard[0].location;
 
-
-    console.log(adharCard, panCard, '1782')
+    console.log(adharCard, panCard, "1782");
     const {
       fname,
       lname,
@@ -2093,10 +2067,9 @@ exports.createFrenchise = async (req, res) => {
       password,
       franchiseCity,
       frenchiseId,
-      franchiseState
+      franchiseState,
     } = req.body;
 
-   
     const requiredFields = [
       "fname",
       "lname",
@@ -2107,7 +2080,7 @@ exports.createFrenchise = async (req, res) => {
       "referredId",
       "franchiseCity",
       "frenchiseId",
-      "franchiseState"
+      "franchiseState",
     ];
 
     const missingFields = requiredFields.filter((field) => !req.body[field]);
@@ -2168,10 +2141,10 @@ exports.createFrenchise = async (req, res) => {
     const randomDigits = Math.floor(1000 + Math.random() * 9000);
 
     const firstThreeDigits = `${fname.substring(0, 3).toUpperCase()}`;
-    const referralId =  "FC"+ "-" + firstThreeDigits + randomDigits;
-    console.log(referralId,'1886');
+    const referralId = "FC" + "-" + firstThreeDigits + randomDigits;
+    console.log(referralId, "1886");
 
-    const frenchiseWallet =0
+    const frenchiseWallet = 0;
 
     const newFranchise = new Frenchise({
       fname,
@@ -2185,7 +2158,7 @@ exports.createFrenchise = async (req, res) => {
       referredId,
       frenchiseWallet,
       referralId,
-      franchiseState
+      franchiseState,
     });
 
     const savedFranchise = newFranchise.save();
@@ -2215,7 +2188,7 @@ exports.createBusinnesDeveloper = async (req, res) => {
       password,
       businessDeveloperId,
       referredId,
-      buisnessCity
+      buisnessCity,
     } = req.body;
 
     if (!req.files["adharCard"] || req.files["adharCard"].length === 0) {
@@ -2248,9 +2221,6 @@ exports.createBusinnesDeveloper = async (req, res) => {
     const adharCardLocation = adharCardFile.location;
     const panCardLocation = panCardFile.location;
 
-
-
-
     const requiredFields = [
       "fname",
       "lname",
@@ -2259,7 +2229,7 @@ exports.createBusinnesDeveloper = async (req, res) => {
       "password",
       "businessDeveloperId",
       "referredId",
-      "buisnessCity"
+      "buisnessCity",
     ];
 
     const missingFields = requiredFields.filter((field) => !req.body[field]);
@@ -2328,10 +2298,10 @@ exports.createBusinnesDeveloper = async (req, res) => {
     const randomDigits = Math.floor(1000 + Math.random() * 9000);
 
     const firstThreeDigits = `${fname.substring(0, 3).toUpperCase()}`;
-    const referralId =  "BD"+ "-" + firstThreeDigits + randomDigits;
+    const referralId = "BD" + "-" + firstThreeDigits + randomDigits;
     console.log(referralId);
-    
-    const businessDeveloperWallet=0
+
+    const businessDeveloperWallet = 0;
     const newBusinessDeveloper = new BusinessDeveloper({
       fname,
       lname,
@@ -2345,7 +2315,7 @@ exports.createBusinnesDeveloper = async (req, res) => {
       referralId,
       referredId,
       businessDeveloperWallet,
-      buisnessCity
+      buisnessCity,
     });
 
     const savedBusinessDeveloper = await newBusinessDeveloper.save();
@@ -2514,52 +2484,51 @@ exports.businessDeveloperLogin = async (req, res) => {
 };
 
 // verifyFranchieBeforeRegistration
-exports.verifyFranchieBeforeRegistration = async (req,res) => {
-  const {refferId} = req.body;
-  if(!refferId){
+exports.verifyFranchieBeforeRegistration = async (req, res) => {
+  const { refferId } = req.body;
+  if (!refferId) {
     return res.status(422).json({
-      message:"Please enter refferId"
-    })
+      message: "Please enter refferId",
+    });
   }
 
-  const stateUser = await StateHandler.findOne({referralId:refferId})
-  if(stateUser){
-    const stateUserState = stateUser.selectedState
-        return res.status(200).json({
-          message:"State user found",
-          stateUserState
-        })
-  }else{
+  const stateUser = await StateHandler.findOne({ referralId: refferId });
+  if (stateUser) {
+    const stateUserState = stateUser.selectedState;
+    return res.status(200).json({
+      message: "State user found",
+      stateUserState,
+    });
+  } else {
     return res.status(404).json({
-      message:"Not found"
-    })
+      message: "Not found",
+    });
   }
-
-}
+};
 
 // verifyBuisnessDeveloperBeforeRegistration
-exports.verifyBuisnessDeveloperBeforeRegistration = async(req,res) =>{
-  const {refferId} = req.body;
-  if(!refferId){
+exports.verifyBuisnessDeveloperBeforeRegistration = async (req, res) => {
+  const { refferId } = req.body;
+  if (!refferId) {
     return res.status(422).json({
-      message:"Please enter refferId"
-    })
+      message: "Please enter refferId",
+    });
   }
 
-  const franchieUser = await Frenchise.findOne({referralId:refferId})
-  
-  if(franchieUser){
-    const franchieUserCity = franchieUser.franchiseCity
-        return res.status(200).json({
-          message:"Franchie user found",
-          franchieUserCity
-        })
-  }else{
+  const franchieUser = await Frenchise.findOne({ referralId: refferId });
+
+  if (franchieUser) {
+    const franchieUserCity = franchieUser.franchiseCity;
+    return res.status(200).json({
+      message: "Franchie user found",
+      franchieUserCity,
+    });
+  } else {
     return res.status(404).json({
-      message:" Franchie user not found"
-    })
+      message: " Franchie user not found",
+    });
   }
-}
+};
 //=======================================================================
 
 exports.interactWithVideoForAdmin = async (req, res) => {
@@ -2568,7 +2537,9 @@ exports.interactWithVideoForAdmin = async (req, res) => {
     const userId = req.userId;
 
     if (!videoId || !action) {
-      return res.status(400).json({ message: "Video Id and action are required" });
+      return res
+        .status(400)
+        .json({ message: "Video Id and action are required" });
     }
 
     const video = await Video.findById(videoId);
@@ -2626,15 +2597,19 @@ exports.interactWithVideoForAdmin = async (req, res) => {
         existingLike.likeType = false;
         await existingLike.save();
       }
-  
-    //================
+
+      //================
     } else if (action === "comment") {
       if (!comments) {
-        return res.status(400).json({ message: "Comments are required for 'comment' action" });
+        return res
+          .status(400)
+          .json({ message: "Comments are required for 'comment' action" });
       }
 
       if (replyTo) {
-        const commentToReply = video.comments.find((c) => c._id.toString() === replyTo);
+        const commentToReply = video.comments.find(
+          (c) => c._id.toString() === replyTo
+        );
 
         if (commentToReply) {
           commentToReply.replies.push({
@@ -2642,7 +2617,9 @@ exports.interactWithVideoForAdmin = async (req, res) => {
             userId: userId,
           });
         } else {
-          return res.status(400).json({ message: "Comment to reply not found" });
+          return res
+            .status(400)
+            .json({ message: "Comment to reply not found" });
         }
       } else {
         video.comments.push({

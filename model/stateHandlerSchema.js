@@ -43,6 +43,10 @@ const stateHandlerSchema = new mongoose.Schema({
   stateHandlerId: {
     type: String, 
     required: true
+  },
+  referralId: {
+    type: String,
+    required: true
   }
 
 }, {timestamps: true});
