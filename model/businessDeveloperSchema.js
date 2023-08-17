@@ -59,14 +59,11 @@ const businessDeveloperSchema = new mongoose.Schema({
     required: true,
     unique: true
   },
-  businessDeveloperWallet:{
-    type : Number ,
-    default:0
-  },
   buisnessCity:{
     type:String,
     required:true
-  },businessDeveloperWallet:{
+  },
+  businessDeveloperWallet:{
     type:Number,
     default:0
   }

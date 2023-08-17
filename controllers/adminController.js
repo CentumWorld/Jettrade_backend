@@ -1876,31 +1876,12 @@ exports.createStateHandler = async (req, res) => {
 
     const hashedPassword = await bcrypt.hash(password, 10);
 
-    const shortFname = fname.substring(0, 3).toUpperCase();
-
     //const referralId = `${fname.toLowerCase()}${randomDigits}`;
     const firstThreeDigits = `${fname.substring(0, 3).toUpperCase()}`;
     const referralId =  "ST"+ "-" + firstThreeDigits + randomDigits;
     console.log(referralId,'1886');
 
-    let latestReferralSequence = 0;
-    if (latestStateHandler && latestStateHandler.referralId) {
-      const lastReferralSequence = Number(
-        latestStateHandler.referralId.slice(-3)
-      ); // Extract the last 3 digits
-      latestReferralSequence =
-        lastReferralSequence >= 1 ? lastReferralSequence : 0; // Make sure it's at least 0
-    }
-
-    const nextReferralSequence = latestReferralSequence + 1;
-    const formattedReferralSequence = String(nextReferralSequence).padStart(
-      3,
-      "0"
-    );
-    const referralId = `SH${shortFname}${formattedReferralSequence}`;
-
-    console.log(referralId, "///////");
-    const stateHandlerWallet = 0;
+  
     const newStateHandler = new StateHandler({
       fname,
       lname,
@@ -2218,25 +2199,7 @@ exports.createBusinnesDeveloper = async (req, res) => {
     const firstThreeDigits = `${fname.substring(0, 3).toUpperCase()}`;
     const referralId =  "BD"+ "-" + firstThreeDigits + randomDigits;
     console.log(referralId);
-
-    let latestReferralSequence = 0;
-    if (latestStateHandler && latestStateHandler.referralId) {
-      const lastReferralSequence = Number(
-        latestStateHandler.referralId.slice(-3)
-      ); // Extract the last 3 digits
-      latestReferralSequence =
-        lastReferralSequence >= 1 ? lastReferralSequence : 0; // Make sure it's at least 0
-    }
-
-    const nextReferralSequence = latestReferralSequence + 1;
-    const formattedReferralSequence = String(nextReferralSequence).padStart(
-      7,
-      "0"
-    );
-    const referralId = `BD${shortFname}${formattedReferralSequence}`;
-
-    console.log(referralId, "///////");
-    const businessDeveloperWallet = 0;
+    
     const newBusinessDeveloper = new BusinessDeveloper({
       fname,
       lname,
