@@ -2046,17 +2046,7 @@ exports.fetchAllSubAdminDetails = async (req, res) => {
 //create Frenchise
 exports.createFrenchise = async (req, res) => {
   try {
-    if (!req.files || !req.files["adharCard"] || !req.files["panCard"]) {
-      return res.status(422).json({
-        message: "Please upload all required files (adharCard, panCard)",
-      });
-    }
 
-    // const userType = "indian";
-    const adharCard = req.files.adharCard[0].location;
-    const panCard = req.files.panCard[0].location;
-
-    console.log(adharCard, panCard, "1782");
     const {
       fname,
       lname,
@@ -2069,6 +2059,36 @@ exports.createFrenchise = async (req, res) => {
       frenchiseId,
       franchiseState,
     } = req.body;
+
+    if (!req.files["adharCard"] || req.files["adharCard"].length === 0) {
+      return res.status(400).json({ message: "Adhar card file is missing." });
+    }
+
+    if (!req.files["panCard"] || req.files["panCard"].length === 0) {
+      return res.status(400).json({ message: "Pan card file is missing." });
+    }
+
+    const adharCardFile = req.files["adharCard"][0];
+    const panCardFile = req.files["panCard"][0];
+
+    // Check if adharCard image is valid using isValidImage function
+    if (!isValidImage(adharCardFile.originalname)) {
+      return res.status(422).json({
+        message:
+          "Invalid adharCard image format, image must be in jpeg, jpg, tiff, png, webp, or bmp format.",
+      });
+    }
+
+    // Check if panCard image is valid using isValidImage function
+    if (!isValidImage(panCardFile.originalname)) {
+      return res.status(422).json({
+        message:
+          "Invalid panCard image format, image must be in jpeg, jpg, tiff, png, webp, or bmp format.",
+      });
+    }
+
+    const adharCardLocation = adharCardFile.location;
+    const panCardLocation = panCardFile.location;
 
     const requiredFields = [
       "fname",
@@ -2094,11 +2114,21 @@ exports.createFrenchise = async (req, res) => {
     const existingFrenchise = await Frenchise.findOne({
       frenchiseId: frenchiseId,
     });
+
     if (existingFrenchise) {
       return res.status(422).json({
         message: "Frenchise ID already exists. Please choose a unique ID.",
       });
     }
+
+
+     // Is referred id exist in Frenchise collection
+
+     const existReferredId = await StateHandler.findOne({ referralId: referredId });
+
+     if (!existReferredId) {
+       return res.status(400).json({ message: "invalid reffered Id" });
+     }
 
     if (!isValidPhone(phone)) {
       return res.status(422).json({
@@ -2159,6 +2189,8 @@ exports.createFrenchise = async (req, res) => {
       frenchiseWallet,
       referralId,
       franchiseState,
+      adharCard:adharCardLocation,
+      panCard:panCardLocation
     });
 
     const savedFranchise = newFranchise.save();
