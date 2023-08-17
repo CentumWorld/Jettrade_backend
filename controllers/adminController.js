@@ -1890,9 +1890,30 @@ exports.createStateHandler = async (req, res) => {
     }
 
   
-    const adharCard = req.files.adharCard[0].location;
-    const panCard = req.files.panCard[0].location;
+    const adharCardFile = req.files.adharCard[0].location;
+    const panCardFile = req.files.panCard[0].location;
 
+    // Check if adharCard image is valid using isValidImage function
+   // Check if adharCard image is valid using isValidImage function
+
+   console.log("adharCardFile:", adharCardFile); // Add this line
+
+   console.log("panCardFile:", panCardFile); // Add this line
+
+if (!adharCardFile || !isValidImage(adharCardFile.originalname)) {
+  return res.status(422).json({
+    message:
+      "Invalid adharCard image format, image must be in jpeg, jpg, tiff, png, webp, or bmp format.",
+  });
+}
+
+// Check if panCard image is valid using isValidImage function
+if (!panCardFile || !isValidImage(panCardFile.originalname)) {
+  return res.status(422).json({
+    message:
+      "Invalid panCard image format, image must be in jpeg, jpg, tiff, png, webp, or bmp format.",
+  });
+}
 
     const {
       fname,
@@ -1900,7 +1921,6 @@ exports.createStateHandler = async (req, res) => {
       phone,
       email,
       gender,
-      referredId,
       password,
       stateHandlerId,
       selectedState
@@ -1910,9 +1930,6 @@ exports.createStateHandler = async (req, res) => {
     const existingstateHandler= await StateHandler.findOne({
       stateHandlerId: stateHandlerId,
     });
-
-    console.log(existingstateHandler, ">>>>>>>>>>>>>>>>>>")
-
 
     if (existingstateHandler) {
       return res.status(422).json({
@@ -1929,7 +1946,6 @@ exports.createStateHandler = async (req, res) => {
       "phone",
       "password",
       "gender",
-      "referredId",
       "stateHandlerId",
       "selectedState"
     ];
@@ -2064,6 +2080,8 @@ exports.createFrenchise = async (req, res) => {
     // const userType = "indian";
     const adharCard = req.files.adharCard[0].location;
     const panCard = req.files.panCard[0].location;
+
+
     console.log(adharCard, panCard, '1782')
     const {
       fname,
@@ -2229,6 +2247,10 @@ exports.createBusinnesDeveloper = async (req, res) => {
 
     const adharCardLocation = adharCardFile.location;
     const panCardLocation = panCardFile.location;
+
+
+
+
     const requiredFields = [
       "fname",
       "lname",

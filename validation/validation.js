@@ -37,7 +37,14 @@ const isValidateSize = (value) => { return ["S", "XS", "M", "X", "L", "XXL", "XL
 const isValidCurrencyId = (value) => { return (/^(INR|inr|Inr)$/).test(value) }
 const isValidNo = (value) => { return (/^[0-9]+$/).test(value) }
 const isValidInstallments = (value) => { return (/^\d*\.?\d*$/).test(value) }
-const isValidImage = (value) => { return (/\.(gif|jpe?g|tiff?|png|webp|bmp)$/).test(value) }
+// const isValidImage = (value) => { return (/\.(gif|jpe?g|tiff?|png|webp|bmp)$/).test(value) }
+
+function isValidImage(filename) {
+  const validExtensions = ["jpeg", "jpg", "tiff", "png", "webp", "bmp"];
+  const fileExtension = filename.split(".").pop().toLowerCase();
+  return validExtensions.includes(fileExtension);
+}
+
 
 
 function isValidUserId(value) {
