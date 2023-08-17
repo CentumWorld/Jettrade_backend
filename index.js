@@ -104,11 +104,8 @@ const fetchUserOneVideoLike = require("./routes/users/fetch-User-One-Video-Like"
 const fetchUserOneVideoDisLike = require('./routes/users/fetch-User-One-Video-DisLike')
 const  createStateHandler = require("./routes/create_State_Handler");
 const createFrenchise = require("./routes/create-frenchise")
-const createBusinnesDeveloper = require("./routes/create-business-developer")
-const stateHandlerLogin = require("./routes/state_handler-login")
-const frenchiseLogin = require("./routes/frenchise_login")
-const businessDeveloperLogin = require("./routes/business-developer-login")
-const fetchAllSubAdminDetails = require('./routes/fetch-all-sub-admin-details');
+
+
 const verifyFranchieBeforeRegistration = require('./routes/verify-franchie-before-registration');
 const verifyBuisnessDeveloperBeforeRegistration = require('./routes/verify-buisness-developer-before-registration');
 
@@ -154,12 +151,7 @@ const userFetchAllVideo = require("./routes/users/user-fetch-all-videos");
 
 const fetchParticularUserPaymentStatus = require("./routes/fetch_Particular_User_Payment_Status");
 
-const fetchOneVideoDetail = require("./routes/users/fetch_one_video_details");
-const createSubAdminInsideAdmin = require("./routes/create-sub-admin-inside-admin");
-const fetchUserOneVideoLike = require("./routes/users/fetch-User-One-Video-Like");
-const fetchUserOneVideoDisLike = require("./routes/users/fetch-User-One-Video-DisLike");
-const createStateHandler = require("./routes/create_State_Handler");
-const createFrenchise = require("./routes/create-frenchise");
+
 const createBusinnesDeveloper = require("./routes/create-business-developer");
 const stateHandlerLogin = require("./routes/state_handler-login");
 const frenchiseLogin = require("./routes/frenchise_login");
