@@ -2103,47 +2103,6 @@ exports.interactWithVideo = async (req, res) => {
     if (!userId) {
       return res.status(400).json({ message: "User Id is required" });
     }
-
-    // if (action === "like") {
-    //   const existingLike = await Like.findOne({ userId, videoId });
-    //   const existingDisLike = await DisLike.findOne({ userId, videoId });
-
-    //   if (!existingLike) {
-    //     video.likes += 1;
-    //     const newLike = new Like({ userId, videoId, likeType: true });
-    //     await newLike.save();
-    //   } else {
-    //     if (existingLike.likeType) {
-    //       // If the existing like is true (liked), toggle to false (unlike)
-    //       video.likes -= 1;
-    //       existingLike.likeType = false;
-    //     } else {
-    //       // If the existing like is false (unliked), toggle to true (like)
-    //       video.likes += 1;
-    //       existingLike.likeType = true;
-    //     }
-    //     await existingLike.save();
-    //   }
-    // } else if (action === "dislike") {
-    //   const existingDisLike = await DisLike.findOne({ userId, videoId });
-
-    //   if (!existingDisLike) {
-    //     video.dislikes += 1;
-    //     const newDisLike = new DisLike({ userId, videoId, disLikeType: true });
-    //     await newDisLike.save();
-    //   } else {
-    //     if (existingDisLike.disLikeType) {
-    //       video.dislikes -= 1;
-    //       existingDisLike.disLikeType = false;
-    //     } else {
-    //       video.dislikes += 1;
-    //       existingDisLike.disLikeType = true;
-    //     }
-    //     await existingDisLike.save();
-    //   }
-//================
-
-
     if (action === "like") {
       const existingLike = await Like.findOne({ userId, videoId });
       const existingDisLike = await DisLike.findOne({ userId, videoId });

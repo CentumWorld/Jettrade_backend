@@ -96,6 +96,7 @@ const adminLogout = require("./routes/adminLogout");
 const getVideo = require("./routes/users/fetch_one_video_details");
 const getvideos = require("./routes/users/user-fetch-all-videos");
 const subAdminLogin = require("./routes/sub_Admin_Login");
+const interactWithVideoForAdmin = require("./routes/admin_interact_with_video")
 
 // refferal
 const memberRegistration = require("./routes/refferal/member-registration");
@@ -155,7 +156,7 @@ const interactWithVideo = require("./routes/users/interact_with_video");
 const getVideos = require("./routes/get_all_video")
 
 //======================================================================
-// refferal
+
 
 app.use(express.static(path.join(__dirname, "public")));
 app.use(express.urlencoded({ extended: true }));
@@ -249,6 +250,7 @@ app.use("/user", fetchWalletHistory);
 app.use("/admin", totalWithdrawalMoney);
 app.use("/admin", deleteVideo);
 app.use("/admin", getVideos)
+app.use("/admin", interactWithVideoForAdmin)
 
 // refferal
 app.use("/member", memberRegistration);
