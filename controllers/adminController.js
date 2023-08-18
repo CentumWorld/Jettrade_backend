@@ -35,7 +35,6 @@ const DisLike = require("../model/disLikeModel");
 const BusinessDeveloperCreditWalletTransaction = require("../model/businessDeveloperCreditWalletTransaction");
 const Franchise = require("../model/frenchiseSchema");
 const FranchiseCreditWalletTransaction = require("../model/frenchiseCreditWalletTransactionSchema");
-const StateHandler = require("../model/stateHandlerSchema");
 const StateHandlerCreditWalletTransaction = require("../model/stateHandlerCreditWalletTransactionScema");
 
 const {
