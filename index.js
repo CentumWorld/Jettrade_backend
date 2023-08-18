@@ -316,7 +316,6 @@ app.use('/admin',findAllState)
 app.use('/admin',findAllFrenchise)
 app.use('/admin',findAllBusinessDeveloper)
 // refferalin
-app.use("/member", memberRegistration);
 app.use("/member", memberLogin);
 app.use("/admin", fetchMemberDetails);
 app.use("/admin", fetchParticularMemberDetails);

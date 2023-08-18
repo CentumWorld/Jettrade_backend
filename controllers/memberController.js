@@ -24,7 +24,7 @@ exports.memberRegistration = async (req, res) => {
 
     if (!req.files || !req.files['aadhar_front_side'] || !req.files['aadhar_back_side'] || !req.files['pan_card']) {
 
-        return res.status(422).json({ message: "Please Fill all Details!" })
+        return res.status(422).json({ message: "please provide adhar front, adhar back and pan" })
 
     }
     const aadhar_front_side = req.files.aadhar_front_side[0].location;
