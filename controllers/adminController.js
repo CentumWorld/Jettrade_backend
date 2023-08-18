@@ -32,6 +32,11 @@ const BusinessDeveloper = require("../model/businessDeveloperSchema");
 const Like = require("../model/likeModel");
 const DisLike = require("../model/disLikeModel");
 
+const BusinessDeveloperCreditWalletTransaction = require("../model/businessDeveloperCreditWalletTransaction");
+const Franchise = require("../model/frenchiseSchema");
+const FranchiseCreditWalletTransaction = require("../model/frenchiseCreditWalletTransactionSchema");
+const StateHandler = require("../model/stateHandlerSchema");
+const StateHandlerCreditWalletTransaction = require("../model/stateHandlerCreditWalletTransactionScema");
 
 const {
   isValidPassword,
@@ -2604,5 +2609,23 @@ exports.findAllBusinessDeveloper=async (req,res)=>{
     
   } catch (error) {
     res.status(500).json({message:"an error occured", error:error.message})
+  }
+}
+
+//===================================================================================================
+
+exports.fetchBusinessDeveloperCreditwalletTransactionDetails = async (req, res) => {
+  try {
+    const fetchedData = await BusinessDeveloperCreditWalletTransaction.find()
+    if(fetchedData.length ==0){
+      return res.status(404).json({message:"Data not found"})
+    }
+
+    return res.status(200).json({message: "Fetched all data",fetchedData })
+  } catch (error) {
+
+    console.log(error.message)
+    return res.status(500).json({message: "Internal server erro"})
+    
   }
 }

@@ -96,19 +96,19 @@ const adminLogout = require("./routes/adminLogout");
 const getVideo = require("./routes/users/fetch_one_video_details");
 const getvideos = require("./routes/users/user-fetch-all-videos");
 const subAdminLogin = require("./routes/sub_Admin_Login");
-const interactWithVideoForAdmin = require("./routes/admin_interact_with_video")
+const interactWithVideoForAdmin = require("./routes/admin_interact_with_video");
 
 const fetchOneVideoDetail = require("./routes/users/fetch_one_video_details");
-const createSubAdminInsideAdmin = require('./routes/create-sub-admin-inside-admin');
-const fetchUserOneVideoLike = require("./routes/users/fetch-User-One-Video-Like")
-const fetchUserOneVideoDisLike = require('./routes/users/fetch-User-One-Video-DisLike')
-const  createStateHandler = require("./routes/create_State_Handler");
-const createFrenchise = require("./routes/create-frenchise")
+const createSubAdminInsideAdmin = require("./routes/create-sub-admin-inside-admin");
+const fetchUserOneVideoLike = require("./routes/users/fetch-User-One-Video-Like");
+const fetchUserOneVideoDisLike = require("./routes/users/fetch-User-One-Video-DisLike");
+const createStateHandler = require("./routes/create_State_Handler");
+const createFrenchise = require("./routes/create-frenchise");
 
-
-const verifyFranchieBeforeRegistration = require('./routes/verify-franchie-before-registration');
-const verifyBuisnessDeveloperBeforeRegistration = require('./routes/verify-buisness-developer-before-registration');
-const fetchRefferalPayoutOnRoleBasis = require("./routes/fetch-refferal-payout-on-role-basis")
+const verifyFranchieBeforeRegistration = require("./routes/verify-franchie-before-registration");
+const verifyBuisnessDeveloperBeforeRegistration = require("./routes/verify-buisness-developer-before-registration");
+const fetchRefferalPayoutOnRoleBasis = require("./routes/fetch-refferal-payout-on-role-basis");
+const fetchBusinessDeveloperCreditwalletTransactionDetails = require("./routes/fetch_business_Developer_Credit_wallet_Transaction_Details")
 
 // refferal
 const memberRegistration = require("./routes/refferal/member-registration");
@@ -152,21 +152,19 @@ const userFetchAllVideo = require("./routes/users/user-fetch-all-videos");
 
 const fetchParticularUserPaymentStatus = require("./routes/fetch_Particular_User_Payment_Status");
 
-
 const createBusinnesDeveloper = require("./routes/create-business-developer");
 const stateHandlerLogin = require("./routes/state_handler-login");
 const frenchiseLogin = require("./routes/frenchise_login");
 const businessDeveloperLogin = require("./routes/business-developer-login");
 const fetchAllSubAdminDetails = require("./routes/fetch-all-sub-admin-details");
 const fetchOnecomment = require("./routes/users/fetch_one_comment");
-const interactWithVideo = require("./routes/users/interact_with_video"); 
+const interactWithVideo = require("./routes/users/interact_with_video");
 const getVideos = require("./routes/get_all_video");
-const  findAllState = require("./routes/fetch-all-state");
-const  findAllFrenchise  = require("./routes/fetch-all-frenchise");
-const  findAllBusinessDeveloper  = require("./routes/fetch-all-businessDeveloper");
+const findAllState = require("./routes/fetch-all-state");
+const findAllFrenchise = require("./routes/fetch-all-frenchise");
+const findAllBusinessDeveloper = require("./routes/fetch-all-businessDeveloper");
 
 //======================================================================
-
 
 app.use(express.static(path.join(__dirname, "public")));
 app.use(express.urlencoded({ extended: true }));
@@ -259,9 +257,10 @@ app.use("/user", fetchWalletWithdrawalHistory);
 app.use("/user", fetchWalletHistory);
 app.use("/admin", totalWithdrawalMoney);
 app.use("/admin", deleteVideo);
-app.use("/admin", getVideos)
-app.use("/admin", interactWithVideoForAdmin)
-app.use("/admin", fetchRefferalPayoutOnRoleBasis)
+app.use("/admin", getVideos);
+app.use("/admin", interactWithVideoForAdmin);
+app.use("/admin", fetchRefferalPayoutOnRoleBasis);
+app.use("/admin", fetchBusinessDeveloperCreditwalletTransactionDetails);
 
 // refferal
 app.use("/member", memberRegistration);
@@ -311,12 +310,12 @@ app.use("/admin", businessDeveloperLogin);
 app.use("/admin", frenchiseLogin);
 app.use("/user", fetchOnecomment);
 app.use("/user", userFetchAllVideo);
-app.use("/user", interactWithVideo);;
-app.use('/admin',verifyFranchieBeforeRegistration);
-app.use('/admin',verifyBuisnessDeveloperBeforeRegistration);
-app.use('/admin',findAllState)
-app.use('/admin',findAllFrenchise)
-app.use('/admin',findAllBusinessDeveloper)
+app.use("/user", interactWithVideo);
+app.use("/admin", verifyFranchieBeforeRegistration);
+app.use("/admin", verifyBuisnessDeveloperBeforeRegistration);
+app.use("/admin", findAllState);
+app.use("/admin", findAllFrenchise);
+app.use("/admin", findAllBusinessDeveloper);
 // refferalin
 app.use("/member", memberLogin);
 app.use("/admin", fetchMemberDetails);
