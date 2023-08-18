@@ -2024,9 +2024,9 @@ exports.createStateHandler = async (req, res) => {
 
 // fetchAllSubAdminDetails
 exports.fetchAllSubAdminDetails = async (req, res) => {
-  if (!req.files["panCard"] || req.files["panCard"].length === 0) {
-    return res.status(400).json({ message: "Pan card file is missing." });
-  }
+  // if (!req.files["panCard"] || req.files["panCard"].length === 0) {
+  //   return res.status(400).json({ message: "Pan card file is missing." });
+  // }
 
   try {
     const getAllSubAdmin = await subAdmin.find();
