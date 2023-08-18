@@ -2646,3 +2646,22 @@ exports.fetchFranchiseCreditwalletTransactionDetails = async (req, res) => {
     
   }
 }
+//=============================================================
+
+// fetchStateHandlerCreditwalletTransactionDetails
+
+exports.fetchStateHandlerCreditwalletTransactionDetails = async (req, res) => {
+  try {
+    const fetchedData = await StateHandlerCreditWalletTransaction.find()
+    if(fetchedData.length ==0){
+      return res.status(404).json({message:"Data not found"})
+    }
+
+    return res.status(200).json({message: "Fetched all data",fetchedData })
+  } catch (error) {
+
+    console.log(error.message)
+    return res.status(500).json({message: "Internal server erro"})
+    
+  }
+}

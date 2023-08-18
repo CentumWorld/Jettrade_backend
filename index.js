@@ -109,7 +109,8 @@ const verifyFranchieBeforeRegistration = require("./routes/verify-franchie-befor
 const verifyBuisnessDeveloperBeforeRegistration = require("./routes/verify-buisness-developer-before-registration");
 const fetchRefferalPayoutOnRoleBasis = require("./routes/fetch-refferal-payout-on-role-basis");
 const fetchBusinessDeveloperCreditwalletTransactionDetails = require("./routes/fetch_business_Developer_Credit_wallet_Transaction_Details")
-
+const fetchFranchiseCreditwalletTransactionDetails = require("./routes/fetch-Franchise-Credit-wallet-Transaction-Details")
+const fetchStateHandlerCreditwalletTransactionDetails = require("./routes/fetch-State-Handler-Credit-wallet-Transaction-Details")
 // refferal
 const memberRegistration = require("./routes/refferal/member-registration");
 const memberLogin = require("./routes/refferal/member-login");
@@ -261,6 +262,9 @@ app.use("/admin", getVideos);
 app.use("/admin", interactWithVideoForAdmin);
 app.use("/admin", fetchRefferalPayoutOnRoleBasis);
 app.use("/admin", fetchBusinessDeveloperCreditwalletTransactionDetails);
+app.use("/admin", fetchFranchiseCreditwalletTransactionDetails)
+
+app.use("/admin", fetchStateHandlerCreditwalletTransactionDetails)
 
 // refferal
 app.use("/member", memberRegistration);
