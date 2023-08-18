@@ -1758,122 +1758,6 @@ exports.fetchAllSubAdminDetails = async (req, res) => {
 //===================================================================
 // register statte handler
 
-// exports.createStateHandler = async (req, res) => {
-//   try {
-//     if (
-//       !req.files ||
-//       !req.files["adharCard"] ||
-//       !req.files["panCard"]
-//     ) {
-//       return res.status(422).json({
-//         message: "Please upload all required files (adharCard, panCard)",
-//       });
-//     }
-
-//     const adharCard = req.files.adharCard[0].location;
-//     const panCard = req.files.panCard[0].location;
-
-//     const {
-//       fname,
-//       lname,
-//       phone,
-//       email,
-//       gender,
-//       password,
-//       selectedState,
-//       stateHandlerId,
-//     } = req.body;
-
-//     if (!req.files["adharCard"] || req.files["adharCard"].length === 0) {
-//       return res.status(400).json({ message: "Adhar card file is missing." });
-//     }
-
-//     if (!req.files["panCard"] || req.files["panCard"].length === 0) {
-//       return res.status(400).json({ message: "Pan card file is missing." });
-//     }
-
-//     // Validate phone number format
-//     if (!isValidPhone(phone)) {
-//       return res.status(422).json({
-//         message: "Invalid phone number format. Use 10 digits or include country code.",
-//       });
-//     }
-
-//     // Validate name format
-//     if (!isValidName(fname) || !isValidName(lname)) {
-//       return res.status(422).json({
-//         message: "Invalid name format.",
-//       });
-//     }
-
-//     // Validate email format
-//     if (!isValidEmail(email)) {
-//       return res.status(422).json({
-//         message: "Invalid email format.",
-//       });
-//     }
-
-//     // Validate password format
-//     if (!isValidPassword(password)) {
-//       return res.status(422).json({
-//         message: "Password must meet certain criteria.",
-//       });
-//     }
-
-//     // Validate stateHandlerId format
-//     if (!isValidUserId(stateHandlerId)) {
-//       return res.status(422).json({
-//         message: "StateHandlerId should meet certain criteria.",
-//       });
-//     }
-
-//     // Validate stateHandlerId uniqueness
-//     const existingStateHandler = await StateHandler.findOne({
-//       stateHandlerId: stateHandlerId,
-//     });
-
-//     if (existingStateHandler) {
-//       return res.status(422).json({
-//         message: "State handler ID already exists. Please choose a unique ID.",
-//       });
-//     }
-
-//     const hashedPassword = await bcrypt.hash(password, 10);
-
-//     const randomDigits = Math.floor(Math.random() * 10000); // Generate a random number between 0 and 9999
-//     const firstThreeDigits = `${fname.substring(0, 3).toUpperCase()}`;
-//     const referralId = "ST" + "-" + firstThreeDigits + randomDigits;
-
-//     const stateHandlerWallet = 0;
-//     const newStateHandler = new StateHandler({
-//       fname,
-//       lname,
-//       phone,
-//       email,
-//       password: hashedPassword,
-//       gender,
-//       selectedState,
-//       stateHandlerId,
-//       adharCard,
-//       panCard,
-//       referralId,
-//       stateHandlerWallet,
-//     });
-
-//     const savedStateHandler = await newStateHandler.save();
-
-//     return res.status(201).json({
-//       message: "State handler created successfully",
-//       savedStateHandler,
-//     });
-//   } catch (error) {
-//     console.error(error);
-//     return res.status(500).json({
-//       message: "Internal Server Error",
-//     });
-//   }
-// };
-
 exports.createStateHandler = async (req, res) => {
   try {
     const {
@@ -1988,7 +1872,7 @@ exports.createStateHandler = async (req, res) => {
     const randomDigits = Math.floor(1000 + Math.random() * 9000);
 
     const firstThreeDigits = `${fname.substring(0, 3).toUpperCase()}`;
-    const referralId = "FC" + "-" + firstThreeDigits + randomDigits;
+    const referralId = "SH" + "-" + firstThreeDigits + randomDigits;
     console.log(referralId, "1886");
 
     const frenchiseWallet = 0;

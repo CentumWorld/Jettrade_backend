@@ -19,6 +19,8 @@ const User = require("../model/userSchema");
 const validator = require("validator");
 const MyReferral = require("../model/myReferralSchema");
 
+const BusinessDeveloper = require("../model/businessDeveloperSchema");
+
 // refferalRegistration
 exports.memberRegistration = async (req, res) => {
   if (
@@ -54,6 +56,29 @@ exports.memberRegistration = async (req, res) => {
     reffered_id,
   } = req.body;
 
+  const requiredFields = [
+    "fname",
+    "lname",
+    "email",
+    "phone",
+    "address",
+    "gender",
+    "dob",
+    "aadhar",
+    "pan",
+    "memberid",
+    "password",
+    "reffered_id",
+  ];
+
+  const missingFields = requiredFields.filter((field) => !req.body[field]);
+
+  if (missingFields.length > 0) {
+    return res
+      .status(422)
+      .json({ message: `Missing fields: ${missingFields.join(", ")}` });
+  }
+
   if (!validator.isEmail(email)) {
     return res.status(400).json({ message: "Invalid email address" });
   }
@@ -73,54 +98,50 @@ exports.memberRegistration = async (req, res) => {
     });
   }
 
-  if (
-    !fname ||
-    !lname ||
-    !phone ||
-    !address ||
-    !gender ||
-    !dob ||
-    !aadhar ||
-    !pan ||
-    !memberid ||
-    !password ||
-    !reffered_id
-  ) {
-    return res.status(422).json({ message: "Please Fill all Details!" });
-  } else {
-    try {
-      //const memberid = fname + Math.floor(Math.random() * 10000 + 1);
-      const refferal_id = memberid + Math.floor(Math.random() * 10000 + 1);
-      console.log(refferal_id);
+  try {
+    //const memberid = fname + Math.floor(Math.random() * 10000 + 1);
+    const refferal_id = memberid + Math.floor(Math.random() * 10000 + 1);
+    console.log(refferal_id);
 
-      const memberExist = await Member.findOne({ memberid: memberid });
-      if (memberExist) {
-        return res.status(200).json({ message: "Member already exist!" });
-      }
+    const memberExist = await Member.findOne({ memberid: memberid })
 
-      const member = new Member({
-        fname,
-        lname,
-        email,
-        phone,
-        address,
-        gender,
-        dob,
-        aadhar,
-        pan,
-        refferal_id,
-        aadhar_front_side,
-        aadhar_back_side,
-        pan_card,
-        memberid,
-        password,
-        reffered_id,
-      });
-      await member.save();
-      res.status(201).json({ message: "Member registered successfully" });
-    } catch (error) {
-      console.log(error);
+    if (memberExist) {
+      return res.status(200).json({ message: "Member already exist!" });
     }
+    
+    const existingreferredId = await BusinessDeveloper.findOne({
+      referralId: reffered_id,
+    });
+    console.log(existingreferredId, "115")
+
+    if (!existingreferredId) {
+      return res
+        .status(400)
+        .send({ message: "You are providing wrong referral Id" });
+    }
+
+    const member = new Member({
+      fname,
+      lname,
+      email,
+      phone,
+      address,
+      gender,
+      dob,
+      aadhar,
+      pan,
+      refferal_id,
+      aadhar_front_side,
+      aadhar_back_side,
+      pan_card,
+      memberid,
+      password,
+      reffered_id,
+    });
+    await member.save();
+    res.status(201).json({ message: "Member registered successfully" });
+  } catch (error) {
+    console.log(error);
   }
 };
 
@@ -166,6 +187,27 @@ exports.otherCountryMemberRegistration = async (req, res) => {
     reffered_id,
   } = req.body;
 
+  const requiredFields = [
+    "fname",
+    "lname",
+    "email",
+    "phone",
+    "address",
+    "gender",
+    "dob",
+    "Id_No",
+    "memberid",
+    "password",
+    "reffered_id",
+  ];
+  const missingFields = requiredFields.filter((field) => !req.body[field]);
+
+  if (missingFields.length > 0) {
+    return res
+      .status(422)
+      .json({ message: `Missing fields: ${missingFields.join(", ")}` });
+  }
+
   if (!validator.isEmail(email)) {
     return res.status(400).json({ message: "Invalid email address" });
   }
@@ -194,6 +236,17 @@ exports.otherCountryMemberRegistration = async (req, res) => {
         return res.status(200).json({ message: "Member already exist" });
       }
 
+      const existingreferredId = await BusinessDeveloper.findOne({
+        referralId: reffered_id,
+      });
+      console.log(existingreferredId, "242")
+  
+      if (!existingreferredId) {
+        return res
+          .status(400)
+          .send({ message: "You are providing wrong business developer referral Id" });
+      }
+
       const member = new Member({
         fname,
         lname,
@@ -210,7 +263,7 @@ exports.otherCountryMemberRegistration = async (req, res) => {
         reffered_id,
       });
       await member.save();
-      res.status(201).json({ message: "Member registered successfully" });
+      res.status(201).json({ message: "Member registered successfully" ,member});
     } catch (error) {
       console.log(error);
     }

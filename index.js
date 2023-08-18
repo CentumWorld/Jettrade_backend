@@ -108,6 +108,7 @@ const createFrenchise = require("./routes/create-frenchise")
 
 const verifyFranchieBeforeRegistration = require('./routes/verify-franchie-before-registration');
 const verifyBuisnessDeveloperBeforeRegistration = require('./routes/verify-buisness-developer-before-registration');
+const fetchRefferalPayoutOnRoleBasis = require("./routes/fetch-refferal-payout-on-role-basis")
 
 // refferal
 const memberRegistration = require("./routes/refferal/member-registration");
@@ -260,6 +261,7 @@ app.use("/admin", totalWithdrawalMoney);
 app.use("/admin", deleteVideo);
 app.use("/admin", getVideos)
 app.use("/admin", interactWithVideoForAdmin)
+app.use("/admin", fetchRefferalPayoutOnRoleBasis)
 
 // refferal
 app.use("/member", memberRegistration);
