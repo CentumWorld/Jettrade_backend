@@ -164,6 +164,7 @@ const getVideos = require("./routes/get_all_video");
 const findAllState = require("./routes/fetch-all-state");
 const findAllFrenchise = require("./routes/fetch-all-frenchise");
 const findAllBusinessDeveloper = require("./routes/fetch-all-businessDeveloper");
+const totalCountOfPaymentStatusOfUser = require('./routes/total_Count_Of_Payment_Status_Of_User')
 
 //======================================================================
 
@@ -265,6 +266,7 @@ app.use("/admin", fetchBusinessDeveloperCreditwalletTransactionDetails);
 app.use("/admin", fetchFranchiseCreditwalletTransactionDetails)
 
 app.use("/admin", fetchStateHandlerCreditwalletTransactionDetails)
+app.use("/admin", totalCountOfPaymentStatusOfUser)
 
 // refferal
 app.use("/member", memberRegistration);
