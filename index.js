@@ -165,6 +165,9 @@ const findAllState = require("./routes/fetch-all-state");
 const findAllFrenchise = require("./routes/fetch-all-frenchise");
 const findAllBusinessDeveloper = require("./routes/fetch-all-businessDeveloper");
 const totalCountOfPaymentStatusOfUser = require('./routes/total_Count_Of_Payment_Status_Of_User')
+const  getFranchisesByReferralId = require("./routes/state/fetchFrenchiseByReferalId");
+const  getBusinessDeveloperByReferrralId  = require("./routes/frenchise/fetchBdeveloperBYReferralId");
+
 
 //======================================================================
 
@@ -352,5 +355,9 @@ app.use("/member", fetchChatMessageRefferal);
 app.use("/member", adminOnlineOrNotRefferal);
 app.use("/member", refferalTotalWithdrawal);
 app.use("/member", refferalMyTeam);
+app.use("/state",getFranchisesByReferralId)
+app.use("/state",getBusinessDeveloperByReferrralId)
+
+
 
 module.exports = app;
