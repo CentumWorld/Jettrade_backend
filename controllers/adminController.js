@@ -214,7 +214,6 @@ exports.fetchMemberDocumentAdminside = async (req, res) => {
     });
 };
 
-
 // userDetailsEditAdmin
 exports.userDetailsEditAdmin = async (req, res) => {
   const {
@@ -1776,11 +1775,11 @@ exports.createStateHandler = async (req, res) => {
       selectedState,
     } = req.body;
 
-    if (!req.files["adharCard"] ) {
+    if (!req.files["adharCard"]) {
       return res.status(400).json({ message: "Adhar card file is missing." });
     }
 
-    if (!req.files["panCard"] ) {
+    if (!req.files["panCard"]) {
       return res.status(400).json({ message: "Pan card file is missing." });
     }
 
@@ -1872,7 +1871,6 @@ exports.createStateHandler = async (req, res) => {
 
     const hashedPassword = await bcrypt.hash(password, 10);
 
-
     //const referralId = `${fname.toLowerCase()}${randomDigits}`;
     const randomDigits = Math.floor(1000 + Math.random() * 9000);
 
@@ -1936,7 +1934,6 @@ exports.fetchAllSubAdminDetails = async (req, res) => {
 //create Frenchise
 exports.createFrenchise = async (req, res) => {
   try {
-
     const {
       fname,
       lname,
@@ -1950,11 +1947,11 @@ exports.createFrenchise = async (req, res) => {
       franchiseState,
     } = req.body;
 
-    if (!req.files["adharCard"] ) {
+    if (!req.files["adharCard"]) {
       return res.status(400).json({ message: "Adhar card file is missing." });
     }
 
-    if (!req.files["panCard"] ) {
+    if (!req.files["panCard"]) {
       return res.status(400).json({ message: "Pan card file is missing." });
     }
 
@@ -2011,14 +2008,15 @@ exports.createFrenchise = async (req, res) => {
       });
     }
 
+    // Is referred id exist in Frenchise collection
 
-     // Is referred id exist in Frenchise collection
+    const existReferredId = await StateHandler.findOne({
+      referralId: referredId,
+    });
 
-     const existReferredId = await StateHandler.findOne({ referralId: referredId });
-
-     if (!existReferredId) {
-       return res.status(400).json({ message: "invalid reffered Id" });
-     }
+    if (!existReferredId) {
+      return res.status(400).json({ message: "invalid reffered Id" });
+    }
 
     if (!isValidPhone(phone)) {
       return res.status(422).json({
@@ -2077,8 +2075,8 @@ exports.createFrenchise = async (req, res) => {
       frenchiseWallet,
       referralId,
       franchiseState,
-      adharCard:adharCardLocation,
-      panCard:panCardLocation
+      adharCard: adharCardLocation,
+      panCard: panCardLocation,
     });
 
     const savedFranchise = await newFranchise.save();
@@ -2454,7 +2452,7 @@ exports.verifyBuisnessDeveloperBeforeRegistration = async (req, res) => {
 exports.interactWithVideoForAdmin = async (req, res) => {
   try {
     const { videoId, action, comments, replyTo } = req.body;
-    const userId = req.userId||req.stateHandlerId;
+    const userId = req.userId || req.stateHandlerId;
 
     if (!videoId || !action) {
       return res
@@ -2565,104 +2563,106 @@ exports.interactWithVideoForAdmin = async (req, res) => {
   }
 };
 
-
 //==========================================================
 
-exports.findAllState = async (req,res)=>{
+exports.findAllState = async (req, res) => {
   try {
-    const allstate = await StateHandler.find()
-    if(allstate.length===0){
-     return res.status(404).json({message:"no state found"})
+    const allstate = await StateHandler.find();
+    if (allstate.length === 0) {
+      return res.status(404).json({ message: "no state found" });
     }
 
-   res.status(200).json({message:"state find successfully", data:allstate})
-
+    res
+      .status(200)
+      .json({ message: "state find successfully", data: allstate });
   } catch (error) {
-    res.status(500).json({message:"an error occured", error:error.message})
+    res.status(500).json({ message: "an error occured", error: error.message });
   }
-}
-
+};
 
 //==================================================================
 
-exports.findAllFrenchise = async (req,res)=>{
+exports.findAllFrenchise = async (req, res) => {
   try {
     const allFrenchise = await Frenchise.find();
-    if(!allFrenchise){
-      res.status(404).json({message:"no frenchise found"})
+    if (!allFrenchise) {
+      res.status(404).json({ message: "no frenchise found" });
     }
-    res.status(200).json({message:"frenchise find successfully",data:allFrenchise})
+    res
+      .status(200)
+      .json({ message: "frenchise find successfully", data: allFrenchise });
   } catch (error) {
-    res.status(500).json({message:"an erro occured", error:error.message})
+    res.status(500).json({ message: "an erro occured", error: error.message });
   }
-}
+};
 
 //===========================================================================
 
-exports.findAllBusinessDeveloper=async (req,res)=>{
+exports.findAllBusinessDeveloper = async (req, res) => {
   try {
-    const allBusinessDeveloper = await BusinessDeveloper.find()
-    if(!allBusinessDeveloper){
-      res.status(402).json({message:"no businessDeveloper found"})
+    const allBusinessDeveloper = await BusinessDeveloper.find();
+    if (!allBusinessDeveloper) {
+      res.status(402).json({ message: "no businessDeveloper found" });
     }
-    res.status(200).json({message:"stateDeveloper found successfully",data:allBusinessDeveloper})
-    
+    res
+      .status(200)
+      .json({
+        message: "stateDeveloper found successfully",
+        data: allBusinessDeveloper,
+      });
   } catch (error) {
-    res.status(500).json({message:"an error occured", error:error.message})
+    res.status(500).json({ message: "an error occured", error: error.message });
   }
-}
+};
 
 //===================================================================================================
 //fetchBusinessDeveloperCreditwalletTransactionDetails
-exports.fetchBusinessDeveloperCreditwalletTransactionDetails = async (req, res) => {
+exports.fetchBusinessDeveloperCreditwalletTransactionDetails = async (
+  req,
+  res
+) => {
   try {
-    const fetchedData = await BusinessDeveloperCreditWalletTransaction.find()
-    if(fetchedData.length ==0){
-      return res.status(404).json({message:"Data not found"})
+    const fetchedData = await BusinessDeveloperCreditWalletTransaction.find();
+    if (fetchedData.length == 0) {
+      return res.status(404).json({ message: "Data not found" });
     }
 
-    return res.status(200).json({message: "Fetched all data",fetchedData })
+    return res.status(200).json({ message: "Fetched all data", fetchedData });
   } catch (error) {
-
-    console.log(error.message)
-    return res.status(500).json({message: "Internal server erro"})
-    
+    console.log(error.message);
+    return res.status(500).json({ message: "Internal server erro" });
   }
-}
+};
 
 //=======================================================================
 
 exports.fetchFranchiseCreditwalletTransactionDetails = async (req, res) => {
   try {
-    const fetchedData = await FranchiseCreditWalletTransaction.find()
-    if(fetchedData.length ==0){
-      return res.status(404).json({message:"Data not found"})
+    const fetchedData = await FranchiseCreditWalletTransaction.find();
+    if (fetchedData.length == 0) {
+      return res.status(404).json({ message: "Data not found" });
     }
 
-    return res.status(200).json({message: "Fetched all data",fetchedData })
+    return res.status(200).json({ message: "Fetched all data", fetchedData });
   } catch (error) {
-
-    console.log(error.message)
-    return res.status(500).json({message: "Internal server erro"})
-    
+    console.log(error.message);
+    return res.status(500).json({ message: "Internal server erro" });
   }
-}
+};
 //=============================================================
 
 // fetchStateHandlerCreditwalletTransactionDetails
 
 exports.fetchStateHandlerCreditwalletTransactionDetails = async (req, res) => {
   try {
-    const fetchedData = await StateHandlerCreditWalletTransaction.find()
-    if(fetchedData.length ==0){
-      return res.status(404).json({message:"Data not found"})
+    const fetchedData = await StateHandlerCreditWalletTransaction.find();
+    if (fetchedData.length == 0) {
+      return res.status(404).json({ message: "Data not found" });
     }
 
-    return res.status(200).json({message: "Fetched all data",fetchedData })
+    return res.status(200).json({ message: "Fetched all data", fetchedData });
   } catch (error) {
-
-    console.log(error.message)
-    return res.status(500).json({message: "Internal server erro"})
-    
+    console.log(error.message);
+    return res.status(500).json({ message: "Internal server erro" });
   }
-}
+};

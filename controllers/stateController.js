@@ -190,7 +190,7 @@ exports.getAllUsersInState = async (req, res) => {
 exports.getFranchiseForState = async (req, res) => {
   try {
     const id = req.params.id;
-    const franchise = await Frenchise.findOne({ _id: id });
+    const franchise = await Frenchise.findOne({ _id: id, isDeleted: false });
 
     if (!franchise) {
       return res.status(404).json({ message: "Franchise not found" });
@@ -211,7 +211,11 @@ exports.getFranchiseForState = async (req, res) => {
 exports.blockFranchiseForState = async (req, res) => {
   try {
     const id = req.params.id;
-    const franchise = await Frenchise.findOne({ _id: id });
+    const franchise = await Frenchise.findOne({
+      _id: id,
+      isDeleted: false,
+      isBlocked: false,
+    });
 
     if (!franchise) {
       return res.status(404).json({ message: "Franchise not found" });
@@ -233,7 +237,7 @@ exports.blockFranchiseForState = async (req, res) => {
 exports.deleteFranchiseForState = async (req, res) => {
   try {
     const id = req.params.id;
-    const franchise = await Frenchise.findOne({ _id: id });
+    const franchise = await Frenchise.findOne({ _id: id, isDeleted: false });
 
     if (!franchise) {
       return res.status(404).json({ message: "Franchise not found" });
@@ -243,6 +247,51 @@ exports.deleteFranchiseForState = async (req, res) => {
     await franchise.save();
 
     res.status(204).send();
+  } catch (error) {
+    console.error(error.message);
+    res.status(500).json({ message: "Internal server error" });
+  }
+};
+
+//=================================================================================
+
+// Update a specific franchise
+exports.updateFranchiseForState = async (req, res) => {
+  try {
+    const { fname, lname, phone, email, gender, franchiseCity } = req.body;
+    const id = req.params.id;
+
+    const franchise = await Frenchise.findOneAndUpdate(
+      { _id: id, isDeleted: false, isBlocked: false },
+      { $set: { fname, lname, phone, email, gender, franchiseCity } },
+      { new: true }
+    );
+
+    if (!franchise) {
+      return res.status(404).json({ message: "Franchise not found" });
+    }
+
+    res
+      .status(200)
+      .json({ message: "Franchise updated successfully", franchise });
+  } catch (error) {
+    console.error(error.message);
+    res.status(500).json({ message: "Internal server error" });
+  }
+};
+//================================================================================
+// Get a specific Business Developer
+exports.getBusinessDeveloperForState = async (req, res) => {
+  try {
+    const id = req.params.id;
+    const businessDeveloper = await BusinessDeveloper.findOne({ _id: id, isDeleted: false });
+
+    if (!businessDeveloper) {
+      return res.status(404).json({ message: "Business developer not found" });
+    }
+
+    res.status(200).json({ message: "Fetched busines developer successfully", data: businessDeveloper });
+
   } catch (error) {
     console.error(error.message);
     res.status(500).json({ message: "Internal server error" });
