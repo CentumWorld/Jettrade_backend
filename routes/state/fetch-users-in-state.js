@@ -2,13 +2,12 @@ const express = require("express");
 const router = express.Router();
 const {  getAllUsersInState } = require("../../controllers/stateController");
 const {
-  authenticateState,
-  authorizeState,
+  authenticateAdmin,
+  authorizeRole,
 } = require("../../middleware/checkAuth");
 router.get(
   "/fetch-all-users-in-state",
-  authenticateState,
-  authorizeState,
+  authenticateAdmin,authorizeRole(["admin", "state"]),
   getAllUsersInState
 );
 module.exports = router;
