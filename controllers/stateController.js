@@ -8,7 +8,10 @@ const User = require("../model/userSchema");
 exports.getFranchisesByReferralId = async (req, res) => {
   try {
     const stateReferralId = req.body.stateReferralId;
-    const frenchises = await Frenchise.find({ referredId: stateReferralId });
+    const frenchises = await Frenchise.find({
+      referredId: stateReferralId,
+      isDeleted: false,
+    });
 
     if (frenchises.length === 0) {
       return res
@@ -36,6 +39,7 @@ exports.getBusinessDevelopersInState = async (req, res) => {
     // First, find all franchises in the specified state
     const franchisesInState = await Frenchise.find({
       referredId: stateReferralId,
+      isDeleted:false
     });
 
     // If no franchises are found, return a response indicating no data
@@ -45,17 +49,14 @@ exports.getBusinessDevelopersInState = async (req, res) => {
         .json({ message: "No franchises found in the given state" });
     }
 
-    // Extract the franchise referral IDs from the found franchises
     const franchiseReferralIds = franchisesInState.map(
       (franchise) => franchise.referralId
     );
 
-    // Fetch all business developers associated with the extracted franchise referral IDs
     const businessDevelopers = await BusinessDeveloper.find({
-      referredId: { $in: franchiseReferralIds },
+      referredId: { $in: franchiseReferralIds },isDeleted:false
     });
 
-    // If no business developers are found, return a response indicating no data
     if (businessDevelopers.length === 0) {
       return res
         .status(404)
@@ -79,6 +80,7 @@ exports.getAllMembersInState = async (req, res) => {
     const stateReferralId = req.body.stateReferralId;
     const franchisesInState = await Frenchise.find({
       referredId: stateReferralId,
+      isDeleted:false
     });
     if (franchisesInState.length === 0) {
       return res
@@ -92,6 +94,7 @@ exports.getAllMembersInState = async (req, res) => {
 
     const businessDevelopers = await BusinessDeveloper.find({
       referredId: franchiseReferralIds,
+      isDeleted:false
     });
 
     if (businessDevelopers.length === 0) {
@@ -106,6 +109,7 @@ exports.getAllMembersInState = async (req, res) => {
 
     const members = await Member.find({
       reffered_id: { $in: businessDeveloperReferralIds },
+      isDeleted: false
     });
 
     if (members.length === 0) {
@@ -133,6 +137,7 @@ exports.getAllUsersInState = async (req, res) => {
     const stateReferralId = req.body.stateReferralId;
     const franchisesInState = await Frenchise.find({
       referredId: stateReferralId,
+      isDeleted:false
     });
     if (franchisesInState.length === 0) {
       return res
@@ -146,6 +151,7 @@ exports.getAllUsersInState = async (req, res) => {
 
     const businessDevelopers = await BusinessDeveloper.find({
       referredId: franchiseReferralIds,
+      isDeleted:false
     });
 
     if (businessDevelopers.length === 0) {
@@ -159,6 +165,7 @@ exports.getAllUsersInState = async (req, res) => {
     );
     const members = await Member.find({
       reffered_id: { $in: businessDeveloperReferralIds },
+      isDeleted: false
     });
 
     if (members.length === 0) {
@@ -169,7 +176,7 @@ exports.getAllUsersInState = async (req, res) => {
 
     const memberReferralIds = members.map((member) => member.refferal_id);
 
-    const users = await User.find({ reffered_id: { $in: memberReferralIds } });
+    const users = await User.find({ reffered_id: { $in: memberReferralIds }, isDeleted:false });
     if (users.length === 0) {
       return res
         .status(404)
@@ -262,7 +269,7 @@ exports.updateFranchiseForState = async (req, res) => {
     const id = req.params.id;
 
     const franchise = await Frenchise.findOneAndUpdate(
-      { _id: id, isDeleted: false, isBlocked: false },
+      { _id: id, isDeleted: false},
       { $set: { fname, lname, phone, email, gender, franchiseCity } },
       { new: true }
     );
@@ -284,14 +291,24 @@ exports.updateFranchiseForState = async (req, res) => {
 exports.getBusinessDeveloperForState = async (req, res) => {
   try {
     const id = req.params.id;
-    const businessDeveloper = await BusinessDeveloper.findOne({ _id: id, isDeleted: false });
+    const businessDeveloper = await BusinessDeveloper.findOne({
+      _id: id,
+      isDeleted: false // Include this condition to ensure isDeleted is false
+
+    });
+
+    console.log(businessDeveloper, "/////")
 
     if (!businessDeveloper) {
       return res.status(404).json({ message: "Business developer not found" });
     }
 
-    res.status(200).json({ message: "Fetched busines developer successfully", data: businessDeveloper });
-
+    res
+      .status(200)
+      .json({
+        message: "Fetched busines developer successfully",
+        data: businessDeveloper,
+      });
   } catch (error) {
     console.error(error.message);
     res.status(500).json({ message: "Internal server error" });

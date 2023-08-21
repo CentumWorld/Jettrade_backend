@@ -168,9 +168,10 @@ const totalCountOfPaymentStatusOfUser = require('./routes/total_Count_Of_Payment
 const totalCountOfPaymentStatusOfUseruser = require("./routes/users/total_Count_Of_Payment_Status_Of_User_user")
 
 
+
 //=======================State=================================================
 
-const  getFranchisesByReferralId = require("./routes/state/fetchFrenchiseByReferalId");
+const  getFranchisesByReferralId = require("./routes/state/fetch-frenchise-in-state");
 
 const getBusinessDevelopersInState =  require("./routes/state/fetch-business-developers-in-state")
 
@@ -180,6 +181,7 @@ const blockFranchiseForState = require("./routes/state/block-franchise-for-state
 const deleteFranchiseForState = require("./routes/state/delete-franchise-for-state")
 const updateFranchiseForState = require("./routes/state/update-franchise-for-state")
 const getFranchiseForState = require("./routes/state/get-franchise-for-state")
+const getBusinessDeveloperForState = require("./routes/state/get-business-developer-for-state")
 
 //========================Frenchise==============================================
 const  getBusinessDeveloperByReferrralId  = require("./routes/frenchise/fetchBdeveloperBYReferralId");
@@ -382,6 +384,7 @@ app.use("/state", blockFranchiseForState)
 app.use("/state", deleteFranchiseForState)
 app.use("/state", updateFranchiseForState)
 app.use("/state", getFranchiseForState)
+app.use("/state", getBusinessDeveloperForState)
 
 //============================Franchise=============================================
 
