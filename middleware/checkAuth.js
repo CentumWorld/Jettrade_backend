@@ -38,6 +38,8 @@ exports.authenticateAdmin = async (req, res, next) => {
   try {
     const decoded = jwt.verify(token, process.env.SECRET_KEY);
     req.userId = decoded.userId; // Save the user ID from the token in the request object
+    console.log(decoded)
+    req.stateHandlerId = decoded.stateHandlerId
 
     const admin = await Admin.findById(decoded.userId);
     const subAdmin = await SubAdmin.findById(decoded.subAdminId);
