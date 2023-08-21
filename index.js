@@ -168,6 +168,7 @@ const totalCountOfPaymentStatusOfUser = require('./routes/total_Count_Of_Payment
 const  getFranchisesByReferralId = require("./routes/state/fetchFrenchiseByReferalId");
 const  getBusinessDeveloperByReferrralId  = require("./routes/frenchise/fetchBdeveloperBYReferralId");
 
+const totalCountOfPaymentStatusOfUseruser = require("./routes/users/total_Count_Of_Payment_Status_Of_User_user")
 
 //======================================================================
 
@@ -270,6 +271,7 @@ app.use("/admin", fetchFranchiseCreditwalletTransactionDetails)
 
 app.use("/admin", fetchStateHandlerCreditwalletTransactionDetails)
 app.use("/admin", totalCountOfPaymentStatusOfUser)
+app.use("/user", totalCountOfPaymentStatusOfUseruser)
 
 // refferal
 app.use("/member", memberRegistration);

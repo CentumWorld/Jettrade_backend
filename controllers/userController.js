@@ -2455,7 +2455,7 @@ exports.changePaymentStatusForRenewal = async (req, res) => {
 };
 
 //send money to any user that exis in database
-exports.tradingWalletTransferFromOneUserToAnother = async (req, res) => {
+exports.  tradingWalletTransferFromOneUserToAnother = async (req, res) => {
   const { amount, fromUser, toUser } = req.body;
 
   try {

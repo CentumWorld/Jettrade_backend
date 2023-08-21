@@ -52,7 +52,7 @@ const memberSchema = new mongoose.Schema({
   refferal_id: {
     type: String,
   },
-  referred_id: {
+  reffered_id: {
     type: String,
   },
   status: {
