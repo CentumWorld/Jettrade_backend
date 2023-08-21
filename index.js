@@ -165,10 +165,22 @@ const findAllState = require("./routes/fetch-all-state");
 const findAllFrenchise = require("./routes/fetch-all-frenchise");
 const findAllBusinessDeveloper = require("./routes/fetch-all-businessDeveloper");
 const totalCountOfPaymentStatusOfUser = require('./routes/total_Count_Of_Payment_Status_Of_User')
+const totalCountOfPaymentStatusOfUseruser = require("./routes/users/total_Count_Of_Payment_Status_Of_User_user")
+
+
+//=======================State=================================================
+
 const  getFranchisesByReferralId = require("./routes/state/fetchFrenchiseByReferalId");
+
+const getBusinessDevelopersInState =  require("./routes/state/fetch-business-developers-in-state")
+
+const getAllMembersInState = require("./routes/state/fetch-members-in-state")
+const getAllUsersInState = require("./routes/state/fetch-users-in-state")
+const blockFranchiseForState = require("./routes/state/block-franchise-for-state")
+const deleteFranchiseForState = require("./routes/state/delete-franchise-for-state")
+//========================Frenchise==============================================
 const  getBusinessDeveloperByReferrralId  = require("./routes/frenchise/fetchBdeveloperBYReferralId");
 
-const totalCountOfPaymentStatusOfUseruser = require("./routes/users/total_Count_Of_Payment_Status_Of_User_user")
 
 //======================================================================
 
@@ -357,8 +369,18 @@ app.use("/member", fetchChatMessageRefferal);
 app.use("/member", adminOnlineOrNotRefferal);
 app.use("/member", refferalTotalWithdrawal);
 app.use("/member", refferalMyTeam);
+
+//===============================State=============================================
 app.use("/state",getFranchisesByReferralId)
-app.use("/state",getBusinessDeveloperByReferrralId)
+app.use("/state",getBusinessDevelopersInState )
+app.use("/state", getAllMembersInState)
+app.use("/state", getAllUsersInState)
+app.use("/state", blockFranchiseForState)
+app.use("/state", deleteFranchiseForState)
+
+//============================Franchise=============================================
+
+app.use("/frenchise",getBusinessDeveloperByReferrralId)
 
 
 

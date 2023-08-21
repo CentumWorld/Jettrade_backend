@@ -1,5 +1,6 @@
 const express = require("express");
 const router = express.Router()
 const { getFranchisesByReferralId } = require("../../controllers/stateController");
-router.get('/getAll-frenchiseBy-referalId',getFranchisesByReferralId);
+const { authenticateState, authorizeState } = require("../../middleware/checkAuth");
+router.get('/getAll-frenchiseBy-referalId',authenticateState,authorizeState,getFranchisesByReferralId);
 module.exports = router;

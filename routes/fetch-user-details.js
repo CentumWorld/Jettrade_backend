@@ -7,7 +7,7 @@ require('dotenv').config();
 const adminController = require('../controllers/adminController');
 const {authenticateAdmin, authorizeAdmin, authorizeAdminandSubAdmin} = require('../middleware/checkAuth');
 
-router.get('/fetch-user-details',authenticateAdmin,authorizeAdminandSubAdmin, adminController.fetchUserDetails);
+router.get('/fetch-user-details',authenticateAdmin, adminController.fetchUserDetails);
 
 
 module.exports = router;

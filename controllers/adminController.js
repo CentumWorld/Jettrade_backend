@@ -214,6 +214,7 @@ exports.fetchMemberDocumentAdminside = async (req, res) => {
     });
 };
 
+
 // userDetailsEditAdmin
 exports.userDetailsEditAdmin = async (req, res) => {
   const {

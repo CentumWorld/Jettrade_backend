@@ -52,25 +52,35 @@ const frenchiseSchema = new mongoose.Schema(
     referralId: {
       type: String,
     },
-    frenchiseWallet:{
-      type:Number,
-      default:0
+    frenchiseWallet: {
+      type: Number,
+      default: 0,
     },
-    franchiseCity:{
-      type :[String],
-      required:true
+    franchiseCity: {
+      type: [String],
+      required: true,
     },
-    franchiseState:{
-      type:String ,
+    franchiseState: {
+      type: String,
     },
-    
+
     adharCard: {
       type: String,
     },
     panCard: {
       type: String,
+    },
+    isBlocked: {
+      type: Boolean,
+      default: false,
+    },
+    isDeleted: {
+      type: Boolean, 
+      default: false,
     }
-    },{timestamps:true});
+  },
+  { timestamps: true }
+);
 
 const frenchise = mongoose.model("Frenchise", frenchiseSchema);
 

@@ -3,6 +3,7 @@ const Admin = require("../model/adminSchema");
 const User = require("../model/userSchema");
 const Member = require("../model/memberSchema");
 const SubAdmin = require("../model/subadminSchema")
+const State = require("../model/stateHandlerSchema")
 
 // exports.checkAuth = (req, res, next) => {
 //   const token = req.headers.authorization?.split(" ")[1];
@@ -27,60 +28,63 @@ const SubAdmin = require("../model/subadminSchema")
 //   }
 // };
 
+exports.authenticateAdmin = async (req, res, next) => {
+  const token = req.headers.authorization?.split(' ')[1];
 
-  exports.authenticateAdmin = async (req, res, next) => {
-    const token = req.headers.authorization?.split(' ')[1];
+  if (!token) {
+    return res.status(401).json({ message: 'Unauthorized' });
+  }
 
-    if (!token) {
-      return res.status(401).json({ message: 'Unauthorized' });
+  try {
+    const decoded = jwt.verify(token, process.env.SECRET_KEY);
+    req.userId = decoded.userId; // Save the user ID from the token in the request object
+
+    const admin = await Admin.findById(decoded.userId);
+    const subAdmin = await SubAdmin.findById(decoded.subAdminId);
+    const state = await State.findById(decoded.stateHandlerId);
+
+    if (!admin && !subAdmin && !state) {
+      return res.status(401).json({ message: 'User not found' });
     }
 
-    try {
-      const decoded = jwt.verify(token, process.env.SECRET_KEY);
-      req.userId = decoded.userId; // Save the user ID from the token in the request object
+    req.userRoles = [];
 
-      const admin = await Admin.findById(decoded.userId);
-      const subAdmin = await SubAdmin.findById(decoded.subAdminId);
-    
-      if (!admin && !subAdmin) {
-        return res.status(401).json({ message: 'Admin or Sub admin not found' });
-      }
-
-      if (admin) {
-        req.isAdmin = true; // Set isAdmin flag in the request object for admin user
-      }
-
-      if (subAdmin) {
-        req.isSubAdmin = true;
-        
-        req.isVideoCreator = subAdmin.isVideoCreator; 
-      }
-
-      next();
-    } catch (error) {
-      console.log(error.message);
-      return res.status(401).json({ message: 'Invalid Token' });
+    if (admin) {
+      req.userRoles.push('admin');
     }
-  };
 
-  exports.authorizeAdminandSubAdmin = async (req, res, next) => {
+    if (subAdmin) {
+      req.userRoles.push('subAdmin');
+      req.isVideoCreator = subAdmin.isVideoCreator;
+    }
+
+    if (state) {
+      req.userRoles.push('state');
+    }
+
+    next();
+  } catch (error) {
+    console.log(error.message);
+    return res.status(401).json({ message: 'Invalid Token' });
+  }
+};
+
+
+exports.authorizeRole = (allowedRoles) => {
+  return async (req, res, next) => {
     try {
-      if (req.isAdmin) {
-        // If user is an admin, allow access
+      if (req.userRoles.some(role => allowedRoles.includes(role))) {
+        // If user has any of the allowed roles, allow access
         next();
-      }
-      else if (req.subAdmin) {
-        next()
-      }
-   else {
-        return res.status(403).json({ message: "You are not authorized as an admin or a sub admin" });
+      } else {
+        return res.status(403).json({ message: "You are not authorized" });
       }
     } catch (error) {
       console.log(error.message);
       return res.status(500).json({ message: "Internal Server Error" });
     }
   };
-
+};
 
   
   exports.authorizeAdmin = async (req, res, next) => {
@@ -241,9 +245,7 @@ exports.authenticateMember = async (req, res, next) => {
 exports.authorizeMember = async (req, res, next) => {
   try {
     const memberId = req.memberId;
-    console.log(memberId, "++++++");
     const member = await Member.findById(memberId);
-    console.log(member, "-------");
     if (!member) {
       return res.status(403).json({
         status: false,
@@ -255,6 +257,48 @@ exports.authorizeMember = async (req, res, next) => {
     console.log(error.message, "middleware seever error");
     return res
       .status(500)
-      .json({ status: false, message: "Internal server erro" });
+      .json({ status: false, message: "Internal server error" });
+  }
+};
+
+
+//======================================================================
+
+exports.authenticateState = async(req, res, next) => {
+  try {
+    const token = req.headers.authorization?.split(" ")[1];
+    if (!token) {
+      return res.status(401).json({ status: false, message: "Unauthorized" });
+    }
+    const decoded = jwt.verify(token, process.env.SECRET_KEY);
+
+    req.stateHandlerId = decoded.stateHandlerId
+  
+    next();
+  } catch (error) {
+    return res
+    .status(500)
+    .json({ status: false, message: "Internal server error" });
+  }
+}
+
+//==========================================================================
+
+exports.authorizeState = async (req, res, next) => {
+  try {
+    const stateHandlerId = req.stateHandlerId;
+    const state = await State.findById(stateHandlerId);
+    if (!state) {
+      return res.status(403).json({
+        status: false,
+        message: "You are not authorized as an state handler",
+      });
+    }
+    next();
+  } catch (error) {
+    console.log(error.message, "middleware server error");
+    return res
+      .status(500)
+      .json({ status: false, message: "Internal server error" });
   }
 };
