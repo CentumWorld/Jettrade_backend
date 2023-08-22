@@ -38,8 +38,7 @@ exports.authenticateAdmin = async (req, res, next) => {
 
   try {
     const decoded = jwt.verify(token, process.env.SECRET_KEY);
-    req.userId = decoded.userId; // Save the user ID from the token in the request object
-    console.log(decoded, "lllllllll")
+    req.userId = decoded.userId; 
     req.stateHandlerId = decoded.stateHandlerId
     req.businessDeveloperId = decoded.businessDeveloperId
 
@@ -48,8 +47,6 @@ exports.authenticateAdmin = async (req, res, next) => {
     const state = await State.findById(decoded.stateHandlerId);
     const franchise = await Franchise.findById(decoded.franchiseId);
     const businessDeveloper = await BusinessDeveloper.findById(decoded.businessDeveloperId)
-
-    console.log(businessDeveloper, ";;;;")
 
     if (!admin && !subAdmin && !state && !franchise &&!businessDeveloper) {
       return res.status(401).json({ message: 'User not found' });

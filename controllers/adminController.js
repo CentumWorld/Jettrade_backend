@@ -2734,7 +2734,7 @@ res.status(500).json({message: "Internal server error"})
 //==========================================================================
 exports.blockStateByAdmin = async(req, res) => {
   try {
-    const { id } = req.params;
+    const { id } = req.body;
 
     const state = await StateHandler.findById(id);
     
