@@ -2678,13 +2678,13 @@ exports.blockStateByAdmin = async(req, res) => {
     if (!state) {
       return res
         .status(404)
-        .json({ message: "state  not found for the given ID" });
+        .json({ message: "State  not found for the given ID" });
     }
 
     if (state.isBlocked) {
       return res
         .status(400)
-        .json({ message: "Member is already blocked" });
+        .json({ message: "State is already blocked" });
     }
 
     const blockedMember = await StateHandler.findByIdAndUpdate(
