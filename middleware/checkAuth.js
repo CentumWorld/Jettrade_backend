@@ -41,6 +41,7 @@ exports.authenticateAdmin = async (req, res, next) => {
     req.userId = decoded.userId; // Save the user ID from the token in the request object
     console.log(decoded, "lllllllll")
     req.stateHandlerId = decoded.stateHandlerId
+    req.businessDeveloperId = decoded.businessDeveloperId
 
     const admin = await Admin.findById(decoded.userId);
     const subAdmin = await SubAdmin.findById(decoded.subAdminId);

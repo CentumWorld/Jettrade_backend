@@ -2452,7 +2452,7 @@ exports.verifyBuisnessDeveloperBeforeRegistration = async (req, res) => {
 exports.interactWithVideoForAdmin = async (req, res) => {
   try {
     const { videoId, action, comments, replyTo } = req.body;
-    const userId = req.userId || req.stateHandlerId;
+    const userId = req.userId || req.stateHandlerId||req.businessDeveloperId
 
     if (!videoId || !action) {
       return res

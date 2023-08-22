@@ -8,7 +8,7 @@ router.post(
   '/create_State_Handler',
   upload.fields([{ name: 'adharCard' }, { name: 'panCard'}]),
   authenticateAdmin,
-  authorizeRole(["admin", "franchise"]),
+  authorizeRole(["admin"]),
   adminController.createStateHandler
 );
 
