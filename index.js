@@ -187,8 +187,11 @@ const getBusinessDeveloperForState = require("./routes/state/get-business-develo
 const getBusinessDevelopersInFranchise = require("./routes/frenchise/fetch-bdeveloper-in-franchise");
 const getMembersInFranchise = require("./routes/frenchise/fetch-members-in-franchise")
 
-//======================================================================
-
+//=========================Business developer======================================
+const getAllMembersInBusinessDeveloper = require("./routes/businessDeveloper/fetch-all-members-in-business-developer")
+const blockMemberByBusinessDeveloper = require("./routes/businessDeveloper/block-member-by-business-developer")
+const getOneMemberByIdByBusinessDeveloper = require("./routes/businessDeveloper/get-one-member-by-id-by-business-developer")
+//===========================================================================
 app.use(express.static(path.join(__dirname, "public")));
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
@@ -390,6 +393,15 @@ app.use("/state", getBusinessDeveloperForState)
 
 app.use("/franchise",getBusinessDevelopersInFranchise)
 app.use("/franchise", getMembersInFranchise)
+
+//============================Business developer===========================
+app.use("/businessDeveloper", getAllMembersInBusinessDeveloper)
+app.use("/businessDeveloper",blockMemberByBusinessDeveloper)
+app.use("/businessDeveloper",getOneMemberByIdByBusinessDeveloper)
+
+//=========================================================================
+
+
 
 
 

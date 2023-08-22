@@ -90,6 +90,14 @@ const memberSchema = new mongoose.Schema({
   userType: {
     type: String,
   },
+  isBlocked: {
+    type: Boolean,
+    default: false
+  },
+  isDeleted: {
+    type: Boolean,
+    default: false
+  },
 });
 
 // Hash your password using bcrypt

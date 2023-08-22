@@ -5,6 +5,7 @@ const Member = require("../model/memberSchema");
 const SubAdmin = require("../model/subadminSchema")
 const State = require("../model/stateHandlerSchema")
 const Franchise = require("../model/frenchiseSchema")
+const BusinessDeveloper = require("../model/businessDeveloperSchema")
 // exports.checkAuth = (req, res, next) => {
 //   const token = req.headers.authorization?.split(" ")[1];
 
@@ -45,8 +46,11 @@ exports.authenticateAdmin = async (req, res, next) => {
     const subAdmin = await SubAdmin.findById(decoded.subAdminId);
     const state = await State.findById(decoded.stateHandlerId);
     const franchise = await Franchise.findById(decoded.franchiseId);
+    const businessDeveloper = await BusinessDeveloper.findById(decoded.businessDeveloperId)
 
-    if (!admin && !subAdmin && !state && !franchise) {
+    console.log(businessDeveloper, ";;;;")
+
+    if (!admin && !subAdmin && !state && !franchise &&!businessDeveloper) {
       return res.status(401).json({ message: 'User not found' });
     }
 
@@ -67,6 +71,11 @@ exports.authenticateAdmin = async (req, res, next) => {
 
     if(franchise){
       req.userRoles.push('franchise');
+
+    }
+
+    if(businessDeveloper){
+      req.userRoles.push('businessDeveloper');
 
     }
 
