@@ -2703,7 +2703,7 @@ res.status(500).json({message: "Internal server error"})
 
 exports.blockFranchiseByAdmin = async(req, res) => {
   try {
-    const { id } = req.params;
+    const { id } = req.body;
 
     const franchise = await Franchise.findById(id);
     
@@ -2766,7 +2766,7 @@ res.status(500).json({message: "Internal server error"})
 
 exports.blockBusinessDeveloperByAdmin = async(req, res) => {
   try {
-    const { id } = req.params;
+    const { id } = req.body;
 
     const businessDeveloper = await BusinessDeveloper.findById(id);
     
@@ -2799,7 +2799,7 @@ res.status(500).json({message: "Internal server error"})
 //unblock franchise
 exports.unblockFranchiseByAdmin = async (req, res) => {
   try {
-    const { id } = req.params;
+    const { id } = req.body;
 
     const franchise = await Franchise.findById(id);
 
@@ -2831,7 +2831,7 @@ exports.unblockFranchiseByAdmin = async (req, res) => {
 
 exports.unblockStateByAdmin = async (req, res) => {
   try {
-    const { id } = req.params;
+    const { id } = req.body;
 
     const state = await StateHandler.findById(id);
 
@@ -2862,7 +2862,7 @@ exports.unblockStateByAdmin = async (req, res) => {
 // unblock business developer
 exports.unblockBusinessDeveloperByAdmin = async (req, res) => {
   try {
-    const { id } = req.params;
+    const { id } = req.body;
 
     const businessDeveloper = await BusinessDeveloper.findById(id);
 
