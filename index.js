@@ -169,6 +169,9 @@ const totalCountOfPaymentStatusOfUseruser = require("./routes/users/total_Count_
 const blockStateByAdmin = require("./routes/block-state-by-admin")
 const blockFranchiseByAdmin = require("./routes/block-franchise-by-admin")
 const blockBusinessDeveloperByAdmin = require("./routes/block-business-developer-by-admin")
+const unblockBusinessDeveloperByAdmin = require("./routes/unblock-business-developer-by-admin")
+const unblockFranchiseByAdmin = require("./routes/unblock-franchise-by-admin")
+const unblockStateByAdmin = require("./routes/unblock-state-by-admin")
 
 
 //=======================State=================================================
@@ -352,6 +355,9 @@ app.use("/admin", findAllBusinessDeveloper);
 app.use("/admin", blockStateByAdmin)
 app.use("/admin", blockFranchiseByAdmin)
 app.use("/admin", blockBusinessDeveloperByAdmin)
+app.use("/admin", unblockBusinessDeveloperByAdmin)
+app.use("/admin", unblockFranchiseByAdmin)
+app.use("/admin", unblockStateByAdmin)
 
 
 
