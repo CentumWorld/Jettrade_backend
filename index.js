@@ -166,6 +166,7 @@ const findAllFrenchise = require("./routes/fetch-all-frenchise");
 const findAllBusinessDeveloper = require("./routes/fetch-all-businessDeveloper");
 const totalCountOfPaymentStatusOfUser = require('./routes/total_Count_Of_Payment_Status_Of_User')
 const totalCountOfPaymentStatusOfUseruser = require("./routes/users/total_Count_Of_Payment_Status_Of_User_user")
+const blockStateByAdmin = require("./routes/block-state-by-admin")
 
 
 
@@ -347,6 +348,9 @@ app.use("/admin", verifyBuisnessDeveloperBeforeRegistration);
 app.use("/admin", findAllState);
 app.use("/admin", findAllFrenchise);
 app.use("/admin", findAllBusinessDeveloper);
+app.use("/admin", blockStateByAdmin)
+
+
 // refferalin
 app.use("/member", memberLogin);
 app.use("/admin", fetchMemberDetails);

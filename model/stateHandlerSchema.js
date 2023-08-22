@@ -47,7 +47,15 @@ const stateHandlerSchema = new mongoose.Schema({
   referralId: {
     type: String,
     required: true
-  }
+  }, 
+  isBlocked: {
+    type: Boolean,
+    default: false
+  },
+  isDeleted: {
+    type: Boolean,
+    default: false
+  },
 
 }, {timestamps: true});
 

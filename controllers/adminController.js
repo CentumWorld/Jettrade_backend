@@ -2666,3 +2666,35 @@ exports.fetchStateHandlerCreditwalletTransactionDetails = async (req, res) => {
     return res.status(500).json({ message: "Internal server erro" });
   }
 };
+
+//==========================================================================
+
+exports.blockStateByAdmin = async(req, res) => {
+  try {
+    const { id } = req.params;
+
+    const state = await StateHandler.findById(id);
+    
+    if (!state) {
+      return res
+        .status(404)
+        .json({ message: "state  not found for the given ID" });
+    }
+
+    if (state.isBlocked) {
+      return res
+        .status(400)
+        .json({ message: "Member is already blocked" });
+    }
+
+    const blockedMember = await StateHandler.findByIdAndUpdate(
+      { _id: id },
+      { $set: { isBlocked: true } }
+    );
+
+    return res.status(200).json({ message: "state blocked successfully" });
+  } catch (error) {
+
+    
+  }
+}
