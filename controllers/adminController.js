@@ -2669,36 +2669,36 @@ exports.fetchStateHandlerCreditwalletTransactionDetails = async (req, res) => {
 
 //==========================================================================
 
-exports.blockStateByAdmin = async(req, res) => {
+exports.blockStateByAdmin = async (req, res) => {
   try {
-    const { id } = req.body;
+    const { id, block } = req.body;
 
     const state = await StateHandler.findById(id);
     
     if (!state) {
       return res
         .status(404)
-        .json({ message: "State  not found for the given ID" });
+        .json({ message: "State not found for the given ID" });
     }
 
-    if (state.isBlocked) {
+    if (block === state.isBlocked) {
       return res
         .status(400)
-        .json({ message: "State is already blocked" });
+        .json({ message: `State is already ${block ? 'blocked' : 'unblocked'}` });
     }
 
-    const blockedState = await StateHandler.findByIdAndUpdate(
+    const updatedState = await StateHandler.findByIdAndUpdate(
       { _id: id },
-      { $set: { isBlocked: true } }
+      { $set: { isBlocked: block } }
     );
 
-    return res.status(200).json({ message: "state blocked successfully" });
+    return res.status(200).json({ message: `State ${block ? 'blocked' : 'unblocked'} successfully` });
   } catch (error) {
-console.log(error.message)
-res.status(500).json({message: "Internal server error"})
-    
+    console.log(error.message);
+    res.status(500).json({ message: "Internal server error" });
   }
-}
+};
+
 //=====================================================================
 
 exports.blockFranchiseByAdmin = async(req, res) => {
