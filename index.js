@@ -184,8 +184,8 @@ const getFranchiseForState = require("./routes/state/get-franchise-for-state")
 const getBusinessDeveloperForState = require("./routes/state/get-business-developer-for-state")
 
 //========================Frenchise==============================================
-const  getBusinessDeveloperByReferrralId  = require("./routes/frenchise/fetchBdeveloperBYReferralId");
-
+const getBusinessDevelopersInFranchise = require("./routes/frenchise/fetch-bdeveloper-in-franchise");
+const getMembersInFranchise = require("./routes/frenchise/fetch-members-in-franchise")
 
 //======================================================================
 
@@ -388,7 +388,8 @@ app.use("/state", getBusinessDeveloperForState)
 
 //============================Franchise=============================================
 
-app.use("/frenchise",getBusinessDeveloperByReferrralId)
+app.use("/franchise",getBusinessDevelopersInFranchise)
+app.use("/franchise", getMembersInFranchise)
 
 
 

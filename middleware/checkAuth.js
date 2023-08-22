@@ -4,7 +4,7 @@ const User = require("../model/userSchema");
 const Member = require("../model/memberSchema");
 const SubAdmin = require("../model/subadminSchema")
 const State = require("../model/stateHandlerSchema")
-
+const Franchise = require("../model/frenchiseSchema")
 // exports.checkAuth = (req, res, next) => {
 //   const token = req.headers.authorization?.split(" ")[1];
 
@@ -38,14 +38,15 @@ exports.authenticateAdmin = async (req, res, next) => {
   try {
     const decoded = jwt.verify(token, process.env.SECRET_KEY);
     req.userId = decoded.userId; // Save the user ID from the token in the request object
-    console.log(decoded)
+    console.log(decoded, "lllllllll")
     req.stateHandlerId = decoded.stateHandlerId
 
     const admin = await Admin.findById(decoded.userId);
     const subAdmin = await SubAdmin.findById(decoded.subAdminId);
     const state = await State.findById(decoded.stateHandlerId);
+    const franchise = await Franchise.findById(decoded.franchiseId);
 
-    if (!admin && !subAdmin && !state) {
+    if (!admin && !subAdmin && !state && !franchise) {
       return res.status(401).json({ message: 'User not found' });
     }
 
@@ -62,6 +63,11 @@ exports.authenticateAdmin = async (req, res, next) => {
 
     if (state) {
       req.userRoles.push('state');
+    }
+
+    if(franchise){
+      req.userRoles.push('franchise');
+
     }
 
     next();

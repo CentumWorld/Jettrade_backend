@@ -2333,7 +2333,7 @@ exports.frenchiseLogin = async (req, res) => {
         .json({ message: "Invalid frenchise Id or Password" });
     }
     const token = jwt.sign(
-      { fenchiseId: existingFrenchiseId._id },
+      { franchiseId: existingFrenchiseId._id },
       process.env.SECRET_KEY,
       {
         expiresIn: "8h",
