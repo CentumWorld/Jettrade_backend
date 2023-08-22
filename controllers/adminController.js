@@ -2687,14 +2687,110 @@ exports.blockStateByAdmin = async(req, res) => {
         .json({ message: "State is already blocked" });
     }
 
-    const blockedMember = await StateHandler.findByIdAndUpdate(
+    const blockedState = await StateHandler.findByIdAndUpdate(
       { _id: id },
       { $set: { isBlocked: true } }
     );
 
     return res.status(200).json({ message: "state blocked successfully" });
   } catch (error) {
-
+console.log(error.message)
+res.status(500).json({message: "Internal server error"})
     
+  }
+}
+//=====================================================================
+
+exports.blockFranchiseByAdmin = async(req, res) => {
+  try {
+    const { id } = req.params;
+
+    const franchise = await Franchise.findById(id);
+    
+    if (!franchise) {
+      return res
+        .status(404)
+        .json({ message: "Franchise  not found for the given ID" });
+    }
+
+    if (franchise.isBlocked) {
+      return res
+        .status(400)
+        .json({ message: "Franchise is already blocked" });
+    }
+
+    const blockedFranchise = await Franchise.findByIdAndUpdate(
+      { _id: id },
+      { $set: { isBlocked: true } }
+    );
+
+    return res.status(200).json({ message: "Franchise blocked successfully" });
+  } catch (error) {
+
+    console.log(error.message)
+res.status(500).json({message: "Internal server error"})
+  }
+}
+//==========================================================================
+exports.blockStateByAdmin = async(req, res) => {
+  try {
+    const { id } = req.params;
+
+    const state = await StateHandler.findById(id);
+    
+    if (!state) {
+      return res
+        .status(404)
+        .json({ message: "State  not found for the given ID" });
+    }
+
+    if (state.isBlocked) {
+      return res
+        .status(400)
+        .json({ message: "State is already blocked" });
+    }
+
+    const blockedState = await StateHandler.findByIdAndUpdate(
+      { _id: id },
+      { $set: { isBlocked: true } }
+    );
+
+    return res.status(200).json({ message: "state blocked successfully" });
+  } catch (error) {
+console.log(error.message)
+res.status(500).json({message: "Internal server error"})
+    
+  }
+}
+//=====================================================================
+
+exports.blockBusinessDeveloperByAdmin = async(req, res) => {
+  try {
+    const { id } = req.params;
+
+    const businessDeveloper = await BusinessDeveloper.findById(id);
+    
+    if (!businessDeveloper) {
+      return res
+        .status(404)
+        .json({ message: "Business Developer  not found for the given ID" });
+    }
+
+    if (businessDeveloper.isBlocked) {
+      return res
+        .status(400)
+        .json({ message: "Business Developer is already blocked" });
+    }
+
+    const blockedBusinessDeveloper= await BusinessDeveloper.findByIdAndUpdate(
+      { _id: id },
+      { $set: { isBlocked: true } }
+    );
+
+    return res.status(200).json({ message: "BusinessDeveloper blocked successfully" });
+  } catch (error) {
+
+    console.log(error.message)
+res.status(500).json({message: "Internal server error"})
   }
 }
