@@ -2,6 +2,7 @@ const Frenchise = require("../model/frenchiseSchema");
 const BusinessDeveloper = require("../model/businessDeveloperSchema");
 const Member = require("../model/memberSchema");
 const User = require("../model/userSchema");
+const {isValidImage,isValidEmail,isValidPhone,isValidName, isValidPassword} = require("../validation/validation")
 
 //===============================================================================
 //fetch all franchise list
@@ -196,7 +197,7 @@ exports.getAllUsersInState = async (req, res) => {
 // Get a specific franchise
 exports.getFranchiseForState = async (req, res) => {
   try {
-    const id = req.params.id;
+    const id = req.body.id;
     const franchise = await Frenchise.findOne({ _id: id, isDeleted: false });
 
     if (!franchise) {
@@ -238,8 +239,7 @@ exports.blockFranchiseForState = async (req, res) => {
   }
 };
 
-//================================================================================
-
+//==============================================================================
 // Delete a specific franchise
 exports.deleteFranchiseForState = async (req, res) => {
   try {
@@ -260,37 +260,14 @@ exports.deleteFranchiseForState = async (req, res) => {
   }
 };
 
-//=================================================================================
-
-// Update a specific franchise
-exports.updateFranchiseForState = async (req, res) => {
-  try {
-    const { fname, lname, phone, email, gender, franchiseCity } = req.body;
-    const id = req.params.id;
-
-    const franchise = await Frenchise.findOneAndUpdate(
-      { _id: id, isDeleted: false},
-      { $set: { fname, lname, phone, email, gender, franchiseCity } },
-      { new: true }
-    );
-
-    if (!franchise) {
-      return res.status(404).json({ message: "Franchise not found" });
-    }
-
-    res
-      .status(200)
-      .json({ message: "Franchise updated successfully", franchise });
-  } catch (error) {
-    console.error(error.message);
-    res.status(500).json({ message: "Internal server error" });
-  }
-};
 //================================================================================
+
+
+//==============================================================================
 // Get a specific Business Developer
 exports.getBusinessDeveloperForState = async (req, res) => {
   try {
-    const id = req.params.id;
+    const id = req.body.id;
     const businessDeveloper = await BusinessDeveloper.findOne({
       _id: id,
       isDeleted: false // Include this condition to ensure isDeleted is false

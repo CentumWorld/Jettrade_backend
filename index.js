@@ -169,6 +169,9 @@ const totalCountOfPaymentStatusOfUseruser = require("./routes/users/total_Count_
 const blockStateByAdmin = require("./routes/block-state-by-admin")
 const blockFranchiseByAdmin = require("./routes/block-franchise-by-admin")
 const blockBusinessDeveloperByAdmin = require("./routes/block-business-developer-by-admin")
+const updateFranchise = require('./routes/update-franchise')
+const updateStateHandler = require('./routes/update-state-handler')
+const updateBusinessDeveloper = require("./routes/update-business-developer")
 
 //=======================State=================================================
 
@@ -180,18 +183,20 @@ const getAllMembersInState = require("./routes/state/fetch-members-in-state")
 const getAllUsersInState = require("./routes/state/fetch-users-in-state")
 const blockFranchiseForState = require("./routes/state/block-franchise-for-state")
 const deleteFranchiseForState = require("./routes/state/delete-franchise-for-state")
-const updateFranchiseForState = require("./routes/state/update-franchise-for-state")
+
 const getFranchiseForState = require("./routes/state/get-franchise-for-state")
 const getBusinessDeveloperForState = require("./routes/state/get-business-developer-for-state")
 
 //========================Frenchise==============================================
 const getBusinessDevelopersInFranchise = require("./routes/frenchise/fetch-bdeveloper-in-franchise");
 const getMembersInFranchise = require("./routes/frenchise/fetch-members-in-franchise")
+const getUsersInFranchise = require("./routes/frenchise/fetch-user-in-franchise")
 
 //=========================Business developer======================================
 const getAllMembersInBusinessDeveloper = require("./routes/businessDeveloper/fetch-all-members-in-business-developer")
 const blockMemberByBusinessDeveloper = require("./routes/businessDeveloper/block-member-by-business-developer")
 const getOneMemberByIdByBusinessDeveloper = require("./routes/businessDeveloper/get-one-member-by-id-by-business-developer")
+const getAllUsersInBusinessDeveloper = require("./routes/businessDeveloper/fetch -all-users-in-bd")
 //===========================================================================
 app.use(express.static(path.join(__dirname, "public")));
 app.use(express.urlencoded({ extended: true }));
@@ -351,7 +356,9 @@ app.use("/admin", findAllBusinessDeveloper);
 app.use("/admin", blockStateByAdmin)
 app.use("/admin", blockFranchiseByAdmin)
 app.use("/admin", blockBusinessDeveloperByAdmin)
-
+app.use("/admin", updateFranchise)
+app.use("/admin", updateStateHandler)
+app.use("/admin", updateBusinessDeveloper)
 // refferalin
 app.use("/member", memberLogin);
 app.use("/admin", fetchMemberDetails);
@@ -390,7 +397,6 @@ app.use("/state", getAllMembersInState)
 app.use("/state", getAllUsersInState)
 app.use("/state", blockFranchiseForState)
 app.use("/state", deleteFranchiseForState)
-app.use("/state", updateFranchiseForState)
 app.use("/state", getFranchiseForState)
 app.use("/state", getBusinessDeveloperForState)
 
@@ -398,11 +404,13 @@ app.use("/state", getBusinessDeveloperForState)
 
 app.use("/franchise",getBusinessDevelopersInFranchise)
 app.use("/franchise", getMembersInFranchise)
+app.use("/franchise", getUsersInFranchise)
 
 //============================Business developer===========================
 app.use("/businessDeveloper", getAllMembersInBusinessDeveloper)
 app.use("/businessDeveloper",blockMemberByBusinessDeveloper)
 app.use("/businessDeveloper",getOneMemberByIdByBusinessDeveloper)
+app.use("/businessDeveloper", getAllUsersInBusinessDeveloper)
 
 //=========================================================================
 

@@ -2763,4 +2763,282 @@ exports.blockBusinessDeveloperByAdmin = async (req, res) => {
     res.status(500).json({ message: "Internal server error" });
   }
 };
+//========================================================================
+//update state
+
+exports.updateStateHandler = async (req, res) => {
+  try {
+    const { fname, lname, phone, email, password, gender, selectedState } = req.body;
+    const id = req.body.id;
+
+    const adharCardFile = req.files["adharCard"][0];
+    const panCardFile = req.files["panCard"][0];
+
+    // Check if adharCard image is valid using isValidImage function
+    if (!isValidImage(adharCardFile.originalname)) {
+      return res.status(422).json({
+        message:
+          "Invalid adharCard image format, image must be in jpeg, jpg, tiff, png, webp, or bmp format.",
+      });
+    }
+
+    // Check if panCard image is valid using isValidImage function
+    if (!isValidImage(panCardFile.originalname)) {
+      return res.status(422).json({
+        message:
+          "Invalid panCard image format, image must be in jpeg, jpg, tiff, png, webp, or bmp format.",
+      });
+    }
+
+    const adharCardLocation = adharCardFile.location;
+    const panCardLocation = panCardFile.location;
+
+    // Validate input fields
+    if (!fname || !lname || !phone || !email || !password || !gender || !selectedState) {
+      return res.status(422).json({ message: "All fields are required." });
+    }
+
+    // Validate name format
+    if (!isValidName(fname)) {
+      return res.status(422).json({ message: "Invalid first name format." });
+    }
+
+    // Validate name format
+    if (!isValidName(lname)) {
+      return res.status(422).json({ message: "Invalid last name format." });
+    }
+
+    // Validate email format
+    if (!isValidEmail(email)) {
+      return res.status(422).json({ message: "Invalid email format." });
+    }
+
+    // Validate password strength
+    if (!isValidPassword(password)) {
+      return res.status(422).json({
+        message:
+          "Password must be 8 to 15 characters long and contain at least one lowercase letter, one uppercase letter, and one digit.",
+      });
+    }
+
+    // Validate phone number format
+    if (!isValidPhone(phone)) {
+      return res.status(422).json({ message: "Invalid phone number format." });
+    }
+
+    // Update state information
+    const updateData = {
+      fname,
+      lname,
+      phone,
+      email,
+      password,
+      gender,
+      selectedState,
+      panCard: panCardLocation,
+      adharCard: adharCardLocation
+    };
+
+    const updatedState = await StateHandler.findOneAndUpdate(
+      { _id: id },
+      { $set: updateData },
+      { new: true }
+    );
+
+    if (!updatedState) {
+      return res.status(404).json({ message: "State not found" });
+    }
+
+    res.status(200).json({ message: "State updated successfully", state: updatedState });
+  } catch (error) {
+    console.error(error.message);
+    res.status(500).json({ message: "Internal server error" });
+  }
+};
+
+//======================================================================
+//update franchise
+exports.updateFranchise = async (req, res) => {
+  try {
+    const { fname, lname, phone, email,password, gender, franchiseCity } = req.body;
+    const id = req.body.id;
+
+    const adharCardFile = req.files["adharCard"][0];
+    const panCardFile = req.files["panCard"][0];
+
+    // Check if adharCard image is valid using isValidImage function
+    if (!isValidImage(adharCardFile.originalname)) {
+      return res.status(422).json({
+        message:
+          "Invalid adharCard image format, image must be in jpeg, jpg, tiff, png, webp, or bmp format.",
+      });
+    }
+
+    // Check if panCard image is valid using isValidImage function
+    if (!isValidImage(panCardFile.originalname)) {
+      return res.status(422).json({
+        message:
+          "Invalid panCard image format, image must be in jpeg, jpg, tiff, png, webp, or bmp format.",
+      });
+    }
+
+    const adharCardLocation = adharCardFile.location;
+    const panCardLocation = panCardFile.location;
+
+
+    // Validate input fields
+if (!fname || !lname || !phone || !email || !password || !gender || !franchiseCity) {
+  return res.status(422).json({ message: "All fields are required." });
+}
+
+// Validate name format
+if (!isValidName(fname)) {
+  return res.status(422).json({ message: "Invalid name format." });
+}
+
+// Validate name format
+if (!isValidName(lname)) {
+  return res.status(422).json({ message: "Invalid name format." });
+}
+
+
+// Validate email format
+if (!isValidEmail(email)) {
+  return res.status(422).json({ message: "Invalid email format." });
+}
+
+// Validate password strength
+if (!isValidPassword(password)) {
+  return res.status(422).json({
+    message:
+      "Password must be 8 to 15 characters long and contain at least one lowercase letter, one uppercase letter, and one digit.",
+  });
+}
+
+// Validate phone number format
+if (!isValidPhone(phone)) {
+  return res.status(422).json({ message: "Invalid phone number format." });
+}
+
+
+    // Update franchise information
+    const updateData = {
+      fname,
+      lname,
+      phone,
+      email,
+      password,
+      gender,
+      franchiseCity,
+      panCard: panCardLocation,
+      adharCard: adharCardLocation
+    };
+
+    const franchise = await Frenchise.findOneAndUpdate(
+      { _id: id, isDeleted: false },
+      { $set: updateData },
+      { new: true }
+    );
+
+    if (!franchise) {
+      return res.status(404).json({ message: "Franchise not found" });
+    }
+
+    res.status(200).json({ message: "Franchise updated successfully", franchise });
+  } catch (error) {
+    console.error(error.message);
+    res.status(500).json({ message: "Internal server error" });
+  }
+};
+//=========================================================================
+// update business developer
+exports.updateBusinessDeveloper = async (req, res) => {
+  try {
+    const { fname, lname, phone, email, password, gender, buisnessCity } = req.body;
+    const id = req.body.id;
+
+    const adharCardFile = req.files["adharCard"][0];
+    const panCardFile = req.files["panCard"][0];
+
+    // Check if adharCard image is valid using isValidImage function
+    if (!isValidImage(adharCardFile.originalname)) {
+      return res.status(422).json({
+        message:
+          "Invalid adharCard image format, image must be in jpeg, jpg, tiff, png, webp, or bmp format.",
+      });
+    }
+
+    // Check if panCard image is valid using isValidImage function
+    if (!isValidImage(panCardFile.originalname)) {
+      return res.status(422).json({
+        message:
+          "Invalid panCard image format, image must be in jpeg, jpg, tiff, png, webp, or bmp format.",
+      });
+    }
+
+    const adharCardLocation = adharCardFile.location;
+    const panCardLocation = panCardFile.location;
+
+    // Validate input fields
+    if (!fname || !lname || !phone || !email || !password || !gender || !buisnessCity) {
+      return res.status(422).json({ message: "All fields are required." });
+    }
+
+    // Validate name format
+    if (!isValidName(fname)) {
+      return res.status(422).json({ message: "Invalid first name format." });
+    }
+
+    // Validate name format
+    if (!isValidName(lname)) {
+      return res.status(422).json({ message: "Invalid last name format." });
+    }
+
+    // Validate email format
+    if (!isValidEmail(email)) {
+      return res.status(422).json({ message: "Invalid email format." });
+    }
+
+    // Validate password strength
+    if (!isValidPassword(password)) {
+      return res.status(422).json({
+        message:
+          "Password must be 8 to 15 characters long and contain at least one lowercase letter, one uppercase letter, and one digit.",
+      });
+    }
+
+    // Validate phone number format
+    if (!isValidPhone(phone)) {
+      return res.status(422).json({ message: "Invalid phone number format." });
+    }
+
+    // Update business developer information
+    const updateData = {
+      fname,
+      lname,
+      phone,
+      email,
+      password,
+      gender,
+      buisnessCity,
+      panCard: panCardLocation,
+      adharCard: adharCardLocation
+    };
+
+    const updatedBusinessDeveloper = await BusinessDeveloper.findOneAndUpdate(
+      { _id: id, isDeleted: false },
+      { $set: updateData },
+      { new: true }
+    );
+
+    if (!updatedBusinessDeveloper) {
+      return res.status(404).json({ message: "Business developer not found" });
+    }
+
+    res.status(200).json({ message: "Business developer updated successfully", businessDeveloper: updatedBusinessDeveloper });
+  } catch (error) {
+    console.error(error.message);
+    res.status(500).json({ message: "Internal server error" });
+  }
+};
 
