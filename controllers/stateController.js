@@ -304,10 +304,10 @@ exports.getBusinessDeveloperForState = async (req, res) => {
 
 exports.updateStateDetails = async (req, res) => {
   try {
-    const { fname, lname, email, phone, gender, password } = req.body;
+    const { fname, lname, email, phone, gender } = req.body;
     const id = req.stateHandlerId;
-    
-    if (!fname || !lname || !email || !phone || !gender || !password) {
+
+    if (!fname || !lname || !email || !phone || !gender ) {
       return res.status(422).json({ message: "All fields are required." });
     }
 
@@ -328,14 +328,6 @@ exports.updateStateDetails = async (req, res) => {
       return res.status(422).json({ message: "Invalid phone number format." });
     }
 
-    // Validate password strength
-    if (!isValidPassword(password)) {
-      return res.status(422).json({
-        message:
-          "Password must meet the criteria: at least 8 characters long, contain one lowercase letter, one uppercase letter, and one digit.",
-      });
-    }
-
     const updatedState = await stateHandler.findOneAndUpdate(
       { _id: id },
       {
@@ -344,7 +336,6 @@ exports.updateStateDetails = async (req, res) => {
         email,
         phone,
         gender,
-        password,
       },
       { new: true }
     );
