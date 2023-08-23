@@ -83,6 +83,7 @@ exports.getAllMembersInState = async (req, res) => {
       referredId: stateReferralId,
       isDeleted:false
     });
+
     if (franchisesInState.length === 0) {
       return res
         .status(404)
@@ -94,7 +95,7 @@ exports.getAllMembersInState = async (req, res) => {
     );
 
     const businessDevelopers = await BusinessDeveloper.find({
-      referredId: franchiseReferralIds,
+      referredId: {$in:franchiseReferralIds},
       isDeleted:false
     });
 
@@ -108,8 +109,10 @@ exports.getAllMembersInState = async (req, res) => {
       (businessDeveloper) => businessDeveloper.referralId
     );
 
+    console.log(businessDeveloperReferralIds, "]]]]]]]")
+
     const members = await Member.find({
-      reffered_id: { $in: businessDeveloperReferralIds },
+      reffered_id: businessDeveloperReferralIds ,
       isDeleted: false
     });
 
@@ -151,7 +154,7 @@ exports.getAllUsersInState = async (req, res) => {
     );
 
     const businessDevelopers = await BusinessDeveloper.find({
-      referredId: franchiseReferralIds,
+      referredId: {$in:franchiseReferralIds},
       isDeleted:false
     });
 
@@ -165,8 +168,7 @@ exports.getAllUsersInState = async (req, res) => {
       (businessDeveloper) => businessDeveloper.referralId
     );
     const members = await Member.find({
-      reffered_id: { $in: businessDeveloperReferralIds },
-      isDeleted: false
+      reffered_id: { $in: businessDeveloperReferralIds }
     });
 
     if (members.length === 0) {
@@ -177,7 +179,7 @@ exports.getAllUsersInState = async (req, res) => {
 
     const memberReferralIds = members.map((member) => member.refferal_id);
 
-    const users = await User.find({ reffered_id: { $in: memberReferralIds }, isDeleted:false });
+    const users = await User.find({ reffered_id: { $in: memberReferralIds }});
     if (users.length === 0) {
       return res
         .status(404)

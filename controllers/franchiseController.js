@@ -34,8 +34,6 @@ exports.getMembersInFranchise = async (req, res) => {
       referredId: franchiseReferralId,
     });
 
-    console.log(businessDevelopers, ",,,,,,,,")
-
     if (businessDevelopers.length === 0) {
       return res.status(404).json({
         message: "No business developer found in the given franchise",
@@ -47,7 +45,7 @@ exports.getMembersInFranchise = async (req, res) => {
       );
 
     const members = await Member.find({
-        reffered_id: businessDeveloperReferralIds,
+        reffered_id: {$in:businessDeveloperReferralIds},
     });
     res.status(200).json({
       message: "Fetched successfully all members in the franchise",
@@ -68,7 +66,6 @@ exports.getUsersInFranchise = async (req, res) => {
       referredId: franchiseReferralId,
     });
 
-    console.log(businessDevelopers, ",,,,,,,,")
 
     if (businessDevelopers.length === 0) {
       return res.status(404).json({
@@ -81,7 +78,7 @@ exports.getUsersInFranchise = async (req, res) => {
       );
 
     const members = await Member.find({
-        reffered_id: businessDeveloperReferralIds,
+        reffered_id: {$in: businessDeveloperReferralIds},
     });
 
     if (members.length === 0) {
@@ -93,8 +90,9 @@ exports.getUsersInFranchise = async (req, res) => {
       (member) => member.refferal_id
     );
 
+
     const users = await User.find({
-      reffered_id: memberReferralIds,
+      reffered_id: {$in: memberReferralIds},
   });
 
  if (users.length === 0) {
