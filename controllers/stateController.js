@@ -112,8 +112,7 @@ exports.getAllMembersInState = async (req, res) => {
     console.log(businessDeveloperReferralIds, "]]]]]]]")
 
     const members = await Member.find({
-      reffered_id: businessDeveloperReferralIds ,
-      isDeleted: false
+      reffered_id: businessDeveloperReferralIds 
     });
 
     if (members.length === 0) {
