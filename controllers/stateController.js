@@ -305,7 +305,37 @@ exports.getBusinessDeveloperForState = async (req, res) => {
 exports.updateStateDetails = async (req, res) => {
   try {
     const { fname, lname, email, phone, gender, password } = req.body;
-    const  id = req.stateHandlerId ;
+    const id = req.stateHandlerId;
+    
+    if (!fname || !lname || !email || !phone || !gender || !password) {
+      return res.status(422).json({ message: "All fields are required." });
+    }
+
+    if (!isValidName(fname)) {
+      return res.status(422).json({ message: "Invalid first name format." });
+    }
+    if (!isValidName(lname)) {
+      return res.status(422).json({ message: "Invalid last name format." });
+    }
+
+    // Validate email format
+    if (!isValidEmail(email)) {
+      return res.status(422).json({ message: "Invalid email format." });
+    }
+
+    // Validate phone number format
+    if (!isValidPhone(phone)) {
+      return res.status(422).json({ message: "Invalid phone number format." });
+    }
+
+    // Validate password strength
+    if (!isValidPassword(password)) {
+      return res.status(422).json({
+        message:
+          "Password must meet the criteria: at least 8 characters long, contain one lowercase letter, one uppercase letter, and one digit.",
+      });
+    }
+
     const updatedState = await stateHandler.findOneAndUpdate(
       { _id: id },
       {
@@ -316,7 +346,7 @@ exports.updateStateDetails = async (req, res) => {
         gender,
         password,
       },
-      { new: true } 
+      { new: true }
     );
 
     if (!updatedState) {
