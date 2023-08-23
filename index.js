@@ -186,7 +186,7 @@ const deleteFranchiseForState = require("./routes/state/delete-franchise-for-sta
 
 const getFranchiseForState = require("./routes/state/get-franchise-for-state")
 const getBusinessDeveloperForState = require("./routes/state/get-business-developer-for-state")
-
+const updateStateDetails = require("./routes/state/update-state-details")
 //========================Frenchise==============================================
 const getBusinessDevelopersInFranchise = require("./routes/frenchise/fetch-bdeveloper-in-franchise");
 const getMembersInFranchise = require("./routes/frenchise/fetch-members-in-franchise")
@@ -399,6 +399,7 @@ app.use("/state", blockFranchiseForState)
 app.use("/state", deleteFranchiseForState)
 app.use("/state", getFranchiseForState)
 app.use("/state", getBusinessDeveloperForState)
+app.use("/state", updateStateDetails)
 
 //============================Franchise=============================================
 

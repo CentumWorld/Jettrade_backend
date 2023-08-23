@@ -2,7 +2,14 @@ const Frenchise = require("../model/frenchiseSchema");
 const BusinessDeveloper = require("../model/businessDeveloperSchema");
 const Member = require("../model/memberSchema");
 const User = require("../model/userSchema");
-const {isValidImage,isValidEmail,isValidPhone,isValidName, isValidPassword} = require("../validation/validation")
+const {
+  isValidImage,
+  isValidEmail,
+  isValidPhone,
+  isValidName,
+  isValidPassword,
+} = require("../validation/validation");
+const stateHandler = require("../model/stateHandlerSchema");
 
 //===============================================================================
 //fetch all franchise list
@@ -40,7 +47,7 @@ exports.getBusinessDevelopersInState = async (req, res) => {
     // First, find all franchises in the specified state
     const franchisesInState = await Frenchise.find({
       referredId: stateReferralId,
-      isDeleted:false
+      isDeleted: false,
     });
 
     // If no franchises are found, return a response indicating no data
@@ -55,7 +62,8 @@ exports.getBusinessDevelopersInState = async (req, res) => {
     );
 
     const businessDevelopers = await BusinessDeveloper.find({
-      referredId: { $in: franchiseReferralIds },isDeleted:false
+      referredId: { $in: franchiseReferralIds },
+      isDeleted: false,
     });
 
     if (businessDevelopers.length === 0) {
@@ -81,7 +89,7 @@ exports.getAllMembersInState = async (req, res) => {
     const stateReferralId = req.body.stateReferralId;
     const franchisesInState = await Frenchise.find({
       referredId: stateReferralId,
-      isDeleted:false
+      isDeleted: false,
     });
     if (franchisesInState.length === 0) {
       return res
@@ -94,8 +102,8 @@ exports.getAllMembersInState = async (req, res) => {
     );
 
     const businessDevelopers = await BusinessDeveloper.find({
-      referredId: {$in:franchiseReferralIds},
-      isDeleted:false
+      referredId: { $in: franchiseReferralIds },
+      isDeleted: false,
     });
     if (businessDevelopers.length === 0) {
       return res
@@ -107,9 +115,8 @@ exports.getAllMembersInState = async (req, res) => {
       (businessDeveloper) => businessDeveloper.referralId
     );
 
-
     const members = await Member.find({
-      reffered_id: {$in:businessDeveloperReferralIds} 
+      reffered_id: { $in: businessDeveloperReferralIds },
     });
 
     if (members.length === 0) {
@@ -139,7 +146,7 @@ exports.getAllUsersInState = async (req, res) => {
       referredId: stateReferralId,
     });
 
-    console.log(franchisesInState, "ffffffffff")
+    console.log(franchisesInState, "ffffffffff");
 
     if (franchisesInState.length === 0) {
       return res
@@ -152,11 +159,11 @@ exports.getAllUsersInState = async (req, res) => {
     );
 
     const businessDevelopers = await BusinessDeveloper.find({
-      referredId: {$in:franchiseReferralIds},
-      isDeleted:false
+      referredId: { $in: franchiseReferralIds },
+      isDeleted: false,
     });
 
-    console.log(businessDevelopers, "bbbbbbbbbb")
+    console.log(businessDevelopers, "bbbbbbbbbb");
 
     if (businessDevelopers.length === 0) {
       return res
@@ -168,10 +175,10 @@ exports.getAllUsersInState = async (req, res) => {
       (businessDeveloper) => businessDeveloper.referralId
     );
     const members = await Member.find({
-      reffered_id: { $in: businessDeveloperReferralIds }
+      reffered_id: { $in: businessDeveloperReferralIds },
     });
 
-    console.log(members, "mmmmmmm")
+    console.log(members, "mmmmmmm");
 
     if (members.length === 0) {
       return res
@@ -181,7 +188,7 @@ exports.getAllUsersInState = async (req, res) => {
 
     const memberReferralIds = members.map((member) => member.refferal_id);
 
-    const users = await User.find({ reffered_id: { $in: memberReferralIds }});
+    const users = await User.find({ reffered_id: { $in: memberReferralIds } });
     if (users.length === 0) {
       return res
         .status(404)
@@ -266,7 +273,6 @@ exports.deleteFranchiseForState = async (req, res) => {
 
 //================================================================================
 
-
 //==============================================================================
 // Get a specific Business Developer
 exports.getBusinessDeveloperForState = async (req, res) => {
@@ -274,24 +280,55 @@ exports.getBusinessDeveloperForState = async (req, res) => {
     const id = req.body.id;
     const businessDeveloper = await BusinessDeveloper.findOne({
       _id: id,
-      isDeleted: false // Include this condition to ensure isDeleted is false
-
+      isDeleted: false, // Include this condition to ensure isDeleted is false
     });
 
-    console.log(businessDeveloper, "/////")
+    console.log(businessDeveloper, "/////");
 
     if (!businessDeveloper) {
       return res.status(404).json({ message: "Business developer not found" });
     }
 
-    res
-      .status(200)
-      .json({
-        message: "Fetched busines developer successfully",
-        data: businessDeveloper,
-      });
+    res.status(200).json({
+      message: "Fetched busines developer successfully",
+      data: businessDeveloper,
+    });
   } catch (error) {
     console.error(error.message);
+    res.status(500).json({ message: "Internal server error" });
+  }
+};
+//======================================================================
+
+// update own state detais
+
+exports.updateStateDetails = async (req, res) => {
+  try {
+    const { fname, lname, email, phone, gender, password } = req.body;
+    const  id = req.stateHandlerId ;
+    const updatedState = await stateHandler.findOneAndUpdate(
+      { _id: id },
+      {
+        fname,
+        lname,
+        email,
+        phone,
+        gender,
+        password,
+      },
+      { new: true } 
+    );
+
+    if (!updatedState) {
+      return res.status(404).json({ message: "State not found" });
+    }
+
+    res.status(200).json({
+      message: "State details updated successfully",
+      state: updatedState,
+    });
+  } catch (error) {
+    console.log(error.message);
     res.status(500).json({ message: "Internal server error" });
   }
 };
