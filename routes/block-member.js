@@ -3,9 +3,9 @@ const router = express.Router();
 require('dotenv').config();
 
 const adminController = require('../controllers/adminController');
-const {authenticateAdmin, authorizeAdmin} = require('../middleware/checkAuth');
+const {authenticateAdmin, authorizeRole} = require('../middleware/checkAuth');
 
-router.post('/block-member',authenticateAdmin,authorizeAdmin, adminController.blockMember);
+router.post('/block-member',authenticateAdmin,authorizeRole(["admin","subAdmin", "state", "franchise", "businessDeveloper"]), adminController.blockMember);
 
 
 module.exports = router;

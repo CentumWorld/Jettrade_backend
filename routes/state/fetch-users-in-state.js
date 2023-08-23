@@ -5,7 +5,7 @@ const {
   authenticateAdmin,
   authorizeRole,
 } = require("../../middleware/checkAuth");
-router.get(
+router.post(
   "/fetch-all-users-in-state",
   authenticateAdmin,authorizeRole(["admin", "state"]),
   getAllUsersInState
