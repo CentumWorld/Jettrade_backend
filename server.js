@@ -20,6 +20,8 @@ const FrenchChatMessage = require('./model/FrenchChatMessageSchema');
 const BusinessDeveloperChatMessage = require('./model/BusinessDeveloperChatMessageSchema');
 const BusinessDeveloperChatType = require('./model/BusinessDeveloperChatTypeSchema');
 const BusinessDeveloper = require('./model/businessDeveloperSchema');
+const FrenchChatTypeWithSHO = require('./model/FrenchiseChatTypeWithSHOSchema');
+const FrenchChatMessageWithSHO = require('./model/FrenchiseChatMessageWithSHOSchema');
 
 
 
@@ -240,8 +242,43 @@ io.on("connection", (socket) => {
                     // Handle the result/response here
                 }
             });
+        }
+        // -----------
 
 
+        if (type === 'FRENCHWITHSHO') {
+
+            FrenchChatTypeWithSHO.find({ frenchiseId: data1 }, (err, result) => {
+                if (err) {
+                    console.error(err);
+                    // Handle the error response here
+                } else {
+                    if (result) {
+                        const resultLength = Object.keys(result).length;
+                        console.log('Result length:', resultLength);
+                        if (resultLength === 0) {
+                            const frenchise = FrenchChatTypeWithSHO({frenchiseId: data1 })
+                            frenchise.save();
+
+                        }
+                    }
+                    Frenchisee.updateOne(
+                        { frenchiseId: data1 },
+                        { $set: { isOnline: true } },
+                        (err, result) => {
+                          if (err) {
+                            console.error('Failed to update document:', err);
+                            return;
+                          }
+                          console.log('updated to true',result)
+                          //userOnline
+                          socket.to(data).emit("frenchWithSHOOnline", data1);
+                        }
+                      );
+
+                    // Handle the result/response here
+                }
+            });
         }
 
     })
@@ -263,9 +300,6 @@ io.on("connection", (socket) => {
             });
         socket.to(data.room).emit("admin_receive_message", data);
          // Emit a notification event to the admin
-        
-        
-        
     })
 
     // refferal chatting
@@ -421,6 +455,27 @@ io.on("connection", (socket) => {
             });
         socket.to(data.room).emit("business_receive_message", data);
     })
+
+// frenchise chat with SHO
+    socket.on("frenchWithSHOMessage", (data) => {
+        console.log(data);
+        const { room, author, message, time } = data;
+        const newChat = new FrenchChatMessageWithSHO({ room, author, message, time });
+        newChat.save()
+            .then((savedChat) => {
+
+                console.log('FrenchWithSHO message saved:', savedChat);
+              
+            })
+            .catch((error) => {
+                console.error('Error saving user message:', error);
+
+            });
+        socket.to(data.room).emit("admin_receive_message", data);
+         // Emit a notification event to the admin  
+    })
+
+
 
     //User logout event
     socket.on('userLogout', (userId)=>{ 
