@@ -2,10 +2,10 @@ const jwt = require("jsonwebtoken");
 const Admin = require("../model/adminSchema");
 const User = require("../model/userSchema");
 const Member = require("../model/memberSchema");
-const SubAdmin = require("../model/subadminSchema")
-const State = require("../model/stateHandlerSchema")
-const Franchise = require("../model/frenchiseSchema")
-const BusinessDeveloper = require("../model/businessDeveloperSchema")
+const SubAdmin = require("../model/subadminSchema");
+const State = require("../model/stateHandlerSchema");
+const Franchise = require("../model/frenchiseSchema");
+const BusinessDeveloper = require("../model/businessDeveloperSchema");
 // exports.checkAuth = (req, res, next) => {
 //   const token = req.headers.authorization?.split(" ")[1];
 
@@ -30,69 +30,65 @@ const BusinessDeveloper = require("../model/businessDeveloperSchema")
 // };
 
 exports.authenticateAdmin = async (req, res, next) => {
-  const token = req.headers.authorization?.split(' ')[1];
+  const token = req.headers.authorization?.split(" ")[1];
 
   if (!token) {
-    return res.status(401).json({ message: 'Unauthorized' });
+    return res.status(401).json({ message: "Unauthorized" });
   }
 
   try {
     const decoded = jwt.verify(token, process.env.SECRET_KEY);
-    console.log(decoded, ";;;;;;;;")
-    req.userId = decoded.userId; 
-    req.stateHandlerId = decoded.stateHandlerId
-    req.businessDeveloperId = decoded.businessDeveloperId
-req.franchiseId = decoded.franchiseId
-
-console.log(req.franchiseId,",,,,,,,,,,")
+    req.userId = decoded.userId;
+    req.stateHandlerId = decoded.stateHandlerId;
+    req.businessDeveloperId = decoded.businessDeveloperId;
+    req.franchiseId = decoded.franchiseId;
 
     const admin = await Admin.findById(decoded.userId);
     const subAdmin = await SubAdmin.findById(decoded.subAdminId);
     const state = await State.findById(decoded.stateHandlerId);
     const franchise = await Franchise.findById(decoded.franchiseId);
-    const businessDeveloper = await BusinessDeveloper.findById(decoded.businessDeveloperId)
+    const businessDeveloper = await BusinessDeveloper.findById(
+      decoded.businessDeveloperId
+    );
 
-    if (!admin && !subAdmin && !state && !franchise &&!businessDeveloper) {
-      return res.status(401).json({ message: 'User not found' });
+    if (!admin && !subAdmin && !state && !franchise && !businessDeveloper) {
+      return res.status(401).json({ message: "User not found" });
     }
 
     req.userRoles = [];
 
     if (admin) {
-      req.userRoles.push('admin');
+      req.userRoles.push("admin");
     }
 
     if (subAdmin) {
-      req.userRoles.push('subAdmin');
+      req.userRoles.push("subAdmin");
       req.isVideoCreator = subAdmin.isVideoCreator;
     }
 
     if (state) {
-      req.userRoles.push('state');
+      req.userRoles.push("state");
     }
 
-    if(franchise){
-      req.userRoles.push('franchise');
-
+    if (franchise) {
+      req.userRoles.push("franchise");
     }
 
-    if(businessDeveloper){
-      req.userRoles.push('businessDeveloper');
-
+    if (businessDeveloper) {
+      req.userRoles.push("businessDeveloper");
     }
 
     next();
   } catch (error) {
     console.log(error.message);
-    return res.status(401).json({ message: 'Invalid Token' });
+    return res.status(401).json({ message: "Invalid Token" });
   }
 };
-
 
 exports.authorizeRole = (allowedRoles) => {
   return async (req, res, next) => {
     try {
-      if (req.userRoles.some(role => allowedRoles.includes(role))) {
+      if (req.userRoles.some((role) => allowedRoles.includes(role))) {
         // If user has any of the allowed roles, allow access
         next();
       } else {
@@ -105,41 +101,40 @@ exports.authorizeRole = (allowedRoles) => {
   };
 };
 
-  
-  exports.authorizeAdmin = async (req, res, next) => {
-    try {
-      if (req.isAdmin) {
-        // If user is an admin, allow access
-        next();
-      }
-       else {
-        return res.status(403).json({ message: "You are not authorized as an admin" });
-      }
-    } catch (error) {
-      console.log(error.message);
-      return res.status(500).json({ message: "Internal Server Error" });
+exports.authorizeAdmin = async (req, res, next) => {
+  try {
+    if (req.isAdmin) {
+      // If user is an admin, allow access
+      next();
+    } else {
+      return res
+        .status(403)
+        .json({ message: "You are not authorized as an admin" });
     }
-  };
+  } catch (error) {
+    console.log(error.message);
+    return res.status(500).json({ message: "Internal Server Error" });
+  }
+};
 
-  
-  //===================
+//===================
 
-  exports.authorizeVideoUpload = async (req, res, next) => {
-    try {
-      if (req.isAdmin || (req.isSubAdmin && req.isVideoCreator)) {
-        // If user is an admin or a subadmin with isVideoCreator true, allow video upload
-        next();
-      } else {
-        return res.status(403).json({ message: "You are not authorized to upload videos" });
-      }
-    } catch (error) {
-      console.log(error.message);
-      return res.status(500).json({ message: "Internal Server Error" });
+exports.authorizeVideoUpload = async (req, res, next) => {
+  try {
+    if (req.isAdmin || (req.isSubAdmin && req.isVideoCreator)) {
+      // If user is an admin or a subadmin with isVideoCreator true, allow video upload
+      next();
+    } else {
+      return res
+        .status(403)
+        .json({ message: "You are not authorized to upload videos" });
     }
-  };
-  //==================
-
-  
+  } catch (error) {
+    console.log(error.message);
+    return res.status(500).json({ message: "Internal Server Error" });
+  }
+};
+//==================
 
 //==========
 
@@ -169,8 +164,8 @@ exports.authorizeRole = (allowedRoles) => {
 //       return res.status(403).json({ message: "You are not authorized1111" });
 //     }
 
-//     req.adminId = admin ? admin._id : user._id; 
-    
+//     req.adminId = admin ? admin._id : user._id;
+
 //     next();
 //   } catch (error) {
 //     console.log(error.message);
@@ -188,7 +183,6 @@ exports.authorizeRole = (allowedRoles) => {
 //   try {
 //     const user = await User.findById(adminId);
 //     const admin = await Admin.findById(adminId);
-   
 
 //     if (user && user.isSubAdmin) {
 //       next();
@@ -280,10 +274,9 @@ exports.authorizeMember = async (req, res, next) => {
   }
 };
 
-
 //======================================================================
 
-exports.authenticateState = async(req, res, next) => {
+exports.authenticateState = async (req, res, next) => {
   try {
     const token = req.headers.authorization?.split(" ")[1];
     if (!token) {
@@ -291,15 +284,15 @@ exports.authenticateState = async(req, res, next) => {
     }
     const decoded = jwt.verify(token, process.env.SECRET_KEY);
 
-    req.stateHandlerId = decoded.stateHandlerId
-  
+    req.stateHandlerId = decoded.stateHandlerId;
+
     next();
   } catch (error) {
     return res
-    .status(500)
-    .json({ status: false, message: "Internal server error" });
+      .status(500)
+      .json({ status: false, message: "Internal server error" });
   }
-}
+};
 
 //==========================================================================
 

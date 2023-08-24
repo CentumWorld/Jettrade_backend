@@ -241,10 +241,10 @@ exports.updateOwnFranchiseDetails = async (req, res) => {
     if (!fname || !lname || !email || !phone || !gender) {
       return res.status(422).json({ message: "All fields are required." });
     }
-    if (fname &&!isValidName(fname)) {
+    if (fname &&fname &&!isValidName(fname)) {
       return res.status(422).json({ message: "Invalid first name format." });
     }
-    if (lname &&!isValidName(lname)) {
+    if (lname &&lname &&!isValidName(lname)) {
       return res.status(422).json({ message: "Invalid last name format." });
     }
     // Validate email format
