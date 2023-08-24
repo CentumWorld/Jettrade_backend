@@ -40,6 +40,8 @@ const StateChatMessage = require('../model/StateChatMessageSchema');
 const StateChatType = require('../model/StateChatTypeSchema');
 const FrenchChatType = require('../model/FrenchChatTypeSchema');
 const FrenchChatMessage = require('../model/FrenchChatMessageSchema');
+const BusinessDeveloperChatType = require('../model/BusinessDeveloperChatTypeSchema');
+const BusinessDeveloperChatMessage = require('../model/BusinessDeveloperChatMessageSchema');
 
 const {
   isValidPassword,
@@ -3208,6 +3210,47 @@ exports.updateBusinessDeveloper = async (req, res) => {
   }
 };
 
+// fetchBusinessChatCount
+exports.fetchBusinessChatCount = async (req,res) => {
+  BusinessDeveloperChatType.find((err, result) => {
+    if (err) {
+      return res.status(500).json({ message: "Something went wrong" });
+    } else {
+      return res
+        .status(200)
+        .json({ message: "Business Chat details fetched", result });
+    }
+  });
+}
+
+// fetchBusinessChatMessageAdmin
+exports.fetchBusinessChatMessageAdmin = async (req,res) => {
+  const { room } = req.body;
+  let businessChatMessage = await BusinessDeveloperChatMessage.find({ room: room });
+  if (businessChatMessage) {
+    return res.status(200).json({
+      message: " Business Chat message fetched",
+      businessChatMessage,
+    });
+  } else {
+    return res.status(500).json({ message: "Something went wrong" });
+  }
+}
+
+// adminBusinessOnlineOrNot
+exports.adminBusinessOnlineOrNot = async (req,res) => {
+  const {businessDeveloperId } = req.body;
+  let businessOnlineOrNot = await BusinessDeveloper.findOne({ businessDeveloperId : businessDeveloperId  });
+  if (businessOnlineOrNot) {
+    const isOnline = businessOnlineOrNot.isOnline;
+    return res.status(200).json({
+      message: "Business Online status fetched",
+      isOnline,
+    });
+  } else {
+    return res.status(500).json({ message: "Something went wrong" });
+  }
+}
 //=========================================================================
 
 //get  one franchisde

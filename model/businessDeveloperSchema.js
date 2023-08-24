@@ -79,9 +79,6 @@ const businessDeveloperSchema = new mongoose.Schema(
   { timestamps: true }
 );
 
-const businessDeveloper = mongoose.model(
-  "BusinessDeveloper",
-  businessDeveloperSchema
-);
+const businessDeveloper = mongoose.model("BusinessDeveloper",businessDeveloperSchema);
 
 module.exports = businessDeveloper;

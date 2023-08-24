@@ -17,6 +17,9 @@ const StateChatMessage = require('./model/StateChatMessageSchema');
 const FrenchChatType = require('./model/FrenchChatTypeSchema');
 const Frenchisee = require('./model/frenchiseSchema');
 const FrenchChatMessage = require('./model/FrenchChatMessageSchema');
+const BusinessDeveloperChatMessage = require('./model/BusinessDeveloperChatMessageSchema');
+const BusinessDeveloperChatType = require('./model/BusinessDeveloperChatTypeSchema');
+const BusinessDeveloper = require('./model/businessDeveloperSchema');
 
 
 
@@ -202,6 +205,41 @@ io.on("connection", (socket) => {
                     // Handle the result/response here
                 }
             });
+        }
+
+        if (type === 'BUSINESS') {
+
+            BusinessDeveloperChatType.find({ businessDeveloperId: data1 }, (err, result) => {
+                if (err) {
+                    console.error(err);
+                    // Handle the error response here
+                } else {
+                    if (result) {
+                        const resultLength = Object.keys(result).length;
+                        console.log('Result length:', resultLength);
+                        if (resultLength === 0) {
+                            const businessD = BusinessDeveloperChatType({businessDeveloperId: data1 })
+                            businessD.save();
+
+                        }
+                    }
+                    BusinessDeveloper.updateOne(
+                        { businessDeveloperId: data1 },
+                        { $set: { isOnline: true } },
+                        (err, result) => {
+                          if (err) {
+                            console.error('Failed to update document:', err);
+                            return;
+                          }
+                          console.log('updated to true',result)
+                          //userOnline
+                          socket.to(data).emit("businessOnline", data1);
+                        }
+                      );
+
+                    // Handle the result/response here
+                }
+            });
 
 
         }
@@ -349,6 +387,41 @@ io.on("connection", (socket) => {
         socket.to(data.room).emit("french_receive_message", data);
     })
 
+    // Business developer chatting
+    socket.on("businessMessage", (data) => {
+        console.log(data);
+        const { room, author, message, time } = data;
+        const newChat = new BusinessDeveloperChatMessage({ room, author, message, time });
+        newChat.save()
+            .then((savedChat) => {
+
+                console.log('BusinessD message saved:', savedChat);
+              
+            })
+            .catch((error) => {
+                console.error('Error saving user message:', error);
+
+            });
+        socket.to(data.room).emit("admin_receive_message", data);
+         // Emit a notification event to the admin  
+    })
+
+    // BusinessD-admin message
+
+    socket.on("adminMessgaeBusiness", (data) => {
+        const { room, author, message, time } = data;
+        const newChat = new BusinessDeveloperChatMessage({ room, author, message, time });
+        newChat.save()
+            .then((savedChat) => {
+                console.log('BusinessD message saved:', savedChat);
+            })
+            .catch((error) => {
+                console.error('Error saving refferal message:', error);
+
+            });
+        socket.to(data.room).emit("business_receive_message", data);
+    })
+
     //User logout event
     socket.on('userLogout', (userId)=>{ 
         console.log('126');
@@ -428,6 +501,23 @@ io.on("connection", (socket) => {
                 return;
               }
             socket.to(userId).emit("frenchOffline", userId);
+            }
+          );  
+    })
+
+    // BusinessD logout
+
+    socket.on('businessLogout', (userId)=>{ 
+        console.log('126');
+        BusinessDeveloper.updateOne(
+            { businessDeveloperId: userId },
+            { $set: { isOnline: false } },
+            (err, result) => {
+              if (err) {
+                console.error('Failed to update document:', err);
+                return;
+              }
+            socket.to(userId).emit("businessOffline", userId);
             }
           );  
     })

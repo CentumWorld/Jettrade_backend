@@ -1,5 +1,8 @@
 const Member = require("../model/memberSchema");
 const User = require("../model/userSchema");
+const BusinessDeveloperChatType = require('../model/BusinessDeveloperChatTypeSchema');
+const BusinessDeveloperChatMessage = require('../model/BusinessDeveloperChatMessageSchema');
+const Admin = require('../model/adminSchema');
 const BusinessDeveloper = require("../model/businessDeveloperSchema");
 const {
   isValidImage,
@@ -135,6 +138,49 @@ exports.deleteMemberByBusinessDeveloper = async (req, res) => {
     res.status(500).json({ message: "Internal server error" });
   }
 };
+
+// fetchChatDetailsBusiness
+exports.fetchChatDetailsBusiness = async (req,res) => {
+  const {businessDeveloperId} = req.body;
+  let businessChatDetails = await BusinessDeveloperChatType.find({ businessDeveloperId: businessDeveloperId });
+  if (businessChatDetails) {
+    return res.status(200).json({
+      message: "Business chat details fetched",
+      businessChatDetails,
+    });
+  } else {
+    return res.status(500).json({ message: "Something went wrong" });
+  }
+}
+
+// fetchChatMessageBusiness
+exports.fetchChatMessageBusiness = async (req,res) => {
+  const { room } = req.body;
+  let businessChatMessage = await BusinessDeveloperChatMessage.find({ room: room });
+  if (businessChatMessage) {
+    return res.status(200).json({
+      message: " Business chat message fetched",
+      businessChatMessage,
+    });
+  } else {
+    return res.status(500).json({ message: "Something went wrong" });
+  }
+}
+
+// adminOnlineOrNotBusiness
+exports.adminOnlineOrNotBusiness = async (req,res) => {
+  let adminOnline = await Admin.find();
+  // console.log(adminOnline[0].isOnline,'964');
+  if (adminOnline) {
+    const isOnline = adminOnline[0].isOnline;
+    return res.status(200).json({
+      message: "Admin Online status fetched",
+      isOnline,
+    });
+  } else {
+    return res.status(500).json({ message: "Something went wrong" });
+  }
+}
 
 //=========================================================================
 

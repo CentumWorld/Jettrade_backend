@@ -117,6 +117,10 @@ const fetchStateChatCount = require('./routes/fetch-state-chat-count');
 const fetchFrenchiseChatCount = require('./routes/fetch-frenchise-chat-count');
 const fethcFrenchiseChatMessageAdmin = require('./routes/fetch-frenchise-chat-message-admin');
 const adminFrenchiseOnlineOrNot = require('./routes/admin-frenchise-online-or-not');
+const fetchBusinessChatCount = require('./routes/fetch-business-chat-count');
+const fetchBusinessChatMessageAdmin = require('./routes/fetch-business-chat-message-admin');
+const adminBusinessOnlineOrNot = require('./routes/admin-business-online-or-not');
+
 // refferal
 const memberRegistration = require("./routes/refferal/member-registration");
 const memberLogin = require("./routes/refferal/member-login");
@@ -218,6 +222,9 @@ const getAllMembersInBusinessDeveloper = require("./routes/businessDeveloper/fet
 const blockMemberByBusinessDeveloper = require("./routes/businessDeveloper/block-member-by-business-developer");
 const getOneMemberByIdByBusinessDeveloper = require("./routes/businessDeveloper/get-one-member-by-id-by-business-developer");
 const getAllUsersInBusinessDeveloper = require("./routes/businessDeveloper/fetch -all-users-in-bd");
+const fetchChatDetailsBusiness = require('./routes/businessDeveloper/fetch-chat-details-business');
+const fetchChatMessageBusiness = require('./routes/businessDeveloper/fetch-chat-message-business');
+const adminOnlineOrNotBusiness = require('./routes/businessDeveloper/admin-online-or-not-business');;
 const getOwnBusinessDeveloperDetails = require("./routes/businessDeveloper/get-own-business-developer-details");
 const updateOwnBusinessDeveloperDetails = require("./routes/businessDeveloper/update-own-business-developer-details");
 //===========================================================================
@@ -334,6 +341,8 @@ app.use("/admin", getOneStateDetails)
 app.use("/admin", getOneMemberDetails)
 app.use("/admin", updateAdharcardFranchise)
 app.use("/admin",updatePanCardFranchise)
+app.use('/admin',fetchBusinessChatCount);
+app.use('/admin',adminBusinessOnlineOrNot);
 
 // refferal
 app.use("/member", memberRegistration);
@@ -395,6 +404,9 @@ app.use("/admin", blockBusinessDeveloperByAdmin);
 app.use("/admin", updateFranchise);
 app.use("/admin", updateStateHandler);
 app.use("/admin", updateBusinessDeveloper);
+app.use('/admin',fetchBusinessChatMessageAdmin);
+
+
 // refferalin
 app.use("/member", memberLogin);
 app.use("/admin", fetchMemberDetails);
@@ -456,7 +468,9 @@ app.use("/businessDeveloper", getOneMemberByIdByBusinessDeveloper);
 app.use("/businessDeveloper", getAllUsersInBusinessDeveloper);
 app.use("/businessDeveloper", getOwnBusinessDeveloperDetails);
 app.use("/businessDeveloper", updateOwnBusinessDeveloperDetails);
-
+app.use('/businessDeveloper',fetchChatDetailsBusiness);
+app.use('/businessDeveloper',fetchChatMessageBusiness);
+app.use('/businessDeveloper',adminOnlineOrNotBusiness);
 //=========================================================================
 
 module.exports = app;
