@@ -50,10 +50,10 @@ exports.getMembersInFranchise = async (req, res) => {
       });
     }
     const businessDeveloperReferralIds = businessDevelopers.map(
-        (businessDeveloper) => businessDeveloper.referralId
-      );
+      (businessDeveloper) => businessDeveloper.referralId
+    );
     const members = await Member.find({
-        reffered_id: {$in:businessDeveloperReferralIds},
+      reffered_id: { $in: businessDeveloperReferralIds },
     });
     res.status(200).json({
       message: "Fetched successfully all members in the franchise",
@@ -78,10 +78,10 @@ exports.getUsersInFranchise = async (req, res) => {
       });
     }
     const businessDeveloperReferralIds = businessDevelopers.map(
-        (businessDeveloper) => businessDeveloper.referralId
-      );
+      (businessDeveloper) => businessDeveloper.referralId
+    );
     const members = await Member.find({
-        reffered_id: {$in: businessDeveloperReferralIds},
+      reffered_id: { $in: businessDeveloperReferralIds },
     });
     if (members.length === 0) {
       return res.status(404).json({
@@ -92,13 +92,13 @@ exports.getUsersInFranchise = async (req, res) => {
       (member) => member.refferal_id
     );
     const users = await User.find({
-      reffered_id: {$in: memberReferralIds},
-  });
- if (users.length === 0) {
-    return res.status(404).json({
-      message: "No user found in the given franchise",
+      reffered_id: { $in: memberReferralIds },
     });
-  }
+    if (users.length === 0) {
+      return res.status(404).json({
+        message: "No user found in the given franchise",
+      });
+    }
     res.status(200).json({
       message: "Fetched successfully all users in the franchise",
       data: users,
@@ -110,7 +110,7 @@ exports.getUsersInFranchise = async (req, res) => {
 };
 
 // adminOnlineOrNot
-exports.adminOnlineOrNotFrench = async (req,res) => {
+exports.adminOnlineOrNotFrench = async (req, res) => {
   let adminOnline = await Admin.find();
   // console.log(adminOnline[0].isOnline,'964');
   if (adminOnline) {
@@ -125,7 +125,7 @@ exports.adminOnlineOrNotFrench = async (req,res) => {
 }
 
 // fetchChatMessageState
-exports.fetchChatMessage = async (req,res) => {
+exports.fetchChatMessage = async (req, res) => {
   const { room } = req.body;
   let frenchChatMessage = await FrenchChatMessage.find({ room: room });
   if (frenchChatMessage) {
@@ -139,9 +139,9 @@ exports.fetchChatMessage = async (req,res) => {
 }
 
 // fetchChatDetailsState
-exports.fetchChatDetailsFrenchisee = async (req,res) => {
-  const {frenchiseId} = req.body;
-  let frenchChatDetails = await FrenchChatType.find({ frenchiseId: frenchiseId});
+exports.fetchChatDetailsFrenchisee = async (req, res) => {
+  const { frenchiseId } = req.body;
+  let frenchChatDetails = await FrenchChatType.find({ frenchiseId: frenchiseId });
   if (frenchChatDetails) {
     return res.status(200).json({
       message: " French chat details fetched",
@@ -153,9 +153,9 @@ exports.fetchChatDetailsFrenchisee = async (req,res) => {
 }
 
 // fetchChatDetailsFrenchiseWithSHO
-exports.fetchChatDetailsFrenchiseWithSHO = async (req,res) => {
-  const {frenchiseId} = req.body;
-  let frenchChatDetailsWithSHO = await FrenchChatTypeWithSHO.find({ frenchiseId: frenchiseId});
+exports.fetchChatDetailsFrenchiseWithSHO = async (req, res) => {
+  const { frenchiseId } = req.body;
+  let frenchChatDetailsWithSHO = await FrenchChatTypeWithSHO.find({ frenchiseId: frenchiseId });
   if (frenchChatDetailsWithSHO) {
     return res.status(200).json({
       message: " French chat with SHO details fetched",
@@ -167,7 +167,7 @@ exports.fetchChatDetailsFrenchiseWithSHO = async (req,res) => {
 }
 
 // fetchChatWithSHOMessage
-exports.fetchChatWithSHOMessage = async (req,res) => {
+exports.fetchChatWithSHOMessage = async (req, res) => {
   const { room } = req.body;
   let frenchChatMessageWithSHO = await FrenchChatMessageWithSHO.find({ room: room });
   if (frenchChatMessageWithSHO) {
@@ -180,11 +180,6 @@ exports.fetchChatWithSHOMessage = async (req,res) => {
   }
 }
 
-// SHOonlineOrNotFrench
-exports.SHOonlineOrNotFrench = async (req,res) => {
-  const {frenchiseId} = req.body;
-  const findLoginFrenchise = await Frenchise.findOne({frenchiseId:frenchiseId})
- //============================================================================
 
 exports.getOwnFranchiseDetails = async (req, res) => {
   try {
@@ -200,36 +195,66 @@ exports.getOwnFranchiseDetails = async (req, res) => {
     res.status(500).json({ message: "Internal server error" });
   }
 };
+//============================================================================
+
 //==========================================================================
+
+// SHOonlineOrNotFrench
+exports.SHOonlineOrNotFrench = async (req, res) => {
+  const { frenchiseId } = req.body;
+  const findLoginFrenchise = await Frenchise.findOne({ frenchiseId: frenchiseId })
+
+
+  if (findLoginFrenchise) {
+    let LoginFrenchiseRefferedId = findLoginFrenchise.referredId
+    console.log(LoginFrenchiseRefferedId)
+    const findSHOfromFrenchise = await StateHandler.findOne({ referralId: LoginFrenchiseRefferedId })
+    if (findSHOfromFrenchise) {
+      const stateHandlerId = findSHOfromFrenchise.stateHandlerId
+      const isSHOonline = findSHOfromFrenchise.isOnline
+
+      return res.status(200).json({
+        message: "SHO isOnline status fetched",
+        stateHandlerId,
+        isSHOonline
+      })
+    }
+    else {
+      return res.status(400).json({
+        message: "Something went wrong"
+
+      })
+    }
+  }
+  else {
+    return res.status(400).json({
+      message: "No Data Found"
+    })
+  }
+}
 
 exports.updateOwnFranchiseDetails = async (req, res) => {
   try {
     const { fname, lname, email, phone, gender } = req.body;
     const franchiseId = req.franchiseId;
-
     // Validate input fields
     if (!fname || !lname || !email || !phone || !gender) {
       return res.status(422).json({ message: "All fields are required." });
     }
-
-    if (!isValidName(fname)) {
+    if (fname &&!isValidName(fname)) {
       return res.status(422).json({ message: "Invalid first name format." });
     }
-
-    if (!isValidName(lname)) {
+    if (lname &&!isValidName(lname)) {
       return res.status(422).json({ message: "Invalid last name format." });
     }
-
     // Validate email format
-    if (!isValidEmail(email)) {
+    if (email&&!isValidEmail(email)) {
       return res.status(422).json({ message: "Invalid email format." });
     }
-
     // Validate phone number format
-    if (!isValidPhone(phone)) {
+    if (phone&&!isValidPhone(phone)) {
       return res.status(422).json({ message: "Invalid phone number format." });
     }
-
     const updatedFranchise = await Franchise.findOneAndUpdate(
       { _id: franchiseId },
       {
@@ -241,51 +266,9 @@ exports.updateOwnFranchiseDetails = async (req, res) => {
       },
       { new: true }
     );
-
     if (!updatedFranchise) {
       return res.status(404).json({ message: "Franchise not found" });
     }
-
-  if(findLoginFrenchise){
-    let LoginFrenchiseRefferedId = findLoginFrenchise.referredId
-    console.log(LoginFrenchiseRefferedId)
-    const findSHOfromFrenchise = await StateHandler.findOne({referralId:LoginFrenchiseRefferedId})
-      if(findSHOfromFrenchise){
-        const stateHandlerId = findSHOfromFrenchise.stateHandlerId
-        const isSHOonline =  findSHOfromFrenchise.isOnline
-        
-        return res.status(200).json({
-          message:"SHO isOnline status fetched",
-          stateHandlerId,
-          isSHOonline
-        })
-      }
-      else{
-        return res.status(400).json({
-          message:"Something went wrong"
-
-        })
-      }
-  }
-  else{
-    return res.status(400).json({
-      message:"No Data Found"
-    })
-  }
-  // let SHOOnline = await StateHandler.find();
-  // // console.log(adminOnline[0].isOnline,'964');
-  // if (SHOOnline) {
-  //   const isOnline = SHOOnline[0].isOnline;
-  //   return res.status(200).json({
-  //     message: "SHO Online status fetched",
-  //     isOnline,
-  //   });
-  // } else {
-  //   return res.status(500).json({ message: "Something went wrong" });
-  // }
-}
-
-
     res.status(200).json({
       message: "Franchise details updated successfully",
       franchise: updatedFranchise,
@@ -295,3 +278,5 @@ exports.updateOwnFranchiseDetails = async (req, res) => {
     res.status(500).json({ message: "Internal server error" });
   }
 };
+
+
