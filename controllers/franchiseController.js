@@ -5,6 +5,13 @@ const Admin = require('../model/adminSchema');
 const FrenchChatMessage = require('../model/FrenchChatMessageSchema');
 const FrenchChatType = require('../model/FrenchChatTypeSchema');
 const Franchise = require("../model/frenchiseSchema")
+const {
+  isValidImage,
+  isValidEmail,
+  isValidPhone,
+  isValidName,
+  isValidPassword,
+} = require("../validation/validation");
 
 exports.getBusinessDevelopersInFranchise = async (req, res) => {
   try {
