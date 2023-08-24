@@ -1,14 +1,3 @@
-// require('dotenv').config();
-// const http = require('http');
-// const app = require('./index');
-
-// const server = http.createServer(app);
-
-// server.listen(process.env.PORT);
-
-// console.log('hiii from server');
-
-
 
 require('dotenv').config();
 const http = require('http');
@@ -22,6 +11,12 @@ const User = require('./model/userSchema');
 const Admin = require('./model/adminSchema');
 const Member = require('./model/memberSchema');
 const RefferalChatMessage = require('./model/refferalChatMessageSchema');
+const StateChatType = require('./model/StateChatTypeSchema');
+const StateHandler = require('./model/stateHandlerSchema');
+const StateChatMessage = require('./model/StateChatMessageSchema');
+const FrenchChatType = require('./model/FrenchChatTypeSchema');
+const Frenchisee = require('./model/frenchiseSchema');
+const FrenchChatMessage = require('./model/FrenchChatMessageSchema');
 
 
 
@@ -141,8 +136,75 @@ io.on("connection", (socket) => {
           );
         }
         
+        // state Type
+        if (type === 'STATE') {
+            console.log(data1,"137")
+            StateChatType.find({ stateHandlerId: data1 }, (err, result) => {
+                if (err) {
+                    console.error(err);
+                    // Handle the error response here
+                } else {
+                    if (result) {
+                        const resultLength = Object.keys(result).length;
+                        console.log('Result length:', resultLength);
+                        if (resultLength === 0) {
+                            const stateHandler = StateChatType({ stateHandlerId: data1 })
+                            stateHandler.save();
+                        }
+                    }
+                    StateHandler.updateOne(
+                        {stateHandlerId: data1 },
+                        { $set: { isOnline: true } },
+                        (err, result) => {
+                          if (err) {
+                            console.error('Failed to update document:', err);
+                            return;
+                          }
+                          //userOnline
+                          socket.to(data).emit("userOnline", data1);
+                        }
+                      );
+                }
+            });
+        }
+
+        if (type === 'FRENCH') {
+
+            FrenchChatType.find({ frenchiseId: data1 }, (err, result) => {
+                if (err) {
+                    console.error(err);
+                    // Handle the error response here
+                } else {
+                    if (result) {
+                        const resultLength = Object.keys(result).length;
+                        console.log('Result length:', resultLength);
+                        if (resultLength === 0) {
+                            const frenchise = FrenchChatType({frenchiseId: data1 })
+                            frenchise.save();
+
+                        }
+                    }
+                    Frenchisee.updateOne(
+                        { frenchiseId: data1 },
+                        { $set: { isOnline: true } },
+                        (err, result) => {
+                          if (err) {
+                            console.error('Failed to update document:', err);
+                            return;
+                          }
+                          //userOnline
+                          socket.to(data).emit("frenchiseOnline", data1);
+                        //   console.log('Document updated successfully');
+                        //   console.log('Modified document count:', result.modifiedCount);
+                        }
+                      );
+
+                    // Handle the result/response here
+                }
+            });
 
 
+        }
 
     })
 
@@ -216,6 +278,77 @@ io.on("connection", (socket) => {
     })
     // ------------
 
+    // state message
+
+    socket.on("stateMessage", (data) => {
+        console.log(data);
+        const { room, author, message, time } = data;
+        const newChat = new StateChatMessage({ room, author, message, time });
+        newChat.save()
+            .then((savedChat) => {
+
+                console.log('State message saved:', savedChat);
+              
+            })
+            .catch((error) => {
+                console.error('Error saving user message:', error);
+
+            });
+        socket.to(data.room).emit("admin_receive_message", data);
+         // Emit a notification event to the admin  
+    })
+
+    // state-admin message
+
+    socket.on("adminMessgaeState", (data) => {
+        const { room, author, message, time } = data;
+        const newChat = new StateChatMessage({ room, author, message, time });
+        newChat.save()
+            .then((savedChat) => {
+                console.log('State message saved:', savedChat);
+            })
+            .catch((error) => {
+                console.error('Error saving refferal message:', error);
+
+            });
+        socket.to(data.room).emit("state_receive_message", data);
+    })
+
+    // frenchise chatting
+    socket.on("frenchMessage", (data) => {
+        console.log(data);
+        const { room, author, message, time } = data;
+        const newChat = new FrenchChatMessage({ room, author, message, time });
+        newChat.save()
+            .then((savedChat) => {
+
+                console.log('Frenchise message saved:', savedChat);
+              
+            })
+            .catch((error) => {
+                console.error('Error saving user message:', error);
+
+            });
+        socket.to(data.room).emit("admin_receive_message", data);
+         // Emit a notification event to the admin  
+    })
+
+    // frenchise-admin message
+
+    socket.on("adminMessgaeFrench", (data) => {
+        const { room, author, message, time } = data;
+        const newChat = new FrenchChatMessage({ room, author, message, time });
+        newChat.save()
+            .then((savedChat) => {
+                console.log('French message saved:', savedChat);
+            })
+            .catch((error) => {
+                console.error('Error saving refferal message:', error);
+
+            });
+        socket.to(data.room).emit("french_receive_message", data);
+    })
+
     //User logout event
     socket.on('userLogout', (userId)=>{ 
         console.log('126');
@@ -263,6 +396,40 @@ io.on("connection", (socket) => {
                 socket.to(adminId).emit("falnaOffline",adminId);
             }
         );
+    })
+
+    // stateHandler logout
+
+    socket.on('stateLogout', (userId)=>{ 
+        console.log('126');
+        StateHandler.updateOne(
+            { stateHandlerId: userId },
+            { $set: { isOnline: false } },
+            (err, result) => {
+              if (err) {
+                console.error('Failed to update document:', err);
+                return;
+              }
+            socket.to(userId).emit("stateOffline", userId);
+            }
+          );  
+    })
+
+     // Franchisee logout
+
+     socket.on('frenchLogout', (userId)=>{ 
+        console.log('126');
+        Frenchisee.updateOne(
+            { frenchiseId: userId },
+            { $set: { isOnline: false } },
+            (err, result) => {
+              if (err) {
+                console.error('Failed to update document:', err);
+                return;
+              }
+            socket.to(userId).emit("frenchOffline", userId);
+            }
+          );  
     })
 
     socket.on("disconnect", () => {

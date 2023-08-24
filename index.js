@@ -110,7 +110,13 @@ const verifyBuisnessDeveloperBeforeRegistration = require("./routes/verify-buisn
 const fetchRefferalPayoutOnRoleBasis = require("./routes/fetch-refferal-payout-on-role-basis");
 const fetchBusinessDeveloperCreditwalletTransactionDetails = require("./routes/fetch_business_Developer_Credit_wallet_Transaction_Details")
 const fetchFranchiseCreditwalletTransactionDetails = require("./routes/fetch-Franchise-Credit-wallet-Transaction-Details")
-const fetchStateHandlerCreditwalletTransactionDetails = require("./routes/fetch-State-Handler-Credit-wallet-Transaction-Details")
+const fetchStateHandlerCreditwalletTransactionDetails = require("./routes/fetch-State-Handler-Credit-wallet-Transaction-Details");
+const stateOnlineOrNot = require('./routes/admin-state-online-or-not');
+const fetchStateChatMessageAdmin = require('./routes/fetch-state-chat-message-admin');
+const fetchStateChatCount = require('./routes/fetch-state-chat-count');
+const fetchFrenchiseChatCount = require('./routes/fetch-frenchise-chat-count');
+const fethcFrenchiseChatMessageAdmin = require('./routes/fetch-frenchise-chat-message-admin');
+const adminFrenchiseOnlineOrNot = require('./routes/admin-frenchise-online-or-not');
 // refferal
 const memberRegistration = require("./routes/refferal/member-registration");
 const memberLogin = require("./routes/refferal/member-login");
@@ -185,12 +191,19 @@ const blockFranchiseForState = require("./routes/state/block-franchise-for-state
 const deleteFranchiseForState = require("./routes/state/delete-franchise-for-state")
 
 const getFranchiseForState = require("./routes/state/get-franchise-for-state")
-const getBusinessDeveloperForState = require("./routes/state/get-business-developer-for-state")
+const getBusinessDeveloperForState = require("./routes/state/get-business-developer-for-state");
+const adminOnlineOrNot = require('./routes/state/admin-online-or-not');
+const fetchChatMessageState = require('./routes/state/fetch-chat-message-state');
+const fetchChatDetailsState = require('./routes/state/fetch-chat-details-state');
 const updateStateDetails = require("./routes/state/update-state-details")
 const getOwnStateDetails = require("./routes/state/get-own-state-details")
 //======================Frenchise==============================================
 const getBusinessDevelopersInFranchise = require("./routes/frenchise/fetch-bdeveloper-in-franchise");
-const getMembersInFranchise = require("./routes/frenchise/fetch-members-in-franchise")
+const getMembersInFranchise = require("./routes/frenchise/fetch-members-in-franchise");
+const fetchChatDetailsFrenchisee = require('./routes/frenchise/fetch-chat-details-frenchisee');
+const fetchChatMessage = require('./routes/frenchise/fetch-chat-message');
+const adminOnlineOrNotFrench = require('./routes/frenchise/admin-online-or-not-french');
+
 const getUsersInFranchise = require("./routes/frenchise/fetch-user-in-franchise")
 
 //=========================Business developer======================================
@@ -298,7 +311,13 @@ app.use("/admin", fetchFranchiseCreditwalletTransactionDetails)
 
 app.use("/admin", fetchStateHandlerCreditwalletTransactionDetails)
 app.use("/admin", totalCountOfPaymentStatusOfUser)
-app.use("/user", totalCountOfPaymentStatusOfUseruser)
+app.use("/user", totalCountOfPaymentStatusOfUseruser);
+app.use('/admin',stateOnlineOrNot);
+app.use('/admin',fetchStateChatMessageAdmin);
+app.use('/admin',fetchStateChatCount);
+app.use('/admin',fetchFrenchiseChatCount);
+app.use('/admin',fethcFrenchiseChatMessageAdmin);
+app.use('/admin',adminFrenchiseOnlineOrNot);
 
 // refferal
 app.use("/member", memberRegistration);
@@ -399,13 +418,19 @@ app.use("/state", getAllUsersInState)
 app.use("/state", blockFranchiseForState)
 app.use("/state", deleteFranchiseForState)
 app.use("/state", getFranchiseForState)
-app.use("/state", getBusinessDeveloperForState)
+app.use("/state", getBusinessDeveloperForState);
+app.use('/state',adminOnlineOrNot);
+app.use('/state',fetchChatMessageState);
+app.use('/state',fetchChatDetailsState);
 app.use("/state", updateStateDetails)
 app.use("/state", getOwnStateDetails)
 //============================Franchise=============================================
 
-app.use("/franchise",getBusinessDevelopersInFranchise)
-app.use("/franchise", getMembersInFranchise)
+app.use("/franchise",getBusinessDevelopersInFranchise);
+app.use("/franchise", getMembersInFranchise);
+app.use('/franchise',fetchChatDetailsFrenchisee);
+app.use('/franchise',fetchChatMessage);
+app.use('/franchise',adminOnlineOrNotFrench);
 app.use("/franchise", getUsersInFranchise)
 
 //============================Business developer===========================

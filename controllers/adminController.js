@@ -36,6 +36,10 @@ const BusinessDeveloperCreditWalletTransaction = require("../model/businessDevel
 const Franchise = require("../model/frenchiseSchema");
 const FranchiseCreditWalletTransaction = require("../model/frenchiseCreditWalletTransactionSchema");
 const StateHandlerCreditWalletTransaction = require("../model/stateHandlerCreditWalletTransactionScema");
+const StateChatMessage = require('../model/StateChatMessageSchema');
+const StateChatType = require('../model/StateChatTypeSchema');
+const FrenchChatType = require('../model/FrenchChatTypeSchema');
+const FrenchChatMessage = require('../model/FrenchChatMessageSchema');
 
 const {
   isValidPassword,
@@ -2667,7 +2671,91 @@ exports.fetchStateHandlerCreditwalletTransactionDetails = async (req, res) => {
   }
 };
 
+
+// stateOnlineOrNot
+exports.stateOnlineOrNot = async (req,res) => {
+  const { stateAdmin_id } = req.body;
+  let stateOnlineOrNot = await StateHandler.findOne({ stateAdmin_id : stateAdmin_id  });
+  if (stateOnlineOrNot) {
+    const isOnline = stateOnlineOrNot.isOnline;
+    return res.status(200).json({
+      message: "State Online status fetched",
+      isOnline,
+    });
+  } else {
+    return res.status(500).json({ message: "Something went wrong" });
+  }
+}
+
+// fetchStateChatMessageAdmin
+exports.fetchStateChatMessageAdmin = async (req,res) =>{
+  const { room } = req.body;
+  let adminChatMessage = await StateChatMessage.find({ room: room });
+  if (adminChatMessage) {
+    return res.status(200).json({
+      message: "Chat message fetched",
+      adminChatMessage,
+    });
+  } else {
+    return res.status(500).json({ message: "Something went wrong" });
+  }
+}
+
+// fetchStateChatCount
+exports.fetchStateChatCount = async (req,res) => {
+  StateChatType.find((err, result) => {
+    if (err) {
+      return res.status(500).json({ message: "Something went wrong" });
+    } else {
+      return res
+        .status(200)
+        .json({ message: "State Chat details fetched", result });
+    }
+  });
+}
 //==========================================================================
+
+// fetch Frenchise Chat Count
+exports.fetchFrenchiseChatCount = async (req,res) => {
+  FrenchChatType.find((err, result) => {
+    if (err) {
+      return res.status(500).json({ message: "Something went wrong" });
+    } else {
+      return res
+        .status(200)
+        .json({ message: "State Chat details fetched", result });
+    }
+  });
+}
+
+// fetchFrenchChatMessageAdmin
+exports.fethcFrenchiseChatMessageAdmin = async (req,res) =>{
+  const { room } = req.body;
+  let frenchChatMessage = await FrenchChatMessage.find({ room: room });
+  if (frenchChatMessage) {
+    return res.status(200).json({
+      message: " French Chat message fetched",
+      frenchChatMessage,
+    });
+  } else {
+    return res.status(500).json({ message: "Something went wrong" });
+  }
+}
+
+// adminFrenchiseOnlineOrNot
+exports.adminFrenchiseOnlineOrNot = async (req,res) => {
+  const {frenchiseId } = req.body;
+  let frenchOnlineOrNot = await Frenchise.findOne({ frenchiseId : frenchiseId  });
+  if (frenchOnlineOrNot) {
+    const isOnline = frenchOnlineOrNot.isOnline;
+    return res.status(200).json({
+      message: "French Online status fetched",
+      isOnline,
+    });
+  } else {
+    return res.status(500).json({ message: "Something went wrong" });
+  }
+}
 
 exports.blockStateByAdmin = async (req, res) => {
   try {
