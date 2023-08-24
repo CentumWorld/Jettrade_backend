@@ -3042,3 +3042,44 @@ exports.updateBusinessDeveloper = async (req, res) => {
   }
 };
 
+//=========================================================================
+
+//get  one franchisde
+exports.getOneFranchiseDetails = async (req, res) => {
+  try {
+    const id = req.body.id;
+    const franchise = await Frenchise.findOne({ _id: id, isDeleted: false });
+
+    if (!franchise) {
+      return res.status(404).json({ message: "Franchise not found" });
+    }
+
+    res
+      .status(200)
+      .json({ message: "Fetched franchise successfully", data: franchise });
+  } catch (error) {
+    console.error(error.message);
+    res.status(500).json({ message: "Internal server error" });
+  }
+};
+
+
+//==========================================================================
+//get one business developer
+exports.getOneBDDetails = async (req, res) => {
+  try {
+    const id = req.body.id;
+    const businessDeveloper = await BusinessDeveloper.findOne({ _id: id, isDeleted: false });
+
+    if (!businessDeveloper) {
+      return res.status(404).json({ message: "Franchise not found" });
+    }
+
+    res
+      .status(200)
+      .json({ message: "Fetched businesd developer successfully", data: businessDeveloper });
+  } catch (error) {
+    console.error(error.message);
+    res.status(500).json({ message: "Internal server error" });
+  }
+};

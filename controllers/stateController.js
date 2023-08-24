@@ -358,8 +358,8 @@ exports.updateStateDetails = async (req, res) => {
 exports.getOwnStateDetails = async(req, res) =>{
   try {
 
-    let id =  req.stateHandlerId
-    let state = await stateHandler.findById(id)
+    const id =  req.stateHandlerId
+    const state = await stateHandler.findById(id)
 
     return res.status(200).json({messgae: "Fetched state details successfully", data: state})
     

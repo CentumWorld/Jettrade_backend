@@ -108,9 +108,9 @@ const createFrenchise = require("./routes/create-frenchise");
 const verifyFranchieBeforeRegistration = require("./routes/verify-franchie-before-registration");
 const verifyBuisnessDeveloperBeforeRegistration = require("./routes/verify-buisness-developer-before-registration");
 const fetchRefferalPayoutOnRoleBasis = require("./routes/fetch-refferal-payout-on-role-basis");
-const fetchBusinessDeveloperCreditwalletTransactionDetails = require("./routes/fetch_business_Developer_Credit_wallet_Transaction_Details")
-const fetchFranchiseCreditwalletTransactionDetails = require("./routes/fetch-Franchise-Credit-wallet-Transaction-Details")
-const fetchStateHandlerCreditwalletTransactionDetails = require("./routes/fetch-State-Handler-Credit-wallet-Transaction-Details")
+const fetchBusinessDeveloperCreditwalletTransactionDetails = require("./routes/fetch_business_Developer_Credit_wallet_Transaction_Details");
+const fetchFranchiseCreditwalletTransactionDetails = require("./routes/fetch-Franchise-Credit-wallet-Transaction-Details");
+const fetchStateHandlerCreditwalletTransactionDetails = require("./routes/fetch-State-Handler-Credit-wallet-Transaction-Details");
 // refferal
 const memberRegistration = require("./routes/refferal/member-registration");
 const memberLogin = require("./routes/refferal/member-login");
@@ -164,40 +164,43 @@ const getVideos = require("./routes/get_all_video");
 const findAllState = require("./routes/fetch-all-state");
 const findAllFrenchise = require("./routes/fetch-all-frenchise");
 const findAllBusinessDeveloper = require("./routes/fetch-all-businessDeveloper");
-const totalCountOfPaymentStatusOfUser = require('./routes/total_Count_Of_Payment_Status_Of_User')
-const totalCountOfPaymentStatusOfUseruser = require("./routes/users/total_Count_Of_Payment_Status_Of_User_user")
-const blockStateByAdmin = require("./routes/block-state-by-admin")
-const blockFranchiseByAdmin = require("./routes/block-franchise-by-admin")
-const blockBusinessDeveloperByAdmin = require("./routes/block-business-developer-by-admin")
-const updateFranchise = require('./routes/update-franchise')
-const updateStateHandler = require('./routes/update-state-handler')
-const updateBusinessDeveloper = require("./routes/update-business-developer")
+const totalCountOfPaymentStatusOfUser = require("./routes/total_Count_Of_Payment_Status_Of_User");
+const totalCountOfPaymentStatusOfUseruser = require("./routes/users/total_Count_Of_Payment_Status_Of_User_user");
+const blockStateByAdmin = require("./routes/block-state-by-admin");
+const blockFranchiseByAdmin = require("./routes/block-franchise-by-admin");
+const blockBusinessDeveloperByAdmin = require("./routes/block-business-developer-by-admin");
+const updateFranchise = require("./routes/update-franchise");
+const updateStateHandler = require("./routes/update-state-handler");
+const updateBusinessDeveloper = require("./routes/update-business-developer");
+const getOneFranchiseDetails = require("./routes/get-one-franchise-details")
 
 //=======================State=================================================
 
-const  getFranchisesByReferralId = require("./routes/state/fetch-frenchise-in-state");
+const getFranchisesByReferralId = require("./routes/state/fetch-frenchise-in-state");
 
-const getBusinessDevelopersInState =  require("./routes/state/fetch-business-developers-in-state")
+const getBusinessDevelopersInState = require("./routes/state/fetch-business-developers-in-state");
 
-const getAllMembersInState = require("./routes/state/fetch-members-in-state")
-const getAllUsersInState = require("./routes/state/fetch-users-in-state")
-const blockFranchiseForState = require("./routes/state/block-franchise-for-state")
-const deleteFranchiseForState = require("./routes/state/delete-franchise-for-state")
+const getAllMembersInState = require("./routes/state/fetch-members-in-state");
+const getAllUsersInState = require("./routes/state/fetch-users-in-state");
+const blockFranchiseForState = require("./routes/state/block-franchise-for-state");
+const deleteFranchiseForState = require("./routes/state/delete-franchise-for-state");
 
-const getFranchiseForState = require("./routes/state/get-franchise-for-state")
-const getBusinessDeveloperForState = require("./routes/state/get-business-developer-for-state")
-const updateStateDetails = require("./routes/state/update-state-details")
-const getOwnStateDetails = require("./routes/state/get-own-state-details")
+const getFranchiseForState = require("./routes/state/get-franchise-for-state");
+const getBusinessDeveloperForState = require("./routes/state/get-business-developer-for-state");
+const updateStateDetails = require("./routes/state/update-state-details");
+const getOwnStateDetails = require("./routes/state/get-own-state-details");
 //======================Frenchise==============================================
 const getBusinessDevelopersInFranchise = require("./routes/frenchise/fetch-bdeveloper-in-franchise");
-const getMembersInFranchise = require("./routes/frenchise/fetch-members-in-franchise")
-const getUsersInFranchise = require("./routes/frenchise/fetch-user-in-franchise")
+const getMembersInFranchise = require("./routes/frenchise/fetch-members-in-franchise");
+const getUsersInFranchise = require("./routes/frenchise/fetch-user-in-franchise");
 
 //=========================Business developer======================================
-const getAllMembersInBusinessDeveloper = require("./routes/businessDeveloper/fetch-all-members-in-business-developer")
-const blockMemberByBusinessDeveloper = require("./routes/businessDeveloper/block-member-by-business-developer")
-const getOneMemberByIdByBusinessDeveloper = require("./routes/businessDeveloper/get-one-member-by-id-by-business-developer")
-const getAllUsersInBusinessDeveloper = require("./routes/businessDeveloper/fetch -all-users-in-bd")
+const getAllMembersInBusinessDeveloper = require("./routes/businessDeveloper/fetch-all-members-in-business-developer");
+const blockMemberByBusinessDeveloper = require("./routes/businessDeveloper/block-member-by-business-developer");
+const getOneMemberByIdByBusinessDeveloper = require("./routes/businessDeveloper/get-one-member-by-id-by-business-developer");
+const getAllUsersInBusinessDeveloper = require("./routes/businessDeveloper/fetch -all-users-in-bd");
+const getOwnBusinessDeveloperDetails = require("./routes/businessDeveloper/get-own-business-developer-details");
+const updateOwnBusinessDeveloperDetails = require("./routes/businessDeveloper/update-own-business-developer-details");
 //===========================================================================
 app.use(express.static(path.join(__dirname, "public")));
 app.use(express.urlencoded({ extended: true }));
@@ -294,11 +297,12 @@ app.use("/admin", getVideos);
 app.use("/admin", interactWithVideoForAdmin);
 app.use("/admin", fetchRefferalPayoutOnRoleBasis);
 app.use("/admin", fetchBusinessDeveloperCreditwalletTransactionDetails);
-app.use("/admin", fetchFranchiseCreditwalletTransactionDetails)
+app.use("/admin", fetchFranchiseCreditwalletTransactionDetails);
 
-app.use("/admin", fetchStateHandlerCreditwalletTransactionDetails)
-app.use("/admin", totalCountOfPaymentStatusOfUser)
-app.use("/user", totalCountOfPaymentStatusOfUseruser)
+app.use("/admin", fetchStateHandlerCreditwalletTransactionDetails);
+app.use("/admin", totalCountOfPaymentStatusOfUser);
+app.use("/user", totalCountOfPaymentStatusOfUseruser);
+app.use("/admin", getOneFranchiseDetails)
 
 // refferal
 app.use("/member", memberRegistration);
@@ -354,12 +358,12 @@ app.use("/admin", verifyBuisnessDeveloperBeforeRegistration);
 app.use("/admin", findAllState);
 app.use("/admin", findAllFrenchise);
 app.use("/admin", findAllBusinessDeveloper);
-app.use("/admin", blockStateByAdmin)
-app.use("/admin", blockFranchiseByAdmin)
-app.use("/admin", blockBusinessDeveloperByAdmin)
-app.use("/admin", updateFranchise)
-app.use("/admin", updateStateHandler)
-app.use("/admin", updateBusinessDeveloper)
+app.use("/admin", blockStateByAdmin);
+app.use("/admin", blockFranchiseByAdmin);
+app.use("/admin", blockBusinessDeveloperByAdmin);
+app.use("/admin", updateFranchise);
+app.use("/admin", updateStateHandler);
+app.use("/admin", updateBusinessDeveloper);
 // refferalin
 app.use("/member", memberLogin);
 app.use("/admin", fetchMemberDetails);
@@ -392,32 +396,30 @@ app.use("/member", refferalTotalWithdrawal);
 app.use("/member", refferalMyTeam);
 
 //===============================State=============================================
-app.use("/state",getFranchisesByReferralId)
-app.use("/state",getBusinessDevelopersInState )
-app.use("/state", getAllMembersInState)
-app.use("/state", getAllUsersInState)
-app.use("/state", blockFranchiseForState)
-app.use("/state", deleteFranchiseForState)
-app.use("/state", getFranchiseForState)
-app.use("/state", getBusinessDeveloperForState)
-app.use("/state", updateStateDetails)
-app.use("/state", getOwnStateDetails)
+app.use("/state", getFranchisesByReferralId);
+app.use("/state", getBusinessDevelopersInState);
+app.use("/state", getAllMembersInState);
+app.use("/state", getAllUsersInState);
+app.use("/state", blockFranchiseForState);
+app.use("/state", deleteFranchiseForState);
+app.use("/state", getFranchiseForState);
+app.use("/state", getBusinessDeveloperForState);
+app.use("/state", updateStateDetails);
+app.use("/state", getOwnStateDetails);
 //============================Franchise=============================================
 
-app.use("/franchise",getBusinessDevelopersInFranchise)
-app.use("/franchise", getMembersInFranchise)
-app.use("/franchise", getUsersInFranchise)
+app.use("/franchise", getBusinessDevelopersInFranchise);
+app.use("/franchise", getMembersInFranchise);
+app.use("/franchise", getUsersInFranchise);
 
 //============================Business developer===========================
-app.use("/businessDeveloper", getAllMembersInBusinessDeveloper)
-app.use("/businessDeveloper",blockMemberByBusinessDeveloper)
-app.use("/businessDeveloper",getOneMemberByIdByBusinessDeveloper)
-app.use("/businessDeveloper", getAllUsersInBusinessDeveloper)
+app.use("/businessDeveloper", getAllMembersInBusinessDeveloper);
+app.use("/businessDeveloper", blockMemberByBusinessDeveloper);
+app.use("/businessDeveloper", getOneMemberByIdByBusinessDeveloper);
+app.use("/businessDeveloper", getAllUsersInBusinessDeveloper);
+app.use("/businessDeveloper", getOwnBusinessDeveloperDetails);
+app.use("/businessDeveloper", updateOwnBusinessDeveloperDetails);
 
 //=========================================================================
-
-
-
-
 
 module.exports = app;
