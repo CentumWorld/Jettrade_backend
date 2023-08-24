@@ -56,7 +56,7 @@ exports.getMembersInFranchise = async (req, res) => {
     res.status(500).json({ message: "Internal server error" });
   }
 };
-//============================================================================
+//======================================================================
 
 exports.getUsersInFranchise = async (req, res) => {
   try {
@@ -109,3 +109,4 @@ exports.getUsersInFranchise = async (req, res) => {
     res.status(500).json({ message: "Internal server error" });
   }
 };
+//=========================================================================

@@ -353,3 +353,18 @@ exports.updateStateDetails = async (req, res) => {
     res.status(500).json({ message: "Internal server error" });
   }
 };
+
+//==================================================================
+exports.getOwnStateDetails = async(req, res) =>{
+  try {
+
+    let id =  req.stateHandlerId
+    let state = await stateHandler.findById(id)
+
+    return res.status(200).json({messgae: "Fetched state details successfully", data: state})
+    
+  } catch (error) {
+    console.log(error.message)
+    res.status(500).json({message: "Internal server error"})
+  }
+}
