@@ -38,9 +38,13 @@ exports.authenticateAdmin = async (req, res, next) => {
 
   try {
     const decoded = jwt.verify(token, process.env.SECRET_KEY);
+    console.log(decoded, ";;;;;;;;")
     req.userId = decoded.userId; 
     req.stateHandlerId = decoded.stateHandlerId
     req.businessDeveloperId = decoded.businessDeveloperId
+req.franchiseId = decoded.franchiseId
+
+console.log(req.franchiseId,",,,,,,,,,,")
 
     const admin = await Admin.findById(decoded.userId);
     const subAdmin = await SubAdmin.findById(decoded.subAdminId);

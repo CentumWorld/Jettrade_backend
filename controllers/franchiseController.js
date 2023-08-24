@@ -4,6 +4,7 @@ const User = require("../model/userSchema");
 const Admin = require('../model/adminSchema');
 const FrenchChatMessage = require('../model/FrenchChatMessageSchema');
 const FrenchChatType = require('../model/FrenchChatTypeSchema');
+const Franchise = require("../model/frenchiseSchema")
 
 exports.getBusinessDevelopersInFranchise = async (req, res) => {
   try {
@@ -140,4 +141,19 @@ exports.fetchChatDetailsFrenchisee = async (req,res) => {
   }
 }
 
+//============================================================================
 
+exports.getOwnFranchiseDetails = async (req, res) => {
+  try {
+    const id = req.franchiseId;
+    const franchise = await Franchise.findById(id);
+    if (!franchise) {
+      return res.status(404).json({ message: "Franchise not found" });
+    }
+
+    res.status(200).json({ message: "Fetched franchise successfully", data: franchise });
+  } catch (error) {
+    console.log(error.message);
+    res.status(500).json({ message: "Internal server error" });
+  }
+};

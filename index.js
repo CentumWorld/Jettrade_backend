@@ -216,6 +216,7 @@ const fetchChatMessage = require('./routes/frenchise/fetch-chat-message');
 const adminOnlineOrNotFrench = require('./routes/frenchise/admin-online-or-not-french');
 ;
 const getUsersInFranchise = require("./routes/frenchise/fetch-user-in-franchise");
+const getOwnFranchiseDetails = require("./routes/frenchise/get-own-franchise-details")
 
 //=========================Business developer======================================
 const getAllMembersInBusinessDeveloper = require("./routes/businessDeveloper/fetch-all-members-in-business-developer");
@@ -460,6 +461,7 @@ app.use('/franchise',fetchChatDetailsFrenchisee);
 app.use('/franchise',fetchChatMessage);
 app.use('/franchise',adminOnlineOrNotFrench);;
 app.use("/franchise", getUsersInFranchise);
+app.use("/franchise", getOwnFranchiseDetails)
 
 //============================Business developer===========================
 app.use("/businessDeveloper", getAllMembersInBusinessDeveloper);
