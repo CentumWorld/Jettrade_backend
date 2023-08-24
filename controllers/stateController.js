@@ -2,6 +2,9 @@ const Frenchise = require("../model/frenchiseSchema");
 const BusinessDeveloper = require("../model/businessDeveloperSchema");
 const Member = require("../model/memberSchema");
 const User = require("../model/userSchema");
+const Admin = require('../model/adminSchema');
+const StateChatMessage = require('../model/StateChatMessageSchema');
+const StateChatType = require ('../model/StateChatTypeSchema');
 const {
   isValidImage,
   isValidEmail,
@@ -298,6 +301,49 @@ exports.getBusinessDeveloperForState = async (req, res) => {
     res.status(500).json({ message: "Internal server error" });
   }
 };
+
+// adminOnlineOrNot
+exports.adminOnlineOrNot = async (req,res) => {
+  let adminOnline = await Admin.find();
+  // console.log(adminOnline[0].isOnline,'964');
+  if (adminOnline) {
+    const isOnline = adminOnline[0].isOnline;
+    return res.status(200).json({
+      message: "Admin Online status fetched",
+      isOnline,
+    });
+  } else {
+    return res.status(500).json({ message: "Something went wrong" });
+  }
+}
+
+// fetchChatMessageState
+exports.fetchChatMessageState = async (req,res) => {
+  const { room } = req.body;
+  let stateChatMessage = await StateChatMessage.find({ room: room });
+  if (stateChatMessage) {
+    return res.status(200).json({
+      message: " State chat message fetched",
+      stateChatMessage,
+    });
+  } else {
+    return res.status(500).json({ message: "Something went wrong" });
+  }
+}
+
+// fetchChatDetailsState
+exports.fetchChatDetailsState = async (req,res) => {
+  const {stateHandlerId } = req.body;
+  let stateChatDetails = await StateChatType.find({ stateHandlerId: stateHandlerId });
+  if (stateChatDetails) {
+    return res.status(200).json({
+      message: " State chat details fetched",
+      stateChatDetails,
+    });
+  } else {
+    return res.status(500).json({ message: "Something went wrong" });
+  }
+}
 //======================================================================
 
 // update own state detais
