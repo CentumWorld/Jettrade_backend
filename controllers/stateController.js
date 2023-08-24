@@ -353,24 +353,24 @@ exports.updateStateDetails = async (req, res) => {
     const { fname, lname, email, phone, gender } = req.body;
     const id = req.stateHandlerId;
 
-    if (!fname || !lname || !email || !phone || !gender ) {
-      return res.status(422).json({ message: "All fields are required." });
-    }
+    // if (!fname || !lname || !email || !phone || !gender ) {
+    //   return res.status(422).json({ message: "All fields are required." });
+    // }
 
-    if (!isValidName(fname)) {
+    if (fname &&!isValidName(fname)) {
       return res.status(422).json({ message: "Invalid first name format." });
     }
-    if (!isValidName(lname)) {
+    if (lname &&!isValidName(lname)) {
       return res.status(422).json({ message: "Invalid last name format." });
     }
 
     // Validate email format
-    if (!isValidEmail(email)) {
+    if (email &&!isValidEmail(email)) {
       return res.status(422).json({ message: "Invalid email format." });
     }
 
     // Validate phone number format
-    if (!isValidPhone(phone)) {
+    if (phone &&!isValidPhone(phone)) {
       return res.status(422).json({ message: "Invalid phone number format." });
     }
 

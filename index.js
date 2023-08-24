@@ -179,7 +179,13 @@ const updateFranchise = require("./routes/update-franchise");
 const updateStateHandler = require("./routes/update-state-handler");
 const updateBusinessDeveloper = require("./routes/update-business-developer");
 const getOneFranchiseDetails = require("./routes/get-one-franchise-details")
+const getOneBDDetails = require("./routes/get-one-business-developer") 
+const getOneStateDetails = require("./routes/get-one-state-details")
+const getOneMemberDetails = require("./routes/get-one-member-details") 
+const updateAdharcardFranchise = require("./routes/update-adhar-card-franchise")
+const updatePanCardFranchise = require("./routes/update-pan-card-franchise")
 
+ 
 //=======================State=================================================
 
 const getFranchisesByReferralId = require("./routes/state/fetch-frenchise-in-state");
@@ -322,6 +328,12 @@ app.use('/admin',fetchFrenchiseChatCount);
 app.use('/admin',fethcFrenchiseChatMessageAdmin);
 app.use('/admin',adminFrenchiseOnlineOrNot);;
 app.use("/admin", getOneFranchiseDetails)
+
+app.use("/admin",getOneBDDetails )
+app.use("/admin", getOneStateDetails)
+app.use("/admin", getOneMemberDetails)
+app.use("/admin", updateAdharcardFranchise)
+app.use("/admin",updatePanCardFranchise)
 
 // refferal
 app.use("/member", memberRegistration);

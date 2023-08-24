@@ -3038,6 +3038,84 @@ if (!isValidPhone(phone)) {
     res.status(500).json({ message: "Internal server error" });
   }
 };
+//=======================================================================
+//=======================================================================
+exports.updateAdharcardFranchise = async (req, res) => {
+  try {
+    const { id } = req.body;
+    const adharCardFile = req.files["adharCard"][0];
+
+    // Check if adharCard image is valid using isValidImage function
+    if (!isValidImage(adharCardFile.originalname)) {
+      return res.status(422).json({
+        message:
+          "Invalid adharCard image format, image must be in jpeg, jpg, tiff, png, webp, or bmp format.",
+      });
+    }
+
+    const adharCardLocation = adharCardFile.location;
+
+    // Update franchise's adharCard information
+    const updateData = {
+      adharCard: adharCardLocation,
+    };
+
+    const franchise = await Frenchise.findOneAndUpdate(
+      { _id: id, isDeleted: false },
+      { $set: updateData },
+      { new: true }
+    );
+
+    if (!franchise) {
+      return res.status(404).json({ message: "Franchise not found" });
+    }
+
+    res.status(200).json({ message: "Aadhar card updated successfully", adharCard: franchise.adharCard });
+  } catch (error) {
+    console.error(error.message);
+    res.status(500).json({ message: "Internal server error" });
+  }
+};
+
+//=======================================================================
+exports.updatePanCardFranchise = async (req, res) => {
+  try {
+    const { id } = req.body;
+    const panCardFile = req.files["panCard"][0];
+
+    // Check if panCard image is valid using isValidImage function
+    if (!isValidImage(panCardFile.originalname)) {
+      return res.status(422).json({
+        message:
+          "Invalid panCard image format, image must be in jpeg, jpg, tiff, png, webp, or bmp format.",
+      });
+    }
+
+    const panCardLocation = panCardFile.location;
+
+    // Update franchise's panCard information
+    const updateData = {
+      panCard: panCardLocation,
+    };
+
+    const franchise = await Frenchise.findOneAndUpdate(
+      { _id: id, isDeleted: false },
+      { $set: updateData },
+      { new: true }
+    );
+
+    if (!franchise) {
+      return res.status(404).json({ message: "Franchise not found" });
+    }
+
+    res.status(200).json({ message: "PAN card updated successfully", panCard:franchise.panCard });
+  } catch (error) {
+    console.error(error.message);
+    res.status(500).json({ message: "Internal server error" });
+  }
+};
+
+
 //=========================================================================
 // update business developer
 exports.updateBusinessDeveloper = async (req, res) => {
@@ -3160,12 +3238,52 @@ exports.getOneBDDetails = async (req, res) => {
     const businessDeveloper = await BusinessDeveloper.findOne({ _id: id, isDeleted: false });
 
     if (!businessDeveloper) {
-      return res.status(404).json({ message: "Franchise not found" });
+      return res.status(404).json({ message: "Business Developer not found" });
     }
 
     res
       .status(200)
-      .json({ message: "Fetched businesd developer successfully", data: businessDeveloper });
+      .json({ message: "Fetched Business Developer successfully", data: businessDeveloper });
+  } catch (error) {
+    console.error(error.message);
+    res.status(500).json({ message: "Internal server error" });
+  }
+};
+
+//===========================================================================
+
+exports.getOneStateDetails = async (req, res) => {
+  try {
+    const id = req.body.id;
+    const state = await StateHandler.findOne({ _id: id, isDeleted: false });
+
+    if (!state) {
+      return res.status(404).json({ message: "State not found" });
+    }
+
+    res
+      .status(200)
+      .json({ message: "Fetched State successfully", data: state });
+  } catch (error) {
+    console.error(error.message);
+    res.status(500).json({ message: "Internal server error" });
+  }
+};
+
+//========================================================================
+
+exports.getOneMemberDetails = async (req, res) => {
+  try {
+    const id = req.body.id;
+    const member = await Member.findOne({ _id: id});
+
+    if (!member) {
+      return res.status(404).json({ message: "Member not found" });
+    }
+
+    res
+      .status(200)
+      .json({ message: "Fetched member successfully", data: member });
   } catch (error) {
     console.error(error.message);
     res.status(500).json({ message: "Internal server error" });
