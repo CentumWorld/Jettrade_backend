@@ -157,3 +157,58 @@ exports.getOwnFranchiseDetails = async (req, res) => {
     res.status(500).json({ message: "Internal server error" });
   }
 };
+//==========================================================================
+
+exports.updateOwnFranchiseDetails = async (req, res) => {
+  try {
+    const { fname, lname, email, phone, gender } = req.body;
+    const franchiseId = req.franchiseId;
+
+    // Validate input fields
+    if (!fname || !lname || !email || !phone || !gender) {
+      return res.status(422).json({ message: "All fields are required." });
+    }
+
+    if (!isValidName(fname)) {
+      return res.status(422).json({ message: "Invalid first name format." });
+    }
+
+    if (!isValidName(lname)) {
+      return res.status(422).json({ message: "Invalid last name format." });
+    }
+
+    // Validate email format
+    if (!isValidEmail(email)) {
+      return res.status(422).json({ message: "Invalid email format." });
+    }
+
+    // Validate phone number format
+    if (!isValidPhone(phone)) {
+      return res.status(422).json({ message: "Invalid phone number format." });
+    }
+
+    const updatedFranchise = await Franchise.findOneAndUpdate(
+      { _id: franchiseId },
+      {
+        fname,
+        lname,
+        email,
+        phone,
+        gender,
+      },
+      { new: true }
+    );
+
+    if (!updatedFranchise) {
+      return res.status(404).json({ message: "Franchise not found" });
+    }
+
+    res.status(200).json({
+      message: "Franchise details updated successfully",
+      franchise: updatedFranchise,
+    });
+  } catch (error) {
+    console.log(error.message);
+    res.status(500).json({ message: "Internal server error" });
+  }
+};

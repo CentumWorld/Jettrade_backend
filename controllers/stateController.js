@@ -2,9 +2,9 @@ const Frenchise = require("../model/frenchiseSchema");
 const BusinessDeveloper = require("../model/businessDeveloperSchema");
 const Member = require("../model/memberSchema");
 const User = require("../model/userSchema");
-const Admin = require('../model/adminSchema');
-const StateChatMessage = require('../model/StateChatMessageSchema');
-const StateChatType = require ('../model/StateChatTypeSchema');
+const Admin = require("../model/adminSchema");
+const StateChatMessage = require("../model/StateChatMessageSchema");
+const StateChatType = require("../model/StateChatTypeSchema");
 const {
   isValidImage,
   isValidEmail,
@@ -303,7 +303,7 @@ exports.getBusinessDeveloperForState = async (req, res) => {
 };
 
 // adminOnlineOrNot
-exports.adminOnlineOrNot = async (req,res) => {
+exports.adminOnlineOrNot = async (req, res) => {
   let adminOnline = await Admin.find();
   // console.log(adminOnline[0].isOnline,'964');
   if (adminOnline) {
@@ -315,10 +315,10 @@ exports.adminOnlineOrNot = async (req,res) => {
   } else {
     return res.status(500).json({ message: "Something went wrong" });
   }
-}
+};
 
 // fetchChatMessageState
-exports.fetchChatMessageState = async (req,res) => {
+exports.fetchChatMessageState = async (req, res) => {
   const { room } = req.body;
   let stateChatMessage = await StateChatMessage.find({ room: room });
   if (stateChatMessage) {
@@ -329,12 +329,14 @@ exports.fetchChatMessageState = async (req,res) => {
   } else {
     return res.status(500).json({ message: "Something went wrong" });
   }
-}
+};
 
 // fetchChatDetailsState
-exports.fetchChatDetailsState = async (req,res) => {
-  const {stateHandlerId } = req.body;
-  let stateChatDetails = await StateChatType.find({ stateHandlerId: stateHandlerId });
+exports.fetchChatDetailsState = async (req, res) => {
+  const { stateHandlerId } = req.body;
+  let stateChatDetails = await StateChatType.find({
+    stateHandlerId: stateHandlerId,
+  });
   if (stateChatDetails) {
     return res.status(200).json({
       message: " State chat details fetched",
@@ -343,7 +345,7 @@ exports.fetchChatDetailsState = async (req,res) => {
   } else {
     return res.status(500).json({ message: "Something went wrong" });
   }
-}
+};
 //======================================================================
 
 // update own state detais
@@ -353,24 +355,24 @@ exports.updateStateDetails = async (req, res) => {
     const { fname, lname, email, phone, gender } = req.body;
     const id = req.stateHandlerId;
 
-    // if (!fname || !lname || !email || !phone || !gender ) {
-    //   return res.status(422).json({ message: "All fields are required." });
-    // }
+    if (!fname || !lname || !email || !phone || !gender ) {
+      return res.status(422).json({ message: "All fields are required." });
+    }
 
-    if (fname &&!isValidName(fname)) {
+    if (fname && !isValidName(fname)) {
       return res.status(422).json({ message: "Invalid first name format." });
     }
-    if (lname &&!isValidName(lname)) {
+    if (lname && !isValidName(lname)) {
       return res.status(422).json({ message: "Invalid last name format." });
     }
 
     // Validate email format
-    if (email &&!isValidEmail(email)) {
+    if (email && !isValidEmail(email)) {
       return res.status(422).json({ message: "Invalid email format." });
     }
 
     // Validate phone number format
-    if (phone &&!isValidPhone(phone)) {
+    if (phone && !isValidPhone(phone)) {
       return res.status(422).json({ message: "Invalid phone number format." });
     }
 
@@ -401,16 +403,20 @@ exports.updateStateDetails = async (req, res) => {
 };
 
 //==================================================================
-exports.getOwnStateDetails = async(req, res) =>{
+exports.getOwnStateDetails = async (req, res) => {
   try {
+    const id = req.stateHandlerId;
+    const state = await stateHandler.findById(id);
 
-    const id =  req.stateHandlerId
-    const state = await stateHandler.findById(id)
+    if (!state) {
+      return res.status(404).json({ messgae: "State not found" });
+    }
 
-    return res.status(200).json({messgae: "Fetched state details successfully", data: state})
-    
+    return res
+      .status(200)
+      .json({ messgae: "Fetched state details successfully", data: state });
   } catch (error) {
-    console.log(error.message)
-    res.status(500).json({message: "Internal server error"})
+    console.log(error.message);
+    res.status(500).json({ message: "Internal server error" });
   }
-}
+};
