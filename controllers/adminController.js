@@ -3414,3 +3414,20 @@ exports.fetchAdmin = async(req, res) => {
   }
 }
 
+//==========================================================================
+
+exports.fetchCityByReferralIdInFranchise = async(req, res) => {
+  try {
+
+    const {franchiseReferralId} = req.body 
+    const franchise = await Franchise.findOne({referralId:franchiseReferralId})
+    if(!franchise){
+      return res.status(404).json({message: "Franchise not found"} )
+
+    }
+    return res.status(200).json({message: "Fetched franchise successfully", CityList: franchise.franchiseCity} )
+  } catch (error) {
+    console.error(error.message);
+    res.status(500).json({ message: "Internal server error" });
+  }
+}

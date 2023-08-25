@@ -120,7 +120,8 @@ const adminFrenchiseOnlineOrNot = require('./routes/admin-frenchise-online-or-no
 const fetchBusinessChatCount = require('./routes/fetch-business-chat-count');
 const fetchBusinessChatMessageAdmin = require('./routes/fetch-business-chat-message-admin');
 const adminBusinessOnlineOrNot = require('./routes/admin-business-online-or-not');
-const fetchAdmin = require("./routes/fetch-admin")
+const fetchAdmin = require("./routes/fetch-admin") 
+const fetchCityByReferralIdInFranchise = require("./routes/fetch-city-by-referralId-infranchise")
 
 // refferal
 const memberRegistration = require("./routes/refferal/member-registration");
@@ -410,7 +411,7 @@ app.use("/admin", updateStateHandler);
 app.use("/admin", updateBusinessDeveloper);
 app.use('/admin',fetchBusinessChatMessageAdmin);
 app.use('/admin', fetchAdmin)
-
+app.use('/admin', fetchCityByReferralIdInFranchise)
 
 // refferalin
 app.use("/member", memberLogin);
