@@ -232,7 +232,11 @@ const fetchChatMessageBusiness = require('./routes/businessDeveloper/fetch-chat-
 const adminOnlineOrNotBusiness = require('./routes/businessDeveloper/admin-online-or-not-business');;
 const getOwnBusinessDeveloperDetails = require("./routes/businessDeveloper/get-own-business-developer-details");
 const updateOwnBusinessDeveloperDetails = require("./routes/businessDeveloper/update-own-business-developer-details");
-//===========================================================================
+//==============================SubAdmin====================================
+const getOwnSubAdminDetails = require("./routes/subAdmin/get-own-sub-admin-details")
+const updateOwnSubAdminDetails = require("./routes/subAdmin/update-own-sub-admin-details")
+
+
 app.use(express.static(path.join(__dirname, "public")));
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
@@ -482,6 +486,8 @@ app.use("/businessDeveloper", updateOwnBusinessDeveloperDetails);
 app.use('/businessDeveloper',fetchChatDetailsBusiness);
 app.use('/businessDeveloper',fetchChatMessageBusiness);
 app.use('/businessDeveloper',adminOnlineOrNotBusiness);
-//=========================================================================
+//=============================Sub- Admin======================================
+app.use('/subAdmin',getOwnSubAdminDetails);
+app.use('/subAdmin', updateOwnSubAdminDetails)
 
 module.exports = app;
