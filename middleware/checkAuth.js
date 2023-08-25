@@ -125,10 +125,8 @@ exports.authorizeAdmin = async (req, res, next) => {
 
 exports.authorizeVideoUpload = async (req, res, next) => {
   try {
-    if (req.isSubAdmin && req.isVideoCreator) {
-      // If user is an admin or a subadmin with isVideoCreator true, allow video upload
-      console.log("Authorized to upload video");
-
+    if (req.userRoles.includes('admin')||req.userRoles.includes('subAdmin') && req.isVideoCreator) {
+      // If user is a subadmin and is a video creator, allow video upload
       next();
     } else {
       return res
