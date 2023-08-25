@@ -1187,12 +1187,21 @@ exports.changeUserPaymentStatus = async (req, res) => {
               await statehandlerCreditWalletDetails.save();
             }
             const admin = await Admin.findOne({
-              referralId: franchise.referredId,
+              referralId: stateHandler.referredId,
             });
 
-            if(admin){
+            console.log(admin, "admin details")
+
+            
+              console.log( admin.isOnline, "1196");
               
-            }
+              // // adminWallet += 1400;
+
+              // await Admin.updateOne(
+              //   { referralId: stateHandler.referredId },
+              //   { $set: { adminWallet: adminWallet } }
+              // );
+            
           }
 
 
@@ -1231,7 +1240,6 @@ exports.changeUserPaymentStatus = async (req, res) => {
           const memberid = findUserFromMemberRefferedId[0].memberid;
           const referredId = findUserFromMemberRefferedId[0].reffered_id;
 
-          console.log(referredId, "[[[[[[[");
           let wallet = findUserFromMemberRefferedId[0].wallet;
           wallet = wallet + 500;
 
@@ -1263,9 +1271,9 @@ exports.changeUserPaymentStatus = async (req, res) => {
 
           console.log(businessDeveloper, "1630");
 
-          let businessDeveloperWallet = businessDeveloper.frenchiseWallet;
+          let businessDeveloperWallet = businessDeveloper.businessDeveloperWallet;
 
-          frenchiseWallet += 200;
+          businessDeveloperWallet += 200;
           await BusinessDeveloper.updateOne(
             { referralId: referredId },
             { $set: { businessDeveloperWallet: businessDeveloperWallet } }

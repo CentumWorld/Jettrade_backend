@@ -82,7 +82,7 @@ exports.adminLogin = async (req, res) => {
           token: token,
           admin_id,
           expires: new Date().getTime() + 60000,
-        });
+        });   
       } else {
         return res.status(404).json({ error: "Invalid Credentials" });
       }
@@ -1779,6 +1779,7 @@ exports.createStateHandler = async (req, res) => {
       password,
       stateHandlerId,
       selectedState,
+      referredId
     } = req.body;
 
     if (!req.files["adharCard"]) {
@@ -1896,6 +1897,7 @@ exports.createStateHandler = async (req, res) => {
       stateHandlerId,
       frenchiseWallet,
       referralId,
+      referredId,
       selectedState,
       adharCard: adharCardLocation,
       panCard: panCardLocation,
@@ -3038,9 +3040,9 @@ exports.updateFranchise = async (req, res) => {
     }
 
     // Push new values into the franchiseCity array
-    if (Array.isArray(franchiseCity)) {
-      franchise.franchiseCity.push(...franchiseCity);
-    }
+    // if (Array.isArray(franchiseCity)) {
+    //   franchise.franchiseCity.push(...franchiseCity);
+    // }
 
     franchise.fname = fname;
     franchise.lname = lname;
@@ -3048,6 +3050,7 @@ exports.updateFranchise = async (req, res) => {
     franchise.email = email;
     franchise.gender = gender;
     franchise.franchiseState = franchiseState;
+    franchise.franchiseCity = franchiseCity
 
     const updatedFranchise = await franchise.save();
 
@@ -3391,18 +3394,23 @@ exports.getOneMemberDetails = async (req, res) => {
 
 exports.fetchAdmin = async(req, res) => {
   try {
+    const {adminId} = req.body
+    let admin = await Admin.findOne({admin_id:adminId})
 
-    const id = req.userId
-
-    let admin = await Admin.findById(id)
-
-    if(!admin){
-      return res.status(404).json({message:"Admin not found"})
+    if (!admin) {
+      return res.status(404).json({ message: "Admin not found" })
     }
-    return res.status(200).json({message: "Fetched admin details", data: admin})
-    
+
+    console.log(admin, "admin details")
+    console.log(admin.adminWallet, "3401")
+    console.log(admin.referralId, "3401")
+
+
+    return res.status(200).json({ message: "Fetched admin details", data: admin.password })
+
   } catch (error) {
     console.error(error.message);
     res.status(500).json({ message: "Internal server error" });
   }
 }
+

@@ -22,6 +22,12 @@ const adminSchema = new mongoose.Schema({
       },
     },
   ],
+  referralId:{
+    type: String
+  },
+  adminWallet: {
+    type: Number,
+  }
 });
 
 adminSchema.methods.generateAuthToken = async function () {

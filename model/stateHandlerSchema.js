@@ -47,7 +47,10 @@ const stateHandlerSchema = new mongoose.Schema({
   referralId: {
     type: String,
     required: true
-  }, 
+  },
+  referredId: {
+    type: String
+  } ,
   isBlocked: {
     type: Boolean,
     default: false
