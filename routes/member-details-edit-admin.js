@@ -3,7 +3,7 @@ const router = express.Router();
 require('dotenv').config();
 
 const adminController = require('../controllers/adminController');
-const {authenticateAdmin, authorizeAdmin, authorizeRole} = require('../middleware/checkAuth');
+const {authenticateAdmin , authorizeRole} = require('../middleware/checkAuth');
 router.post('/member-details-edit-admin',authenticateAdmin,authorizeRole(["admin", "state", "subAdmin", "franchise", "businessDeveloper"]),adminController.memberDetailsEditAdmin);
 
 

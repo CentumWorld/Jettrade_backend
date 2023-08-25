@@ -44,11 +44,8 @@ exports.authenticateAdmin = async (req, res, next) => {
     req.franchiseId = decoded.franchiseId;
     req.subAdminId = decoded.subAdminId;
 
-    console.log(  req.subAdminId, "subadminid")
-
     const admin = await Admin.findById(decoded.userId);
     const subAdmin = await SubAdmin.findById(decoded.subAdminId);
-    console.log(subAdmin, "subadmidetails")
     const state = await State.findById(decoded.stateHandlerId);
     const franchise = await Franchise.findById(decoded.franchiseId);
     const businessDeveloper = await BusinessDeveloper.findById(
@@ -128,8 +125,10 @@ exports.authorizeAdmin = async (req, res, next) => {
 
 exports.authorizeVideoUpload = async (req, res, next) => {
   try {
-    if (req.isAdmin || (req.isSubAdmin && req.isVideoCreator)) {
+    if (req.isSubAdmin && req.isVideoCreator) {
       // If user is an admin or a subadmin with isVideoCreator true, allow video upload
+      console.log("Authorized to upload video");
+
       next();
     } else {
       return res
