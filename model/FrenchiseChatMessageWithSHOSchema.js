@@ -4,7 +4,8 @@ const FrenchiseChatMessageWithSHOSchema = new mongoose.Schema({
     room: String,
     author: String,
     message: String,
-    time: String
+    time: String,
+    referredId:String
 })
 
 

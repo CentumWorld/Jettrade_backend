@@ -211,6 +211,10 @@ const fetchChatMessageState = require('./routes/state/fetch-chat-message-state')
 const fetchChatDetailsState = require('./routes/state/fetch-chat-details-state');
 const updateStateDetails = require("./routes/state/update-state-details")
 const getOwnStateDetails = require("./routes/state/get-own-state-details")
+const fetchFrenchiseChatCountWithState = require('./routes/state/fetch-frenchise-chat-count-with-state');
+const stateFetchFrenchChatMessage = require('./routes/state/state-fetch-french-chat-message');
+const stateFrenchiseOnlineOrNot = require('./routes/state/state-frenchise-online-or-not');
+
 //======================Frenchise==============================================
 const getBusinessDevelopersInFranchise = require("./routes/frenchise/fetch-bdeveloper-in-franchise");
 const getMembersInFranchise = require("./routes/frenchise/fetch-members-in-franchise");
@@ -466,6 +470,10 @@ app.use('/state',fetchChatMessageState);
 app.use('/state',fetchChatDetailsState);;
 app.use("/state", updateStateDetails);
 app.use("/state", getOwnStateDetails);
+app.use('/state',fetchFrenchiseChatCountWithState);
+app.use('/state',stateFetchFrenchChatMessage);
+app.use('/state',stateFrenchiseOnlineOrNot);
+
 //============================Franchise=============================================
 
 app.use("/franchise", getBusinessDevelopersInFranchise);;

@@ -4,6 +4,9 @@ const FrenchChatTypeWithSHOSchema = new mongoose.Schema({
     frenchiseId: {
         type: String
     },
+    refferedId:{
+        type:String
+    }
     
 })
 

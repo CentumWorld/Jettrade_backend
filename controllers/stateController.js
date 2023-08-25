@@ -5,6 +5,8 @@ const User = require("../model/userSchema");
 const Admin = require("../model/adminSchema");
 const StateChatMessage = require("../model/StateChatMessageSchema");
 const StateChatType = require("../model/StateChatTypeSchema");
+const FrenchChatTypeWithSHO = require('../model/FrenchiseChatTypeWithSHOSchema');
+const StateChatMessageWithFrench = require('../model/FrenchiseChatMessageWithSHOSchema');
 const {
   isValidImage,
   isValidEmail,
@@ -355,7 +357,7 @@ exports.updateStateDetails = async (req, res) => {
     const { fname, lname, email, phone, gender } = req.body;
     const id = req.stateHandlerId;
 
-    if (!fname || !lname || !email || !phone || !gender ) {
+    if (!fname || !lname || !email || !phone || !gender) {
       return res.status(422).json({ message: "All fields are required." });
     }
 
@@ -420,3 +422,55 @@ exports.getOwnStateDetails = async (req, res) => {
     res.status(500).json({ message: "Internal server error" });
   }
 };
+
+// fetchFrenchiseChatCountWithState
+exports.fetchFrenchiseChatCountWithState = async (req, res) => {
+  try {
+    const { refferedId } = req.body
+    const frenchChatCount = await FrenchChatTypeWithSHO.find({ refferedId })
+    console.log(frenchChatCount, '429')
+    if (frenchChatCount) {
+      return res.status(200).json({
+        message: "French chat count with SHO fetched",
+        frenchChatCount
+      })
+    } else {
+      return res.status(400).json({
+        message: "Something went wrong"
+      })
+    }
+  } catch (error) {
+    return res.status(500).json({
+      message: "Internal server error"
+    })
+  }
+}
+
+// stateFetchFrenchChatMessage
+exports.stateFetchFrenchChatMessage = async (req,res) => {
+  const { room } = req.body;
+  let stateChatMessageWithFrench = await StateChatMessageWithFrench.find({ room: room });
+  if (stateChatMessageWithFrench) {
+    return res.status(200).json({
+      message: " State chat with frenchise message fetched",
+      stateChatMessageWithFrench,
+    });
+  } else {
+    return res.status(500).json({ message: "Something went wrong" });
+  }
+}
+
+// stateFrenchiseOnlineOrNot
+exports.stateFrenchiseOnlineOrNot = async (req,res) => {
+  const { frenchiseId } = req.body;
+  let frenchiseOnlineOrNot = await Frenchise.findOne({frenchiseId:frenchiseId})
+  if (frenchiseOnlineOrNot) {
+    const isOnline = frenchiseOnlineOrNot.isOnline;
+    return res.status(200).json({
+      message: "Frenchise Online status fetched",
+      isOnline,
+    });
+  } else {
+    return res.status(500).json({ message: "Something went wrong" });
+  }
+}

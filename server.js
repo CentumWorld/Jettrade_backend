@@ -247,37 +247,49 @@ io.on("connection", (socket) => {
 
 
         if (type === 'FRENCHWITHSHO') {
-
-            FrenchChatTypeWithSHO.find({ frenchiseId: data1 }, (err, result) => {
+            // Fetch Frenchisee details
+            Frenchisee.findOne({ frenchiseId: data1 }, (err, result) => {
                 if (err) {
                     console.error(err);
                     // Handle the error response here
-                } else {
-                    if (result) {
-                        const resultLength = Object.keys(result).length;
-                        console.log('Result length:', resultLength);
-                        if (resultLength === 0) {
-                            const frenchise = FrenchChatTypeWithSHO({frenchiseId: data1 })
-                            frenchise.save();
-
-                        }
-                    }
-                    Frenchisee.updateOne(
-                        { frenchiseId: data1 },
-                        { $set: { isOnline: true } },
-                        (err, result) => {
-                          if (err) {
-                            console.error('Failed to update document:', err);
-                            return;
-                          }
-                          console.log('updated to true',result)
-                          //userOnline
-                          socket.to(data).emit("frenchWithSHOOnline", data1);
-                        }
-                      );
-
-                    // Handle the result/response here
+                    return res.status(400).json({
+                        message: "Not Found"
+                    });
                 }
+                const fetchDetails =  result.referredId
+                console.log(fetchDetails,'260')
+        
+                // Fetch FrenchChatTypeWithSHO data
+                FrenchChatTypeWithSHO.find({ frenchiseId: data1 }, (err, result) => {
+                    if (err) {
+                        console.error(err);
+                        // Handle the error response here
+                    } else {
+                        if (result) {
+                            const resultLength = Object.keys(result).length;
+                            console.log('Result length:', resultLength);
+                            if (resultLength === 0) {
+                                const frenchise = FrenchChatTypeWithSHO({ frenchiseId: data1 ,refferedId:fetchDetails});
+                                frenchise.save();
+                            }
+                        }
+                        // Update Frenchisee status
+                        Frenchisee.updateOne(
+                            { frenchiseId: data1 },
+                            { $set: { isOnline: true } },
+                            (err, updateResult) => {
+                                if (err) {
+                                    console.error('Failed to update document:', err);
+                                    return;
+                                }
+                                console.log('Updated to true:', updateResult);
+        
+                                // Emit socket event
+                                socket.to(data).emit("frenchWithSHOOnline", data1);
+                            }
+                        );
+                    }
+                });
             });
         }
 
@@ -459,8 +471,8 @@ io.on("connection", (socket) => {
 // frenchise chat with SHO
     socket.on("frenchWithSHOMessage", (data) => {
         console.log(data);
-        const { room, author, message, time } = data;
-        const newChat = new FrenchChatMessageWithSHO({ room, author, message, time });
+        const { room, author, message, time,referredId } = data;
+        const newChat = new FrenchChatMessageWithSHO({ room, author, message, time,referredId});
         newChat.save()
             .then((savedChat) => {
 
@@ -475,6 +487,20 @@ io.on("connection", (socket) => {
          // Emit a notification event to the admin  
     })
 
+    //SHO chat with Frenchise
+    socket.on("SHOMessgaeFrench", (data) => {
+        const { room, author, message, time,referredId } = data;
+        const newChat = new FrenchChatMessageWithSHO({ room, author, message, time,referredId });
+        newChat.save()
+            .then((savedChat) => {
+                console.log('State message saved:', savedChat);
+            })
+            .catch((error) => {
+                console.error('Error saving refferal message:', error);
+
+            });
+        socket.to(data.room).emit("business_receive_message", data);
+    })
 
 
     //User logout event
