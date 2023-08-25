@@ -190,7 +190,8 @@ const getOneStateDetails = require("./routes/get-one-state-details")
 const getOneMemberDetails = require("./routes/get-one-member-details") 
 const updateAdharcardFranchise = require("./routes/update-adhar-card-franchise")
 const updatePanCardFranchise = require("./routes/update-pan-card-franchise")
-
+const updatePanCardBusinessDeveloper = require('./routes/update-pan-card-business-developer')
+const updateAdharcardBusinessDeveloper = require('./routes/update-adhar-card-business-developer')
  
 //=======================State=================================================
 
@@ -416,6 +417,9 @@ app.use("/admin", updateBusinessDeveloper);
 app.use('/admin',fetchBusinessChatMessageAdmin);
 app.use('/admin', fetchAdmin)
 app.use('/admin', fetchCityByReferralIdInFranchise)
+app.use('/admin', updateAdharcardBusinessDeveloper)
+
+app.use('/admin', updatePanCardBusinessDeveloper)
 
 // refferalin
 app.use("/member", memberLogin);
