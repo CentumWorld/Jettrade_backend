@@ -3151,6 +3151,49 @@ exports.updatePanCardFranchise = async (req, res) => {
   }
 };
 
+
+exports.updatePanCardBusinessDeveloper = async (req, res) => {
+  try {
+    const { id } = req.body;
+    const panCardFile = req.files["panCard"][0];
+
+    // Check if panCard image is valid using isValidImage function
+    if (!isValidImage(panCardFile.originalname)) {
+      return res.status(422).json({
+        message:
+          "Invalid panCard image format, image must be in jpeg, jpg, tiff, png, webp, or bmp format.",
+      });
+    }
+
+    const panCardLocation = panCardFile.location;
+
+    // Update business developer's panCard information
+    const updateData = {
+      panCard: panCardLocation,
+    };
+
+    const businessDeveloper = await BusinessDeveloper.findOneAndUpdate(
+      { _id: id, isDeleted: false },
+      { $set: updateData },
+      { new: true }
+    );
+
+    if (!businessDeveloper) {
+      return res.status(404).json({ message: "Business developer not found" });
+    }
+
+    res
+      .status(200)
+      .json({
+        message: "PAN card updated successfully",
+        panCard: businessDeveloper.panCard,
+      });
+  } catch (error) {
+    console.error(error.message);
+    res.status(500).json({ message: "Internal server error" });
+  }
+};
+
 //=========================================================================
 // update business developer
 exports.updateBusinessDeveloper = async (req, res) => {
@@ -3455,47 +3498,47 @@ exports.updateAdharcardBusinessDeveloper = async (req, res) => {
 };
 
 //=======================================================================
-exports.updatePanCardBusinessDeveloper = async (req, res) => {
-  try {
-    const { id } = req.body;
-    const panCardFile = req.files["panCard"][0];
+// exports.updatePanCardBusinessDeveloper = async (req, res) => {
+//   try {
+//     const { id } = req.body;
+//     const panCardFile = req.files["panCard"][0];
 
-    // Check if panCard image is valid using isValidImage function
-    if (!isValidImage(panCardFile.originalname)) {
-      return res.status(422).json({
-        message:
-          "Invalid panCard image format, image must be in jpeg, jpg, tiff, png, webp, or bmp format.",
-      });
-    }
+//     // Check if panCard image is valid using isValidImage function
+//     if (!isValidImage(panCardFile.originalname)) {
+//       return res.status(422).json({
+//         message:
+//           "Invalid panCard image format, image must be in jpeg, jpg, tiff, png, webp, or bmp format.",
+//       });
+//     }
 
-    const panCardLocation = panCardFile.location;
+//     const panCardLocation = panCardFile.location;
 
-    // Update business developer's panCard information
-    const updateData = {
-      panCard: panCardLocation,
-    };
+//     // Update business developer's panCard information
+//     const updateData = {
+//       panCard: panCardLocation,
+//     };
 
-    const businessDeveloper = await BusinessDeveloper.findOneAndUpdate(
-      { _id: id, isDeleted: false },
-      { $set: updateData },
-      { new: true }
-    );
+//     const businessDeveloper = await BusinessDeveloper.findOneAndUpdate(
+//       { _id: id, isDeleted: false },
+//       { $set: updateData },
+//       { new: true }
+//     );
 
-    if (!businessDeveloper) {
-      return res.status(404).json({ message: "Business developer not found" });
-    }
+//     if (!businessDeveloper) {
+//       return res.status(404).json({ message: "Business developer not found" });
+//     }
 
-    res
-      .status(200)
-      .json({
-        message: "PAN card updated successfully",
-        panCard: businessDeveloper.panCard,
-      });
-  } catch (error) {
-    console.error(error.message);
-    res.status(500).json({ message: "Internal server error" });
-  }
-};
+//     res
+//       .status(200)
+//       .json({
+//         message: "PAN card updated successfully",
+//         panCard: businessDeveloper.panCard,
+//       });
+//   } catch (error) {
+//     console.error(error.message);
+//     res.status(500).json({ message: "Internal server error" });
+//   }
+// };
 
 
 //===============================update Business developer details==========

@@ -7,7 +7,7 @@ const {  updatePanCardBusinessDeveloper } = require('../controllers/adminControl
 
 router.put(
   '/update-pan-card-business-developer',
-  upload.fields([{ name: 'adharCard' }]),
+  upload.fields([{ name: 'panCard'}]),
   authenticateAdmin,
   authorizeRole(["admin", "state", "franchise"]),
   updatePanCardBusinessDeveloper
