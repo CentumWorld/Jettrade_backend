@@ -3159,28 +3159,8 @@ exports.updateBusinessDeveloper = async (req, res) => {
       req.body;
     const id = req.body.id;
 
-    const adharCardFile = req.files["adharCard"][0];
-    const panCardFile = req.files["panCard"][0];
-
-    // Check if adharCard image is valid using isValidImage function
-    if (!isValidImage(adharCardFile.originalname)) {
-      return res.status(422).json({
-        message:
-          "Invalid adharCard image format, image must be in jpeg, jpg, tiff, png, webp, or bmp format.",
-      });
-    }
-
-    // Check if panCard image is valid using isValidImage function
-    if (!isValidImage(panCardFile.originalname)) {
-      return res.status(422).json({
-        message:
-          "Invalid panCard image format, image must be in jpeg, jpg, tiff, png, webp, or bmp format.",
-      });
-    }
-
-    const adharCardLocation = adharCardFile.location;
-    const panCardLocation = panCardFile.location;
-
+  
+  
     // Validate input fields
     if (
       !fname ||
@@ -3231,8 +3211,7 @@ exports.updateBusinessDeveloper = async (req, res) => {
       password,
       gender,
       buisnessCity,
-      panCard: panCardLocation,
-      adharCard: adharCardLocation,
+     
     };
 
     const updatedBusinessDeveloper = await BusinessDeveloper.findOneAndUpdate(
