@@ -3385,3 +3385,24 @@ exports.getOneMemberDetails = async (req, res) => {
     res.status(500).json({ message: "Internal server error" });
   }
 };
+
+//======================================================================\
+//fetch admin
+
+exports.fetchAdmin = async(req, res) => {
+  try {
+
+    const id = req.userId
+
+    let admin = await Admin.findById(id)
+
+    if(!admin){
+      return res.status(404).json({message:"Admin not found"})
+    }
+    return res.status(200).json({message: "Fetched admin details", data: admin})
+    
+  } catch (error) {
+    console.error(error.message);
+    res.status(500).json({ message: "Internal server error" });
+  }
+}
