@@ -3394,8 +3394,8 @@ exports.getOneMemberDetails = async (req, res) => {
 
 exports.fetchAdmin = async(req, res) => {
   try {
-    const {adminId} = req.body
-    let admin = await Admin.findOne({admin_id:adminId})
+    const id = req.userId
+    let admin = await Admin.findOne({_id:id})
 
     if (!admin) {
       return res.status(404).json({ message: "Admin not found" })
@@ -3406,7 +3406,7 @@ exports.fetchAdmin = async(req, res) => {
     console.log(admin.referralId, "3401")
 
 
-    return res.status(200).json({ message: "Fetched admin details", data: admin.password })
+    return res.status(200).json({ message: "Fetched admin details", data: admin })
 
   } catch (error) {
     console.error(error.message);
