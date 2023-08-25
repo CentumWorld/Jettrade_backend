@@ -1,17 +1,16 @@
 const express = require('express');
 const router = express.Router();
-const upload = require('../utils/aws'); // Update the path to awsS3.js file
+const upload = require('../utils/aws'); 
 const adminController = require('../controllers/adminController');
-const {authenticateAdmin, authorizeAdmin, authorizeAdminandSubAdmin, authorizeVideoUpload} = require('../middleware/checkAuth');
+const {authenticateAdmin, authorizeVideoUpload, authorizeRole} = require('../middleware/checkAuth');
 
-
-// Create a new video
-// router.post('/createvideo', upload.single('videoOne'),checkMiddleware.checkAuth, adminController.createVideo);
 
 router.post(
     '/createvideo',
     upload.fields([{ name: 'videoOne', maxCount: 1 }, { name: 'thumbnail', maxCount: 1 }]),
-    authenticateAdmin,authorizeVideoUpload,
+    authenticateAdmin,
+    authorizeVideoUpload,
+    // authorizeRole(['subAdmin']),
     adminController.createVideo
   );
 

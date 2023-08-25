@@ -65,9 +65,12 @@ exports.authenticateAdmin = async (req, res, next) => {
       req.userRoles.push("admin");
     }
 
+   
+
     if (subAdmin) {
       req.userRoles.push("subAdmin");
-      req.isVideoCreator = subAdmin.isVideoCreator;
+      req.isSubAdmin = true; // Set isSubAdmin to true for subadmin
+      req.isVideoCreator = subAdmin.isVideoCreator; // Set isVideoCreator based on subadmin property
     }
 
     if (state) {
