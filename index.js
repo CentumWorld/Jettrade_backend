@@ -230,7 +230,12 @@ const fetchChatDetailsFrenchiseWithSHO = require('./routes/frenchise/fetch-chat-
 const fetchChatWithSHOMessage = require('./routes/frenchise/fetch-chat-with-SHO-message');
 const SHOonlineOrNotFrench = require('./routes/frenchise/SHO-online-or-not-french');
 const getOwnFranchiseDetails = require("./routes/frenchise/get-own-franchise-details")
-const updateOwnFranchiseDetails = require("./routes/frenchise/update-own-franchise-details")
+const updateOwnFranchiseDetails = require("./routes/frenchise/update-own-franchise-details");
+const fetchBusinessChatCountWithFrenchise = require('./routes/frenchise/fetch-business-chat-count-with-frenchise');
+const frenchiseFetchBusinessChatMessage = require('./routes/frenchise/frenchise-fetch-business-chat-message'); 
+const frenchiseBusinessOnlineOrNot = require('./routes/frenchise/frenchise-business-online-or-not');
+
+
 //=========================Business developer======================================
 const getAllMembersInBusinessDeveloper = require("./routes/businessDeveloper/fetch-all-members-in-business-developer");
 const blockMemberByBusinessDeveloper = require("./routes/businessDeveloper/block-member-by-business-developer");
@@ -241,6 +246,10 @@ const fetchChatMessageBusiness = require('./routes/businessDeveloper/fetch-chat-
 const adminOnlineOrNotBusiness = require('./routes/businessDeveloper/admin-online-or-not-business');;
 const getOwnBusinessDeveloperDetails = require("./routes/businessDeveloper/get-own-business-developer-details");
 const updateOwnBusinessDeveloperDetails = require("./routes/businessDeveloper/update-own-business-developer-details");
+const businessDFetchChatDetailsWithFrench = require('./routes/businessDeveloper/businessD-fetch-chat-details-with-french');
+const businessDFetchChatMessageWithFrench = require('./routes/businessDeveloper/businessD-fetch-chat-message-with-french');
+const frenchiseOnlineOrNotForBusiness = require('./routes/businessDeveloper/Frenchise-online-or-not-for-businessD');
+
 //==============================SubAdmin====================================
 const getOwnSubAdminDetails = require("./routes/subAdmin/get-own-sub-admin-details")
 const updateOwnSubAdminDetails = require("./routes/subAdmin/update-own-sub-admin-details")
@@ -493,7 +502,10 @@ app.use('/frenchise',fetchChatDetailsFrenchiseWithSHO);
 app.use('/frenchise',fetchChatWithSHOMessage);
 app.use('/frenchise',SHOonlineOrNotFrench);
 app.use("/franchise", getOwnFranchiseDetails)
-app.use("/franchise", updateOwnFranchiseDetails)
+app.use("/franchise", updateOwnFranchiseDetails);
+app.use('/frenchise',fetchBusinessChatCountWithFrenchise);
+app.use('/frenchise',frenchiseFetchBusinessChatMessage);
+app.use('/frenchise',frenchiseBusinessOnlineOrNot);
 
 //============================Business developer===========================
 app.use("/businessDeveloper", getAllMembersInBusinessDeveloper);
@@ -505,6 +517,10 @@ app.use("/businessDeveloper", updateOwnBusinessDeveloperDetails);
 app.use('/businessDeveloper',fetchChatDetailsBusiness);
 app.use('/businessDeveloper',fetchChatMessageBusiness);
 app.use('/businessDeveloper',adminOnlineOrNotBusiness);
+app.use('/businessDeveloper',businessDFetchChatDetailsWithFrench);
+app.use('/businessDeveloper',businessDFetchChatMessageWithFrench);
+app.use('/businessDeveloper',frenchiseOnlineOrNotForBusiness);
+
 //=============================Sub- Admin======================================
 app.use('/subAdmin',getOwnSubAdminDetails);
 app.use('/subAdmin', updateOwnSubAdminDetails)

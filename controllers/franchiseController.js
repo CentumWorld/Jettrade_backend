@@ -9,6 +9,8 @@ const FrenchChatMessageWithSHO = require('../model/FrenchiseChatMessageWithSHOSc
 const StateHandler = require('../model/stateHandlerSchema');
 const Frenchise = require('../model/frenchiseSchema');
 const Franchise = require("../model/frenchiseSchema")
+const FrenchChatTypeWithBD = require('../model/FrenchChatTypeWithBDSchema');
+const FrenchiseChatMessageWithBD = require('../model/FrenchiseChatMessageWithBDSchema');
 const {
   isValidImage,
   isValidEmail,
@@ -279,4 +281,54 @@ exports.updateOwnFranchiseDetails = async (req, res) => {
   }
 };
 
+// frenchise/fetch-business-chat-count-with-frenchise
+exports.fetchBusinessChatCountWithFrenchise = async (req,res) => {
+  try {
+    const { refferedId } = req.body
+    const frenchChatCount = await FrenchChatTypeWithBD.find({ refferedId })
+    console.log(frenchChatCount, '287')
+    if (frenchChatCount) {
+      return res.status(200).json({
+        message: "French chat count with BD fetched",
+        frenchChatCount
+      })
+    } else {
+      return res.status(400).json({
+        message: "Something went wrong"
+      })
+    }
+  } catch (error) {
+    return res.status(500).json({
+      message: "Internal server error"
+    })
+  }
+}
 
+// frenchiseFetchBusinessChatMessage
+exports.frenchiseFetchBusinessChatMessage = async(req,res) =>{
+  const { room } = req.body;
+  let frenchChatMessageWithBusiness = await FrenchiseChatMessageWithBD.find({ room: room });
+  if (frenchChatMessageWithBusiness) {
+    return res.status(200).json({
+      message: "Frenchise chat with businessD message fetched",
+      frenchChatMessageWithBusiness,
+    });
+  } else {
+    return res.status(500).json({ message: "Something went wrong" });
+  }
+}
+
+// frenchiseBusinessOnlineOrNot
+exports.frenchiseBusinessOnlineOrNot = async (req,res) => {
+  const { businessDeveloperId } = req.body;
+  let businessDOnlineOrNot = await BusinessDeveloper.findOne({businessDeveloperId:businessDeveloperId})
+  if (businessDOnlineOrNot) {
+    const isOnline = businessDOnlineOrNot.isOnline;
+    return res.status(200).json({
+      message: "Business Online status fetched",
+      isOnline,
+    });
+  } else {
+    return res.status(500).json({ message: "Something went wrong" });
+  }
+}

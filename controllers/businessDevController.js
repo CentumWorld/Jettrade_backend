@@ -4,6 +4,9 @@ const BusinessDeveloperChatType = require('../model/BusinessDeveloperChatTypeSch
 const BusinessDeveloperChatMessage = require('../model/BusinessDeveloperChatMessageSchema');
 const Admin = require('../model/adminSchema');
 const BusinessDeveloper = require("../model/businessDeveloperSchema");
+const FrenchChatTypeWithBD = require('../model/FrenchChatTypeWithBDSchema');
+const FrenchiseChatMessageWithBD = require('../model/FrenchiseChatMessageWithBDSchema');
+const Frenchise = require('../model/frenchiseSchema');
 const {
   isValidImage,
   isValidEmail,
@@ -257,3 +260,66 @@ exports.getOwnBusinessDeveloperDetails = async (req, res) => {
     res.status(500).json({ message: "Internal server error" });
   }
 };
+
+// businessDFetchChatDetailsWithFrench
+exports.businessDFetchChatDetailsWithFrench = async (req,res) => {
+  const {businessDeveloperId} = req.body;
+  let businessChatDetails = await FrenchChatTypeWithBD.find({ businessDeveloperId: businessDeveloperId });
+  if (businessChatDetails) {
+    return res.status(200).json({
+      message: "Business chat details fetched",
+      businessChatDetails,
+    });
+  } else {
+    return res.status(500).json({ message: "Something went wrong" });
+  }
+}
+
+// businessDFetchChatMessageWithFrench
+exports.businessDFetchChatMessageWithFrench = async (req,res) => {
+  const { room } = req.body;
+  let businessChatMessageWithFrench = await FrenchiseChatMessageWithBD.find({ room: room });
+  if (businessChatMessageWithFrench) {
+    return res.status(200).json({
+      message: " Business chat message with french fetched",
+      businessChatMessageWithFrench,
+    });
+  } else {
+    return res.status(500).json({ message: "Something went wrong" });
+  }
+}
+
+// frenchiseOnlineOrNotForBusiness
+exports.frenchiseOnlineOrNotForBusiness = async (req,res) => {
+  const { businessDeveloperId } = req.body;
+  const findLoginBusinessD = await BusinessDeveloper.findOne({ businessDeveloperId: businessDeveloperId })
+
+
+  if (findLoginBusinessD) {
+    let LoginBusinessRefferedId = findLoginBusinessD.referredId
+    console.log(LoginBusinessRefferedId,'300')
+    const findFrenchisefromBusinessD = await Frenchise.findOne({ referralId: LoginBusinessRefferedId })
+    // console.log(findFrenchisefromBusinessD,'302')
+    if (findFrenchisefromBusinessD) {
+      const frenchiseId = findFrenchisefromBusinessD.frenchiseId
+      const isFrenchiseOnline = findFrenchisefromBusinessD.isOnline
+
+      return res.status(200).json({
+        message: "Frenchise isOnline status fetched",
+        frenchiseId,
+        isFrenchiseOnline
+      })
+    }
+    else {
+      return res.status(400).json({
+        message: "Something went wrong1"
+
+      })
+    }
+  }
+  else {
+    return res.status(400).json({
+      message: "No Data Found"
+    })
+  }
+}

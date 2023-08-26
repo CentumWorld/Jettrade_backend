@@ -22,6 +22,8 @@ const BusinessDeveloperChatType = require('./model/BusinessDeveloperChatTypeSche
 const BusinessDeveloper = require('./model/businessDeveloperSchema');
 const FrenchChatTypeWithSHO = require('./model/FrenchiseChatTypeWithSHOSchema');
 const FrenchChatMessageWithSHO = require('./model/FrenchiseChatMessageWithSHOSchema');
+const FrenchChatTypeWithBD = require('./model/FrenchChatTypeWithBDSchema');
+const FrenchiseChatMessageWithBD = require('./model/FrenchiseChatMessageWithBDSchema');
 
 
 
@@ -293,6 +295,54 @@ io.on("connection", (socket) => {
             });
         }
 
+        // BUSINESSWITHFRENCHISE
+        if (type === 'BUSINESSWITHFRENCHISE') {
+            // Fetch Business details
+            BusinessDeveloper.findOne({ businessDeveloperId: data1 }, (err, result) => {
+                if (err) {
+                    console.error(err);
+                    // Handle the error response here
+                    return res.status(400).json({
+                        message: "Not Found"
+                    });
+                }
+                const fetchDetails =  result.referredId
+                console.log(fetchDetails,'260')
+        
+                // Fetch FrenchChatTypeWithBD data
+                FrenchChatTypeWithBD.find({ businessDeveloperId: data1 }, (err, result) => {
+                    if (err) {
+                        console.error(err);
+                        // Handle the error response here
+                    } else {
+                        if (result) {
+                            const resultLength = Object.keys(result).length;
+                            console.log('Result length:', resultLength);
+                            if (resultLength === 0) {
+                                const businessD = FrenchChatTypeWithBD({ businessDeveloperId: data1,refferedId:fetchDetails });
+                                businessD.save();
+                            }
+                        }
+                        // Update Frenchisee status
+                        BusinessDeveloper.updateOne(
+                            { businessDeveloperId: data1 },
+                            { $set: { isOnline: true } },
+                            (err, updateResult) => {
+                                if (err) {
+                                    console.error('Failed to update document:', err);
+                                    return;
+                                }
+                                console.log('Updated to true:', updateResult);
+        
+                                // Emit socket event
+                                socket.to(data).emit("BusinessWithFrenchOnline", data1);
+                            }
+                        );
+                    }
+                });
+            });
+        }
+
     })
 
     // chatting system
@@ -502,6 +552,39 @@ io.on("connection", (socket) => {
         socket.to(data.room).emit("business_receive_message", data);
     })
 
+     // Business chat with French
+     socket.on("businessWithFrenchMessage", (data) => {
+        console.log(data);
+        const { room, author, message, time } = data;
+        const newChat = new FrenchiseChatMessageWithBD({ room, author, message, time });
+        newChat.save()
+            .then((savedChat) => {
+
+                console.log('BusinessD message saved:', savedChat);
+              
+            })
+            .catch((error) => {
+                console.error('Error saving user message:', error);
+
+            });
+        socket.to(data.room).emit("admin_receive_message", data);
+         // Emit a notification event to the admin  
+    })
+
+    // french chat with Business
+    socket.on("frenchMessgaeBusiness", (data) => {
+        const { room, author, message, time,referredId } = data;
+        const newChat = new FrenchiseChatMessageWithBD({ room, author, message, time,referredId });
+        newChat.save()
+            .then((savedChat) => {
+                console.log('French message saved:', savedChat);
+            })
+            .catch((error) => {
+                console.error('Error saving refferal message:', error);
+
+            });
+        socket.to(data.room).emit("business_receive_message", data);
+    })
 
     //User logout event
     socket.on('userLogout', (userId)=>{ 
