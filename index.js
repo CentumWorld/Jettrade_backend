@@ -122,6 +122,7 @@ const fetchBusinessChatMessageAdmin = require('./routes/fetch-business-chat-mess
 const adminBusinessOnlineOrNot = require('./routes/admin-business-online-or-not');
 const fetchAdmin = require("./routes/fetch-admin") 
 const fetchCityByReferralIdInFranchise = require("./routes/fetch-city-by-referralId-infranchise")
+const fetchAdminCreditwalletTransactionDetails = require("./routes/fetch-admin-credit-wallet-transaction-details")
 
 // refferal
 const memberRegistration = require("./routes/refferal/member-registration");
@@ -424,6 +425,7 @@ app.use('/admin', fetchCityByReferralIdInFranchise)
 app.use('/admin', updateAdharcardBusinessDeveloper)
 
 app.use('/admin', updatePanCardBusinessDeveloper)
+app.use('/admin', fetchAdminCreditwalletTransactionDetails)
 
 // refferalin
 app.use("/member", memberLogin);
