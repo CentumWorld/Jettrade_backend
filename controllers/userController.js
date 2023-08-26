@@ -34,7 +34,8 @@ const Franchise = require("../model/frenchiseSchema");
 const FranchiseCreditWalletTransaction = require("../model/frenchiseCreditWalletTransactionSchema");
 const StateHandler = require("../model/stateHandlerSchema");
 const StateHandlerCreditWalletTransaction = require("../model/stateHandlerCreditWalletTransactionScema");
-
+const AdminCreditWalletTransaction = require('../model/adminCreditWalletTransaction')
+ 
 //const profilePhoto = require('../model/profilePhotoSchema');
 
 // userRegistartion
@@ -1216,6 +1217,16 @@ exports.changeUserPaymentStatus = async (req, res) => {
                 { referralId: stateHandler.referredId },
                 { $set: { adminWallet: adminWallet } }
               );
+
+              const adminCreditWalletDetails =
+              new AdminCreditWalletTransaction({
+                admin_id: admin.admin_id,
+                creditAmount: 1400,
+                Type: "New",
+                refferUserId: stateHandler.stateHandlerId,
+              });
+
+            await adminCreditWalletDetails.save();
             }
           }
 
@@ -2064,6 +2075,18 @@ exports.changePaymentStatusForRenewal = async (req, res) => {
             { referralId: stateHandler.referredId },
             { $set: { adminWallet } }
           );
+
+          const adminCreditWalletDetails =
+          new AdminCreditWalletTransaction({
+            admin_id: admin.admin_id,
+            creditAmount: 500,
+            Type: "Renewal",
+            refferUserId: stateHandler.stateHandlerId,
+          });
+
+        await adminCreditWalletDetails.save();
+
+
           if (insertWalletAmount) {
             return res.status(200).json({
               message: "Payment Successfull",

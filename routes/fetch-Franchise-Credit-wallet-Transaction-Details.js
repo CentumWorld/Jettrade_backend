@@ -3,9 +3,9 @@ const router = express.Router();
 require('dotenv').config();
 
 const adminController = require('../controllers/adminController');
-const {authenticateAdmin, authorizeAdmin} = require('../middleware/checkAuth');
+const {authenticateAdmin, authorizeRole} = require('../middleware/checkAuth');
 
-router.get('/fetch-franchise-credit-wallet-transaction-details',authenticateAdmin,authorizeAdmin,adminController.fetchFranchiseCreditwalletTransactionDetails);
+router.get('/fetch-franchise-credit-wallet-transaction-details',authenticateAdmin,authorizeRole(["admin", "state"]),adminController.fetchFranchiseCreditwalletTransactionDetails);
 
 
 module.exports = router;
