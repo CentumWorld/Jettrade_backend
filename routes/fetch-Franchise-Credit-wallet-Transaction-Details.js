@@ -5,7 +5,7 @@ require('dotenv').config();
 const adminController = require('../controllers/adminController');
 const {authenticateAdmin, authorizeRole} = require('../middleware/checkAuth');
 
-router.get('/fetch-franchise-credit-wallet-transaction-details',authenticateAdmin,authorizeRole(["admin", "state"]),adminController.fetchFranchiseCreditwalletTransactionDetails);
+router.get('/fetch-franchise-credit-wallet-transaction-details',authenticateAdmin,authorizeRole(["admin", "state", "franchise"]),adminController.fetchFranchiseCreditwalletTransactionDetails);
 
 
 module.exports = router;

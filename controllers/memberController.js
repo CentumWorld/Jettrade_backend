@@ -54,7 +54,6 @@ exports.memberRegistration = async (req, res) => {
     memberid,
     password,
     reffered_id,
-    userWhat
   } = req.body;
 
   const requiredFields = [
@@ -138,7 +137,7 @@ exports.memberRegistration = async (req, res) => {
       memberid,
       password,
       reffered_id,
-     userType: userWhat
+     userType: "indian"
     });
     await member.save();
     res.status(201).json({ message: "Member registered successfully" });
@@ -187,7 +186,7 @@ exports.otherCountryMemberRegistration = async (req, res) => {
     memberid,
     password,
     reffered_id,
-    userWhat
+    
   } = req.body;
 
   const requiredFields = [
@@ -264,7 +263,7 @@ exports.otherCountryMemberRegistration = async (req, res) => {
         memberid,
         password,
         reffered_id,
-        userType: userWhat
+        userType: "other"
       });
       await member.save();
       res.status(201).json({ message: "Member registered successfully" ,member});
