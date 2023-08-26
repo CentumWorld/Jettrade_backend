@@ -15,7 +15,8 @@ const {
   isValidPassword,
 } = require("../validation/validation");
 const stateHandler = require("../model/stateHandlerSchema"); 
-const StateHandlerCreditWalletTransactionScema = require("../model/stateHandlerCreditWalletTransactionScema")
+const StateHandlerCreditWalletTransactionScema = require("../model/stateHandlerCreditWalletTransactionScema") 
+const FranchiseCreditWalletTransactionSchema = require('../model/frenchiseCreditWalletTransactionSchema')
 
 //===============================================================================
 //fetch all franchise list
@@ -501,7 +502,7 @@ exports.getOwnStateCreditWalletTransactionDetails = async(req, res)=> {
 
 exports.getOwnFranchiseInsideStateCreditWalletTransactionDetails = async(req, res)=> {
   try {
-
+//get-own-franchise-inside-state-credit-wallet-transaction-details
     const {stateHandlerId} = req.body
 
     const state= await stateHandler.findOne({stateHandlerId:stateHandlerId})
@@ -510,17 +511,14 @@ exports.getOwnFranchiseInsideStateCreditWalletTransactionDetails = async(req, re
       return res.status(404).json({message: "State not found"})
     }
 
-    // const franchiseCreditWalletTransaction = await FranchiseCreditWalletTransactionScema.find({franchiseId:})
+    const data = await FranchiseCreditWalletTransactionSchema.find({referedIdBy:state.referralId})
 
-
-
-    const data = await StateHandlerCreditWalletTransactionScema.find({stateHandlerId: stateHandlerId})
 
     if(!data){
-      return res.status(404).json({message: "State Handler  Credit Wallet Transaction not found"})
+      return res.status(404).json({message: "Franchise Credit Wallet Transaction not found"})
     }
 
-    return res.status(200).json({message: "fetched State Handler  Credit Wallet Transaction details", data:data})
+    return res.status(200).json({message: "fetched Franchise  Credit Wallet Transaction details", data:data})
   } catch (error) {
     console.log(error.message)
     return res.status(500).json({ message: "Internal server error" });

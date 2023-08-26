@@ -1146,9 +1146,12 @@ exports.changeUserPaymentStatus = async (req, res) => {
             const bdCreditWalletDetails =
               new BusinessDeveloperCreditWalletTransaction({
                 businessDeveloperId: bdUserid,
+                
                 creditAmount: WALLET_CREDIT_AMOUNT,
                 Type: "New",
                 refferUserId: memberid,
+
+                franchiseReferralId: franchise.referredId, // Add this line
               });
 
             await bdCreditWalletDetails.save();
@@ -1194,6 +1197,7 @@ exports.changeUserPaymentStatus = async (req, res) => {
               const statehandlerCreditWalletDetails =
                 new StateHandlerCreditWalletTransaction({
                   stateHandlerId: stateHandler.stateHandlerId,
+
                   creditAmount: 300,
                   Type: "New",
                   refferUserId: franchise.frenchiseId,

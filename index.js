@@ -217,6 +217,7 @@ const stateFetchFrenchChatMessage = require('./routes/state/state-fetch-french-c
 const stateFrenchiseOnlineOrNot = require('./routes/state/state-frenchise-online-or-not');
 
 const getOwnStateCreditWalletTransactionDetails =require('./routes/state/get-own-state-credit-wallet-transaction-details')
+const getOwnFranchiseInsideStateCreditWalletTransactionDetails = require('./routes/state/get-own-franchise-inside-state-credit-wallet-transaction-details')
 
 //======================Frenchise==============================================
 const getBusinessDevelopersInFranchise = require("./routes/frenchise/fetch-bdeveloper-in-franchise");
@@ -478,6 +479,7 @@ app.use('/state',fetchFrenchiseChatCountWithState);
 app.use('/state',stateFetchFrenchChatMessage);
 app.use('/state',stateFrenchiseOnlineOrNot);
 app.use('/state', getOwnStateCreditWalletTransactionDetails)
+app.use('/state', getOwnFranchiseInsideStateCreditWalletTransactionDetails)
 
 //============================Franchise=============================================
 
