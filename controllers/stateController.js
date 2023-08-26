@@ -483,7 +483,38 @@ exports.getOwnStateCreditWalletTransactionDetails = async(req, res)=> {
 
     const {stateHandlerId} = req.body
 
-    const data = await StateHandlerCreditWalletTransactionScema.findOne({stateHandlerId: stateHandlerId})
+    const data = await StateHandlerCreditWalletTransactionScema.find({stateHandlerId: stateHandlerId})
+
+    if(!data){
+      return res.status(404).json({message: "State Handler  Credit Wallet Transaction not found"})
+    }
+
+    return res.status(200).json({message: "fetched State Handler  Credit Wallet Transaction details", data:data})
+  } catch (error) {
+    console.log(error.message)
+    return res.status(500).json({ message: "Internal server error" });
+
+  }
+}
+
+//================================================================
+
+exports.getOwnFranchiseInsideStateCreditWalletTransactionDetails = async(req, res)=> {
+  try {
+
+    const {stateHandlerId} = req.body
+
+    const state= await stateHandler.findOne({stateHandlerId:stateHandlerId})
+    
+    if(!state){
+      return res.status(404).json({message: "State not found"})
+    }
+
+    // const franchiseCreditWalletTransaction = await FranchiseCreditWalletTransactionScema.find({franchiseId:})
+
+
+
+    const data = await StateHandlerCreditWalletTransactionScema.find({stateHandlerId: stateHandlerId})
 
     if(!data){
       return res.status(404).json({message: "State Handler  Credit Wallet Transaction not found"})
