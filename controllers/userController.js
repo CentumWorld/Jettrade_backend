@@ -998,7 +998,6 @@ exports.fetchUserid = async (req, res) => {
   }
 };
 
-
 exports.changeUserPaymentStatus = async (req, res) => {
   const { userid } = req.body;
   const serviceAmount = 3500;
@@ -1008,7 +1007,6 @@ exports.changeUserPaymentStatus = async (req, res) => {
   const payment = userExist.paymentCount;
 
   const reffered_id = userExist.reffered_id;
-  // console.log(reffered_id, "582");
 
   const user = await User.updateOne(
     { userid: userid },
@@ -1028,6 +1026,23 @@ exports.changeUserPaymentStatus = async (req, res) => {
   });
   userActivate.save();
   if (reffered_id === "admin@123") {
+    const admin = await Admin.findOne({
+      referralId: "admin@123", // Assuming "admin@123" is the admin's referralId
+    });
+
+    if (admin) {
+      let adminWallet = admin.adminWallet;
+      adminWallet += 3500;
+      // Update admin's wallet
+      await Admin.updateOne(
+        { referralId: "admin@123" }, // Assuming "admin@123" is the admin's referralId
+        { $set: { adminWallet: adminWallet } }
+      );
+
+      return res.status(200).json({ message: "Your payment successful" });
+    } else {
+      return res.status(500).json({ message: "Admin not found" });
+    }
     return res.status(200).json({ message: "Your paymnet successfull" });
   } else {
     if (user) {
@@ -1110,7 +1125,6 @@ exports.changeUserPaymentStatus = async (req, res) => {
 
           if (bdDetails) {
             const bdUserid = bdDetails.businessDeveloperId;
-            console.log(bdUserid, "lllll");
             let businessDeveloperWallet = bdDetails.businessDeveloperWallet;
             const WALLET_CREDIT_AMOUNT = 500;
             businessDeveloperWallet =
@@ -1187,16 +1201,15 @@ exports.changeUserPaymentStatus = async (req, res) => {
               await statehandlerCreditWalletDetails.save();
             }
 
-            
             const admin = await Admin.findOne({
               referralId: stateHandler.referredId,
             });
 
-            console.log(admin, "1195admin details")
+            console.log(admin, "1195admin details");
 
-            if(admin){
-              console.log( admin.adminWallet);
-              let adminWallet = admin.adminWallet
+            if (admin) {
+              console.log(admin.adminWallet);
+              let adminWallet = admin.adminWallet;
               adminWallet += 1400;
 
               await Admin.updateOne(
@@ -1205,8 +1218,6 @@ exports.changeUserPaymentStatus = async (req, res) => {
               );
             }
           }
-
-
 
           let wallet = findUserFromMemberRefferedId[0].wallet;
           wallet = wallet + 1000;
@@ -1274,7 +1285,8 @@ exports.changeUserPaymentStatus = async (req, res) => {
 
           console.log(businessDeveloper, "1630");
 
-          let businessDeveloperWallet = businessDeveloper.businessDeveloperWallet;
+          let businessDeveloperWallet =
+            businessDeveloper.businessDeveloperWallet;
 
           businessDeveloperWallet += 200;
           await BusinessDeveloper.updateOne(
@@ -1297,6 +1309,7 @@ exports.changeUserPaymentStatus = async (req, res) => {
     }
   }
 };
+
 // userfetchRefferalPayout
 exports.userfetchRefferalPayout = async (req, res) => {
   const { userid } = req.body;
@@ -1386,55 +1399,6 @@ exports.fetchApproveRefferalPayoutUser = async (req, res) => {
     return res.status(500).json({ message: "Something went wrong" });
   }
 };
-
-// userChat
-// exports.userChat(server) = async (req, res) => {
-
-//     const io = new Server(server, {
-//         cors: {
-//             origin: ["http://localhost:3000", "http://localhost:3001"],
-//             methods: ["GET", "POST"]
-//         }
-//     })
-
-//     io.on("connection", (socket) => {
-//         console.log(`User Connnected : ${socket.id}`);
-
-//         socket.on("join_room", (data, type) => {
-//             socket.join(data);
-//             const data1 = data;
-//             console.log(`User with Id: ${socket.id} joined room : ${data}`)
-//             console.log(typeof (data), type, '38');
-//             if (type === 'USER') {
-
-//                 const exitChat = ChatType.findOne({ userid: data1 })
-//                 console.log(exitChat);
-
-//                 //  const user =  ChatType({userid:data1})
-//                 //   user.save();
-//                 //   socket.emit('userResponse',response)
-
-//             }
-//             if (type === "ADMIN") {
-
-//             }
-//         })
-
-//         // chatting system
-//         socket.on("userMessage", (data) => {
-//             socket.to(data.room).emit("admin_receive_message", data);
-//         })
-
-//         socket.on("adminMessgae", (data) => {
-//             socket.to(data.room).emit("user_receive_message", data);
-//         })
-
-//         socket.on("disconnect", () => {
-//             console.log(`user ${socket.id} disconnected`);
-//         })
-//     })
-
-// }
 
 // fetchChatDetailsUser
 exports.fetchChatDetailsUser = async (req, res) => {
@@ -1872,14 +1836,6 @@ exports.changePaymentStatusForRenewal = async (req, res) => {
       },
     }
   );
-  // const myReferralDetails =  new MyReferral({
-  //   userid:userExist.userid,
-  //   joininigDate:userExist.doj,
-  //   refferal_id: userExist.reffered_id,
-  //   referralAmount : 700,
-  //   userType: "Renewal"
-  // })
-  // myReferralDetails.save()
 
   const userRenewal = new UserRenewal({
     userid: userid,
@@ -1887,7 +1843,24 @@ exports.changePaymentStatusForRenewal = async (req, res) => {
   });
   userRenewal.save();
   if (reffered_id === "admin@123") {
-    return res.status(200).json({ message: "Your paymnet successfull" });
+    const admin = await Admin.findOne({
+      referralId: "admin@123", 
+    });
+
+    if (admin) {
+      let adminWallet = admin.adminWallet;
+
+      adminWallet += 1500;
+
+      await Admin.updateOne(
+        { referralId: "admin@123" }, 
+        { $set: { adminWallet: adminWallet } }
+      );
+
+      return res.status(200).json({ message: "Your payment successful" });
+    } else {
+      return res.status(500).json({ message: "Admin not found" });
+    }
   } else {
     if (user) {
       const findUserFromRefferedId = await User.find({
@@ -2080,6 +2053,17 @@ exports.changePaymentStatusForRenewal = async (req, res) => {
 
           await stateHandlerCreditWalletDetails.save();
 
+          const admin = await Admin.findOne({
+            referralId: stateHandler.referredId,
+          });
+
+          let adminWallet = admin.adminWallet;
+          adminWallet += 500;
+
+          await Admin.updateOne(
+            { referralId: stateHandler.referredId },
+            { $set: { adminWallet } }
+          );
           if (insertWalletAmount) {
             return res.status(200).json({
               message: "Payment Successfull",
@@ -2096,7 +2080,7 @@ exports.changePaymentStatusForRenewal = async (req, res) => {
 };
 
 //send money to any user that exis in database
-exports.  tradingWalletTransferFromOneUserToAnother = async (req, res) => {
+exports.tradingWalletTransferFromOneUserToAnother = async (req, res) => {
   const { amount, fromUser, toUser } = req.body;
 
   try {

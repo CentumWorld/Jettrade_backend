@@ -48,7 +48,7 @@ exports.getAllUsersInBusinessDeveloper = async (req, res) => {
     const membersReferralId = members.map((user) => user.refferal_id);
 
     const users = await User.find({ reffered_id: { $in: membersReferralId } });
-    res.status(200).json({ message: "Fetched succssfully all members", users });
+    res.status(200).json({ message: "Fetched succssfully all users", users });
   } catch (error) {
     console.log(error.message);
     res.status(500).json({ message: "Internal server error" });
