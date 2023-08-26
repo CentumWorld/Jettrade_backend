@@ -14,7 +14,8 @@ const {
   isValidName,
   isValidPassword,
 } = require("../validation/validation");
-const stateHandler = require("../model/stateHandlerSchema");
+const stateHandler = require("../model/stateHandlerSchema"); 
+const StateHandlerCreditWalletTransactionScema = require("../model/stateHandlerCreditWalletTransactionScema")
 
 //===============================================================================
 //fetch all franchise list
@@ -472,5 +473,26 @@ exports.stateFrenchiseOnlineOrNot = async (req,res) => {
     });
   } else {
     return res.status(500).json({ message: "Something went wrong" });
+  }
+}
+
+//==================================================================
+
+exports.getOwnStateCreditWalletTransactionDetails = async(req, res)=> {
+  try {
+
+    const {stateHandlerId} = req.body
+
+    const data = await StateHandlerCreditWalletTransactionScema.findOne({stateHandlerId: stateHandlerId})
+
+    if(!data){
+      return res.status(404).json({message: "State Handler  Credit Wallet Transaction not found"})
+    }
+
+    return res.status(200).json({message: "fetched State Handler  Credit Wallet Transaction details", data:data})
+  } catch (error) {
+    console.log(error.message)
+    return res.status(500).json({ message: "Internal server error" });
+
   }
 }

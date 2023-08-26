@@ -331,7 +331,7 @@ exports.memberDetailsEditAdmin = async (req, res) => {
       !aadhar ||
       !pan
     ) {
-      return res.status(400).json({ message: "Please fill all the fields" });
+      return res.status(422).json({ message: "Please fill all the fields" });
     }
 
     Member.updateOne(
@@ -349,12 +349,12 @@ exports.memberDetailsEditAdmin = async (req, res) => {
         },
       }
     ).then(() => {
-      return res.status(201).json({ message: "User Details Updated" });
+      return res.status(200).json({ message: "User Details Updated" });
     });
   }
   if (userWhat === "otherCountry") {
     if (!fname || !lname || !phone || !address || !gender || !dob || !Id_No) {
-      return res.status(400).json({ message: "Please fill all the fields" });
+      return res.status(422).json({ message: "Please fill all the fields" });
     }
 
     Member.updateOne(
