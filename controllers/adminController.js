@@ -42,6 +42,7 @@ const FrenchChatType = require("../model/FrenchChatTypeSchema");
 const FrenchChatMessage = require("../model/FrenchChatMessageSchema");
 const BusinessDeveloperChatType = require("../model/BusinessDeveloperChatTypeSchema");
 const BusinessDeveloperChatMessage = require("../model/BusinessDeveloperChatMessageSchema");
+const AdminCreditWalletTransaction = require("../model/adminCreditWalletTransaction")
 
 const {
   isValidPassword,
@@ -2636,7 +2637,7 @@ exports.fetchBusinessDeveloperCreditwalletTransactionDetails = async (
     return res.status(200).json({ message: "Fetched all data", fetchedData });
   } catch (error) {
     console.log(error.message);
-    return res.status(500).json({ message: "Internal server erro" });
+    return res.status(500).json({ message: "Internal server error" });
   }
 };
 
@@ -2652,7 +2653,7 @@ exports.fetchFranchiseCreditwalletTransactionDetails = async (req, res) => {
     return res.status(200).json({ message: "Fetched all data", fetchedData });
   } catch (error) {
     console.log(error.message);
-    return res.status(500).json({ message: "Internal server erro" });
+    return res.status(500).json({ message: "Internal server error" });
   }
 };
 //=============================================================
@@ -2669,7 +2670,22 @@ exports.fetchStateHandlerCreditwalletTransactionDetails = async (req, res) => {
     return res.status(200).json({ message: "Fetched all data", fetchedData });
   } catch (error) {
     console.log(error.message);
-    return res.status(500).json({ message: "Internal server erro" });
+    return res.status(500).json({ message: "Internal server error" });
+  }
+};
+
+//================================================================
+exports.fetchAdminCreditwalletTransactionDetails = async (req, res) => {
+  try {
+    const fetchedData = await AdminCreditWalletTransaction.find();
+    if (fetchedData.length == 0) {
+      return res.status(404).json({ message: "Data not found" });
+    }
+
+    return res.status(200).json({ message: "Fetched all data", fetchedData });
+  } catch (error) {
+    console.log(error.message);
+    return res.status(500).json({ message: "Internal server error" });
   }
 };
 
