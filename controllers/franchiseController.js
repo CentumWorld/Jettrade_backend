@@ -362,11 +362,7 @@ exports.getOwnBusinessDeveloperInsideFranchiseCreditWalletTransactionDetails =
 
   //===================================================================
 
-  exports.getOwnMembersInsideFranchiseCreditWalletTransactionDetails = async (
-    req,
-    res
-  ) => {
-    try {
+  exports.getOwnMembersInsideFranchiseCreditWalletTransactionDetails = async (req,res) => {
       const { franchiseId } = req.body;
   
       // Find the franchise based on the given franchiseId
@@ -398,8 +394,14 @@ exports.getOwnBusinessDeveloperInsideFranchiseCreditWalletTransactionDetails =
       const memberCreditWalletTransactions = await MyReferral.find({
         userid: { $in: memberIds },
       });
+      return res.status(200).json({
+        message: "Fetched Member Credit Wallet Transaction details",
+        memberCreditWalletTransactions,
+      });
+    }
+
   // frenchise/fetch-business-chat-count-with-frenchise
-exports.fetchBusinessChatCountWithFrenchise = async (req,res) => {
+exports.getBusinessChatCountWithFrenchise = async (req,res) => {
   try {
     const { refferedId } = req.body
     const frenchChatCount = await FrenchChatTypeWithBD.find({ refferedId })
@@ -421,8 +423,10 @@ exports.fetchBusinessChatCountWithFrenchise = async (req,res) => {
   }
 }
 
+
 // frenchiseFetchBusinessChatMessage
 exports.frenchiseFetchBusinessChatMessage = async(req,res) =>{
+  try{
   const { room } = req.body;
   let frenchChatMessageWithBusiness = await FrenchiseChatMessageWithBD.find({ room: room });
   if (frenchChatMessageWithBusiness) {
@@ -433,17 +437,14 @@ exports.frenchiseFetchBusinessChatMessage = async(req,res) =>{
   } else {
     return res.status(500).json({ message: "Something went wrong" });
   }
-}
 
-      return res.status(200).json({
-        message: "Fetched Member Credit Wallet Transaction details",
-        memberCreditWalletTransactions,
-      });
-    } catch (error) {
+    }
+     catch (error) {
       console.log(error.message);
       return res.status(500).json({ message: "Internal server error" });
     }
   };
+
   // frenchiseBusinessOnlineOrNot
 exports.frenchiseBusinessOnlineOrNot = async (req,res) => {
   const { businessDeveloperId } = req.body;

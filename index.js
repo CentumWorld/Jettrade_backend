@@ -234,9 +234,10 @@ const fetchChatWithSHOMessage = require('./routes/frenchise/fetch-chat-with-SHO-
 const SHOonlineOrNotFrench = require('./routes/frenchise/SHO-online-or-not-french');
 const getOwnFranchiseDetails = require("./routes/frenchise/get-own-franchise-details")
 const updateOwnFranchiseDetails = require("./routes/frenchise/update-own-franchise-details");
-const fetchBusinessChatCountWithFrenchise = require('./routes/frenchise/fetch-business-chat-count-with-frenchise');
+
 const frenchiseFetchBusinessChatMessage = require('./routes/frenchise/frenchise-fetch-business-chat-message'); 
 const frenchiseBusinessOnlineOrNot = require('./routes/frenchise/frenchise-business-online-or-not');
+const getBusinessChatCountWithFrenchise = require('./routes/frenchise/get-business-chat-count-with-frenchise');
 
 
 const getOwnFranchiseCreditWalletTransactionDetails = require('./routes/frenchise/get-Own-Franchise-Credit-Wallet-Transaction-Details')
@@ -512,12 +513,13 @@ app.use('/frenchise',fetchChatWithSHOMessage);
 app.use('/frenchise',SHOonlineOrNotFrench);
 app.use("/franchise", getOwnFranchiseDetails)
 app.use("/franchise", updateOwnFranchiseDetails);
-app.use('/frenchise',fetchBusinessChatCountWithFrenchise);
+// app.use('/frenchise',fetchBusinessChatCountWithFrenchise);
 app.use('/frenchise',frenchiseFetchBusinessChatMessage);
 app.use('/frenchise',frenchiseBusinessOnlineOrNot);
 app.use("/franchise", getOwnFranchiseCreditWalletTransactionDetails)
 app.use('/franchise', getOwnBusinessDeveloperInsideFranchiseCreditWalletTransactionDetails)
 app.use('/franchise', getOwnMembersInsideFranchiseCreditWalletTransactionDetails)
+app.use('/frenchise',getBusinessChatCountWithFrenchise);
 //============================Business developer===========================
 app.use("/businessDeveloper", getAllMembersInBusinessDeveloper);
 app.use("/businessDeveloper", blockMemberByBusinessDeveloper);
