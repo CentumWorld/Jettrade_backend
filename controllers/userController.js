@@ -153,9 +153,9 @@ exports.userRegistration = async (req, res) => {
           .json({ message: "this userId is already taken" });
       }
 
-      if (!isValidPhone(phone)) {
-        return res.status(400).json({ message: "Invalid phone." });
-      }
+      // if (!isValidPhone(phone)) {
+      //   return res.status(400).json({ message: "Invalid phone." });
+      // }
 
       const user = new User({
         fname,
@@ -365,9 +365,9 @@ exports.otherCountryUserRegistration = async (req, res) => {
             .json({ message: "this userId is already taken" });
         }
 
-        if (!isValidPhone(phone)) {
-          return res.status(400).json({ message: "Invalid phone." });
-        }
+        // if (!isValidPhone(phone)) {
+        //   return res.status(400).json({ message: "Invalid phone." });
+        // }
 
         const user = new User({
           fname,
@@ -1124,6 +1124,8 @@ exports.changeUserPaymentStatus = async (req, res) => {
             referralId: bdrefferid,
           });
 
+          console.log(bdDetails,"jjj")
+
           if (bdDetails) {
             const bdUserid = bdDetails.businessDeveloperId;
             let businessDeveloperWallet = bdDetails.businessDeveloperWallet;
@@ -1151,10 +1153,11 @@ exports.changeUserPaymentStatus = async (req, res) => {
                 Type: "New",
                 refferUserId: memberid,
 
-                franchiseReferralId: franchise.referredId, // Add this line
               });
 
             await bdCreditWalletDetails.save();
+
+            console.log( bdDetails.referredId)
 
             const franchise = await Franchise.findOne({
               referralId: bdDetails.referredId,
@@ -1179,6 +1182,8 @@ exports.changeUserPaymentStatus = async (req, res) => {
                 });
 
               await frenchiseCreditWalletDetails.save();
+
+              
             }
             const stateHandler = await StateHandler.findOne({
               referralId: franchise.referredId,
@@ -1191,7 +1196,7 @@ exports.changeUserPaymentStatus = async (req, res) => {
               stateHandlerWallet += 300;
 
               await StateHandler.updateOne(
-                { referralId: franchise.referredId },
+                {    referralId: franchise.referredId},
                 { $set: { stateHandlerWallet: stateHandlerWallet } }
               );
               const statehandlerCreditWalletDetails =

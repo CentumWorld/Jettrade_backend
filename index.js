@@ -218,6 +218,9 @@ const stateFrenchiseOnlineOrNot = require('./routes/state/state-frenchise-online
 
 const getOwnStateCreditWalletTransactionDetails =require('./routes/state/get-own-state-credit-wallet-transaction-details')
 const getOwnFranchiseInsideStateCreditWalletTransactionDetails = require('./routes/state/get-own-franchise-inside-state-credit-wallet-transaction-details')
+const getOwnBusinessDeveloperInsideStateCreditWalletTransactionDetails= require("./routes/state/get-Own-Business-Developer-Inside-State-Credit-Wallet-Transaction-Details")
+const getOwnMemberInsideStateCreditWalletTransactionDetails = require('./routes/state/get-Own-Member-Inside-State-Credit-Wallet-Transaction-Details')
+const getOwnTraderInsideStateCreditWalletTransactionDetails = require('./routes/state/get-Own-Trader-Inside-State-Credit-Wallet-Transaction-Details')
 
 //======================Frenchise==============================================
 const getBusinessDevelopersInFranchise = require("./routes/frenchise/fetch-bdeveloper-in-franchise");
@@ -236,6 +239,9 @@ const frenchiseFetchBusinessChatMessage = require('./routes/frenchise/frenchise-
 const frenchiseBusinessOnlineOrNot = require('./routes/frenchise/frenchise-business-online-or-not');
 
 
+const getOwnFranchiseCreditWalletTransactionDetails = require('./routes/frenchise/get-Own-Franchise-Credit-Wallet-Transaction-Details')
+const getOwnBusinessDeveloperInsideFranchiseCreditWalletTransactionDetails=require('./routes/frenchise/get-Own-Business-Developer-Inside-Franchise-Credit-Wallet-Transaction-Details')
+const getOwnMembersInsideFranchiseCreditWalletTransactionDetails = require('./routes/frenchise/get-Own-Members-Inside-Franchise-Credit-Wallet-Transaction-Details')
 //=========================Business developer======================================
 const getAllMembersInBusinessDeveloper = require("./routes/businessDeveloper/fetch-all-members-in-business-developer");
 const blockMemberByBusinessDeveloper = require("./routes/businessDeveloper/block-member-by-business-developer");
@@ -489,6 +495,9 @@ app.use('/state',stateFetchFrenchChatMessage);
 app.use('/state',stateFrenchiseOnlineOrNot);
 app.use('/state', getOwnStateCreditWalletTransactionDetails)
 app.use('/state', getOwnFranchiseInsideStateCreditWalletTransactionDetails)
+app.use('/state', getOwnBusinessDeveloperInsideStateCreditWalletTransactionDetails)
+app.use('/state', getOwnMemberInsideStateCreditWalletTransactionDetails)
+app.use('/state', getOwnTraderInsideStateCreditWalletTransactionDetails)
 
 //============================Franchise=============================================
 
@@ -506,7 +515,9 @@ app.use("/franchise", updateOwnFranchiseDetails);
 app.use('/frenchise',fetchBusinessChatCountWithFrenchise);
 app.use('/frenchise',frenchiseFetchBusinessChatMessage);
 app.use('/frenchise',frenchiseBusinessOnlineOrNot);
-
+app.use("/franchise", getOwnFranchiseCreditWalletTransactionDetails)
+app.use('/franchise', getOwnBusinessDeveloperInsideFranchiseCreditWalletTransactionDetails)
+app.use('/franchise', getOwnMembersInsideFranchiseCreditWalletTransactionDetails)
 //============================Business developer===========================
 app.use("/businessDeveloper", getAllMembersInBusinessDeveloper);
 app.use("/businessDeveloper", blockMemberByBusinessDeveloper);

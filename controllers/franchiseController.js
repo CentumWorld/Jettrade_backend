@@ -1,14 +1,18 @@
 const BusinessDeveloper = require("../model/businessDeveloperSchema");
 const Member = require("../model/memberSchema");
 const User = require("../model/userSchema");
-const Admin = require('../model/adminSchema');
-const FrenchChatMessage = require('../model/FrenchChatMessageSchema');
-const FrenchChatType = require('../model/FrenchChatTypeSchema');
-const FrenchChatTypeWithSHO = require('../model/FrenchiseChatTypeWithSHOSchema');
-const FrenchChatMessageWithSHO = require('../model/FrenchiseChatMessageWithSHOSchema');
-const StateHandler = require('../model/stateHandlerSchema');
-const Frenchise = require('../model/frenchiseSchema');
-const Franchise = require("../model/frenchiseSchema")
+const Admin = require("../model/adminSchema");
+const FrenchChatMessage = require("../model/FrenchChatMessageSchema");
+const FrenchChatType = require("../model/FrenchChatTypeSchema");
+const FrenchChatTypeWithSHO = require("../model/FrenchiseChatTypeWithSHOSchema");
+const FrenchChatMessageWithSHO = require("../model/FrenchiseChatMessageWithSHOSchema");
+const StateHandler = require("../model/stateHandlerSchema");
+const Frenchise = require("../model/frenchiseSchema");
+const Franchise = require("../model/frenchiseSchema");
+const FranchiseCreditWalletTransactionSchema = require("../model/frenchiseCreditWalletTransactionSchema");
+const BusinessDeveloperCreditWalletTransactionSchema = require("../model/businessDeveloperCreditWalletTransaction");
+const MyReferral = require("../model/myReferralSchema");
+
 const FrenchChatTypeWithBD = require('../model/FrenchChatTypeWithBDSchema');
 const FrenchiseChatMessageWithBD = require('../model/FrenchiseChatMessageWithBDSchema');
 const {
@@ -90,9 +94,7 @@ exports.getUsersInFranchise = async (req, res) => {
         message: "No member found in the given franchise",
       });
     }
-    const memberReferralIds = members.map(
-      (member) => member.refferal_id
-    );
+    const memberReferralIds = members.map((member) => member.refferal_id);
     const users = await User.find({
       reffered_id: { $in: memberReferralIds },
     });
@@ -124,7 +126,7 @@ exports.adminOnlineOrNotFrench = async (req, res) => {
   } else {
     return res.status(500).json({ message: "Something went wrong" });
   }
-}
+};
 
 // fetchChatMessageState
 exports.fetchChatMessage = async (req, res) => {
@@ -138,12 +140,14 @@ exports.fetchChatMessage = async (req, res) => {
   } else {
     return res.status(500).json({ message: "Something went wrong" });
   }
-}
+};
 
 // fetchChatDetailsState
 exports.fetchChatDetailsFrenchisee = async (req, res) => {
   const { frenchiseId } = req.body;
-  let frenchChatDetails = await FrenchChatType.find({ frenchiseId: frenchiseId });
+  let frenchChatDetails = await FrenchChatType.find({
+    frenchiseId: frenchiseId,
+  });
   if (frenchChatDetails) {
     return res.status(200).json({
       message: " French chat details fetched",
@@ -152,12 +156,14 @@ exports.fetchChatDetailsFrenchisee = async (req, res) => {
   } else {
     return res.status(500).json({ message: "Something went wrong" });
   }
-}
+};
 
 // fetchChatDetailsFrenchiseWithSHO
 exports.fetchChatDetailsFrenchiseWithSHO = async (req, res) => {
   const { frenchiseId } = req.body;
-  let frenchChatDetailsWithSHO = await FrenchChatTypeWithSHO.find({ frenchiseId: frenchiseId });
+  let frenchChatDetailsWithSHO = await FrenchChatTypeWithSHO.find({
+    frenchiseId: frenchiseId,
+  });
   if (frenchChatDetailsWithSHO) {
     return res.status(200).json({
       message: " French chat with SHO details fetched",
@@ -166,12 +172,14 @@ exports.fetchChatDetailsFrenchiseWithSHO = async (req, res) => {
   } else {
     return res.status(500).json({ message: "Something went wrong" });
   }
-}
+};
 
 // fetchChatWithSHOMessage
 exports.fetchChatWithSHOMessage = async (req, res) => {
   const { room } = req.body;
-  let frenchChatMessageWithSHO = await FrenchChatMessageWithSHO.find({ room: room });
+  let frenchChatMessageWithSHO = await FrenchChatMessageWithSHO.find({
+    room: room,
+  });
   if (frenchChatMessageWithSHO) {
     return res.status(200).json({
       message: " French chat with SHO message fetched",
@@ -180,8 +188,7 @@ exports.fetchChatWithSHOMessage = async (req, res) => {
   } else {
     return res.status(500).json({ message: "Something went wrong" });
   }
-}
-
+};
 
 exports.getOwnFranchiseDetails = async (req, res) => {
   try {
@@ -191,7 +198,9 @@ exports.getOwnFranchiseDetails = async (req, res) => {
       return res.status(404).json({ message: "Franchise not found" });
     }
 
-    res.status(200).json({ message: "Fetched franchise successfully", data: franchise });
+    res
+      .status(200)
+      .json({ message: "Fetched franchise successfully", data: franchise });
   } catch (error) {
     console.log(error.message);
     res.status(500).json({ message: "Internal server error" });
@@ -204,36 +213,36 @@ exports.getOwnFranchiseDetails = async (req, res) => {
 // SHOonlineOrNotFrench
 exports.SHOonlineOrNotFrench = async (req, res) => {
   const { frenchiseId } = req.body;
-  const findLoginFrenchise = await Frenchise.findOne({ frenchiseId: frenchiseId })
-
+  const findLoginFrenchise = await Frenchise.findOne({
+    frenchiseId: frenchiseId,
+  });
 
   if (findLoginFrenchise) {
-    let LoginFrenchiseRefferedId = findLoginFrenchise.referredId
-    console.log(LoginFrenchiseRefferedId)
-    const findSHOfromFrenchise = await StateHandler.findOne({ referralId: LoginFrenchiseRefferedId })
+    let LoginFrenchiseRefferedId = findLoginFrenchise.referredId;
+    console.log(LoginFrenchiseRefferedId);
+    const findSHOfromFrenchise = await StateHandler.findOne({
+      referralId: LoginFrenchiseRefferedId,
+    });
     if (findSHOfromFrenchise) {
-      const stateHandlerId = findSHOfromFrenchise.stateHandlerId
-      const isSHOonline = findSHOfromFrenchise.isOnline
+      const stateHandlerId = findSHOfromFrenchise.stateHandlerId;
+      const isSHOonline = findSHOfromFrenchise.isOnline;
 
       return res.status(200).json({
         message: "SHO isOnline status fetched",
         stateHandlerId,
-        isSHOonline
-      })
-    }
-    else {
+        isSHOonline,
+      });
+    } else {
       return res.status(400).json({
-        message: "Something went wrong"
-
-      })
+        message: "Something went wrong",
+      });
     }
-  }
-  else {
+  } else {
     return res.status(400).json({
-      message: "No Data Found"
-    })
+      message: "No Data Found",
+    });
   }
-}
+};
 
 exports.updateOwnFranchiseDetails = async (req, res) => {
   try {
@@ -243,18 +252,18 @@ exports.updateOwnFranchiseDetails = async (req, res) => {
     if (!fname || !lname || !email || !phone || !gender) {
       return res.status(422).json({ message: "All fields are required." });
     }
-    if (fname  &&!isValidName(fname)) {
+    if (fname && !isValidName(fname)) {
       return res.status(422).json({ message: "Invalid first name format." });
     }
-    if (lname  &&!isValidName(lname)) {
+    if (lname && !isValidName(lname)) {
       return res.status(422).json({ message: "Invalid last name format." });
     }
     // Validate email format
-    if (email&&!isValidEmail(email)) {
+    if (email && !isValidEmail(email)) {
       return res.status(422).json({ message: "Invalid email format." });
     }
     // Validate phone number format
-    if (phone&&!isValidPhone(phone)) {
+    if (phone && !isValidPhone(phone)) {
       return res.status(422).json({ message: "Invalid phone number format." });
     }
     const updatedFranchise = await Franchise.findOneAndUpdate(
@@ -281,7 +290,115 @@ exports.updateOwnFranchiseDetails = async (req, res) => {
   }
 };
 
-// frenchise/fetch-business-chat-count-with-frenchise
+//==================================================================
+
+exports.getOwnFranchiseCreditWalletTransactionDetails = async (req, res) => {
+  try {
+    const { franchiseId } = req.body;
+
+    const data = await FranchiseCreditWalletTransactionSchema.find({
+      frenchiseId: franchiseId,
+    });
+
+    if (!data) {
+      return res.status(404).json({
+        message: "State Handler  Credit Wallet Transaction not found",
+      });
+    }
+
+    return res.status(200).json({
+      message: "fetched State Handler  Credit Wallet Transaction details",
+      data: data,
+    });
+  } catch (error) {
+    console.log(error.message);
+    return res.status(500).json({ message: "Internal server error" });
+  }
+};
+//================================================================
+exports.getOwnBusinessDeveloperInsideFranchiseCreditWalletTransactionDetails =
+  async (req, res) => {
+    try {
+      const { franchiseId } = req.body;
+
+      // Find the franchise based on the given franchiseId
+      const franchise = await Frenchise.findOne({ frenchiseId: franchiseId });
+
+      if (!franchise) {
+        return res.status(404).json({ message: "Franchise not found" });
+      }
+
+      const businessDevelopers = await BusinessDeveloper.find({
+        referredId: franchise.referralId,
+      });
+
+      const businessDeveloperIds = businessDevelopers.map(
+        (businessDeveloper) => businessDeveloper.businessDeveloperId
+      );
+
+      const businessDeveloperCreditWalletTransactions =
+        await BusinessDeveloperCreditWalletTransactionSchema.find({
+          businessDeveloperId: { $in: businessDeveloperIds },
+        });
+
+      if (
+        !businessDeveloperCreditWalletTransactions ||
+        businessDeveloperCreditWalletTransactions.length === 0
+      ) {
+        return res.status(404).json({
+          message: "Business Developer Credit Wallet Transaction not found",
+        });
+      }
+
+      return res.status(200).json({
+        message: "Fetched Business Developer Credit Wallet Transaction details",
+        businessDeveloperCreditWalletTransactions,
+      });
+    } catch (error) {
+      console.log(error.message);
+      return res.status(500).json({ message: "Internal server error" });
+    }
+  };
+
+  //===================================================================
+
+  exports.getOwnMembersInsideFranchiseCreditWalletTransactionDetails = async (
+    req,
+    res
+  ) => {
+    try {
+      const { franchiseId } = req.body;
+  
+      // Find the franchise based on the given franchiseId
+      const franchise = await Frenchise.findOne({ frenchiseId: franchiseId });
+  
+      if (!franchise) {
+        return res.status(404).json({ message: "Franchise not found" });
+      }
+  
+      const busisnessDeveloperReferralIds = [franchise.referredId];
+  
+      // Fetch business developers based on the referralIds from franchises
+      const businessDevelopers = await BusinessDeveloper.find({
+        referredId: { $in: busisnessDeveloperReferralIds },
+      });
+  
+      const memberReferralIds = businessDevelopers.map(
+        (member) => member.referralId
+      );
+  
+      // Fetch members based on the referralIds from business developers
+      const members = await Member.find({
+        reffered_id: { $in: memberReferralIds },
+      });
+  
+      const memberIds = members.map((member) => member.memberid);
+  
+      // Fetch member credit wallet transactions based on memberIds
+      const memberCreditWalletTransactions = await MyReferral.find({
+        userid: { $in: memberIds },
+      });
+  // frenchise/fetch-business-chat-count-with-frenchise
 exports.fetchBusinessChatCountWithFrenchise = async (req,res) => {
   try {
     const { refferedId } = req.body
@@ -318,7 +435,16 @@ exports.frenchiseFetchBusinessChatMessage = async(req,res) =>{
   }
 }
 
-// frenchiseBusinessOnlineOrNot
+      return res.status(200).json({
+        message: "Fetched Member Credit Wallet Transaction details",
+        memberCreditWalletTransactions,
+      });
+    } catch (error) {
+      console.log(error.message);
+      return res.status(500).json({ message: "Internal server error" });
+    }
+  };
+  // frenchiseBusinessOnlineOrNot
 exports.frenchiseBusinessOnlineOrNot = async (req,res) => {
   const { businessDeveloperId } = req.body;
   let businessDOnlineOrNot = await BusinessDeveloper.findOne({businessDeveloperId:businessDeveloperId})
