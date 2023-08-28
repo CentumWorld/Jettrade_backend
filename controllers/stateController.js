@@ -5,8 +5,8 @@ const User = require("../model/userSchema");
 const Admin = require("../model/adminSchema");
 const StateChatMessage = require("../model/StateChatMessageSchema");
 const StateChatType = require("../model/StateChatTypeSchema");
-const FrenchChatTypeWithSHO = require('../model/FrenchiseChatTypeWithSHOSchema');
-const StateChatMessageWithFrench = require('../model/FrenchiseChatMessageWithSHOSchema');
+const FrenchChatTypeWithSHO = require("../model/FrenchiseChatTypeWithSHOSchema");
+const StateChatMessageWithFrench = require("../model/FrenchiseChatMessageWithSHOSchema");
 const {
   isValidImage,
   isValidEmail,
@@ -14,9 +14,11 @@ const {
   isValidName,
   isValidPassword,
 } = require("../validation/validation");
-const stateHandler = require("../model/stateHandlerSchema"); 
-const StateHandlerCreditWalletTransactionScema = require("../model/stateHandlerCreditWalletTransactionScema") 
-const FranchiseCreditWalletTransactionSchema = require('../model/frenchiseCreditWalletTransactionSchema')
+const stateHandler = require("../model/stateHandlerSchema");
+const StateHandlerCreditWalletTransactionScema = require("../model/stateHandlerCreditWalletTransactionScema");
+const FranchiseCreditWalletTransactionSchema = require("../model/frenchiseCreditWalletTransactionSchema");
+const BusinessDeveloperCreditWalletTransactionSchema = require("../model/businessDeveloperCreditWalletTransaction");
+const myReferral = require("../model/myReferralSchema");
 
 //===============================================================================
 //fetch all franchise list
@@ -428,30 +430,32 @@ exports.getOwnStateDetails = async (req, res) => {
 // fetchFrenchiseChatCountWithState
 exports.fetchFrenchiseChatCountWithState = async (req, res) => {
   try {
-    const { refferedId } = req.body
-    const frenchChatCount = await FrenchChatTypeWithSHO.find({ refferedId })
-    console.log(frenchChatCount, '429')
+    const { refferedId } = req.body;
+    const frenchChatCount = await FrenchChatTypeWithSHO.find({ refferedId });
+    console.log(frenchChatCount, "429");
     if (frenchChatCount) {
       return res.status(200).json({
         message: "French chat count with SHO fetched",
-        frenchChatCount
-      })
+        frenchChatCount,
+      });
     } else {
       return res.status(400).json({
-        message: "Something went wrong"
-      })
+        message: "Something went wrong",
+      });
     }
   } catch (error) {
     return res.status(500).json({
-      message: "Internal server error"
-    })
+      message: "Internal server error",
+    });
   }
-}
+};
 
 // stateFetchFrenchChatMessage
-exports.stateFetchFrenchChatMessage = async (req,res) => {
+exports.stateFetchFrenchChatMessage = async (req, res) => {
   const { room } = req.body;
-  let stateChatMessageWithFrench = await StateChatMessageWithFrench.find({ room: room });
+  let stateChatMessageWithFrench = await StateChatMessageWithFrench.find({
+    room: room,
+  });
   if (stateChatMessageWithFrench) {
     return res.status(200).json({
       message: " State chat with frenchise message fetched",
@@ -460,12 +464,14 @@ exports.stateFetchFrenchChatMessage = async (req,res) => {
   } else {
     return res.status(500).json({ message: "Something went wrong" });
   }
-}
+};
 
 // stateFrenchiseOnlineOrNot
-exports.stateFrenchiseOnlineOrNot = async (req,res) => {
+exports.stateFrenchiseOnlineOrNot = async (req, res) => {
   const { frenchiseId } = req.body;
-  let frenchiseOnlineOrNot = await Frenchise.findOne({frenchiseId:frenchiseId})
+  let frenchiseOnlineOrNot = await Frenchise.findOne({
+    frenchiseId: frenchiseId,
+  });
   if (frenchiseOnlineOrNot) {
     const isOnline = frenchiseOnlineOrNot.isOnline;
     return res.status(200).json({
@@ -475,53 +481,251 @@ exports.stateFrenchiseOnlineOrNot = async (req,res) => {
   } else {
     return res.status(500).json({ message: "Something went wrong" });
   }
-}
+};
 
 //==================================================================
 
-exports.getOwnStateCreditWalletTransactionDetails = async(req, res)=> {
+exports.getOwnStateCreditWalletTransactionDetails = async (req, res) => {
   try {
+    const { stateHandlerId } = req.body;
 
-    const {stateHandlerId} = req.body
+    const data = await StateHandlerCreditWalletTransactionScema.find({
+      stateHandlerId: stateHandlerId,
+    });
 
-    const data = await StateHandlerCreditWalletTransactionScema.find({stateHandlerId: stateHandlerId})
-
-    if(!data){
-      return res.status(404).json({message: "State Handler  Credit Wallet Transaction not found"})
+    if (!data) {
+      return res.status(404).json({
+        message: "State Handler  Credit Wallet Transaction not found",
+      });
     }
 
-    return res.status(200).json({message: "fetched State Handler  Credit Wallet Transaction details", data:data})
+    return res.status(200).json({
+      message: "fetched State Handler  Credit Wallet Transaction details",
+      data: data,
+    });
   } catch (error) {
-    console.log(error.message)
+    console.log(error.message);
     return res.status(500).json({ message: "Internal server error" });
-
   }
-}
+};
 
 //================================================================
 
-exports.getOwnFranchiseInsideStateCreditWalletTransactionDetails = async(req, res)=> {
+exports.getOwnFranchiseInsideStateCreditWalletTransactionDetails = async (
+  req,
+  res
+) => {
   try {
-//get-own-franchise-inside-state-credit-wallet-transaction-details
-    const {stateHandlerId} = req.body
+    // get-own-franchise-inside-state-credit-wallet-transaction-details
+    const { stateHandlerId } = req.body;
 
-    const state= await stateHandler.findOne({stateHandlerId:stateHandlerId})
-    
-    if(!state){
-      return res.status(404).json({message: "State not found"})
+    const state = await stateHandler.findOne({
+      stateHandlerId: stateHandlerId,
+    });
+
+    if (!state) {
+      return res.status(404).json({ message: "State not found" });
     }
 
-    const data = await FranchiseCreditWalletTransactionSchema.find({referedIdBy:state.referralId})
+    const sho_reffralid = state.referralId;
+    const franchise = await Frenchise.find({ referredId: sho_reffralid });
 
+    const franchisesId = franchise.map((franchise) => franchise.frenchiseId);
 
-    if(!data){
-      return res.status(404).json({message: "Franchise Credit Wallet Transaction not found"})
+    const data = await FranchiseCreditWalletTransactionSchema.find({
+      frenchiseId: franchisesId,
+    });
+
+    console.log(data.length);
+
+    if (!data) {
+      return res
+        .status(404)
+        .json({ message: "Franchise Credit Wallet Transaction not found" });
     }
 
-    return res.status(200).json({message: "fetched Franchise  Credit Wallet Transaction details", data:data})
+    return res.status(200).json({
+      message: "Fetched Franchise Credit Wallet Transaction details",
+      data,
+    });
   } catch (error) {
-    console.log(error.message)
+    console.log(error.message);
     return res.status(500).json({ message: "Internal server error" });
-
   }
-}
+};
+
+//====================================================================
+
+exports.getOwnBusinessDeveloperInsideStateCreditWalletTransactionDetails =
+  async (req, res) => {
+    try {
+      // get-own-franchise-inside-state-credit-wallet-transaction-details
+      const { stateHandlerId } = req.body;
+
+      const state = await stateHandler.findOne({
+        stateHandlerId: stateHandlerId,
+      });
+
+      if (!state) {
+        return res.status(404).json({ message: "State not found" });
+      }
+
+      const sho_reffralid = state.referralId;
+      const franchise = await Frenchise.find({ referredId: sho_reffralid });
+
+      const franchisesId = franchise.map((franchise) => franchise.frenchiseId);
+
+      const FranchiseCreditWalletTransactions =
+        await FranchiseCreditWalletTransactionSchema.find({
+          frenchiseId: franchisesId,
+        });
+
+      const busisnessDeveloperReferralIds = franchise.map(
+        (businessDeveloper) => businessDeveloper.referredId
+      );
+
+      const businessDevelopers = await BusinessDeveloper.find({
+        referredId: { $in: busisnessDeveloperReferralIds },
+      });
+
+      const busisnessDeveloperIds = businessDevelopers.map(
+        (businessDeveloper) => businessDeveloper.businessDeveloperId
+      );
+
+      const businessDeveloperCreditWalletTransactions =
+        await BusinessDeveloperCreditWalletTransactionSchema.find({
+          businessDeveloperId: busisnessDeveloperIds,
+        });
+
+      if (!businessDeveloperCreditWalletTransactions) {
+        return res.status(404).json({
+          message: "Business developer Credit Wallet Transaction not found",
+        });
+      }
+
+      return res.status(200).json({
+        message: "Fetched Business Developer Credit Wallet Transaction details",
+        businessDeveloperCreditWalletTransactions,
+      });
+    } catch (error) {
+      console.log(error.message);
+      return res.status(500).json({ message: "Internal server error" });
+    }
+  };
+
+//=================================================================
+exports.getOwnMemberInsideStateCreditWalletTransactionDetails = async (
+  req,
+  res
+) => {
+  try {
+    // get-own-franchise-inside-state-credit-wallet-transaction-details
+    const { stateHandlerId } = req.body;
+
+    const state = await stateHandler.findOne({
+      stateHandlerId: stateHandlerId,
+    });
+
+    if (!state) {
+      return res.status(404).json({ message: "State not found" });
+    }
+
+    const sho_reffralid = state.referralId;
+    const franchise = await Frenchise.find({ referredId: sho_reffralid });
+
+    const busisnessDeveloperReferralIds = franchise.map(
+      (businessDeveloper) => businessDeveloper.referredId
+    );
+
+    const businessDevelopers = await BusinessDeveloper.find({
+      referredId: { $in: busisnessDeveloperReferralIds },
+    });
+
+    const memberReferralIds = businessDevelopers.map(
+      (member) => member.referralId
+    );
+
+    const members = await Member.find({
+      reffered_id: { $in: memberReferralIds },
+    });
+
+    const memberIds = members.map((member) => member.memberid);
+
+    const memberCreditWalletTransactions = await myReferral.find({
+      userid: memberIds,
+    });
+
+    return res.status(200).json({
+      message: "Fetched Member Credit Wallet Transaction details",
+      memberCreditWalletTransactions,
+    });
+  } catch (error) {
+    console.log(error.message);
+    return res.status(500).json({ message: "Internal server error" });
+  }
+};
+
+//====================================================================
+exports.getOwnTraderInsideStateCreditWalletTransactionDetails = async (
+  req,
+  res
+) => {
+  try {
+    // get-own-franchise-inside-state-credit-wallet-transaction-details
+    const { stateHandlerId } = req.body;
+
+    const state = await stateHandler.findOne({
+      stateHandlerId: stateHandlerId,
+    });
+
+    console.log(state, ";;;")
+
+    if (!state) {
+      return res.status(404).json({ message: "State not found" });
+    }
+
+    const sho_reffralid = state.referralId;
+    const franchise = await Frenchise.find({ referredId: sho_reffralid });
+
+    console.log(franchise, ';;;;')
+
+    const franchiseReferralIds = franchise.map(
+      (franchise) => franchise.referralId
+    );
+
+
+console.log(franchiseReferralIds, "br")
+
+    const businessDevelopers = await BusinessDeveloper.find({
+      referredId: { $in: franchiseReferralIds },
+    });
+
+    console.log(businessDevelopers, "703")
+
+    const memberReferralIds = businessDevelopers.map(
+      (member) => member.referralId
+    );
+
+    const members = await Member.find({
+      reffered_id: { $in: memberReferralIds },
+    });
+
+    const traderReferralIds = members.map((trader) => trader.refferal_id);
+
+    const traders = await User.find({ reffered_id: traderReferralIds });
+
+    const traderIds = traders.map((trader) => trader.userid);
+
+    const traderCreditWalletTransactions = await myReferral.find({
+      userid: traderIds,
+    });
+
+    return res.status(200).json({
+      message: "Fetched Trader Credit Wallet Transaction details",
+      traderCreditWalletTransactions,
+    });
+  } catch (error) {
+    console.log(error.message);
+    return res.status(500).json({ message: "Internal server error" });
+  }
+};
