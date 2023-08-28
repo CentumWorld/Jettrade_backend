@@ -634,20 +634,25 @@ exports.getOwnMemberInsideStateCreditWalletTransactionDetails = async (
     const franchise = await Frenchise.find({ referredId: sho_reffralid });
 
     const busisnessDeveloperReferralIds = franchise.map(
-      (businessDeveloper) => businessDeveloper.referredId
+      (businessDeveloper) => businessDeveloper.referralId
     );
 
     const businessDevelopers = await BusinessDeveloper.find({
       referredId: { $in: busisnessDeveloperReferralIds },
     });
 
+    console.log(businessDevelopers, "ooooo")
+
     const memberReferralIds = businessDevelopers.map(
       (member) => member.referralId
     );
+console.log(memberReferralIds, "oooo====")
 
     const members = await Member.find({
       reffered_id: { $in: memberReferralIds },
     });
+
+    console.log(members, "kkkk")
 
     const memberIds = members.map((member) => member.memberid);
 
