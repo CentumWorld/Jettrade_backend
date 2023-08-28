@@ -12,4 +12,4 @@ router.put(
   authorizeRole(["franchise"]),
   updateOwnFranchiseDetails
 );
-module.exports = router;
+module.exports = router;  
