@@ -230,7 +230,6 @@ exports.userDetailsEditAdmin = async (req, res) => {
     phone,
     address,
     gender,
-    dob,
     aadhar,
     pan,
     id,
@@ -244,7 +243,6 @@ exports.userDetailsEditAdmin = async (req, res) => {
       !phone ||
       !address ||
       !gender ||
-      !dob ||
       !aadhar ||
       !pan
     ) {
@@ -271,7 +269,6 @@ exports.userDetailsEditAdmin = async (req, res) => {
           address: address,
           gender: gender,
           phone: phone,
-          dob: dob,
           aadhar: aadhar,
           pan: pan,
         },
@@ -281,7 +278,7 @@ exports.userDetailsEditAdmin = async (req, res) => {
     });
   }
   if (userWhat === "otherCountry") {
-    if (!fname || !lname || !phone || !address || !gender || !dob || !Id_No) {
+    if (!fname || !lname || !phone || !address || !gender || !Id_No) {
       return res.status(400).json({ message: "Please fill all the fields" });
     }
 
@@ -294,7 +291,6 @@ exports.userDetailsEditAdmin = async (req, res) => {
           address: address,
           gender: gender,
           phone: phone,
-          dob: dob,
           Id_No: Id_No,
         },
       }

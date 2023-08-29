@@ -202,6 +202,7 @@ exports.authorizeVideoUpload = async (req, res, next) => {
 // };
 
 //======
+
 exports.authenticateUser = async (req, res, next) => {
   const token = req.headers.authorization?.split(" ")[1];
 
