@@ -47,6 +47,7 @@ io.on("connection", (socket) => {
     console.log(`User Connnected : ${socket.id}`);
 
     socket.on("join_room", (data, type) => {
+        console.log(data,type,'50')
         socket.join(data);
         const data1 = data;
         console.log(`User with Id: ${socket.id} joined room : ${data}`)
@@ -176,7 +177,7 @@ io.on("connection", (socket) => {
         }
 
         if (type === 'FRENCH') {
-
+            console.log("hii")
             FrenchChatType.find({ frenchiseId: data1 }, (err, result) => {
                 if (err) {
                     console.error(err);

@@ -7,6 +7,7 @@ require('dotenv').config();
 const userController = require('../../controllers/userController');
 const {authenticateUser,authorizeUser} = require('../../middleware/checkAuth');
 
-router.post('/verifyOtp',userController.verifyOtp);
+router.post('/verifyOtp',authenticateUser,
+authorizeUser,userController.verifyOtp);
 
 module.exports = router;

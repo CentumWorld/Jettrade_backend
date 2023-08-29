@@ -5,8 +5,10 @@ const jwt = require("jsonwebtoken");
 require("dotenv").config();
 
 const userController = require("../../controllers/userController");
-const checkMiddleware = require("../../middleware/checkAuth");
+const {authenticateUser,
+    authorizeUser,} = require("../../middleware/checkAuth");
 
-router.post("/resetPassword", userController.resetPassword);
+router.post("/resetPassword", authenticateUser,
+authorizeUser,userController.resetPassword);
 
 module.exports = router;

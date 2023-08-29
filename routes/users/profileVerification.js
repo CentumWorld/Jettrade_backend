@@ -6,7 +6,8 @@ const AWS = require("aws-sdk");
 const multerS3 = require("multer-s3");
 
 const userController = require("../../controllers/userController");
-const checkMiddleware = require("../../middleware/checkAuth");
+const {authenticateUser,
+  authorizeUser,} = require("../../middleware/checkAuth");
 
 AWS.config.update({
   accessKeyId: process.env.AWS_ACCESS_KEY_ID,
@@ -49,7 +50,8 @@ var multipleUpload = upload.fields([
 ]);
 router.post(
   "/profileVerification",
-  multipleUpload,
+  multipleUpload,authenticateUser,
+  authorizeUser,
   userController.profileVerification
 );
 
