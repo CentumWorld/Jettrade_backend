@@ -2493,3 +2493,31 @@ exports.fetchOnecomment = async (req, res) => {
     return res.status(500).json({ message: "Internal server error" });
   }
 };
+//=================================================================
+
+exports.getOwnTraderCreditWalletTransactionDetails = async (req, res) => {
+  try {
+    const { userid } = req.body;
+
+    // Validate userid
+    if (!userid) {
+      return res.status(400).json({ message: "User ID is required" });
+    }
+
+    // Fetch trader credit wallet transactions based on userid
+    const traderTransactions = await MyReferral.find({ userid: userid });
+
+    // Check if there are transactions for the specified user
+    if (traderTransactions.length === 0) {
+      return res.status(404).json({ message: "No credit wallet transactions found for this user" });
+    }
+
+    return res.status(200).json({
+      message: "Fetched Trader Credit Wallet Transaction details",
+      traderTransactions,
+    });
+  } catch (error) {
+    console.log(error.message);
+    return res.status(500).json({ message: "Internal server error" });
+  }
+};

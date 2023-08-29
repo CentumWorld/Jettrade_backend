@@ -860,3 +860,71 @@ exports.refferalMyTeam = async (req, res) => {
     teamMembers: myteam,
   });
 };
+
+
+//==============================================================
+
+
+
+exports.getOwnMemberCreditWalletTransactionDetails = async (req, res) => {
+  try {
+    const { memberId } = req.body;
+
+    // Fetch member based on the given member ID
+    const member = await Member.findOne({ memberId: memberId });
+
+    // Check if the member exists
+    if (!member) {
+      return res.status(404).json({ message: "Member not found" });
+    }
+
+    // Fetch member credit wallet transactions based on member ID
+    const memberTransactions = await MyReferral.find({
+      userid: memberId, // Assuming memberId is a unique identifier
+    });
+
+    return res.status(200).json({
+      message: "Fetched Member Credit Wallet Transaction details",
+      memberTransactions,
+    });
+  } catch (error) {
+    console.log(error.message);
+    return res.status(500).json({ message: "Internal server error" });
+  }
+};
+//=================================================================
+
+exports.getOwnTradersInsideMemberCreditWalletTransactionDetails = async (req, res) => {
+  try {
+    const { memberId } = req.body;
+
+    const member = await Member.findOne({ memberid: memberId });
+
+    if (!member) {
+      return res.status(404).json({ message: "Member not found" });
+    }
+
+    const traders = await User.find({
+      reffered_id: member.refferal_id,
+    });
+    console.log(traders, "traders details")
+
+     if (traders.length === 0) {
+      return res.status(404).json({ message: "No traders referred by this Member" });
+    }
+
+    const traderIds = traders.map((trader) => trader.userid);
+
+    const traderTransactions = await MyReferral.find({
+      userid: { $in: traderIds },
+    });
+
+    return res.status(200).json({
+      message: "Fetched Trader Credit Wallet Transaction details",
+      traderTransactions,
+    });
+  } catch (error) {
+    console.log(error.message);
+    return res.status(500).json({ message: "Internal server error" });
+  }
+};
