@@ -6,12 +6,13 @@ const {
  
   authorizeAdmin,
   authenticateAdmin,
+  authorizeRole,
 } = require("../middleware/checkAuth");
 
 router.post(
   "/fetch_particular_user_payment_Status",
   authenticateAdmin,
-  authorizeAdmin,
+  authorizeRole(["admin"]),
   adminController.fetchParticularUserPaymentStatus
 );
 
