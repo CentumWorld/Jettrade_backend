@@ -2686,9 +2686,9 @@ exports.fetchAdminCreditwalletTransactionDetails = async (req, res) => {
 
 // stateOnlineOrNot
 exports.stateOnlineOrNot = async (req, res) => {
-  const { stateAdmin_id } = req.body;
+  const { stateHandlerId } = req.body;
   let stateOnlineOrNot = await StateHandler.findOne({
-    stateAdmin_id: stateAdmin_id,
+    stateHandlerId: stateHandlerId,
   });
   if (stateOnlineOrNot) {
     const isOnline = stateOnlineOrNot.isOnline;

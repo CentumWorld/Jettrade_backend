@@ -310,6 +310,7 @@ exports.getBusinessDeveloperForState = async (req, res) => {
 
 // adminOnlineOrNot
 exports.adminOnlineOrNot = async (req, res) => {
+  
   let adminOnline = await Admin.find();
   // console.log(adminOnline[0].isOnline,'964');
   if (adminOnline) {
