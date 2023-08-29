@@ -156,6 +156,12 @@ const adminOnlineOrNotRefferal = require("./routes/refferal/admin-online-or-not-
 const refferalTotalWithdrawal = require("./routes/refferal/refferal-total-withdrawal");
 const refferalMyTeam = require("./routes/refferal/refferal-my-team");
 
+const getOwnMemberCreditWalletTransactionDetails = require('./routes/refferal/get-Member-Credit-Wallet-Transaction-Details')
+const getOwnTradersInsideMemberCreditWalletTransactionDetails = require('./routes/refferal/get-Own-Traders-Inside-Member-Credit-Wallet-Transaction-Details')
+
+
+
+//admin
 const videoUpload = require("./routes/adminVideo");
 
 const withdrawlFromWalletAndTradingWallet = require("./routes/users/withdrawl-From-Wallet-And-TradingWallet");
@@ -243,6 +249,7 @@ const getBusinessChatCountWithFrenchise = require('./routes/frenchise/get-busine
 const getOwnFranchiseCreditWalletTransactionDetails = require('./routes/frenchise/get-Own-Franchise-Credit-Wallet-Transaction-Details')
 const getOwnBusinessDeveloperInsideFranchiseCreditWalletTransactionDetails=require('./routes/frenchise/get-Own-Business-Developer-Inside-Franchise-Credit-Wallet-Transaction-Details')
 const getOwnMembersInsideFranchiseCreditWalletTransactionDetails = require('./routes/frenchise/get-Own-Members-Inside-Franchise-Credit-Wallet-Transaction-Details')
+const getOwnTradersInsideFranchiseCreditWalletTransactionDetails = require('./routes/frenchise/get-own-traders-franchise-credit-wallet-transaction-details')
 //=========================Business developer======================================
 const getAllMembersInBusinessDeveloper = require("./routes/businessDeveloper/fetch-all-members-in-business-developer");
 const blockMemberByBusinessDeveloper = require("./routes/businessDeveloper/block-member-by-business-developer");
@@ -256,7 +263,9 @@ const updateOwnBusinessDeveloperDetails = require("./routes/businessDeveloper/up
 const businessDFetchChatDetailsWithFrench = require('./routes/businessDeveloper/businessD-fetch-chat-details-with-french');
 const businessDFetchChatMessageWithFrench = require('./routes/businessDeveloper/businessD-fetch-chat-message-with-french');
 const frenchiseOnlineOrNotForBusiness = require('./routes/businessDeveloper/Frenchise-online-or-not-for-businessD');
-
+const getOwnBusinessDeveloperWalletTransactionDetails = require('./routes/businessDeveloper/get-Own-Business-Developer-Wallet-Transaction-Details')
+const getOwnMembersInsideBusinessDeveloperCreditWalletTransactionDetails = require('./routes/businessDeveloper/get-Own-Members-Inside-Business-Developer-Credit-Wallet-Transaction-Details')
+const getOwnTradersInsideBusinessDeveloperCreditWalletTransactionDetails = require('./routes/businessDeveloper/get-Own-Traders-Inside-Business-Developer-Credit-Wallet-Transaction-Details')
 //==============================SubAdmin====================================
 const getOwnSubAdminDetails = require("./routes/subAdmin/get-own-sub-admin-details")
 const updateOwnSubAdminDetails = require("./routes/subAdmin/update-own-sub-admin-details")
@@ -409,6 +418,8 @@ app.use("/member", fetchChatMessageRefferal);
 app.use("/member", adminOnlineOrNotRefferal);
 app.use("/member", refferalTotalWithdrawal);
 app.use("/member", refferalMyTeam);
+app.use("/member", getOwnMemberCreditWalletTransactionDetails)
+app.use("/member", getOwnTradersInsideMemberCreditWalletTransactionDetails)
 
 app.use("/admin", getvideos);
 
@@ -520,6 +531,7 @@ app.use("/franchise", getOwnFranchiseCreditWalletTransactionDetails)
 app.use('/franchise', getOwnBusinessDeveloperInsideFranchiseCreditWalletTransactionDetails)
 app.use('/franchise', getOwnMembersInsideFranchiseCreditWalletTransactionDetails)
 app.use('/frenchise',getBusinessChatCountWithFrenchise);
+app.use('/franchise', getOwnTradersInsideFranchiseCreditWalletTransactionDetails)
 //============================Business developer===========================
 app.use("/businessDeveloper", getAllMembersInBusinessDeveloper);
 app.use("/businessDeveloper", blockMemberByBusinessDeveloper);
@@ -533,7 +545,9 @@ app.use('/businessDeveloper',adminOnlineOrNotBusiness);
 app.use('/businessDeveloper',businessDFetchChatDetailsWithFrench);
 app.use('/businessDeveloper',businessDFetchChatMessageWithFrench);
 app.use('/businessDeveloper',frenchiseOnlineOrNotForBusiness);
-
+app.use('/businessDeveloper',getOwnBusinessDeveloperWalletTransactionDetails);
+app.use('/businessDeveloper', getOwnMembersInsideBusinessDeveloperCreditWalletTransactionDetails)
+app.use('/businessDeveloper', getOwnTradersInsideBusinessDeveloperCreditWalletTransactionDetails)
 //=============================Sub- Admin======================================
 app.use('/subAdmin',getOwnSubAdminDetails);
 app.use('/subAdmin', updateOwnSubAdminDetails)

@@ -656,6 +656,8 @@ console.log(memberReferralIds, "oooo====")
 
     const memberIds = members.map((member) => member.memberid);
 
+    console.log(memberIds, 'llllllllll')
+
     const memberCreditWalletTransactions = await myReferral.find({
       userid: memberIds,
     });

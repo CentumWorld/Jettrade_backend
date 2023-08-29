@@ -1,12 +1,12 @@
 const Member = require("../model/memberSchema");
 const User = require("../model/userSchema");
-const BusinessDeveloperChatType = require('../model/BusinessDeveloperChatTypeSchema');
-const BusinessDeveloperChatMessage = require('../model/BusinessDeveloperChatMessageSchema');
-const Admin = require('../model/adminSchema');
+const BusinessDeveloperChatType = require("../model/BusinessDeveloperChatTypeSchema");
+const BusinessDeveloperChatMessage = require("../model/BusinessDeveloperChatMessageSchema");
+const Admin = require("../model/adminSchema");
 const BusinessDeveloper = require("../model/businessDeveloperSchema");
-const FrenchChatTypeWithBD = require('../model/FrenchChatTypeWithBDSchema');
-const FrenchiseChatMessageWithBD = require('../model/FrenchiseChatMessageWithBDSchema');
-const Frenchise = require('../model/frenchiseSchema');
+const FrenchChatTypeWithBD = require("../model/FrenchChatTypeWithBDSchema");
+const FrenchiseChatMessageWithBD = require("../model/FrenchiseChatMessageWithBDSchema");
+const Frenchise = require("../model/frenchiseSchema");
 const {
   isValidImage,
   isValidEmail,
@@ -14,6 +14,8 @@ const {
   isValidName,
   isValidPassword,
 } = require("../validation/validation");
+const BusinessDeveloperCreditWalletTransactionSchema = require("../model/businessDeveloperCreditWalletTransaction");
+const myReferral = require("../model/myReferralSchema");
 
 //============================================================================
 //all members fetch by business developer's referral id
@@ -143,9 +145,11 @@ exports.deleteMemberByBusinessDeveloper = async (req, res) => {
 };
 
 // fetchChatDetailsBusiness
-exports.fetchChatDetailsBusiness = async (req,res) => {
-  const {businessDeveloperId} = req.body;
-  let businessChatDetails = await BusinessDeveloperChatType.find({ businessDeveloperId: businessDeveloperId });
+exports.fetchChatDetailsBusiness = async (req, res) => {
+  const { businessDeveloperId } = req.body;
+  let businessChatDetails = await BusinessDeveloperChatType.find({
+    businessDeveloperId: businessDeveloperId,
+  });
   if (businessChatDetails) {
     return res.status(200).json({
       message: "Business chat details fetched",
@@ -154,12 +158,14 @@ exports.fetchChatDetailsBusiness = async (req,res) => {
   } else {
     return res.status(500).json({ message: "Something went wrong" });
   }
-}
+};
 
 // fetchChatMessageBusiness
-exports.fetchChatMessageBusiness = async (req,res) => {
+exports.fetchChatMessageBusiness = async (req, res) => {
   const { room } = req.body;
-  let businessChatMessage = await BusinessDeveloperChatMessage.find({ room: room });
+  let businessChatMessage = await BusinessDeveloperChatMessage.find({
+    room: room,
+  });
   if (businessChatMessage) {
     return res.status(200).json({
       message: " Business chat message fetched",
@@ -168,10 +174,10 @@ exports.fetchChatMessageBusiness = async (req,res) => {
   } else {
     return res.status(500).json({ message: "Something went wrong" });
   }
-}
+};
 
 // adminOnlineOrNotBusiness
-exports.adminOnlineOrNotBusiness = async (req,res) => {
+exports.adminOnlineOrNotBusiness = async (req, res) => {
   let adminOnline = await Admin.find();
   // console.log(adminOnline[0].isOnline,'964');
   if (adminOnline) {
@@ -183,7 +189,7 @@ exports.adminOnlineOrNotBusiness = async (req,res) => {
   } else {
     return res.status(500).json({ message: "Something went wrong" });
   }
-}
+};
 
 //=========================================================================
 
@@ -249,12 +255,10 @@ exports.getOwnBusinessDeveloperDetails = async (req, res) => {
       return res.status(404).json({ message: "Business Developer not found" });
     }
 
-    return res
-      .status(200)
-      .json({
-        messgae: "Fetched Business Developer details successfully",
-        data: businessDeveloper,
-      });
+    return res.status(200).json({
+      messgae: "Fetched Business Developer details successfully",
+      data: businessDeveloper,
+    });
   } catch (error) {
     console.log(error.message);
     res.status(500).json({ message: "Internal server error" });
@@ -262,9 +266,11 @@ exports.getOwnBusinessDeveloperDetails = async (req, res) => {
 };
 
 // businessDFetchChatDetailsWithFrench
-exports.businessDFetchChatDetailsWithFrench = async (req,res) => {
-  const {businessDeveloperId} = req.body;
-  let businessChatDetails = await FrenchChatTypeWithBD.find({ businessDeveloperId: businessDeveloperId });
+exports.businessDFetchChatDetailsWithFrench = async (req, res) => {
+  const { businessDeveloperId } = req.body;
+  let businessChatDetails = await FrenchChatTypeWithBD.find({
+    businessDeveloperId: businessDeveloperId,
+  });
   if (businessChatDetails) {
     return res.status(200).json({
       message: "Business chat details fetched",
@@ -273,12 +279,14 @@ exports.businessDFetchChatDetailsWithFrench = async (req,res) => {
   } else {
     return res.status(500).json({ message: "Something went wrong" });
   }
-}
+};
 
 // businessDFetchChatMessageWithFrench
-exports.businessDFetchChatMessageWithFrench = async (req,res) => {
+exports.businessDFetchChatMessageWithFrench = async (req, res) => {
   const { room } = req.body;
-  let businessChatMessageWithFrench = await FrenchiseChatMessageWithBD.find({ room: room });
+  let businessChatMessageWithFrench = await FrenchiseChatMessageWithBD.find({
+    room: room,
+  });
   if (businessChatMessageWithFrench) {
     return res.status(200).json({
       message: " Business chat message with french fetched",
@@ -287,39 +295,174 @@ exports.businessDFetchChatMessageWithFrench = async (req,res) => {
   } else {
     return res.status(500).json({ message: "Something went wrong" });
   }
-}
+};
 
 // frenchiseOnlineOrNotForBusiness
-exports.frenchiseOnlineOrNotForBusiness = async (req,res) => {
+exports.frenchiseOnlineOrNotForBusiness = async (req, res) => {
   const { businessDeveloperId } = req.body;
-  const findLoginBusinessD = await BusinessDeveloper.findOne({ businessDeveloperId: businessDeveloperId })
-
+  const findLoginBusinessD = await BusinessDeveloper.findOne({
+    businessDeveloperId: businessDeveloperId,
+  });
 
   if (findLoginBusinessD) {
-    let LoginBusinessRefferedId = findLoginBusinessD.referredId
-    console.log(LoginBusinessRefferedId,'300')
-    const findFrenchisefromBusinessD = await Frenchise.findOne({ referralId: LoginBusinessRefferedId })
+    let LoginBusinessRefferedId = findLoginBusinessD.referredId;
+    console.log(LoginBusinessRefferedId, "300");
+    const findFrenchisefromBusinessD = await Frenchise.findOne({
+      referralId: LoginBusinessRefferedId,
+    });
     // console.log(findFrenchisefromBusinessD,'302')
     if (findFrenchisefromBusinessD) {
-      const frenchiseId = findFrenchisefromBusinessD.frenchiseId
-      const isFrenchiseOnline = findFrenchisefromBusinessD.isOnline
+      const frenchiseId = findFrenchisefromBusinessD.frenchiseId;
+      const isFrenchiseOnline = findFrenchisefromBusinessD.isOnline;
 
       return res.status(200).json({
         message: "Frenchise isOnline status fetched",
         frenchiseId,
-        isFrenchiseOnline
-      })
-    }
-    else {
+        isFrenchiseOnline,
+      });
+    } else {
       return res.status(400).json({
-        message: "Something went wrong1"
-
-      })
+        message: "Something went wrong1",
+      });
     }
-  }
-  else {
+  } else {
     return res.status(400).json({
-      message: "No Data Found"
-    })
+      message: "No Data Found",
+    });
   }
-}
+};
+
+//===================================================================
+
+exports.getOwnBusinessDeveloperWalletTransactionDetails = async (req, res) => {
+  try {
+    const { businessDeveloperId } = req.body;
+
+    const data = await BusinessDeveloperCreditWalletTransactionSchema.find({
+      businessDeveloperId: businessDeveloperId,
+    });
+
+    if (!data) {
+      return res.status(404).json({
+        message: "Business developer Credit Wallet Transaction not found",
+      });
+    }
+
+    return res.status(200).json({
+      message: "fetched Business Developer Credit Wallet Transaction details",
+      data: data,
+    });
+  } catch (error) {
+    console.log(error.message);
+    return res.status(500).json({ message: "Internal server error" });
+  }
+};
+//==================================================================
+exports.getOwnMembersInsideBusinessDeveloperCreditWalletTransactionDetails =
+  async (req, res) => {
+    try {
+      const { businessDeveloperId } = req.body;
+
+      // Fetch member IDs referred by the Business Developer
+      const businessDeveloper = await BusinessDeveloper.findOne({
+        businessDeveloperId: businessDeveloperId,
+      });
+
+      // Fetch members based on the referred member IDs
+      const referredMembers = await Member.find({
+        referredId: businessDeveloper.referralId,
+      });
+
+      const referredMemberIds = referredMembers.map(
+        (member) => member.memberid
+      );
+
+      const memberTransactions = await myReferral.find({
+        userid: { $in: referredMemberIds },
+      });
+
+      return res.status(200).json({
+        message:
+          "Fetched Members credit wallet transaction details by Business Developer",
+        memberTransactions,
+      });
+    } catch (error) {
+      console.log(error.message);
+      return res.status(500).json({ message: "Internal server error" });
+    }
+  };
+
+//=====================================================================
+
+exports.getOwnTradersInsideBusinessDeveloperCreditWalletTransactionDetails =
+  async (req, res) => {
+    try {
+      const { businessDeveloperId } = req.body;
+
+      // Validate businessDeveloperId
+      if (!businessDeveloperId) {
+        return res
+          .status(400)
+          .json({ message: "Business Developer ID is required" });
+      }
+
+      // Fetch business developer based on the given ID
+      const businessDeveloper = await BusinessDeveloper.findOne({
+        businessDeveloperId: businessDeveloperId,
+      });
+
+      // Check if the business developer exists
+      if (!businessDeveloper) {
+        return res
+          .status(404)
+          .json({ message: "Business Developer not found" });
+      }
+
+      // Fetch members based on the referred member IDs
+      const referredMembers = await Member.find({
+        referredId: businessDeveloper.referralId,
+      });
+
+      // Check if any members were referred by this business developer
+      if (referredMembers.length === 0) {
+        return res
+          .status(404)
+          .json({ message: "No members referred by this Business Developer" });
+      }
+
+      const userReferredIds = referredMembers.map(
+        (member) => member.refferal_id
+      );
+
+      // Fetch traders based on the referred member IDs
+      const traders = await User.find({
+        reffered_id: { $in: userReferredIds },
+      });
+
+      // Check if any traders were referred by the members of this Business Developer
+      if (traders.length === 0) {
+        return res
+          .status(404)
+          .json({
+            message:
+              "No traders referred by the Members of this Business Developer",
+          });
+      }
+
+      const referredTraderIds = traders.map((trader) => trader.userid);
+
+      // Fetch trader credit wallet transactions based on trader IDs
+      const traderTransactions = await myReferral.find({
+        userid: { $in: referredTraderIds },
+      });
+
+      return res.status(200).json({
+        message:
+          "Fetched Traders credit wallet transaction details by Business Developer",
+        traderTransactions,
+      });
+    } catch (error) {
+      console.log(error.message);
+      return res.status(500).json({ message: "Internal server error" });
+    }
+  };

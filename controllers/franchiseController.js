@@ -13,8 +13,8 @@ const FranchiseCreditWalletTransactionSchema = require("../model/frenchiseCredit
 const BusinessDeveloperCreditWalletTransactionSchema = require("../model/businessDeveloperCreditWalletTransaction");
 const MyReferral = require("../model/myReferralSchema");
 
-const FrenchChatTypeWithBD = require('../model/FrenchChatTypeWithBDSchema');
-const FrenchiseChatMessageWithBD = require('../model/FrenchiseChatMessageWithBDSchema');
+const FrenchChatTypeWithBD = require("../model/FrenchChatTypeWithBDSchema");
+const FrenchiseChatMessageWithBD = require("../model/FrenchiseChatMessageWithBDSchema");
 const {
   isValidImage,
   isValidEmail,
@@ -360,95 +360,149 @@ exports.getOwnBusinessDeveloperInsideFranchiseCreditWalletTransactionDetails =
     }
   };
 
-  //===================================================================
+//===================================================================
 
-  exports.getOwnMembersInsideFranchiseCreditWalletTransactionDetails = async (req,res) => {
-      const { franchiseId } = req.body;
-  
-      // Find the franchise based on the given franchiseId
-      const franchise = await Frenchise.findOne({ frenchiseId: franchiseId });
-  
-      if (!franchise) {
-        return res.status(404).json({ message: "Franchise not found" });
-      }
-  
-      const busisnessDeveloperReferralIds = [franchise.referredId];
-  
-      // Fetch business developers based on the referralIds from franchises
-      const businessDevelopers = await BusinessDeveloper.find({
-        referredId: { $in: busisnessDeveloperReferralIds },
-      });
-  
-      const memberReferralIds = businessDevelopers.map(
-        (member) => member.referralId
-      );
-  
-      // Fetch members based on the referralIds from business developers
-      const members = await Member.find({
-        reffered_id: { $in: memberReferralIds },
-      });
-  
-      const memberIds = members.map((member) => member.memberid);
-  
-      // Fetch member credit wallet transactions based on memberIds
-      const memberCreditWalletTransactions = await MyReferral.find({
-        userid: { $in: memberIds },
-      });
-      return res.status(200).json({
-        message: "Fetched Member Credit Wallet Transaction details",
-        memberCreditWalletTransactions,
-      });
+exports.getOwnMembersInsideFranchiseCreditWalletTransactionDetails = async (
+  req,
+  res
+) => {
+  const { franchiseId } = req.body;
+
+  // Find the franchise based on the given franchiseId
+  const franchise = await Frenchise.findOne({ frenchiseId: franchiseId });
+
+  if (!franchise) {
+    return res.status(404).json({ message: "Franchise not found" });
+  }
+
+  // const busisnessDeveloperReferredIds = franchise.map(franchise=> franchise.referralId);
+
+  // Fetch business developers based on the referralIds from franchises
+  const businessDevelopers = await BusinessDeveloper.find({
+    referredId: franchise.referralId,
+  });
+
+  const memberReferredIds = businessDevelopers.map((bd) => bd.referralId);
+
+  // Fetch members based on the referralIds from business developers
+  const members = await Member.find({
+    reffered_id: { $in: memberReferredIds },
+  });
+
+  const memberIds = members.map((member) => member.memberid);
+
+  // Fetch member credit wallet transactions based on memberIds
+  const memberCreditWalletTransactions = await MyReferral.find({
+    userid: { $in: memberIds },
+  });
+  return res.status(200).json({
+    message: "Fetched Member Credit Wallet Transaction details",
+    memberCreditWalletTransactions,
+  });
+};
+
+//========================
+
+exports.getOwnTradersInsideFranchiseCreditWalletTransactionDetails = async (
+  req,
+  res
+) => {
+  const { franchiseId } = req.body;
+
+  try {
+    // Find the franchise based on the given franchiseId
+    const franchise = await Franchise.findOne({ frenchiseId: franchiseId });
+
+    if (!franchise) {
+      return res.status(404).json({ message: "Franchise not found" });
     }
 
-  // frenchise/fetch-business-chat-count-with-frenchise
-exports.getBusinessChatCountWithFrenchise = async (req,res) => {
+    // Fetch business developers based on the referralIds from franchises
+    const businessDevelopers = await BusinessDeveloper.find({
+      referredId: franchise.referralId,
+    });
+
+    const memberReferredIds = businessDevelopers.map((bd) => bd.referralId);
+
+    // Fetch members based on the referralIds from business developers
+    const members = await Member.find({
+      reffered_id: { $in: memberReferredIds },
+    });
+
+    const traderReferredIds = members.map((member) => member.refferal_id);
+
+    // Fetch traders based on the referralIds from members
+    const traders = await User.find({
+      reffered_id: { $in: traderReferredIds },
+    });
+
+    // Fetch trader credit wallet transactions based on traderIds
+    const traderIds = traders.map((trader) => trader.userid);
+
+    const traderCreditWalletTransactions = await MyReferral.find({
+      userid: { $in: traderIds },
+    });
+
+    return res.status(200).json({
+      message: "Fetched Trader Credit Wallet Transaction details",
+      traderCreditWalletTransactions,
+    });
+  } catch (error) {
+    console.error(error);
+    return res.status(500).json({ message: "Internal server error" });
+  }
+};
+
+// frenchise/fetch-business-chat-count-with-frenchise
+exports.getBusinessChatCountWithFrenchise = async (req, res) => {
   try {
-    const { refferedId } = req.body
-    const frenchChatCount = await FrenchChatTypeWithBD.find({ refferedId })
-    console.log(frenchChatCount, '287')
+    const { refferedId } = req.body;
+    const frenchChatCount = await FrenchChatTypeWithBD.find({ refferedId });
+    console.log(frenchChatCount, "287");
     if (frenchChatCount) {
       return res.status(200).json({
         message: "French chat count with BD fetched",
-        frenchChatCount
-      })
+        frenchChatCount,
+      });
     } else {
       return res.status(400).json({
-        message: "Something went wrong"
-      })
+        message: "Something went wrong",
+      });
     }
   } catch (error) {
     return res.status(500).json({
-      message: "Internal server error"
-    })
+      message: "Internal server error",
+    });
   }
-}
-
+};
 
 // frenchiseFetchBusinessChatMessage
-exports.frenchiseFetchBusinessChatMessage = async(req,res) =>{
-  try{
-  const { room } = req.body;
-  let frenchChatMessageWithBusiness = await FrenchiseChatMessageWithBD.find({ room: room });
-  if (frenchChatMessageWithBusiness) {
-    return res.status(200).json({
-      message: "Frenchise chat with businessD message fetched",
-      frenchChatMessageWithBusiness,
+exports.frenchiseFetchBusinessChatMessage = async (req, res) => {
+  try {
+    const { room } = req.body;
+    let frenchChatMessageWithBusiness = await FrenchiseChatMessageWithBD.find({
+      room: room,
     });
-  } else {
-    return res.status(500).json({ message: "Something went wrong" });
+    if (frenchChatMessageWithBusiness) {
+      return res.status(200).json({
+        message: "Frenchise chat with businessD message fetched",
+        frenchChatMessageWithBusiness,
+      });
+    } else {
+      return res.status(500).json({ message: "Something went wrong" });
+    }
+  } catch (error) {
+    console.log(error.message);
+    return res.status(500).json({ message: "Internal server error" });
   }
+};
 
-    }
-     catch (error) {
-      console.log(error.message);
-      return res.status(500).json({ message: "Internal server error" });
-    }
-  };
-
-  // frenchiseBusinessOnlineOrNot
-exports.frenchiseBusinessOnlineOrNot = async (req,res) => {
+// frenchiseBusinessOnlineOrNot
+exports.frenchiseBusinessOnlineOrNot = async (req, res) => {
   const { businessDeveloperId } = req.body;
-  let businessDOnlineOrNot = await BusinessDeveloper.findOne({businessDeveloperId:businessDeveloperId})
+  let businessDOnlineOrNot = await BusinessDeveloper.findOne({
+    businessDeveloperId: businessDeveloperId,
+  });
   if (businessDOnlineOrNot) {
     const isOnline = businessDOnlineOrNot.isOnline;
     return res.status(200).json({
@@ -458,4 +512,4 @@ exports.frenchiseBusinessOnlineOrNot = async (req,res) => {
   } else {
     return res.status(500).json({ message: "Something went wrong" });
   }
-}
+};
