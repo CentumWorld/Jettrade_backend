@@ -87,6 +87,12 @@ const userTotalWithdrawalFromTradingWallet = require("./routes/users/user-total-
 const adminFetchAllRenewalUser = require("./routes/admin-fetch-all-renewal-user");
 const fetchAllNewPaidUser = require("./routes/fetch-all-new-paid-user");
 const changePaymentStatusForRenewal = require("./routes/users/change-payment-status-for-renewal");
+const getOwnTraderCreditWalletTransactionDetails = require("./routes/users/get-Own-Trader-Credit-Wallet-Transaction-Details")
+
+
+
+
+//admin
 const adminSumOfAllNewRenewalUserAmount = require("./routes/admin-sum-of-all-new-renewal-user-amount");
 const filterTransactionsForWithdrawlWithYearMonth = require("./routes/filter-Transactions-For-Withdrawl-With-Year-Month");
 const tradingWalletTransferFromOneUserToAnother = require("./routes/users/trading-wallet-transfer-from-one-user-to-another");
@@ -386,6 +392,7 @@ app.use("/admin", updateAdharcardFranchise)
 app.use("/admin",updatePanCardFranchise)
 app.use('/admin',fetchBusinessChatCount);
 app.use('/admin',adminBusinessOnlineOrNot);
+app.use('/user', getOwnTraderCreditWalletTransactionDetails)
 
 // refferal
 app.use("/member", memberRegistration);

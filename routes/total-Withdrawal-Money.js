@@ -2,9 +2,9 @@ const express = require('express');
 const router = express.Router();
 
 const adminController = require('../controllers/adminController');
-const {authenticateAdmin, authorizeAdmin} = require('../middleware/checkAuth');
+const {authenticateAdmin, authorizeRole} = require('../middleware/checkAuth');
 
-router.post('/total-withdrawal-money',authenticateAdmin,authorizeAdmin, adminController.totalWithdrawalMoney);
+router.post('/total-withdrawal-money',authenticateAdmin,authorizeRole(["admin", ]), adminController.totalWithdrawalMoney);
 
 
 module.exports = router;
