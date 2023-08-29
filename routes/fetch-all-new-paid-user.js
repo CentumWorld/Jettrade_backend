@@ -3,9 +3,9 @@ const router = express.Router();
 require('dotenv').config();
 
 const adminController = require('../controllers/adminController');
-const {authenticateAdmin, authorizeAdmin} = require('../middleware/checkAuth');
+const {authenticateAdmin, authorizeRole} = require('../middleware/checkAuth');
 
-router.post('/fetch-all-new-paid-user',authenticateAdmin,authorizeAdmin,adminController.fetchAllNewPaidUser);
+router.post('/fetch-all-new-paid-user',authenticateAdmin,authorizeRole(["admin"]),adminController.fetchAllNewPaidUser);
 
 
 module.exports = router;

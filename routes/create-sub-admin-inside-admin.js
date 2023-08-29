@@ -5,7 +5,7 @@ const AWS = require('aws-sdk');
 const multerS3 = require('multer-s3');
 
 const adminController = require('../controllers/adminController');
-const {authenticateAdmin, authorizeAdmin} = require('../middleware/checkAuth');
+const {authenticateAdmin, authorizeRole} = require('../middleware/checkAuth');
 
 
 AWS.config.update({
@@ -36,7 +36,7 @@ const upload = multer({
     }),
 });
 var multipleUpload = upload.fields([{ name: 'aadhar_front_side' },{ name: 'aadhar_back_side' },{name:'pan_card'}]);
-router.post('/create-sub-admin-inside-admin',multipleUpload,authenticateAdmin,authorizeAdmin, adminController.createSubAdminInsideAdmin);
+router.post('/create-sub-admin-inside-admin',multipleUpload,authenticateAdmin,authorizeRole(["admin"]), adminController.createSubAdminInsideAdmin);
 
 
 module.exports = router;
