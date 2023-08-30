@@ -42,7 +42,7 @@ const FrenchChatType = require("../model/FrenchChatTypeSchema");
 const FrenchChatMessage = require("../model/FrenchChatMessageSchema");
 const BusinessDeveloperChatType = require("../model/BusinessDeveloperChatTypeSchema");
 const BusinessDeveloperChatMessage = require("../model/BusinessDeveloperChatMessageSchema");
-const AdminCreditWalletTransaction = require("../model/adminCreditWalletTransaction")
+const AdminCreditWalletTransaction = require("../model/adminCreditWalletTransaction");
 
 const {
   isValidPassword,
@@ -83,7 +83,7 @@ exports.adminLogin = async (req, res) => {
           token: token,
           admin_id,
           expires: new Date().getTime() + 60000,
-        });   
+        });
       } else {
         return res.status(404).json({ error: "Invalid Credentials" });
       }
@@ -237,15 +237,7 @@ exports.userDetailsEditAdmin = async (req, res) => {
   } = req.body;
 
   if (userWhat === "indian") {
-    if (
-      !fname ||
-      !lname ||
-      !phone ||
-      !address ||
-      !gender ||
-      !aadhar ||
-      !pan
-    ) {
+    if (!fname || !lname || !phone || !address || !gender || !aadhar || !pan) {
       return res.status(400).json({ message: "Please fill all the fields" });
     }
 
@@ -316,16 +308,7 @@ exports.memberDetailsEditAdmin = async (req, res) => {
   } = req.body;
 
   if (userWhat === "indian") {
-    if (
-      !fname ||
-      !lname ||
-      !phone ||
-      !address ||
-      !gender ||
-
-      !aadhar ||
-      !pan
-    ) {
+    if (!fname || !lname || !phone || !address || !gender || !aadhar || !pan) {
       return res.status(422).json({ message: "Please fill all the fields" });
     }
 
@@ -338,7 +321,7 @@ exports.memberDetailsEditAdmin = async (req, res) => {
           address: address,
           gender: gender,
           phone: phone,
-   
+
           aadhar: aadhar,
           pan: pan,
         },
@@ -348,7 +331,7 @@ exports.memberDetailsEditAdmin = async (req, res) => {
     });
   }
   if (userWhat === "otherCountry") {
-    if (!fname || !lname || !phone || !address || !gender|| !Id_No) {
+    if (!fname || !lname || !phone || !address || !gender || !Id_No) {
       return res.status(422).json({ message: "Please fill all the fields" });
     }
 
@@ -1775,7 +1758,7 @@ exports.createStateHandler = async (req, res) => {
       password,
       stateHandlerId,
       selectedState,
-      referredId
+      referredId,
     } = req.body;
 
     if (!req.files["adharCard"]) {
@@ -2784,11 +2767,9 @@ exports.blockStateByAdmin = async (req, res) => {
     }
 
     if (block === state.isBlocked) {
-      return res
-        .status(400)
-        .json({
-          message: `State is already ${block ? "blocked" : "unblocked"}`,
-        });
+      return res.status(400).json({
+        message: `State is already ${block ? "blocked" : "unblocked"}`,
+      });
     }
 
     const updatedState = await StateHandler.findByIdAndUpdate(
@@ -2796,11 +2777,9 @@ exports.blockStateByAdmin = async (req, res) => {
       { $set: { isBlocked: block } }
     );
 
-    return res
-      .status(200)
-      .json({
-        message: `State ${block ? "blocked" : "unblocked"} successfully`,
-      });
+    return res.status(200).json({
+      message: `State ${block ? "blocked" : "unblocked"} successfully`,
+    });
   } catch (error) {
     console.log(error.message);
     res.status(500).json({ message: "Internal server error" });
@@ -2822,11 +2801,9 @@ exports.blockFranchiseByAdmin = async (req, res) => {
     }
 
     if (block === franchise.isBlocked) {
-      return res
-        .status(400)
-        .json({
-          message: `Franchise is already ${block ? "blocked" : "unblocked"}`,
-        });
+      return res.status(400).json({
+        message: `Franchise is already ${block ? "blocked" : "unblocked"}`,
+      });
     }
 
     const updatedFranchise = await Franchise.findByIdAndUpdate(
@@ -2834,11 +2811,9 @@ exports.blockFranchiseByAdmin = async (req, res) => {
       { $set: { isBlocked: block } }
     );
 
-    return res
-      .status(200)
-      .json({
-        message: `Franchise ${block ? "blocked" : "unblocked"} successfully`,
-      });
+    return res.status(200).json({
+      message: `Franchise ${block ? "blocked" : "unblocked"} successfully`,
+    });
   } catch (error) {
     console.log(error.message);
     res.status(500).json({ message: "Internal server error" });
@@ -2860,13 +2835,11 @@ exports.blockBusinessDeveloperByAdmin = async (req, res) => {
     }
 
     if (block === businessDeveloper.isBlocked) {
-      return res
-        .status(400)
-        .json({
-          message: `Business Developer is already ${
-            block ? "blocked" : "unblocked"
-          }`,
-        });
+      return res.status(400).json({
+        message: `Business Developer is already ${
+          block ? "blocked" : "unblocked"
+        }`,
+      });
     }
 
     const updatedBusinessDeveloper = await BusinessDeveloper.findByIdAndUpdate(
@@ -2874,13 +2847,11 @@ exports.blockBusinessDeveloperByAdmin = async (req, res) => {
       { $set: { isBlocked: block } }
     );
 
-    return res
-      .status(200)
-      .json({
-        message: `Business Developer ${
-          block ? "blocked" : "unblocked"
-        } successfully`,
-      });
+    return res.status(200).json({
+      message: `Business Developer ${
+        block ? "blocked" : "unblocked"
+      } successfully`,
+    });
   } catch (error) {
     console.log(error.message);
     res.status(500).json({ message: "Internal server error" });
@@ -3007,13 +2978,7 @@ exports.updateFranchise = async (req, res) => {
     const id = req.body.id;
 
     // Validate input fields
-    if (
-      !fname ||
-      !lname ||
-      !phone ||
-      !email ||
-      !gender 
-    ) {
+    if (!fname || !lname || !phone || !email || !gender) {
       return res.status(422).json({ message: "All fields are required." });
     }
 
@@ -3031,8 +2996,6 @@ exports.updateFranchise = async (req, res) => {
     if (!isValidEmail(email)) {
       return res.status(422).json({ message: "Invalid email format." });
     }
-
- 
 
     // Validate phone number format
     if (!isValidPhone(phone)) {
@@ -3061,7 +3024,7 @@ exports.updateFranchise = async (req, res) => {
     franchise.email = email;
     franchise.gender = gender;
     franchise.franchiseState = franchiseState;
-    franchise.franchiseCity = franchiseCity
+    franchise.franchiseCity = franchiseCity;
 
     const updatedFranchise = await franchise.save();
 
@@ -3107,12 +3070,10 @@ exports.updateAdharcardFranchise = async (req, res) => {
       return res.status(404).json({ message: "Franchise not found" });
     }
 
-    res
-      .status(200)
-      .json({
-        message: "Aadhar card updated successfully",
-        adharCard: franchise.adharCard,
-      });
+    res.status(200).json({
+      message: "Aadhar card updated successfully",
+      adharCard: franchise.adharCard,
+    });
   } catch (error) {
     console.error(error.message);
     res.status(500).json({ message: "Internal server error" });
@@ -3150,18 +3111,15 @@ exports.updatePanCardFranchise = async (req, res) => {
       return res.status(404).json({ message: "Franchise not found" });
     }
 
-    res
-      .status(200)
-      .json({
-        message: "PAN card updated successfully",
-        panCard: franchise.panCard,
-      });
+    res.status(200).json({
+      message: "PAN card updated successfully",
+      panCard: franchise.panCard,
+    });
   } catch (error) {
     console.error(error.message);
     res.status(500).json({ message: "Internal server error" });
   }
 };
-
 
 exports.updatePanCardBusinessDeveloper = async (req, res) => {
   try {
@@ -3193,12 +3151,10 @@ exports.updatePanCardBusinessDeveloper = async (req, res) => {
       return res.status(404).json({ message: "Business developer not found" });
     }
 
-    res
-      .status(200)
-      .json({
-        message: "PAN card updated successfully",
-        panCard: businessDeveloper.panCard,
-      });
+    res.status(200).json({
+      message: "PAN card updated successfully",
+      panCard: businessDeveloper.panCard,
+    });
   } catch (error) {
     console.error(error.message);
     res.status(500).json({ message: "Internal server error" });
@@ -3209,22 +3165,11 @@ exports.updatePanCardBusinessDeveloper = async (req, res) => {
 // update business developer
 exports.updateBusinessDeveloper = async (req, res) => {
   try {
-    const { fname, lname, phone, email, gender, buisnessCity } =
-      req.body;
+    const { fname, lname, phone, email, gender, buisnessCity } = req.body;
     const id = req.body.id;
 
-  
-  
     // Validate input fields
-    if (
-      !fname ||
-      !lname ||
-      !phone ||
-      !email ||
-      
-      !gender ||
-      !buisnessCity
-    ) {
+    if (!fname || !lname || !phone || !email || !gender || !buisnessCity) {
       return res.status(422).json({ message: "All fields are required." });
     }
 
@@ -3243,7 +3188,6 @@ exports.updateBusinessDeveloper = async (req, res) => {
       return res.status(422).json({ message: "Invalid email format." });
     }
 
-
     // Validate phone number format
     if (!isValidPhone(phone)) {
       return res.status(422).json({ message: "Invalid phone number format." });
@@ -3257,7 +3201,6 @@ exports.updateBusinessDeveloper = async (req, res) => {
       email,
       gender,
       buisnessCity,
-     
     };
 
     const updatedBusinessDeveloper = await BusinessDeveloper.findOneAndUpdate(
@@ -3270,12 +3213,10 @@ exports.updateBusinessDeveloper = async (req, res) => {
       return res.status(404).json({ message: "Business developer not found" });
     }
 
-    res
-      .status(200)
-      .json({
-        message: "Business developer updated successfully",
-        businessDeveloper: updatedBusinessDeveloper,
-      });
+    res.status(200).json({
+      message: "Business developer updated successfully",
+      businessDeveloper: updatedBusinessDeveloper,
+    });
   } catch (error) {
     console.error(error.message);
     res.status(500).json({ message: "Internal server error" });
@@ -3362,12 +3303,10 @@ exports.getOneBDDetails = async (req, res) => {
       return res.status(404).json({ message: "Business Developer not found" });
     }
 
-    res
-      .status(200)
-      .json({
-        message: "Fetched Business Developer successfully",
-        data: businessDeveloper,
-      });
+    res.status(200).json({
+      message: "Fetched Business Developer successfully",
+      data: businessDeveloper,
+    });
   } catch (error) {
     console.error(error.message);
     res.status(500).json({ message: "Internal server error" });
@@ -3417,45 +3356,50 @@ exports.getOneMemberDetails = async (req, res) => {
 //======================================================================\
 //fetch admin
 
-exports.fetchAdmin = async(req, res) => {
+exports.fetchAdmin = async (req, res) => {
   try {
-    const id = req.userId
-    let admin = await Admin.findOne({_id:id})
+    const id = req.userId;
+    let admin = await Admin.findOne({ _id: id });
 
     if (!admin) {
-      return res.status(404).json({ message: "Admin not found" })
+      return res.status(404).json({ message: "Admin not found" });
     }
 
-    console.log(admin, "admin details")
-    console.log(admin.adminWallet, "3401")
-    console.log(admin.referralId, "3401")
+    console.log(admin, "admin details");
+    console.log(admin.adminWallet, "3401");
+    console.log(admin.referralId, "3401");
 
-
-    return res.status(200).json({ message: "Fetched admin details", data: admin })
-
+    return res
+      .status(200)
+      .json({ message: "Fetched admin details", data: admin });
   } catch (error) {
     console.error(error.message);
     res.status(500).json({ message: "Internal server error" });
   }
-}
+};
 
 //==========================================================================
 
-exports.fetchCityByReferralIdInFranchise = async(req, res) => {
+exports.fetchCityByReferralIdInFranchise = async (req, res) => {
   try {
-
-    const {franchiseReferralId} = req.body 
-    const franchise = await Franchise.findOne({referralId:franchiseReferralId})
-    if(!franchise){
-      return res.status(404).json({message: "Franchise not found"} )
-
+    const { franchiseReferralId } = req.body;
+    const franchise = await Franchise.findOne({
+      referralId: franchiseReferralId,
+    });
+    if (!franchise) {
+      return res.status(404).json({ message: "Franchise not found" });
     }
-    return res.status(200).json({message: "Fetched franchise successfully", CityList: franchise.franchiseCity} )
+    return res
+      .status(200)
+      .json({
+        message: "Fetched franchise successfully",
+        CityList: franchise.franchiseCity,
+      });
   } catch (error) {
     console.error(error.message);
     res.status(500).json({ message: "Internal server error" });
   }
-}
+};
 
 ////////////////////////////update pan and adhar bd
 exports.updateAdharcardBusinessDeveloper = async (req, res) => {
@@ -3488,15 +3432,72 @@ exports.updateAdharcardBusinessDeveloper = async (req, res) => {
       return res.status(404).json({ message: "Business developer not found" });
     }
 
-    res
-      .status(200)
-      .json({
-        message: "Aadhar card updated successfully",
-        adharCard: businessDeveloper.adharCard,
-      });
+    res.status(200).json({
+      message: "Aadhar card updated successfully",
+      adharCard: businessDeveloper.adharCard,
+    });
   } catch (error) {
     console.error(error.message);
     res.status(500).json({ message: "Internal server error" });
+  }
+};
+
+//================================================================
+
+exports.deleteState = async (req, res) => {
+  try {
+    const id = req.body.id;
+    const state = await StateHandler.findOneAndUpdate(
+      { _id: id, isDeleted: false },
+      { $set: { isDeleted: true } }
+    );
+
+    if (!state) {
+      return res.status(404).json({ message: "State not found" });
+    }
+
+    return res.status(204).json();
+  } catch (error) {
+    console.error(error);
+    return res.status(500).json({ message: "Internal Server Error" });
+  }
+};
+//====================================================================
+exports.deleteFranchise = async (req, res) => {
+  try {
+    const id = req.body.id;
+    const franchise = await Franchise.findOneAndUpdate(
+      { _id: id, isDeleted: false },
+      { $set: { isDeleted: true } }
+    );
+
+    if (!franchise) {
+      return res.status(404).json({ message: "Franchise not found" });
+    }
+
+    return res.status(204).json();
+  } catch (error) {
+    console.error(error);
+    return res.status(500).json({ message: "Internal Server Error" });
+  }
+};
+//================================================================
+exports.deleteBusinessDeveloper= async (req, res) => {
+  try {
+    const id = req.body.id;
+    const businessDeveloper = await BusinessDeveloper.findOneAndUpdate(
+      { _id: id, isDeleted: false },
+      { $set: { isDeleted: true } }
+    );
+
+    if (!businessDeveloper) {
+      return res.status(404).json({ message: "Business developer not found" });
+    }
+
+    return res.status(204).json();
+  } catch (error) {
+    console.error(error);
+    return res.status(500).json({ message: "Internal Server Error" });
   }
 };
 
