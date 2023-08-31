@@ -18,6 +18,7 @@ const stateHandler = require("../model/stateHandlerSchema");
 const StateHandlerCreditWalletTransactionScema = require("../model/stateHandlerCreditWalletTransactionScema");
 const FranchiseCreditWalletTransactionSchema = require("../model/frenchiseCreditWalletTransactionSchema");
 const BusinessDeveloperCreditWalletTransactionSchema = require("../model/businessDeveloperCreditWalletTransaction");
+const MemberCreditWalletTransaction = require("../model/memberCreditWalletTransaction");
 const myReferral = require("../model/myReferralSchema");
 const StatePaymentRequest = require("../model/statePaymentRequestSchema");
 
@@ -659,9 +660,10 @@ exports.getOwnMemberInsideStateCreditWalletTransactionDetails = async (
 
     console.log(memberIds, "llllllllll");
 
-    const memberCreditWalletTransactions = await myReferral.find({
-      userid: memberIds,
-    });
+    const memberCreditWalletTransactions =
+      await MemberCreditWalletTransaction.find({
+        userid: memberIds,
+      });
 
     return res.status(200).json({
       message: "Fetched Member Credit Wallet Transaction details",
@@ -737,20 +739,44 @@ exports.getOwnTraderInsideStateCreditWalletTransactionDetails = async (
   }
 };
 
-
 // Controller to create a new state payment request
+
+
+
 exports.createStatePaymentRequest = async (req, res) => {
   try {
     const { stateHandlerId, amount } = req.body;
+
+    const state = await stateHandler.findOne({
+      stateHandlerId: stateHandlerId
+    });
+
+    if (!state) {
+      return res.status(404).json({ message: "State handler not found" });
+    }
+    if (amount < 500) {
+      return res.status(400).json({ message: "Minimum request amount should be 500" });
+    }
+
+    if (state.stateHandlerWallet < amount) {
+      return res.status(400).json({ message: "Insufficient funds" });
+    }
+
     const newPaymentRequest = new StatePaymentRequest({
       stateHandlerId,
       amount,
     });
 
+    // Deduct the amount from the state handler's wallet
+    await stateHandler.updateOne(
+      { stateHandlerId: stateHandlerId },
+      { $inc: { stateHandlerWallet: -amount } }
+    );
+
     const savedPaymentRequest = await newPaymentRequest.save();
     res.status(201).json(savedPaymentRequest);
   } catch (error) {
-    console.log(error.message);
+    console.error("Error creating state payment request:", error);
     res.status(500).json({ message: "Internal server error" });
   }
 };
