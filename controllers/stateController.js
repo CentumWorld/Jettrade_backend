@@ -21,6 +21,8 @@ const BusinessDeveloperCreditWalletTransactionSchema = require("../model/busines
 const MemberCreditWalletTransaction = require("../model/memberCreditWalletTransaction");
 const myReferral = require("../model/myReferralSchema");
 const StatePaymentRequest = require("../model/statePaymentRequestSchema");
+const StateBankAccountHolder = require("../model/StateBankAccountHolderSchema");
+const StateUpiHolder = require("../model/StateUpiHolder");
 
 //===============================================================================
 //fetch all franchise list
@@ -741,21 +743,21 @@ exports.getOwnTraderInsideStateCreditWalletTransactionDetails = async (
 
 // Controller to create a new state payment request
 
-
-
 exports.createStatePaymentRequest = async (req, res) => {
   try {
     const { stateHandlerId, amount } = req.body;
 
     const state = await stateHandler.findOne({
-      stateHandlerId: stateHandlerId
+      stateHandlerId: stateHandlerId,
     });
 
     if (!state) {
       return res.status(404).json({ message: "State handler not found" });
     }
     if (amount < 500) {
-      return res.status(400).json({ message: "Minimum request amount should be 500" });
+      return res
+        .status(400)
+        .json({ message: "Minimum request amount should be 500" });
     }
 
     if (state.stateHandlerWallet < amount) {
@@ -780,3 +782,49 @@ exports.createStatePaymentRequest = async (req, res) => {
     res.status(500).json({ message: "Internal server error" });
   }
 };
+
+//================================================================
+
+exports.createStateBankAccountHolder = async (req, res) => {
+  try {
+    const { accountHolderName, accountNumber, bankName, branchName, ifscCode } =
+      req.body;
+
+    // Create Account Holder
+    const newAccountHolder = new StateBankAccountHolder({
+      accountHolderName,
+      accountNumber,
+      bankName,
+      branchName,
+      ifscCode,
+    });
+    const savedAccountHolder = await newAccountHolder.save();
+
+    res.status(201).json({
+      accountHolder: savedAccountHolder,
+    });
+  } catch (error) {
+    console.error("Error creating account holder and UPI ID:", error.message);
+    res.status(500).json({ message: "Internal server error" });
+  }
+};
+
+//=================================================================
+
+
+exports.createStateUpiHolder = async (req, res) => {
+  try {
+    const { upiId } = req.body;
+
+    const newUpi = new StateUpiHolder({
+      upiId,
+    });
+
+    const savedUpi = await newUpi.save();
+    res.status(201).json(savedUpi);
+  } catch (error) {
+    console.error("Error creating UPI ID:", error.message);
+    res.status(500).json({ message: "Internal server error" });
+  }
+};
+

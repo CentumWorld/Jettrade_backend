@@ -466,7 +466,6 @@ exports.getOwnTradersInsideBusinessDeveloperCreditWalletTransactionDetails =
     }
   };
 
-  
 exports.createBusinessDeveloperPaymentRequest = async (req, res) => {
   try {
     const { businessDeveloperId, amount } = req.body;
@@ -477,24 +476,54 @@ exports.createBusinessDeveloperPaymentRequest = async (req, res) => {
         .json({ error: "Business developer ID and amount are required." });
     }
 
+    const businessDeveloper = await BusinessDeveloper.findOne({
+      businessDeveloperId: businessDeveloperId,
+    });
+
+    console.log(businessDeveloper, "business developer detai;s");
+
+    if (!businessDeveloper) {
+      return res.status(404).json({ message: "Business developer not found" });
+    }
+    if (amount < 500) {
+      return res
+        .status(400)
+        .json({ message: "Minimum request amount should be 500" });
+    }
+
+    if (businessDeveloper.businessDeveloperWallet < amount) {
+      return res.status(400).json({ message: "Insufficient funds" });
+    }
+
+    await BusinessDeveloper.updateOne(
+      {
+        businessDeveloperId: businessDeveloper.businessDeveloperId,
+      },
+      {
+        $inc: {
+          businessDeveloperWallet: -amount,
+        },
+      }
+    );
+
     const newData = {
       businessDeveloperId,
       amount,
-      requestDate: new Date(),
     };
 
     const savedPaymentRequest = await BusinessDeveloperPaymentRequest.create(
       newData
     );
 
-    res
-      .status(201)
-      .json({
-        message: "Business developer payment request created successfully.",
-        savedPaymentRequest,
-      });
+    res.status(201).json({
+      message: "Business developer payment request created successfully.",
+      savedPaymentRequest,
+    });
   } catch (error) {
-    console.error("Error creating business developer payment request:", error.message);
+    console.error(
+      "Error creating business developer payment request:",
+      error.message
+    );
     res.status(500).json({ message: "Internal server error" });
   }
 };

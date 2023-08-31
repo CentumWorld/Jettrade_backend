@@ -527,10 +527,38 @@ exports.createFranchisePaymentRequest = async (req, res) => {
         .json({ error: "Franchise ID and amount are required." });
     }
 
+    const franchise = await Franchise.findOne({
+      frenchiseId: franchiseId,
+    });
+
+    console.log(franchise, "[[[[")
+    if (!franchise) {
+      return res.status(404).json({ message: "Franchise not found" });
+    }
+
+    if (amount < 500) {
+      return res.status(400).json({ message: "Minimum request amount should be 500" });
+    }
+
+    if (franchise.frenchiseWallet < amount) {
+      return res.status(400).json({ message: "Insufficient funds" });
+    }
+
     const newPaymentRequest = new FranchisePaymentRequest({
-      franchiseId,
+      franchiseId:franchise.frenchiseId,
       amount,
     });
+
+    await Franchise.updateOne(
+      {
+        frenchiseId: franchise.frenchiseId,
+      },
+      {
+        $inc: {
+          frenchiseWallet: -amount,
+        },
+      }
+    );
 
     const savedPaymentRequest = await newPaymentRequest.save();
 
@@ -539,9 +567,8 @@ exports.createFranchisePaymentRequest = async (req, res) => {
       savedPaymentRequest,
     });
   } catch (error) {
-    console.error("Error creating franchise payment request:", error.mesage);
-    res
-      .status(500)
-      .json({ message: "Internal server error" });
+    console.error("Error creating franchise payment request:", error.message);
+    res.status(500).json({ message: "Internal server error" });
   }
 };
+

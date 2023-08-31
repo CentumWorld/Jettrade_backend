@@ -240,6 +240,8 @@ const getOwnBusinessDeveloperInsideStateCreditWalletTransactionDetails= require(
 const getOwnMemberInsideStateCreditWalletTransactionDetails = require('./routes/state/get-Own-Member-Inside-State-Credit-Wallet-Transaction-Details')
 const getOwnTraderInsideStateCreditWalletTransactionDetails = require('./routes/state/get-Own-Trader-Inside-State-Credit-Wallet-Transaction-Details')
 const createStatePaymentRequest = require('./routes/state/create-state-payment-request')
+const createStateBankAccountHolder = require('./routes/state/create-State-Bank-Account-Holder')
+const createStateUpiHolder = require('./routes/state/create-state-upi-holder')
 
 //======================Frenchise==============================================
 const getBusinessDevelopersInFranchise = require("./routes/frenchise/fetch-bdeveloper-in-franchise");
@@ -535,6 +537,8 @@ app.use('/state', getOwnBusinessDeveloperInsideStateCreditWalletTransactionDetai
 app.use('/state', getOwnMemberInsideStateCreditWalletTransactionDetails)
 app.use('/state', getOwnTraderInsideStateCreditWalletTransactionDetails)
 app.use('/state', createStatePaymentRequest)
+app.use('/state',createStateBankAccountHolder)
+app.use('/state', createStateUpiHolder)
 //============================Franchise=============================================
 
 app.use("/franchise", getBusinessDevelopersInFranchise);;
