@@ -208,6 +208,9 @@ const updateAdharcardFranchise = require("./routes/update-adhar-card-franchise")
 const updatePanCardFranchise = require("./routes/update-pan-card-franchise")
 const updatePanCardBusinessDeveloper = require('./routes/update-pan-card-business-developer')
 const updateAdharcardBusinessDeveloper = require('./routes/update-adhar-card-business-developer')
+const  approvePaymentRequestOfState = require('./routes/approve-payment-requet-of-state') 
+const approvePaymentRequestOfFranchise = require('./routes/approve-Payment-Request-Of-Franchise')
+const approvePaymentRequestOfBusinessDeveloper = require('./routes/approve-Payment-Request-Of-Business-Developer')
  
 //=======================State=================================================
 
@@ -236,6 +239,7 @@ const getOwnFranchiseInsideStateCreditWalletTransactionDetails = require('./rout
 const getOwnBusinessDeveloperInsideStateCreditWalletTransactionDetails= require("./routes/state/get-Own-Business-Developer-Inside-State-Credit-Wallet-Transaction-Details")
 const getOwnMemberInsideStateCreditWalletTransactionDetails = require('./routes/state/get-Own-Member-Inside-State-Credit-Wallet-Transaction-Details')
 const getOwnTraderInsideStateCreditWalletTransactionDetails = require('./routes/state/get-Own-Trader-Inside-State-Credit-Wallet-Transaction-Details')
+const createStatePaymentRequest = require('./routes/state/create-state-payment-request')
 
 //======================Frenchise==============================================
 const getBusinessDevelopersInFranchise = require("./routes/frenchise/fetch-bdeveloper-in-franchise");
@@ -259,6 +263,7 @@ const getOwnFranchiseCreditWalletTransactionDetails = require('./routes/frenchis
 const getOwnBusinessDeveloperInsideFranchiseCreditWalletTransactionDetails=require('./routes/frenchise/get-Own-Business-Developer-Inside-Franchise-Credit-Wallet-Transaction-Details')
 const getOwnMembersInsideFranchiseCreditWalletTransactionDetails = require('./routes/frenchise/get-Own-Members-Inside-Franchise-Credit-Wallet-Transaction-Details')
 const getOwnTradersInsideFranchiseCreditWalletTransactionDetails = require('./routes/frenchise/get-own-traders-franchise-credit-wallet-transaction-details')
+const createFranchisePaymentRequest = require('./routes/frenchise/create-franchise-payment-request')
 //=========================Business developer======================================
 const getAllMembersInBusinessDeveloper = require("./routes/businessDeveloper/fetch-all-members-in-business-developer");
 const blockMemberByBusinessDeveloper = require("./routes/businessDeveloper/block-member-by-business-developer");
@@ -275,6 +280,7 @@ const frenchiseOnlineOrNotForBusiness = require('./routes/businessDeveloper/Fren
 const getOwnBusinessDeveloperWalletTransactionDetails = require('./routes/businessDeveloper/get-Own-Business-Developer-Wallet-Transaction-Details')
 const getOwnMembersInsideBusinessDeveloperCreditWalletTransactionDetails = require('./routes/businessDeveloper/get-Own-Members-Inside-Business-Developer-Credit-Wallet-Transaction-Details')
 const getOwnTradersInsideBusinessDeveloperCreditWalletTransactionDetails = require('./routes/businessDeveloper/get-Own-Traders-Inside-Business-Developer-Credit-Wallet-Transaction-Details')
+const createBusinessDeveloperPaymentRequest = require('./routes/businessDeveloper/create-Business-Developer-Payment-Request')
 //==============================SubAdmin====================================
 const getOwnSubAdminDetails = require("./routes/subAdmin/get-own-sub-admin-details")
 const updateOwnSubAdminDetails = require("./routes/subAdmin/update-own-sub-admin-details")
@@ -471,6 +477,9 @@ app.use('/admin', updateAdharcardBusinessDeveloper)
 
 app.use('/admin', updatePanCardBusinessDeveloper)
 app.use('/admin', fetchAdminCreditwalletTransactionDetails)
+app.use('/admin', approvePaymentRequestOfState)
+app.use('/admin',approvePaymentRequestOfFranchise)
+app.use('/admin', approvePaymentRequestOfBusinessDeveloper)
 
 // refferalin
 app.use("/member", memberLogin);
@@ -525,7 +534,7 @@ app.use('/state', getOwnFranchiseInsideStateCreditWalletTransactionDetails)
 app.use('/state', getOwnBusinessDeveloperInsideStateCreditWalletTransactionDetails)
 app.use('/state', getOwnMemberInsideStateCreditWalletTransactionDetails)
 app.use('/state', getOwnTraderInsideStateCreditWalletTransactionDetails)
-
+app.use('/state', createStatePaymentRequest)
 //============================Franchise=============================================
 
 app.use("/franchise", getBusinessDevelopersInFranchise);;
@@ -547,6 +556,8 @@ app.use('/franchise', getOwnBusinessDeveloperInsideFranchiseCreditWalletTransact
 app.use('/franchise', getOwnMembersInsideFranchiseCreditWalletTransactionDetails)
 app.use('/frenchise',getBusinessChatCountWithFrenchise);
 app.use('/franchise', getOwnTradersInsideFranchiseCreditWalletTransactionDetails)
+app.use('/franchise', createFranchisePaymentRequest)
+
 //============================Business developer===========================
 app.use("/businessDeveloper", getAllMembersInBusinessDeveloper);
 app.use("/businessDeveloper", blockMemberByBusinessDeveloper);
@@ -563,6 +574,7 @@ app.use('/businessDeveloper',frenchiseOnlineOrNotForBusiness);
 app.use('/businessDeveloper',getOwnBusinessDeveloperWalletTransactionDetails);
 app.use('/businessDeveloper', getOwnMembersInsideBusinessDeveloperCreditWalletTransactionDetails)
 app.use('/businessDeveloper', getOwnTradersInsideBusinessDeveloperCreditWalletTransactionDetails)
+app.use('/businessDeveloper', createBusinessDeveloperPaymentRequest)
 //=============================Sub- Admin======================================
 app.use('/subAdmin',getOwnSubAdminDetails);
 app.use('/subAdmin', updateOwnSubAdminDetails)

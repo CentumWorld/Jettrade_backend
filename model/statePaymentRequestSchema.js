@@ -1,8 +1,7 @@
-
 const mongoose = require('mongoose')
 
 const statePaymentRequestSchema = new mongoose.Schema({
-    userid: {
+    stateHandlerId: {
       type: String,
       required: true,
       trim: true,
@@ -12,14 +11,13 @@ const statePaymentRequestSchema = new mongoose.Schema({
       type: String,
     },
 
-    isVideoCreator: {
-      type: Boolean,
-      default: false
+    requestDate: {
+      type: Date,
+      default: Date.now()
     }
     
-  });
+});
 
-  const statePaymentRequest = mongoose.model("statePaymentRequest", statePaymentRequestSchema);
+const statePaymentRequest = mongoose.model("statePaymentRequest", statePaymentRequestSchema);
 
 module.exports = statePaymentRequest;
-  

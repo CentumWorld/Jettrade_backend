@@ -1141,6 +1141,9 @@ exports.changeUserPaymentStatus = async (req, res) => {
 
         if (findUserFromMemberRefferedId.length > 0 && payment < 1) {
           const memberid = findUserFromMemberRefferedId[0].memberid;
+          
+
+
           const bdrefferid = findUserFromMemberRefferedId[0].reffered_id;
 
           const bdDetails = await BusinessDeveloper.findOne({
@@ -1283,7 +1286,22 @@ exports.changeUserPaymentStatus = async (req, res) => {
             role: "Member",
             refferUserID: memberid,
           });
-          myReferralDetails.save();
+         await myReferralDetails.save();
+
+            // Create referral details for new member
+            const memberCreditWalletTransactionDetails  = new memberCreditWalletTransaction({
+              memberId:findUserFromMemberRefferedId[0].memberid,
+              creditAmount: 1000,
+              Type: "New",
+              refferUserId: userExist.userid,
+            });
+            await memberCreditWalletTransactionDetails.save();
+
+            // admin_id: admin.admin_id,
+            // creditAmount: 1400,
+            // Type: "New",
+            // refferUserId: stateHandler.stateHandlerId,
+
 
           if (insertWalletAmount) {
             return res.status(200).json({
@@ -1983,6 +2001,8 @@ exports.changePaymentStatusForRenewal = async (req, res) => {
         });
         if (findUserFromMemberRefferedId.length > 0 && payment < 1) {
           const memberid = findUserFromMemberRefferedId[0].memberid;
+
+
           let wallet = findUserFromMemberRefferedId[0].wallet;
           wallet = wallet + 1000;
           console.log(wallet);
@@ -2004,6 +2024,8 @@ exports.changePaymentStatusForRenewal = async (req, res) => {
             refferUserID: memberid,
           });
           myReferralDetails.save();
+
+          
           if (insertWalletAmount) {
             return res.status(200).json({
               message: "Payment Successfull",
@@ -2033,6 +2055,15 @@ exports.changePaymentStatusForRenewal = async (req, res) => {
             refferUserID: memberid,
           });
           myReferralDetails.save();
+
+           // Create referral details for new member
+           const memberCreditWalletTransactionDetails  = new memberCreditWalletTransaction({
+            memberId:memberid,
+            creditAmount: 500,
+            Type: "Renewal",
+            refferUserId: userExist.userid,
+          });
+          await memberCreditWalletTransactionDetails.save();
 
           const businessDeveloper = await BusinessDeveloper.findOne({
             referralId: referredId,

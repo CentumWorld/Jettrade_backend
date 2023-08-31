@@ -43,7 +43,8 @@ const FrenchChatMessage = require("../model/FrenchChatMessageSchema");
 const BusinessDeveloperChatType = require("../model/BusinessDeveloperChatTypeSchema");
 const BusinessDeveloperChatMessage = require("../model/BusinessDeveloperChatMessageSchema");
 const AdminCreditWalletTransaction = require("../model/adminCreditWalletTransaction");
-
+const StatePaymentRequest = require("../model/statePaymentRequestSchema");
+const StatePaymentApprove = require("../model/statePaymentApproveSchema");
 const {
   isValidPassword,
   isValidName,
@@ -52,6 +53,10 @@ const {
   isValidEmail,
   isValidUserId,
 } = require("../validation/validation");
+const FranchisePaymentRequest = require("../model/franchisePaymentRequestSchema");
+const FranchisePaymentApprove = require("../model/franchisePaymentApproveSchema");
+const BussinessDeveloperPaymentRequest = require('../model/businessDeveloperPaymentRequestSchema')
+const BussinessDeveloperPaymentApprove = require('../model/businessDeveloperPaymentApproveSchema')
 
 require("dotenv").config();
 
@@ -3476,7 +3481,7 @@ exports.deleteFranchise = async (req, res) => {
     const isDeleted = req.body.delete;
     const franchise = await Franchise.findOneAndUpdate(
       { _id: id },
-      { $set: { isDeleted:  isDeleted} }
+      { $set: { isDeleted: isDeleted } }
     );
 
     if (!franchise) {
@@ -3503,7 +3508,6 @@ exports.deleteBusinessDeveloper = async (req, res) => {
     const id = req.body.id;
     const isDeleted = req.body.delete;
 
-
     const businessDeveloper = await BusinessDeveloper.findOneAndUpdate(
       { _id: id },
       { $set: { isDeleted: isDeleted } }
@@ -3520,6 +3524,103 @@ exports.deleteBusinessDeveloper = async (req, res) => {
   } catch (error) {
     console.error(error);
     return res.status(500).json({ message: "Internal Server Error" });
+  }
+};
+//State approve payment request
+
+exports.approvePaymentRequestOfState = async (req, res) => {
+  try {
+    const { id } = req.body;
+
+    // Check if the payment request exists
+    const paymentRequest = await StatePaymentRequest.findById(id);
+    if (!paymentRequest) {
+      return res.status(404).json({ message: "Payment request not found." });
+    }
+
+    const newPaymentApproval = new StatePaymentApprove({
+      stateHandlerId: paymentRequest.stateHandlerId,
+      amount: paymentRequest.amount,
+      requestDate: paymentRequest.requestDate,
+      approveDate: new Date(),
+    });
+
+    const savedPaymentApproval = await newPaymentApproval.save();
+
+    await StatePaymentRequest.findByIdAndDelete(id);
+
+    res.status(201).json({
+      message: "Payment request approved successfully",
+      savedPaymentApproval,
+    });
+  } catch (error) {
+    console.error("Error approving payment request:", error);
+    res.status(500).json({ message: "Internal server error" });
+  }
+};
+//======================================================================
+//Franchise approve payment request
+
+exports.approvePaymentRequestOfFranchise = async (req, res) => {
+  try {
+    const { id } = req.body;
+
+    // Check if the payment request exists
+    const paymentRequest = await FranchisePaymentRequest.findById(id);
+    if (!paymentRequest) {
+      return res.status(404).json({ message: "Payment request not found." });
+    }
+
+    const newPaymentApproval = new FranchisePaymentApprove({
+      franchiseId: paymentRequest.franchiseId,
+      amount: paymentRequest.amount,
+      requestDate: paymentRequest.requestDate,
+      approveDate: new Date(),
+    });
+
+    const savedPaymentApproval = await newPaymentApproval.save();
+
+    await FranchisePaymentRequest.findByIdAndDelete(id);
+
+    res.status(201).json({
+      message: "Payment request approved successfully",
+      savedPaymentApproval,
+    });
+  } catch (error) {
+    console.error("Error approving payment request:", error);
+    res.status(500).json({ message: "Internal server error" });
+  }
+};
+
+//================================================================================
+exports.approvePaymentRequestOfBusinessDeveloper= async (req, res) => {
+  try {
+    const { id } = req.body;
+
+    // Check if the payment request exists
+    const paymentRequest = await BussinessDeveloperPaymentRequest.findById(id);
+    if (!paymentRequest) {
+      return res.status(404).json({ message: "Payment request not found." });
+    }
+
+    const newPaymentApproval = new BussinessDeveloperPaymentApprove({
+      businessDeveloperId: paymentRequest.businessDeveloperId,
+      amount: paymentRequest.amount,
+      requestDate: paymentRequest.requestDate,
+      approveDate: new Date(),
+    });
+
+    const savedPaymentApproval = await newPaymentApproval.save();
+
+    await BussinessDeveloperPaymentRequest.findByIdAndDelete(id);
+
+    res.status(201).json({
+      message: "Payment request approved successfully",
+      savedPaymentApproval,
+    });
+  } catch (error) {
+    console.error("Error approving payment request:", error);
+    res.status(500).json({ message: "Internal server error" });
   }
 };
 

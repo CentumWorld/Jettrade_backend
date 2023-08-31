@@ -19,6 +19,7 @@ const StateHandlerCreditWalletTransactionScema = require("../model/stateHandlerC
 const FranchiseCreditWalletTransactionSchema = require("../model/frenchiseCreditWalletTransactionSchema");
 const BusinessDeveloperCreditWalletTransactionSchema = require("../model/businessDeveloperCreditWalletTransaction");
 const myReferral = require("../model/myReferralSchema");
+const StatePaymentRequest = require("../model/statePaymentRequestSchema");
 
 //===============================================================================
 //fetch all franchise list
@@ -310,7 +311,6 @@ exports.getBusinessDeveloperForState = async (req, res) => {
 
 // adminOnlineOrNot
 exports.adminOnlineOrNot = async (req, res) => {
-  
   let adminOnline = await Admin.find();
   // console.log(adminOnline[0].isOnline,'964');
   if (adminOnline) {
@@ -642,22 +642,22 @@ exports.getOwnMemberInsideStateCreditWalletTransactionDetails = async (
       referredId: { $in: busisnessDeveloperReferralIds },
     });
 
-    console.log(businessDevelopers, "ooooo")
+    console.log(businessDevelopers, "ooooo");
 
     const memberReferralIds = businessDevelopers.map(
       (member) => member.referralId
     );
-console.log(memberReferralIds, "oooo====")
+    console.log(memberReferralIds, "oooo====");
 
     const members = await Member.find({
       reffered_id: { $in: memberReferralIds },
     });
 
-    console.log(members, "kkkk")
+    console.log(members, "kkkk");
 
     const memberIds = members.map((member) => member.memberid);
 
-    console.log(memberIds, 'llllllllll')
+    console.log(memberIds, "llllllllll");
 
     const memberCreditWalletTransactions = await myReferral.find({
       userid: memberIds,
@@ -686,7 +686,7 @@ exports.getOwnTraderInsideStateCreditWalletTransactionDetails = async (
       stateHandlerId: stateHandlerId,
     });
 
-    console.log(state, ";;;")
+    console.log(state, ";;;");
 
     if (!state) {
       return res.status(404).json({ message: "State not found" });
@@ -695,20 +695,19 @@ exports.getOwnTraderInsideStateCreditWalletTransactionDetails = async (
     const sho_reffralid = state.referralId;
     const franchise = await Frenchise.find({ referredId: sho_reffralid });
 
-    console.log(franchise, ';;;;')
+    console.log(franchise, ";;;;");
 
     const franchiseReferralIds = franchise.map(
       (franchise) => franchise.referralId
     );
 
-
-console.log(franchiseReferralIds, "br")
+    console.log(franchiseReferralIds, "br");
 
     const businessDevelopers = await BusinessDeveloper.find({
       referredId: { $in: franchiseReferralIds },
     });
 
-    console.log(businessDevelopers, "703")
+    console.log(businessDevelopers, "703");
 
     const memberReferralIds = businessDevelopers.map(
       (member) => member.referralId
@@ -738,4 +737,20 @@ console.log(franchiseReferralIds, "br")
   }
 };
 
-//
+
+// Controller to create a new state payment request
+exports.createStatePaymentRequest = async (req, res) => {
+  try {
+    const { stateHandlerId, amount } = req.body;
+    const newPaymentRequest = new StatePaymentRequest({
+      stateHandlerId,
+      amount,
+    });
+
+    const savedPaymentRequest = await newPaymentRequest.save();
+    res.status(201).json(savedPaymentRequest);
+  } catch (error) {
+    console.log(error.message);
+    res.status(500).json({ message: "Internal server error" });
+  }
+};

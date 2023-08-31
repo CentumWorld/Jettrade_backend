@@ -16,6 +16,7 @@ const {
 } = require("../validation/validation");
 const BusinessDeveloperCreditWalletTransactionSchema = require("../model/businessDeveloperCreditWalletTransaction");
 const myReferral = require("../model/myReferralSchema");
+const BusinessDeveloperPaymentRequest = require("../model/businessDeveloperPaymentRequestSchema");
 
 //============================================================================
 //all members fetch by business developer's referral id
@@ -441,12 +442,10 @@ exports.getOwnTradersInsideBusinessDeveloperCreditWalletTransactionDetails =
 
       // Check if any traders were referred by the members of this Business Developer
       if (traders.length === 0) {
-        return res
-          .status(404)
-          .json({
-            message:
-              "No traders referred by the Members of this Business Developer",
-          });
+        return res.status(404).json({
+          message:
+            "No traders referred by the Members of this Business Developer",
+        });
       }
 
       const referredTraderIds = traders.map((trader) => trader.userid);
@@ -466,3 +465,36 @@ exports.getOwnTradersInsideBusinessDeveloperCreditWalletTransactionDetails =
       return res.status(500).json({ message: "Internal server error" });
     }
   };
+
+  
+exports.createBusinessDeveloperPaymentRequest = async (req, res) => {
+  try {
+    const { businessDeveloperId, amount } = req.body;
+
+    if (!businessDeveloperId || !amount) {
+      return res
+        .status(400)
+        .json({ error: "Business developer ID and amount are required." });
+    }
+
+    const newData = {
+      businessDeveloperId,
+      amount,
+      requestDate: new Date(),
+    };
+
+    const savedPaymentRequest = await BusinessDeveloperPaymentRequest.create(
+      newData
+    );
+
+    res
+      .status(201)
+      .json({
+        message: "Business developer payment request created successfully.",
+        savedPaymentRequest,
+      });
+  } catch (error) {
+    console.error("Error creating business developer payment request:", error.message);
+    res.status(500).json({ message: "Internal server error" });
+  }
+};

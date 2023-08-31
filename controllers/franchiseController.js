@@ -22,6 +22,7 @@ const {
   isValidName,
   isValidPassword,
 } = require("../validation/validation");
+const FranchisePaymentRequest = require("../model/franchisePaymentRequestSchema");
 
 exports.getBusinessDevelopersInFranchise = async (req, res) => {
   try {
@@ -511,5 +512,36 @@ exports.frenchiseBusinessOnlineOrNot = async (req, res) => {
     });
   } else {
     return res.status(500).json({ message: "Something went wrong" });
+  }
+};
+
+//==========================================================================
+
+exports.createFranchisePaymentRequest = async (req, res) => {
+  try {
+    const { franchiseId, amount } = req.body;
+
+    if (!franchiseId || !amount) {
+      return res
+        .status(400)
+        .json({ error: "Franchise ID and amount are required." });
+    }
+
+    const newPaymentRequest = new FranchisePaymentRequest({
+      franchiseId,
+      amount,
+    });
+
+    const savedPaymentRequest = await newPaymentRequest.save();
+
+    res.status(201).json({
+      message: "Franchise payment request created successfully.",
+      savedPaymentRequest,
+    });
+  } catch (error) {
+    console.error("Error creating franchise payment request:", error.mesage);
+    res
+      .status(500)
+      .json({ message: "Internal server error" });
   }
 };
