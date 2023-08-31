@@ -3389,12 +3389,10 @@ exports.fetchCityByReferralIdInFranchise = async (req, res) => {
     if (!franchise) {
       return res.status(404).json({ message: "Franchise not found" });
     }
-    return res
-      .status(200)
-      .json({
-        message: "Fetched franchise successfully",
-        CityList: franchise.franchiseCity,
-      });
+    return res.status(200).json({
+      message: "Fetched franchise successfully",
+      CityList: franchise.franchiseCity,
+    });
   } catch (error) {
     console.error(error.message);
     res.status(500).json({ message: "Internal server error" });
@@ -3447,16 +3445,25 @@ exports.updateAdharcardBusinessDeveloper = async (req, res) => {
 exports.deleteState = async (req, res) => {
   try {
     const id = req.body.id;
+    const isDeleted = req.body.delete;
     const state = await StateHandler.findOneAndUpdate(
-      { _id: id, isDeleted: false },
-      { $set: { isDeleted: true } }
+      { _id: id },
+      { $set: { isDeleted: isDeleted } }
     );
 
     if (!state) {
       return res.status(404).json({ message: "State not found" });
     }
 
-    return res.status(204).json();
+    if (isDeleted) {
+      return res
+        .status(200)
+        .json({ message: "This state is deleted successfully" });
+    } else {
+      return res
+        .status(200)
+        .json({ message: "This state is recovered successfully" });
+    }
   } catch (error) {
     console.error(error);
     return res.status(500).json({ message: "Internal Server Error" });
@@ -3466,35 +3473,50 @@ exports.deleteState = async (req, res) => {
 exports.deleteFranchise = async (req, res) => {
   try {
     const id = req.body.id;
+    const isDeleted = req.body.delete;
     const franchise = await Franchise.findOneAndUpdate(
-      { _id: id, isDeleted: false },
-      { $set: { isDeleted: true } }
+      { _id: id },
+      { $set: { isDeleted:  isDeleted} }
     );
 
     if (!franchise) {
       return res.status(404).json({ message: "Franchise not found" });
     }
 
-    return res.status(204).json();
+    if (isDeleted) {
+      return res
+        .status(200)
+        .json({ message: "This franchise is deleted successfully" });
+    } else {
+      return res
+        .status(200)
+        .json({ message: "This franchise is recovered successfully" });
+    }
   } catch (error) {
     console.error(error);
     return res.status(500).json({ message: "Internal Server Error" });
   }
 };
 //================================================================
-exports.deleteBusinessDeveloper= async (req, res) => {
+exports.deleteBusinessDeveloper = async (req, res) => {
   try {
     const id = req.body.id;
+    const isDeleted = req.body.delete;
+
+
     const businessDeveloper = await BusinessDeveloper.findOneAndUpdate(
-      { _id: id, isDeleted: false },
-      { $set: { isDeleted: true } }
+      { _id: id },
+      { $set: { isDeleted: isDeleted } }
     );
 
     if (!businessDeveloper) {
       return res.status(404).json({ message: "Business developer not found" });
     }
 
-    return res.status(204).json();
+    const successMessage = isDeleted ? "deleted" : "recovered";
+    return res.status(200).json({
+      message: `This business developer is ${successMessage} successfully`,
+    });
   } catch (error) {
     console.error(error);
     return res.status(500).json({ message: "Internal Server Error" });
