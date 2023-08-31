@@ -3647,3 +3647,14 @@ exports.adminFetchStateHandlerPaymentWithdrawalRequest = async (req,res) => {
   })
   }
 }
+
+// adminFetchStateHandlerApproveWithdrawal
+exports.adminFetchStateHandlerApproveWithdrawal=async  (req ,res)=>{
+  const {stateHandlerId} = req.body;
+  const stateHandlerApproveWithdrawal =  await StatePaymentApprove.find({"stateHandlerId":stateHandlerId})
+  if(stateHandlerApproveWithdrawal){
+    return res.status(200).json({message:"State handler approve withdrawal  fetched",
+    stateHandlerApproveWithdrawal
+  })
+  }
+}

@@ -213,6 +213,7 @@ const approvePaymentRequestOfFranchise = require('./routes/approve-Payment-Reque
 const approvePaymentRequestOfBusinessDeveloper = require('./routes/approve-Payment-Request-Of-Business-Developer');
 const adminFetchParticularStateHandlerDetails = require('./routes/admin-fetch-particular-state-handler-details');
 const adminFetchStateHandlerPaymentWithdrawalRequest = require('./routes/admin-fetch-state-handler-payment-withdrawal-request');
+const adminFetchStateHandlerApproveWithdrawal = require('./routes/admin-fetch-state-handler-approve-withdrawal');
  
 //=======================State=================================================
 
@@ -486,6 +487,7 @@ app.use('/admin',approvePaymentRequestOfFranchise)
 app.use('/admin', approvePaymentRequestOfBusinessDeveloper);
 app.use('/admin',adminFetchParticularStateHandlerDetails);
 app.use('/admin',adminFetchStateHandlerPaymentWithdrawalRequest);
+app.use('/admin',adminFetchStateHandlerApproveWithdrawal);
 
 // refferalin
 app.use("/member", memberLogin);
