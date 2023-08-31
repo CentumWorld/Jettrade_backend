@@ -3636,3 +3636,14 @@ exports.adminFetchParticularStateHandlerDetails = async (req,res) => {
     })
   }
 }
+
+// adminFetchStateHandlerPaymentWithdrawalRequest
+exports.adminFetchStateHandlerPaymentWithdrawalRequest = async (req,res) => {
+  const {stateHandlerId} = req.body;
+  const stateHandlerPaymentWithdrawalRequests =  await StatePaymentRequest.find({"stateHandlerId":stateHandlerId})
+  if(stateHandlerPaymentWithdrawalRequests){
+    return res.status(200).json({message:"State handler withdrawal request fetched",
+    stateHandlerPaymentWithdrawalRequests
+  })
+  }
+}
