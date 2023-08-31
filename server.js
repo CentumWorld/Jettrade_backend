@@ -249,6 +249,7 @@ io.on("connection", (socket) => {
             Frenchisee.findOne({ frenchiseId: data1 }, (err, result) => {
                 if (err) {
                     console.error(err);
+                    console.log(data1,'252')
                     // Handle the error response here
                     return res.status(400).json({
                         message: "Not Found"
@@ -634,7 +635,7 @@ io.on("connection", (socket) => {
     // stateHandler logout
 
     socket.on('stateLogout', (userId)=>{ 
-        console.log('126');
+        console.log(userId,'638');
         StateHandler.updateOne(
             { stateHandlerId: userId },
             { $set: { isOnline: false } },

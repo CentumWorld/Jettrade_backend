@@ -3624,3 +3624,15 @@ exports.approvePaymentRequestOfBusinessDeveloper= async (req, res) => {
   }
 };
 
+// adminFetchParticularStateHandlerDetails
+exports.adminFetchParticularStateHandlerDetails = async (req,res) => {
+  const {stateHandlerId} = req.body;
+
+  const particularStateHandlerDetails = await StateHandler.findOne({stateHandlerId:stateHandlerId })
+  if(particularStateHandlerDetails){
+    return res.status(200).json({
+      message:"Details fetched",
+      particularStateHandlerDetails
+    })
+  }
+}

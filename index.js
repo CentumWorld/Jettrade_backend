@@ -210,7 +210,8 @@ const updatePanCardBusinessDeveloper = require('./routes/update-pan-card-busines
 const updateAdharcardBusinessDeveloper = require('./routes/update-adhar-card-business-developer')
 const  approvePaymentRequestOfState = require('./routes/approve-payment-requet-of-state') 
 const approvePaymentRequestOfFranchise = require('./routes/approve-Payment-Request-Of-Franchise')
-const approvePaymentRequestOfBusinessDeveloper = require('./routes/approve-Payment-Request-Of-Business-Developer')
+const approvePaymentRequestOfBusinessDeveloper = require('./routes/approve-Payment-Request-Of-Business-Developer');
+const adminFetchParticularStateHandlerDetails = require('./routes/admin-fetch-particular-state-handler-details');
  
 //=======================State=================================================
 
@@ -481,7 +482,8 @@ app.use('/admin', updatePanCardBusinessDeveloper)
 app.use('/admin', fetchAdminCreditwalletTransactionDetails)
 app.use('/admin', approvePaymentRequestOfState)
 app.use('/admin',approvePaymentRequestOfFranchise)
-app.use('/admin', approvePaymentRequestOfBusinessDeveloper)
+app.use('/admin', approvePaymentRequestOfBusinessDeveloper);
+app.use('/admin',adminFetchParticularStateHandlerDetails);
 
 // refferalin
 app.use("/member", memberLogin);
