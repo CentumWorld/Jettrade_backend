@@ -821,7 +821,7 @@ exports.createStateBankAccountHolder = async (req, res) => {
 
     const savedAccountHolder = await newAccountHolder.save();
 
-    res.status(201).json({
+    return res.status(201).json({
       message: "State Account holder created successfully",
       accountHolder: savedAccountHolder,
     });
