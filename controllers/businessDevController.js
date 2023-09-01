@@ -476,7 +476,7 @@ exports.createBusinessDeveloperPaymentRequest = async (req, res) => {
     if (!businessDeveloperId || !amount||!paymentBy) {
       return res
         .status(400)
-        .json({ error: "Business developer ID and amount are required." });
+        .json({ error: "Business developer ID and amount and payment by are required." });
     }
 
     const businessDeveloper = await BusinessDeveloper.findOne({
@@ -586,7 +586,7 @@ exports.createBusinessDeveloperUpiHolder = async (req, res) => {
     if (!upiId ) {
       return res
         .status(400)
-        .json({ message: "UpiId is required" });
+        .json({ message: "Upi Id is required" });
     }
     const businessDeveloper = await BusinessDeveloper.findOne({ businessDeveloperId: userId });
 
@@ -608,12 +608,12 @@ exports.createBusinessDeveloperUpiHolder = async (req, res) => {
     res.status(500).json({ message: "Internal server error" });
   }
 };
-//=======================================================================
+//======================================================================
 exports.getBusinessDeveloperOwnBankDetails = async (req, res) => {
   try {
     const { userId } = req.body;
 
-    const businessDeveloperBankDetails = await BankAccountHolder.findOne({ userId: userId });
+    const businessDeveloperBankDetails = await BankAccountHolder.find({ userId: userId });
 
     if (!businessDeveloperBankDetails) {
       return res.status(404).json({ message: "Bank details not found for the provided business developer" });
@@ -630,7 +630,7 @@ exports.getBusinessDeveloperOwnUpi = async (req, res) => {
   try {
     const { userId } = req.body;
 
-    const businessDeveloperUpiId = await UpiHolder.findOne({ userId: userId });
+    const businessDeveloperUpiId = await UpiHolder.find({ userId: userId });
 
     if (!businessDeveloperUpiId) {
       return res.status(404).json({ message: "upi id not found for the provided business developer" });

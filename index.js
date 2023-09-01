@@ -296,6 +296,8 @@ const getOwnTradersInsideBusinessDeveloperCreditWalletTransactionDetails = requi
 const createBusinessDeveloperPaymentRequest = require('./routes/businessDeveloper/create-Business-Developer-Payment-Request')
 const createBusinessDeveloperBankAccountHolder = require('./routes/businessDeveloper/creat-business-developer-bank-account-holder')
 const createBusinessDeveloperUpiHolder = require('./routes/businessDeveloper/create-business-developer-upi-holder')
+const getBusinessDeveloperOwnBankDetails = require('./routes/businessDeveloper/get-Business-Developer-Own-Bank-Details')
+const getBusinessDeveloperOwnUpi = require('./routes/businessDeveloper/get-Business-Developer-Own-Upi')
 //==============================SubAdmin====================================
 const getOwnSubAdminDetails = require("./routes/subAdmin/get-own-sub-admin-details")
 const updateOwnSubAdminDetails = require("./routes/subAdmin/update-own-sub-admin-details")
@@ -606,6 +608,8 @@ app.use('/businessDeveloper', getOwnTradersInsideBusinessDeveloperCreditWalletTr
 app.use('/businessDeveloper', createBusinessDeveloperPaymentRequest)
 app.use('/businessDeveloper', createBusinessDeveloperBankAccountHolder)
 app.use('/businessDeveloper', createBusinessDeveloperUpiHolder)
+app.use('/businessDeveloper',getBusinessDeveloperOwnBankDetails)
+app.use('/businessDeveloper', getBusinessDeveloperOwnUpi)
 //=============================Sub- Admin======================================
 app.use('/subAdmin',getOwnSubAdminDetails);
 app.use('/subAdmin', updateOwnSubAdminDetails)
