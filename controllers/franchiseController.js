@@ -659,7 +659,7 @@ exports.getFranchiseOwnBankDetails = async (req, res) => {
   try {
     const { userId } = req.body;
 
-    const franchiseBankDetails = await BankAccountHolder.findOne({ userId: userId });
+    const franchiseBankDetails = await BankAccountHolder.find({ userId: userId });
 
     if (!franchiseBankDetails) {
       return res.status(404).json({ message: "Bank details not found for the provided franchise" });
@@ -676,7 +676,7 @@ exports.getFranchiseOwnUpi = async (req, res) => {
   try {
     const { userId } = req.body;
 
-    const franchiseUpiId = await UpiHolder.findOne({ userId: userId });
+    const franchiseUpiId = await UpiHolder.find({ userId: userId });
 
     if (!franchiseUpiId) {
       return res.status(404).json({ message: "upi id not found for the provided franchise" });

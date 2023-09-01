@@ -865,7 +865,7 @@ exports.getStateOwnBankDetails = async (req, res) => {
   try {
     const { userId } = req.body;
 
-    const stateBankDetails = await BankAccountHolder.findOne({ userId: userId });
+    const stateBankDetails = await BankAccountHolder.find({ userId: userId });
 
     if (!stateBankDetails) {
       return res.status(404).json({ message: "Bank details not found for the provided state" });
@@ -882,7 +882,7 @@ exports.getStateOwnUpi = async (req, res) => {
   try {
     const { userId } = req.body;
 
-    const stateUpiId = await UpiHolder.findOne({ userId: userId });
+    const stateUpiId = await UpiHolder.find({ userId: userId });
 
     if (!stateUpiId) {
       return res.status(404).json({ message: "upi id not found for the provided state" });

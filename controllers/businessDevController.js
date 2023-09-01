@@ -607,3 +607,37 @@ exports.createBusinessDeveloperUpiHolder = async (req, res) => {
     res.status(500).json({ message: "Internal server error" });
   }
 };
+//=======================================================================
+exports.getBusinessDeveloperOwnBankDetails = async (req, res) => {
+  try {
+    const { userId } = req.body;
+
+    const businessDeveloperBankDetails = await BankAccountHolder.findOne({ userId: userId });
+
+    if (!businessDeveloperBankDetails) {
+      return res.status(404).json({ message: "Bank details not found for the provided business developer" });
+    }
+
+    return res.status(200).json({message:"bank details of business developer fetched successfully", businessDeveloperBankDetails });
+  } catch (error) {
+    console.error("Error fetching business developer bank details:", error);
+    return res.status(500).json({ message: "Internal server error" });
+  }
+};
+//===================================================================
+exports.getBusinessDeveloperOwnUpi = async (req, res) => {
+  try {
+    const { userId } = req.body;
+
+    const businessDeveloperUpiId = await UpiHolder.findOne({ userId: userId });
+
+    if (!businessDeveloperUpiId) {
+      return res.status(404).json({ message: "upi id not found for the provided business developer" });
+    }
+
+    return res.status(200).json({message:"Upi of business developer fetched successfully", businessDeveloperUpiId });
+  } catch (error) {
+    console.error("Error fetching business developer upi:", error);
+    return res.status(500).json({ message: "Internal server error" });
+  }
+};

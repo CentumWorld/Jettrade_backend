@@ -272,6 +272,8 @@ const getOwnTradersInsideFranchiseCreditWalletTransactionDetails = require('./ro
 const createFranchisePaymentRequest = require('./routes/frenchise/create-franchise-payment-request')
 const createFranchiseBankAccountHolder = require('./routes/frenchise/create-franchise-bank-account-holder') 
 const createFranchiseUpiHolder = require('./routes/frenchise/create-franchise-upi-holder')
+const getFranchiseOwnBankDetails = require('./routes/frenchise/get-franchise-own-bank-details')
+const getFranchiseOwnUpi = require('./routes/frenchise/get-Franchise-Own-Upi')
 //=========================Business developer======================================
 const getAllMembersInBusinessDeveloper = require("./routes/businessDeveloper/fetch-all-members-in-business-developer");
 const blockMemberByBusinessDeveloper = require("./routes/businessDeveloper/block-member-by-business-developer");
@@ -576,6 +578,8 @@ app.use('/franchise', getOwnTradersInsideFranchiseCreditWalletTransactionDetails
 app.use('/franchise', createFranchisePaymentRequest)
 app.use('/franchise', createFranchiseBankAccountHolder)
 app.use('/franchise', createFranchiseUpiHolder)
+app.use('/franchise', getFranchiseOwnBankDetails)
+app.use('/franchise', getFranchiseOwnUpi)
 //============================Business developer===========================
 app.use("/businessDeveloper", getAllMembersInBusinessDeveloper);
 app.use("/businessDeveloper", blockMemberByBusinessDeveloper);
