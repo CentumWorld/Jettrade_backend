@@ -3658,3 +3658,23 @@ exports.adminFetchStateHandlerApproveWithdrawal=async  (req ,res)=>{
   })
   }
 }
+
+//franchise
+exports.adminFetchParticularfranchiseDetails = async (req,res) => {
+  try {
+    const {franchiseId} = req.body;
+
+    const particularFranchiseDetails = await Franchise.findOne({frenchiseId:franchiseId })
+    if(!particularFranchiseDetails){
+      return res.status(404).json({
+        message:"Franchise not found",
+      })
+
+    }
+    return res.status(200).json({message: "franchise fetched successfully"})
+  } catch (error) {
+    console.log(error.message)
+    res.status(500).json({message: "Internal server error"})
+  }
+
+}

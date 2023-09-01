@@ -3,5 +3,5 @@ const router = express.Router();
 
 const {  getStateOwnBankDetails } = require("../../controllers/stateController");
 const { authenticateAdmin, authorizeRole } = require("../../middleware/checkAuth");
-router.post('/get-state-own-bank-details',authenticateAdmin,authorizeRole(["state"]),getStateOwnBankDetails);
+router.post('/get-state-own-bank-details',authenticateAdmin,authorizeRole(["state", "admin"]),getStateOwnBankDetails);
 module.exports = router;
