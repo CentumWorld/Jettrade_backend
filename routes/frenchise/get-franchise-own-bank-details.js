@@ -3,7 +3,7 @@ const router = express.Router();
 const {  getFranchiseOwnBankDetails } = require("../../controllers/franchiseController");
 const {authenticateAdmin, authorizeRole}= require("../../middleware/checkAuth")
 router.post("/get-franchise-own-bank-details",authenticateAdmin,
-authorizeRole(["franchise"])
+authorizeRole(["franchise", "admin"])
 ,getFranchiseOwnBankDetails);
 
 module.exports = router
