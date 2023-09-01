@@ -854,7 +854,7 @@ exports.createStateUpiHolder = async (req, res) => {
     });
 
     const savedUpi = await newUpi.save();
-    res
+   return res
       .status(201)
       .json({ message: "State upi created successfully", savedUpi });
   } catch (error) {
