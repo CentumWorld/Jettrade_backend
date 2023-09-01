@@ -55,8 +55,8 @@ const {
 } = require("../validation/validation");
 const FranchisePaymentRequest = require("../model/franchisePaymentRequestSchema");
 const FranchisePaymentApprove = require("../model/franchisePaymentApproveSchema");
-const BussinessDeveloperPaymentRequest = require('../model/businessDeveloperPaymentRequestSchema')
-const BussinessDeveloperPaymentApprove = require('../model/businessDeveloperPaymentApproveSchema')
+const BussinessDeveloperPaymentRequest = require("../model/businessDeveloperPaymentRequestSchema");
+const BussinessDeveloperPaymentApprove = require("../model/businessDeveloperPaymentApproveSchema");
 
 require("dotenv").config();
 
@@ -3593,7 +3593,7 @@ exports.approvePaymentRequestOfFranchise = async (req, res) => {
 };
 
 //================================================================================
-exports.approvePaymentRequestOfBusinessDeveloper= async (req, res) => {
+exports.approvePaymentRequestOfBusinessDeveloper = async (req, res) => {
   try {
     const { id } = req.body;
 
@@ -3624,57 +3624,268 @@ exports.approvePaymentRequestOfBusinessDeveloper= async (req, res) => {
   }
 };
 
-// adminFetchParticularStateHandlerDetails
-exports.adminFetchParticularStateHandlerDetails = async (req,res) => {
-  const {stateHandlerId} = req.body;
-
-  const particularStateHandlerDetails = await StateHandler.findOne({stateHandlerId:stateHandlerId })
-  if(particularStateHandlerDetails){
-    return res.status(200).json({
-      message:"Details fetched",
-      particularStateHandlerDetails
-    })
-  }
-}
-
-// adminFetchStateHandlerPaymentWithdrawalRequest
-exports.adminFetchStateHandlerPaymentWithdrawalRequest = async (req,res) => {
-  const {stateHandlerId} = req.body;
-  const stateHandlerPaymentWithdrawalRequests =  await StatePaymentRequest.find({"stateHandlerId":stateHandlerId})
-  if(stateHandlerPaymentWithdrawalRequests){
-    return res.status(200).json({message:"State handler withdrawal request fetched",
-    stateHandlerPaymentWithdrawalRequests
-  })
-  }
-}
-
-// adminFetchStateHandlerApproveWithdrawal
-exports.adminFetchStateHandlerApproveWithdrawal=async  (req ,res)=>{
-  const {stateHandlerId} = req.body;
-  const stateHandlerApproveWithdrawal =  await StatePaymentApprove.find({"stateHandlerId":stateHandlerId})
-  if(stateHandlerApproveWithdrawal){
-    return res.status(200).json({message:"State handler approve withdrawal  fetched",
-    stateHandlerApproveWithdrawal
-  })
-  }
-}
-
-//franchise
-exports.adminFetchParticularfranchiseDetails = async (req,res) => {
+exports.adminFetchParticularStateHandlerDetails = async (req, res) => {
   try {
-    const {franchiseId} = req.body;
+    const { stateHandlerId } = req.body;
 
-    const particularFranchiseDetails = await Franchise.findOne({frenchiseId:franchiseId })
-    if(!particularFranchiseDetails){
-      return res.status(404).json({
-        message:"Franchise not found",
-      })
-
+    if (!stateHandlerId) {
+      return res.status(400).json({ message: "stateHandlerId is required" });
     }
-    return res.status(200).json({message: "franchise fetched successfully"})
-  } catch (error) {
-    console.log(error.message)
-    res.status(500).json({message: "Internal server error"})
-  }
 
-}
+    const particularStateHandlerDetails = await StateHandler.findOne({
+      stateHandlerId: stateHandlerId,
+    });
+
+    if (!particularStateHandlerDetails) {
+      return res
+        .status(404)
+        .json({
+          message:
+            "State handler details not found for the provided stateHandlerId",
+        });
+    }
+
+    return res.status(200).json({
+      message: "State handler details fetched successfully",
+      particularStateHandlerDetails,
+    });
+  } catch (error) {
+    console.error("Error fetching state handler details:", error);
+    return res.status(500).json({ message: "Internal server error" });
+  }
+};
+//adminFetchStateHandlerPaymentWithdrawalRequest
+exports.adminFetchStateHandlerPaymentWithdrawalRequest = async (req, res) => {
+  try {
+    const { stateHandlerId } = req.body;
+
+    if (!stateHandlerId) {
+      return res.status(400).json({ message: "stateHandlerId is required" });
+    }
+
+    const stateHandlerPaymentWithdrawalRequests =
+      await StatePaymentRequest.find({ stateHandlerId: stateHandlerId });
+
+    if (stateHandlerPaymentWithdrawalRequests.length === 0) {
+      return res
+        .status(404)
+        .json({
+          message:
+            "No withdrawal requests found for the provided state handler",
+        });
+    }
+
+    return res.status(200).json({
+      message: "State handler withdrawal requests fetched",
+      stateHandlerPaymentWithdrawalRequests,
+    });
+  } catch (error) {
+    console.error("Error fetching state handler withdrawal requests:", error);
+    return res.status(500).json({ message: "Internal server error" });
+  }
+};
+//adminFetchStateHandlerApproveWithdrawal
+exports.adminFetchStateHandlerApproveWithdrawal = async (req, res) => {
+  try {
+    const { stateHandlerId } = req.body;
+
+    if (!stateHandlerId) {
+      return res.status(400).json({ message: "stateHandlerId is required" });
+    }
+
+    const stateHandlerApproveWithdrawal = await StatePaymentApprove.find({
+      stateHandlerId: stateHandlerId,
+    });
+
+    if (stateHandlerApproveWithdrawal.length === 0) {
+      return res
+        .status(404)
+        .json({
+          message:
+            "No approve withdrawals found for the provided state handler",
+        });
+    }
+
+    return res.status(200).json({
+      message: "State handler approve withdrawals fetched",
+      stateHandlerApproveWithdrawal,
+    });
+  } catch (error) {
+    console.error("Error fetching state handler approve withdrawals:", error);
+    return res.status(500).json({ message: "Internal server error" });
+  }
+};
+
+
+//adminFetchParticularFranchiseDetails
+exports.adminFetchParticularFranchiseDetails = async (req, res) => {
+  try {
+    const { franchiseId } = req.body;
+
+    if (!franchiseId) {
+      return res.status(400).json({ message: "franchiseId is required" });
+    }
+
+    const particularFranchiseDetails = await Franchise.findOne({
+      frenchiseId: franchiseId,
+    });
+
+    if (!particularFranchiseDetails) {
+      return res.status(404).json({
+        message: "Franchise not found",
+      });
+    }
+
+    return res.status(200).json({
+      message: "Franchise fetched successfully",
+      particularFranchiseDetails,
+    });
+  } catch (error) {
+    console.error(error.message);
+    res.status(500).json({ message: "Internal server error" });
+  }
+};
+
+//adminFetchFranchisePaymentWithdrawalRequest
+exports.adminFetchFranchisePaymentWithdrawalRequest = async (req, res) => {
+  try {
+    const { franchiseId } = req.body;
+
+    if (!franchiseId) {
+      return res.status(400).json({ message: "franchiseId is required" });
+    }
+
+    const franchisePaymentWithdrawalRequests = await FranchisePaymentRequest.find({ franchiseId: franchiseId });
+
+    if (franchisePaymentWithdrawalRequests.length === 0) {
+      return res.status(404).json({
+        message: "No withdrawal requests found for the provided franchise",
+      });
+    }
+
+    return res.status(200).json({
+      message: "Franchise payment withdrawal requests fetched",
+      franchisePaymentWithdrawalRequests,
+    });
+  } catch (error) {
+    console.error("Error fetching franchise payment withdrawal requests:", error);
+    return res.status(500).json({ message: "Internal server error" });
+  }
+};
+
+//adminFetchFranchiseApproveWithdrawal
+exports.adminFetchFranchiseApproveWithdrawal = async (req, res) => {
+  try {
+    const { franchiseId } = req.body;
+
+    if (!franchiseId) {
+      return res.status(400).json({ message: "franchiseId is required" });
+    }
+
+    const franchiseApproveWithdrawal = await FranchisePaymentApprove.find({
+      franchiseId: franchiseId,
+    });
+
+    if (franchiseApproveWithdrawal.length === 0) {
+      return res.status(404).json({
+        message: "No approve withdrawals found for the provided franchise",
+      });
+    }
+
+    return res.status(200).json({
+      message: "Franchise approve withdrawals fetched",
+      franchiseApproveWithdrawal,
+    });
+  } catch (error) {
+    console.error("Error fetching franchise approve withdrawals:", error);
+    return res.status(500).json({ message: "Internal server error" });
+  }
+};
+
+
+//adminFetchParticularBusinessDeveloperDetails
+exports.adminFetchParticularBusinessDeveloperDetails = async (req, res) => {
+  try {
+    const { businessDeveloperId } = req.body;
+
+    if (!businessDeveloperId) {
+      return res.status(400).json({ message: "business developer Id is required" });
+    }
+
+    const particularBusinessDeveloperDetails = await BusinessDeveloper.findOne({
+      businessDeveloperId: businessDeveloperId,
+    });
+
+    if (!particularBusinessDeveloperDetails) {
+      return res.status(404).json({
+        message: "Business developer not found",
+      });
+    }
+
+    return res.status(200).json({
+      message: "Business developer fetched successfully",
+      particularBusinessDeveloperDetails,
+    });
+  } catch (error) {
+    console.error(error.message);
+    res.status(500).json({ message: "Internal server error" });
+  }
+};
+
+
+//adminFetchBusinessDeveloperPaymentWithdrawalRequest
+exports.adminFetchBusinessDeveloperPaymentWithdrawalRequest = async (req, res) => {
+  try {
+    const { businessDeveloperId } = req.body;
+
+    if (!businessDeveloperId) {
+      return res.status(400).json({ message: "businessDeveloperId is required" });
+    }
+    
+    const businessDeveloperPaymentWithdrawalRequests = await BussinessDeveloperPaymentRequest.find({ businessDeveloperId: businessDeveloperId });
+
+    if (businessDeveloperPaymentWithdrawalRequests.length === 0) {
+      return res.status(404).json({
+        message: "No withdrawal requests found for the provided business developer",
+      });
+    }
+
+    return res.status(200).json({
+      message: "Business developer payment withdrawal requests fetched",
+      businessDeveloperPaymentWithdrawalRequests,
+    });
+  } catch (error) {
+    console.error("Error fetching business developer payment withdrawal requests:", error.message);
+    return res.status(500).json({ message: "Internal server error" });
+  }
+};
+
+exports.adminFetchBusinessDeveloperApproveWithdrawal = async (req, res) => {
+  try {
+    const { businessDeveloperId } = req.body;
+
+    if (!businessDeveloperId) {
+      return res.status(400).json({ message: "businessDeveloperId is required" });
+    }
+
+    const businessDeveloperApproveWithdrawal = await BussinessDeveloperPaymentApprove
+    .find({
+      businessDeveloperId: businessDeveloperId,
+    });
+
+    if (businessDeveloperApproveWithdrawal.length === 0) {
+      return res.status(404).json({
+        message: "No approve withdrawals found for the provided business developer",
+      });
+    }
+
+    return res.status(200).json({
+      message: "Business developer approve withdrawals fetched",
+      businessDeveloperApproveWithdrawal,
+    });
+  } catch (error) {
+    console.error("Error fetching business developer approve withdrawals:", error);
+    return res.status(500).json({ message: "Internal server error" });
+  }
+};
+

@@ -89,10 +89,12 @@ const fetchAllNewPaidUser = require("./routes/fetch-all-new-paid-user");
 const changePaymentStatusForRenewal = require("./routes/users/change-payment-status-for-renewal");
 const getOwnTraderCreditWalletTransactionDetails = require("./routes/users/get-Own-Trader-Credit-Wallet-Transaction-Details")
 
-
-
-
 //admin
+const adminFetchBusinessDeveloperApproveWithdrawal = require('./routes/admin-Fetch-Business-Developer-Approve-Withdrawal')
+const adminFetchBusinessDeveloperPaymentWithdrawalRequest = require('./routes/admin-Fetch-Business-Developer-Payment-Withdrawal-Request')
+const adminFetchParticularBusinessDeveloperDetails = require('./routes/admin-Fetch-Particular-Business-Developer-Details')
+const adminFetchFranchiseApproveWithdrawal = require('./routes/admin-Fetch-Franchise-Approve-Withdrawal')
+const adminFetchFranchisePaymentWithdrawalRequest = require('./routes/admin-Fetch-Franchise-Payment-Withdrawal-Request')
 const adminSumOfAllNewRenewalUserAmount = require("./routes/admin-sum-of-all-new-renewal-user-amount");
 const filterTransactionsForWithdrawlWithYearMonth = require("./routes/filter-Transactions-For-Withdrawl-With-Year-Month");
 const tradingWalletTransferFromOneUserToAnother = require("./routes/users/trading-wallet-transfer-from-one-user-to-another");
@@ -214,6 +216,7 @@ const approvePaymentRequestOfBusinessDeveloper = require('./routes/approve-Payme
 const adminFetchParticularStateHandlerDetails = require('./routes/admin-fetch-particular-state-handler-details');
 const adminFetchStateHandlerPaymentWithdrawalRequest = require('./routes/admin-fetch-state-handler-payment-withdrawal-request');
 const adminFetchStateHandlerApproveWithdrawal = require('./routes/admin-fetch-state-handler-approve-withdrawal');
+const adminFetchParticularFranchiseDetails = require('./routes/admin-Fetch-Particular-Franchise-Details')
  
 //=======================State=================================================
 
@@ -416,7 +419,10 @@ app.use('/admin',adminBusinessOnlineOrNot);
 app.use('/admin',deleteState )
 app.use('/admin',deleteFranchise )
 app.use('/admin',deleteBusinessDeveloper )
-
+app.use('/admin',adminFetchFranchiseApproveWithdrawal)
+app.use('/admin', adminFetchParticularBusinessDeveloperDetails)
+app.use('/admin', adminFetchBusinessDeveloperPaymentWithdrawalRequest)
+app.use('/admin', adminFetchBusinessDeveloperApproveWithdrawal)
 
 app.use('/user', getOwnTraderCreditWalletTransactionDetails)
 
@@ -495,7 +501,8 @@ app.use('/admin', approvePaymentRequestOfBusinessDeveloper);
 app.use('/admin',adminFetchParticularStateHandlerDetails);
 app.use('/admin',adminFetchStateHandlerPaymentWithdrawalRequest);
 app.use('/admin',adminFetchStateHandlerApproveWithdrawal);
-
+app.use('/admin', adminFetchParticularFranchiseDetails)
+app.use('/admin',adminFetchFranchisePaymentWithdrawalRequest)
 // refferalin
 app.use("/member", memberLogin);
 app.use("/admin", fetchMemberDetails);
