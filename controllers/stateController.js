@@ -740,7 +740,7 @@ exports.getOwnTraderInsideStateCreditWalletTransactionDetails = async (
 
 exports.createStatePaymentRequest = async (req, res) => {
   try {
-    const { stateHandlerId, amount } = req.body;
+    const { stateHandlerId, amount ,paymentBy} = req.body;
 
     const state = await stateHandler.findOne({
       stateHandlerId: stateHandlerId,
@@ -762,6 +762,7 @@ exports.createStatePaymentRequest = async (req, res) => {
     const newPaymentRequest = new StatePaymentRequest({
       stateHandlerId,
       amount,
+      paymentBy
     });
 
     // Deduct the amount from the state handler's wallet

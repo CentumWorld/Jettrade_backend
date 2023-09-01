@@ -523,9 +523,9 @@ exports.frenchiseBusinessOnlineOrNot = async (req, res) => {
 
 exports.createFranchisePaymentRequest = async (req, res) => {
   try {
-    const { franchiseId, amount } = req.body;
+    const { franchiseId, amount,paymentBy } = req.body;
 
-    if (!franchiseId || !amount) {
+    if (!franchiseId || !amount||!paymentBy) {
       return res
         .status(400)
         .json({ error: "Franchise ID and amount are required." });
@@ -553,6 +553,7 @@ exports.createFranchisePaymentRequest = async (req, res) => {
     const newPaymentRequest = new FranchisePaymentRequest({
       franchiseId: franchise.frenchiseId,
       amount,
+      paymentBy
     });
 
     await Franchise.updateOne(

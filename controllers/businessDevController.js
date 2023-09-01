@@ -471,9 +471,9 @@ exports.getOwnTradersInsideBusinessDeveloperCreditWalletTransactionDetails =
 
 exports.createBusinessDeveloperPaymentRequest = async (req, res) => {
   try {
-    const { businessDeveloperId, amount } = req.body;
+    const { businessDeveloperId, amount,paymentBy } = req.body;
 
-    if (!businessDeveloperId || !amount) {
+    if (!businessDeveloperId || !amount||!paymentBy) {
       return res
         .status(400)
         .json({ error: "Business developer ID and amount are required." });
@@ -512,6 +512,7 @@ exports.createBusinessDeveloperPaymentRequest = async (req, res) => {
     const newData = {
       businessDeveloperId,
       amount,
+      paymentBy
     };
 
     const savedPaymentRequest = await BusinessDeveloperPaymentRequest.create(
