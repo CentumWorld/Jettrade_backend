@@ -646,7 +646,6 @@ exports.getOwnMemberInsideStateCreditWalletTransactionDetails = async (
       referredId: { $in: busisnessDeveloperReferralIds },
     });
 
-
     const memberReferralIds = businessDevelopers.map(
       (member) => member.referralId
     );
@@ -655,9 +654,7 @@ exports.getOwnMemberInsideStateCreditWalletTransactionDetails = async (
       reffered_id: { $in: memberReferralIds },
     });
 
-
     const memberIds = members.map((member) => member.memberid);
-
 
     const memberCreditWalletTransactions =
       await MemberCreditWalletTransaction.find({
@@ -724,9 +721,10 @@ exports.getOwnTraderInsideStateCreditWalletTransactionDetails = async (
 
     const traderIds = traders.map((trader) => trader.userid);
 
-    const traderCreditWalletTransactions = await UserCreditWalletTransaction.find({
-      userid: traderIds,
-    });
+    const traderCreditWalletTransactions =
+      await UserCreditWalletTransaction.find({
+        userid: traderIds,
+      });
 
     return res.status(200).json({
       message: "Fetched Trader Credit Wallet Transaction details",
@@ -838,9 +836,7 @@ exports.createStateUpiHolder = async (req, res) => {
     const { upiId, userId } = req.body;
 
     if (!upiId) {
-      return res
-        .status(400)
-        .json({ message: "UpiId is required" });
+      return res.status(400).json({ message: "UpiId is required" });
     }
     const state = await stateHandler.findOne({ stateHandlerId: userId });
 
@@ -862,3 +858,40 @@ exports.createStateUpiHolder = async (req, res) => {
     res.status(500).json({ message: "Internal server error" });
   }
 };
+//======================================================================
+
+
+exports.getStateOwnBankDetails = async (req, res) => {
+  try {
+    const { userId } = req.body;
+
+    const stateBankDetails = await BankAccountHolder.findOne({ userId: userId });
+
+    if (!stateBankDetails) {
+      return res.status(404).json({ message: "Bank details not found for the provided state" });
+    }
+
+    return res.status(200).json({message:"bank details of state fetched successfully", stateBankDetails });
+  } catch (error) {
+    console.error("Error fetching state bank details:", error);
+    return res.status(500).json({ message: "Internal server error" });
+  }
+};
+
+exports.getStateOwnUpi = async (req, res) => {
+  try {
+    const { userId } = req.body;
+
+    const stateUpiId = await UpiHolder.findOne({ userId: userId });
+
+    if (!stateUpiId) {
+      return res.status(404).json({ message: "upi id not found for the provided state" });
+    }
+
+    return res.status(200).json({message:"Upi of state fetched successfully", stateUpiId });
+  } catch (error) {
+    console.error("Error fetching state upi:", error);
+    return res.status(500).json({ message: "Internal server error" });
+  }
+};
+

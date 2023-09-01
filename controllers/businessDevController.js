@@ -365,7 +365,7 @@ exports.getOwnBusinessDeveloperWalletTransactionDetails = async (req, res) => {
 exports.getOwnMembersInsideBusinessDeveloperCreditWalletTransactionDetails =
   async (req, res) => {
     try {
-      const { businessDeveloperId } = req.body;
+      const { businessDeveloperId } = get.body;
 
       // Fetch member IDs referred by the Business Developer
       const businessDeveloper = await BusinessDeveloper.findOne({

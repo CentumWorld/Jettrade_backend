@@ -654,3 +654,37 @@ exports.createFranchiseUpiHolder = async (req, res) => {
     res.status(500).json({ message: "Internal server error" });
   }
 };
+//=====================================================================
+exports.getFranchiseOwnBankDetails = async (req, res) => {
+  try {
+    const { userId } = req.body;
+
+    const franchiseBankDetails = await BankAccountHolder.findOne({ userId: userId });
+
+    if (!franchiseBankDetails) {
+      return res.status(404).json({ message: "Bank details not found for the provided franchise" });
+    }
+
+    return res.status(200).json({message:"bank details of franchise fetched successfully", franchiseBankDetails });
+  } catch (error) {
+    console.error("Error fetching franchise bank details:", error);
+    return res.status(500).json({ message: "Internal server error" });
+  }
+};
+
+exports.getFranchiseOwnUpi = async (req, res) => {
+  try {
+    const { userId } = req.body;
+
+    const franchiseUpiId = await UpiHolder.findOne({ userId: userId });
+
+    if (!franchiseUpiId) {
+      return res.status(404).json({ message: "upi id not found for the provided franchise" });
+    }
+
+    return res.status(200).json({message:"Upi of franchise fetched successfully", franchiseUpiId });
+  } catch (error) {
+    console.error("Error fetching franchise upi:", error);
+    return res.status(500).json({ message: "Internal server error" });
+  }
+};
