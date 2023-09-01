@@ -25,6 +25,8 @@ const {
 const FranchisePaymentRequest = require("../model/franchisePaymentRequestSchema");
 const BankAccountHolder = require("../model/BankAccountHolderSchema");
 const UpiHolder = require("../model/UpiHolderSchema");
+const MemberCreditWalletTransaction = require('../model/memberCreditWalletTransaction')
+const UserCreditWalletTransaction = require('../model/userCreditWalletTransaction')
 
 exports.getBusinessDevelopersInFranchise = async (req, res) => {
   try {
@@ -395,7 +397,7 @@ exports.getOwnMembersInsideFranchiseCreditWalletTransactionDetails = async (
   const memberIds = members.map((member) => member.memberid);
 
   // Fetch member credit wallet transactions based on memberIds
-  const memberCreditWalletTransactions = await MyReferral.find({
+  const memberCreditWalletTransactions = await MemberCreditWalletTransaction.find({
     userid: { $in: memberIds },
   });
   return res.status(200).json({
@@ -442,7 +444,7 @@ exports.getOwnTradersInsideFranchiseCreditWalletTransactionDetails = async (
     // Fetch trader credit wallet transactions based on traderIds
     const traderIds = traders.map((trader) => trader.userid);
 
-    const traderCreditWalletTransactions = await MyReferral.find({
+    const traderCreditWalletTransactions = await UserCreditWalletTransaction.find({
       userid: { $in: traderIds },
     });
 

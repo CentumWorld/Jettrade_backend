@@ -20,6 +20,7 @@ const validator = require("validator");
 const MyReferral = require("../model/myReferralSchema");
 
 const BusinessDeveloper = require("../model/businessDeveloperSchema");
+const MemberCreditWalletTransaction = require('../model/memberCreditWalletTransaction')
 
 // refferalRegistration
 exports.memberRegistration = async (req, res) => {
@@ -879,7 +880,7 @@ exports.getOwnMemberCreditWalletTransactionDetails = async (req, res) => {
     }
 
     // Fetch member credit wallet transactions based on member ID
-    const memberTransactions = await MyReferral.find({
+    const memberTransactions = await MemberCreditWalletTransaction.find({
       userid: memberId, // Assuming memberId is a unique identifier
     });
 

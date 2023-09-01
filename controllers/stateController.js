@@ -23,6 +23,7 @@ const myReferral = require("../model/myReferralSchema");
 const StatePaymentRequest = require("../model/statePaymentRequestSchema");
 const BankAccountHolder = require("../model/BankAccountHolderSchema");
 const UpiHolder = require("../model/UpiHolderSchema");
+const UserCreditWalletTransaction = require("../model/userCreditWalletTransaction");
 
 //===============================================================================
 //fetch all franchise list
@@ -645,22 +646,18 @@ exports.getOwnMemberInsideStateCreditWalletTransactionDetails = async (
       referredId: { $in: busisnessDeveloperReferralIds },
     });
 
-    console.log(businessDevelopers, "ooooo");
 
     const memberReferralIds = businessDevelopers.map(
       (member) => member.referralId
     );
-    console.log(memberReferralIds, "oooo====");
 
     const members = await Member.find({
       reffered_id: { $in: memberReferralIds },
     });
 
-    console.log(members, "kkkk");
 
     const memberIds = members.map((member) => member.memberid);
 
-    console.log(memberIds, "llllllllll");
 
     const memberCreditWalletTransactions =
       await MemberCreditWalletTransaction.find({
@@ -727,7 +724,7 @@ exports.getOwnTraderInsideStateCreditWalletTransactionDetails = async (
 
     const traderIds = traders.map((trader) => trader.userid);
 
-    const traderCreditWalletTransactions = await myReferral.find({
+    const traderCreditWalletTransactions = await UserCreditWalletTransaction.find({
       userid: traderIds,
     });
 

@@ -19,6 +19,7 @@ const myReferral = require("../model/myReferralSchema");
 const BusinessDeveloperPaymentRequest = require("../model/businessDeveloperPaymentRequestSchema");
 const BankAccountHolder = require("../model/BankAccountHolderSchema");
 const UpiHolder = require("../model/UpiHolderSchema");
+const MemberCreditWalletTransaction = require('../model/memberCreditWalletTransaction')
 
 //============================================================================
 //all members fetch by business developer's referral id
@@ -380,7 +381,7 @@ exports.getOwnMembersInsideBusinessDeveloperCreditWalletTransactionDetails =
         (member) => member.memberid
       );
 
-      const memberTransactions = await myReferral.find({
+      const memberTransactions = await MemberCreditWalletTransaction.find({
         userid: { $in: referredMemberIds },
       });
 

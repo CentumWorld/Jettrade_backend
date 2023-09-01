@@ -9,7 +9,7 @@ const BankAccountHolderSchema = new mongoose.Schema({
     required: true,
   },
   accountNumber: {
-    type: String,
+    type: Number,
     required: true,
   },
   bankName: {
