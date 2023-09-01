@@ -15,7 +15,11 @@ const businessDeveloperPaymentRequestSchema = new mongoose.Schema({
       type: Date,
       default: Date.now()
     }
-    
+    ,
+    paymentBy: {
+      type: String,
+      required: true
+    }
 });
 
 const businessDeveloperPaymentRequest = mongoose.model("businessDeveloperPaymentRequest", businessDeveloperPaymentRequestSchema);

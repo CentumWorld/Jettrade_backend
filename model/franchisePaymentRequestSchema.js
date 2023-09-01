@@ -15,7 +15,11 @@ const franchisePaymentRequestSchema = new mongoose.Schema({
       type: Date,
       default: Date.now()
     }
-    
+    ,
+    paymentBy: {
+      type: String,
+      required: true
+    }
 });
 
 const franchisePaymentRequest = mongoose.model("franchisePaymentRequest", franchisePaymentRequestSchema);
