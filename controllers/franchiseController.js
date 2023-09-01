@@ -23,6 +23,8 @@ const {
   isValidPassword,
 } = require("../validation/validation");
 const FranchisePaymentRequest = require("../model/franchisePaymentRequestSchema");
+const BankAccountHolder = require("../model/BankAccountHolderSchema");
+const UpiHolder = require("../model/UpiHolderSchema");
 
 exports.getBusinessDevelopersInFranchise = async (req, res) => {
   try {
@@ -531,13 +533,15 @@ exports.createFranchisePaymentRequest = async (req, res) => {
       frenchiseId: franchiseId,
     });
 
-    console.log(franchise, "[[[[")
+    console.log(franchise, "[[[[");
     if (!franchise) {
       return res.status(404).json({ message: "Franchise not found" });
     }
 
     if (amount < 500) {
-      return res.status(400).json({ message: "Minimum request amount should be 500" });
+      return res
+        .status(400)
+        .json({ message: "Minimum request amount should be 500" });
     }
 
     if (franchise.frenchiseWallet < amount) {
@@ -545,7 +549,7 @@ exports.createFranchisePaymentRequest = async (req, res) => {
     }
 
     const newPaymentRequest = new FranchisePaymentRequest({
-      franchiseId:franchise.frenchiseId,
+      franchiseId: franchise.frenchiseId,
       amount,
     });
 
@@ -572,3 +576,79 @@ exports.createFranchisePaymentRequest = async (req, res) => {
   }
 };
 
+exports.createFranchiseBankAccountHolder = async (req, res) => {
+  try {
+    const {
+      userId,
+      accountHolderName,
+      accountNumber,
+      bankName,
+      branchName,
+      ifscCode,
+    } = req.body;
+    if (
+      !accountHolderName ||
+      !accountNumber ||
+      !bankName ||
+      !branchName ||
+      !ifscCode
+    ) {
+      return res.status(400).json({ message: "All fields are required" });
+    }
+
+    const franchise = await Franchise.findOne({ frenchiseId: userId });
+
+    if (!franchise) {
+      return res.status(400).json({ message: "Franchise not found" });
+    }
+
+    const newAccountHolder = new BankAccountHolder({
+      accountHolderName,
+      accountNumber,
+      bankName,
+      branchName,
+      ifscCode,
+      userId,
+    });
+    const savedAccountHolder = await newAccountHolder.save();
+
+    res.status(201).json({
+      message: "Franchise account holder created successfully",
+      accountHolder: savedAccountHolder,
+    });
+  } catch (error) {
+    console.error("Error creating account holder:", error.message);
+    res.status(500).json({ message: "Internal server error" });
+  }
+};
+
+//=================================================================
+
+exports.createFranchiseUpiHolder = async (req, res) => {
+  try {
+    const { upiId, userId } = req.body;
+    if (!upiId ) {
+      return res
+        .status(400)
+        .json({ message: "UpiId is required" });
+    }
+    const franchise = await Franchise.findOne({ frenchiseId: userId });
+
+    if (!franchise) {
+      return res.status(400).json({ message: "Franchise not found" });
+    }
+
+    const newUpi = new UpiHolder({
+      upiId,
+      userId,
+    });
+
+    const savedUpi = await newUpi.save();
+    res
+      .status(201)
+      .json({ message: "Franchise upi created successfully", savedUpi });
+  } catch (error) {
+    console.error("Error creating UPI ID:", error.message);
+    res.status(500).json({ message: "Internal server error" });
+  }
+};

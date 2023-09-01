@@ -269,6 +269,8 @@ const getOwnBusinessDeveloperInsideFranchiseCreditWalletTransactionDetails=requi
 const getOwnMembersInsideFranchiseCreditWalletTransactionDetails = require('./routes/frenchise/get-Own-Members-Inside-Franchise-Credit-Wallet-Transaction-Details')
 const getOwnTradersInsideFranchiseCreditWalletTransactionDetails = require('./routes/frenchise/get-own-traders-franchise-credit-wallet-transaction-details')
 const createFranchisePaymentRequest = require('./routes/frenchise/create-franchise-payment-request')
+const createFranchiseBankAccountHolder = require('./routes/frenchise/create-franchise-bank-account-holder') 
+const createFranchiseUpiHolder = require('./routes/frenchise/create-franchise-upi-holder')
 //=========================Business developer======================================
 const getAllMembersInBusinessDeveloper = require("./routes/businessDeveloper/fetch-all-members-in-business-developer");
 const blockMemberByBusinessDeveloper = require("./routes/businessDeveloper/block-member-by-business-developer");
@@ -286,6 +288,8 @@ const getOwnBusinessDeveloperWalletTransactionDetails = require('./routes/busine
 const getOwnMembersInsideBusinessDeveloperCreditWalletTransactionDetails = require('./routes/businessDeveloper/get-Own-Members-Inside-Business-Developer-Credit-Wallet-Transaction-Details')
 const getOwnTradersInsideBusinessDeveloperCreditWalletTransactionDetails = require('./routes/businessDeveloper/get-Own-Traders-Inside-Business-Developer-Credit-Wallet-Transaction-Details')
 const createBusinessDeveloperPaymentRequest = require('./routes/businessDeveloper/create-Business-Developer-Payment-Request')
+const createBusinessDeveloperBankAccountHolder = require('./routes/businessDeveloper/creat-business-developer-bank-account-holder')
+const createBusinessDeveloperUpiHolder = require('./routes/businessDeveloper/create-business-developer-upi-holder')
 //==============================SubAdmin====================================
 const getOwnSubAdminDetails = require("./routes/subAdmin/get-own-sub-admin-details")
 const updateOwnSubAdminDetails = require("./routes/subAdmin/update-own-sub-admin-details")
@@ -567,7 +571,8 @@ app.use('/franchise', getOwnMembersInsideFranchiseCreditWalletTransactionDetails
 app.use('/frenchise',getBusinessChatCountWithFrenchise);
 app.use('/franchise', getOwnTradersInsideFranchiseCreditWalletTransactionDetails)
 app.use('/franchise', createFranchisePaymentRequest)
-
+app.use('/franchise', createFranchiseBankAccountHolder)
+app.use('/franchise', createFranchiseUpiHolder)
 //============================Business developer===========================
 app.use("/businessDeveloper", getAllMembersInBusinessDeveloper);
 app.use("/businessDeveloper", blockMemberByBusinessDeveloper);
@@ -585,6 +590,8 @@ app.use('/businessDeveloper',getOwnBusinessDeveloperWalletTransactionDetails);
 app.use('/businessDeveloper', getOwnMembersInsideBusinessDeveloperCreditWalletTransactionDetails)
 app.use('/businessDeveloper', getOwnTradersInsideBusinessDeveloperCreditWalletTransactionDetails)
 app.use('/businessDeveloper', createBusinessDeveloperPaymentRequest)
+app.use('/businessDeveloper', createBusinessDeveloperBankAccountHolder)
+app.use('/businessDeveloper', createBusinessDeveloperUpiHolder)
 //=============================Sub- Admin======================================
 app.use('/subAdmin',getOwnSubAdminDetails);
 app.use('/subAdmin', updateOwnSubAdminDetails)

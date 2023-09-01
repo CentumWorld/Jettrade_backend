@@ -17,6 +17,8 @@ const {
 const BusinessDeveloperCreditWalletTransactionSchema = require("../model/businessDeveloperCreditWalletTransaction");
 const myReferral = require("../model/myReferralSchema");
 const BusinessDeveloperPaymentRequest = require("../model/businessDeveloperPaymentRequestSchema");
+const BankAccountHolder = require("../model/BankAccountHolderSchema");
+const UpiHolder = require("../model/UpiHolderSchema");
 
 //============================================================================
 //all members fetch by business developer's referral id
@@ -524,6 +526,83 @@ exports.createBusinessDeveloperPaymentRequest = async (req, res) => {
       "Error creating business developer payment request:",
       error.message
     );
+    res.status(500).json({ message: "Internal server error" });
+  }
+};
+
+exports.createBusinessDeveloperBankAccountHolder = async (req, res) => {
+  try {
+    const {
+      userId,
+      accountHolderName,
+      accountNumber,
+      bankName,
+      branchName,
+      ifscCode,
+    } = req.body;
+    if (
+      !accountHolderName ||
+      !accountNumber ||
+      !bankName ||
+      !branchName ||
+      !ifscCode
+    ) {
+      return res.status(400).json({ message: "All fields are required" });
+    }
+
+    const businessDeveloper = await BusinessDeveloper.findOne({ businessDeveloperId: userId });
+
+    if (!businessDeveloper) {
+      return res.status(404).json({ message: "Business developer not found" });
+    }
+
+    const newAccountHolder = new BankAccountHolder({
+      accountHolderName,
+      accountNumber,
+      bankName,
+      branchName,
+      ifscCode,
+      userId,
+    });
+    const savedAccountHolder = await newAccountHolder.save();
+
+    res.status(201).json({
+      message: "Business developer account holder created successfully",
+      accountHolder: savedAccountHolder,
+    });
+  } catch (error) {
+    console.error("Error creating account holder:", error.message);
+    res.status(500).json({ message: "Internal server error" });
+  }
+};
+
+//=================================================================
+
+exports.createBusinessDeveloperUpiHolder = async (req, res) => {
+  try {
+    const { upiId, userId } = req.body;
+    if (!upiId ) {
+      return res
+        .status(400)
+        .json({ message: "UpiId is required" });
+    }
+    const businessDeveloper = await BusinessDeveloper.findOne({ businessDeveloperId: userId });
+
+    if (!businessDeveloper) {
+      return res.status(404).json({ message: "Business developer not found" });
+    }
+
+    const newUpi = new UpiHolder({
+      upiId,
+      userId,
+    });
+
+    const savedUpi = await newUpi.save();
+    res
+      .status(201)
+      .json({ message: "Business developer upi created successfully", savedUpi });
+  } catch (error) {
+    console.error("Error creating UPI ID:", error.message);
     res.status(500).json({ message: "Internal server error" });
   }
 };

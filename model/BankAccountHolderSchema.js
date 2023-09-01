@@ -1,6 +1,9 @@
 const mongoose = require('mongoose');
 
-const StateBankAccountHolderSchema = new mongoose.Schema({
+const BankAccountHolderSchema = new mongoose.Schema({
+  userId: {
+    type: String,
+  },
   accountHolderName: {
     type: String,
     required: true,
@@ -23,6 +26,6 @@ const StateBankAccountHolderSchema = new mongoose.Schema({
   },
 }, {timestamps:true});
 
-const StateBankAccountHolder = mongoose.model('StateBankAccountHolder', StateBankAccountHolderSchema);
+const BankAccountHolder = mongoose.model('BankAccountHolder', BankAccountHolderSchema);
 
-module.exports = StateBankAccountHolder;
+module.exports = BankAccountHolder;
