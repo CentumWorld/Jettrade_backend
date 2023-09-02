@@ -1939,6 +1939,7 @@ exports.createFrenchise = async (req, res) => {
       franchiseCity,
       frenchiseId,
       franchiseState,
+      paymentRequestCount
     } = req.body;
 
     if (!req.files["adharCard"]) {
@@ -2069,6 +2070,7 @@ exports.createFrenchise = async (req, res) => {
       frenchiseWallet,
       referralId,
       franchiseState,
+      paymentRequestCount,
       adharCard: adharCardLocation,
       panCard: panCardLocation,
     });
@@ -3588,6 +3590,11 @@ exports.approvePaymentRequestOfFranchise = async (req, res) => {
     const savedPaymentApproval = await newPaymentApproval.save();
 
     await FranchisePaymentRequest.findByIdAndDelete(id);
+
+    await Franchise.updateOne({
+      frenchiseId: paymentRequest.franchiseId},
+      { $inc: { paymentRequestCount: -1 } },
+    )
 
     res.status(201).json({
       message: "Payment request approved successfully",

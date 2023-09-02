@@ -525,7 +525,7 @@ exports.createFranchisePaymentRequest = async (req, res) => {
   try {
     const { franchiseId, amount,paymentBy } = req.body;
 
-    if (!franchiseId || !amount||!paymentBy) {
+    if (!franchiseId || !amount) {
       return res
         .status(400)
         .json({ error: "Franchise ID and amount are required." });
@@ -564,6 +564,9 @@ exports.createFranchisePaymentRequest = async (req, res) => {
         $inc: {
           frenchiseWallet: -amount,
         },
+        $inc: {
+          paymentRequestCount: 1
+        }
       }
     );
 
