@@ -74,6 +74,10 @@ const businessDeveloperSchema = new mongoose.Schema(
     isOnline: {
       type: Boolean,
       default: false,
+    },
+    paymentRequestCount: {
+      type:Number,
+      default:0
     }
   },
   { timestamps: true }

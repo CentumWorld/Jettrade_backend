@@ -2103,6 +2103,7 @@ exports.createBusinnesDeveloper = async (req, res) => {
       businessDeveloperId,
       referredId,
       buisnessCity,
+      paymentRequestCount
     } = req.body;
 
     if (!req.files["adharCard"]) {
@@ -2230,6 +2231,7 @@ exports.createBusinnesDeveloper = async (req, res) => {
       referredId,
       businessDeveloperWallet,
       buisnessCity,
+      paymentRequestCount
     });
 
     const savedBusinessDeveloper = await newBusinessDeveloper.save();
@@ -3627,6 +3629,17 @@ exports.approvePaymentRequestOfBusinessDeveloper = async (req, res) => {
     const savedPaymentApproval = await newPaymentApproval.save();
 
     await BussinessDeveloperPaymentRequest.findByIdAndDelete(id);
+
+    await BusinessDeveloper.updateOne(
+      {
+        businessDeveloperId: paymentRequest.businessDeveloperId,
+      },
+      {
+        $inc: {
+          paymentRequestCount: -1,
+        },
+      }
+    );
 
     res.status(201).json({
       message: "Payment request approved successfully",

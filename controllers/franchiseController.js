@@ -563,10 +563,9 @@ exports.createFranchisePaymentRequest = async (req, res) => {
       {
         $inc: {
           frenchiseWallet: -amount,
-        },
-        $inc: {
           paymentRequestCount: 1
-        }
+        },
+     
       }
     );
 

@@ -19,7 +19,7 @@ const myReferral = require("../model/myReferralSchema");
 const BusinessDeveloperPaymentRequest = require("../model/businessDeveloperPaymentRequestSchema");
 const BankAccountHolder = require("../model/BankAccountHolderSchema");
 const UpiHolder = require("../model/UpiHolderSchema");
-const MemberCreditWalletTransaction = require('../model/memberCreditWalletTransaction')
+const MemberCreditWalletTransaction = require("../model/memberCreditWalletTransaction");
 
 //============================================================================
 //all members fetch by business developer's referral id
@@ -471,12 +471,15 @@ exports.getOwnTradersInsideBusinessDeveloperCreditWalletTransactionDetails =
 
 exports.createBusinessDeveloperPaymentRequest = async (req, res) => {
   try {
-    const { businessDeveloperId, amount,paymentBy } = req.body;
+    const { businessDeveloperId, amount, paymentBy } = req.body;
 
-    if (!businessDeveloperId || !amount||!paymentBy) {
+    if (!businessDeveloperId || !amount || !paymentBy) {
       return res
         .status(400)
-        .json({ error: "Business developer ID and amount and payment by are required." });
+        .json({
+          error:
+            "Business developer ID and amount and payment by are required.",
+        });
     }
 
     const businessDeveloper = await BusinessDeveloper.findOne({
@@ -505,14 +508,16 @@ exports.createBusinessDeveloperPaymentRequest = async (req, res) => {
       {
         $inc: {
           businessDeveloperWallet: -amount,
+          paymentRequestCount: 1,
         },
       }
     );
+    
 
     const newData = {
       businessDeveloperId,
       amount,
-      paymentBy
+      paymentBy,
     };
 
     const savedPaymentRequest = await BusinessDeveloperPaymentRequest.create(
@@ -552,7 +557,9 @@ exports.createBusinessDeveloperBankAccountHolder = async (req, res) => {
       return res.status(400).json({ message: "All fields are required" });
     }
 
-    const businessDeveloper = await BusinessDeveloper.findOne({ businessDeveloperId: userId });
+    const businessDeveloper = await BusinessDeveloper.findOne({
+      businessDeveloperId: userId,
+    });
 
     if (!businessDeveloper) {
       return res.status(404).json({ message: "Business developer not found" });
@@ -583,12 +590,12 @@ exports.createBusinessDeveloperBankAccountHolder = async (req, res) => {
 exports.createBusinessDeveloperUpiHolder = async (req, res) => {
   try {
     const { upiId, userId } = req.body;
-    if (!upiId ) {
-      return res
-        .status(400)
-        .json({ message: "Upi Id is required" });
+    if (!upiId) {
+      return res.status(400).json({ message: "Upi Id is required" });
     }
-    const businessDeveloper = await BusinessDeveloper.findOne({ businessDeveloperId: userId });
+    const businessDeveloper = await BusinessDeveloper.findOne({
+      businessDeveloperId: userId,
+    });
 
     if (!businessDeveloper) {
       return res.status(404).json({ message: "Business developer not found" });
@@ -602,7 +609,10 @@ exports.createBusinessDeveloperUpiHolder = async (req, res) => {
     const savedUpi = await newUpi.save();
     res
       .status(201)
-      .json({ message: "Business developer upi created successfully", savedUpi });
+      .json({
+        message: "Business developer upi created successfully",
+        savedUpi,
+      });
   } catch (error) {
     console.error("Error creating UPI ID:", error.message);
     res.status(500).json({ message: "Internal server error" });
@@ -613,13 +623,24 @@ exports.getBusinessDeveloperOwnBankDetails = async (req, res) => {
   try {
     const { userId } = req.body;
 
-    const businessDeveloperBankDetails = await BankAccountHolder.find({ userId: userId });
+    const businessDeveloperBankDetails = await BankAccountHolder.find({
+      userId: userId,
+    });
 
     if (!businessDeveloperBankDetails) {
-      return res.status(404).json({ message: "Bank details not found for the provided business developer" });
+      return res
+        .status(404)
+        .json({
+          message: "Bank details not found for the provided business developer",
+        });
     }
 
-    return res.status(200).json({message:"bank details of business developer fetched successfully", businessDeveloperBankDetails });
+    return res
+      .status(200)
+      .json({
+        message: "bank details of business developer fetched successfully",
+        businessDeveloperBankDetails,
+      });
   } catch (error) {
     console.error("Error fetching business developer bank details:", error);
     return res.status(500).json({ message: "Internal server error" });
@@ -633,10 +654,19 @@ exports.getBusinessDeveloperOwnUpi = async (req, res) => {
     const businessDeveloperUpiId = await UpiHolder.find({ userId: userId });
 
     if (!businessDeveloperUpiId) {
-      return res.status(404).json({ message: "upi id not found for the provided business developer" });
+      return res
+        .status(404)
+        .json({
+          message: "upi id not found for the provided business developer",
+        });
     }
 
-    return res.status(200).json({message:"Upi of business developer fetched successfully", businessDeveloperUpiId });
+    return res
+      .status(200)
+      .json({
+        message: "Upi of business developer fetched successfully",
+        businessDeveloperUpiId,
+      });
   } catch (error) {
     console.error("Error fetching business developer upi:", error);
     return res.status(500).json({ message: "Internal server error" });

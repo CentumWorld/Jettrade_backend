@@ -760,6 +760,7 @@ exports.createStatePaymentRequest = async (req, res) => {
         .json({ message: "Minimum request amount should be 500" });
     }
 
+
     if (state.stateHandlerWallet < amount) {
       return res.status(400).json({ message: "Insufficient funds" });
     }
@@ -774,8 +775,8 @@ exports.createStatePaymentRequest = async (req, res) => {
     await stateHandler.updateOne(
       { stateHandlerId: stateHandlerId },
       {
-        $inc: { stateHandlerWallet: -amount },
-        $inc: { paymentRequestCount: 1 },
+        $inc: { stateHandlerWallet: -amount ,paymentRequestCount: 1 },
+  
       }
     );
 
