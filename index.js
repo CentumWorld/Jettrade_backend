@@ -216,7 +216,11 @@ const approvePaymentRequestOfBusinessDeveloper = require('./routes/approve-Payme
 const adminFetchParticularStateHandlerDetails = require('./routes/admin-fetch-particular-state-handler-details');
 const adminFetchStateHandlerPaymentWithdrawalRequest = require('./routes/admin-fetch-state-handler-payment-withdrawal-request');
 const adminFetchStateHandlerApproveWithdrawal = require('./routes/admin-fetch-state-handler-approve-withdrawal');
-const adminFetchParticularFranchiseDetails = require('./routes/admin-Fetch-Particular-Franchise-Details')
+const adminFetchParticularFranchiseDetails = require('./routes/admin-Fetch-Particular-Franchise-Details') 
+const searchRenewalUsers = require('./routes/search-renewal-users')
+const searchNewUsers = require('./routes/search-new-users')
+const findUsersOnTheBasisOfPaymentStatus = require('./routes/find_Users_On_The_Basis_Of_Payment_Status')
+const searchRefferalPayoutByRefferUserid = require('./routes/search-refferal-payout-by-reffer-userid')
  
 //=======================State=================================================
 
@@ -505,6 +509,11 @@ app.use('/admin',adminFetchStateHandlerPaymentWithdrawalRequest);
 app.use('/admin',adminFetchStateHandlerApproveWithdrawal);
 app.use('/admin', adminFetchParticularFranchiseDetails)
 app.use('/admin',adminFetchFranchisePaymentWithdrawalRequest)
+app.use('/admin', searchRenewalUsers)
+app.use('/admin', searchNewUsers)
+app.use('/admin', fetchParticularUserPaymentStatus)
+app.use('/admin', findUsersOnTheBasisOfPaymentStatus)
+app.use('/admin', searchRefferalPayoutByRefferUserid)
 // refferalin
 app.use("/member", memberLogin);
 app.use("/admin", fetchMemberDetails);
