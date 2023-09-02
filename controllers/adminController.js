@@ -1319,7 +1319,7 @@ exports.searchRefferalPayoutByRefferUserid = async (req, res) => {
     });
     if (filterData.length === 0) {
       return res.status(404).json({
-        message: "No data found",
+        message: "No filter data found",
       });
     }
     return res.status(200).json({ message: "All data fetched", filterData });
@@ -1764,6 +1764,7 @@ exports.createStateHandler = async (req, res) => {
       stateHandlerId,
       selectedState,
       referredId,
+      paymentRequestCount
     } = req.body;
 
     if (!req.files["adharCard"]) {
@@ -1883,6 +1884,7 @@ exports.createStateHandler = async (req, res) => {
       referralId,
       referredId,
       selectedState,
+      paymentRequestCount,
       adharCard: adharCardLocation,
       panCard: panCardLocation,
     });
@@ -3549,6 +3551,11 @@ exports.approvePaymentRequestOfState = async (req, res) => {
 
     await StatePaymentRequest.findByIdAndDelete(id);
 
+    await StateHandler.updateOne(
+      { stateHandlerId: paymentRequest.stateHandlerId },
+      { $inc: { paymentRequestCount: -1 } }
+    );
+    
     res.status(201).json({
       message: "Payment request approved successfully",
       savedPaymentApproval,

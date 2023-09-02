@@ -753,6 +753,7 @@ exports.createStatePaymentRequest = async (req, res) => {
     if (!state) {
       return res.status(404).json({ message: "State handler not found" });
     }
+
     if (amount < 500) {
       return res
         .status(400)
@@ -772,16 +773,17 @@ exports.createStatePaymentRequest = async (req, res) => {
     // Deduct the amount from the state handler's wallet
     await stateHandler.updateOne(
       { stateHandlerId: stateHandlerId },
-      { $inc: { stateHandlerWallet: -amount } }
+      {
+        $inc: { stateHandlerWallet: -amount },
+        $inc: { paymentRequestCount: 1 },
+      }
     );
 
     const savedPaymentRequest = await newPaymentRequest.save();
-    res
-      .status(201)
-      .json({
-        message: "Payment requested successfullly",
-        savedPaymentRequest,
-      });
+    res.status(201).json({
+      message: "Payment requested successfullly",
+      savedPaymentRequest,
+    });
   } catch (error) {
     console.error("Error creating state payment request:", error);
     res.status(500).json({ message: "Internal server error" });
@@ -882,12 +884,10 @@ exports.getStateOwnBankDetails = async (req, res) => {
         .json({ message: "Bank details not found for the provided state" });
     }
 
-    return res
-      .status(200)
-      .json({
-        message: "bank details of state fetched successfully",
-        stateBankDetails,
-      });
+    return res.status(200).json({
+      message: "bank details of state fetched successfully",
+      stateBankDetails,
+    });
   } catch (error) {
     console.error("Error fetching state bank details:", error);
     return res.status(500).json({ message: "Internal server error" });
