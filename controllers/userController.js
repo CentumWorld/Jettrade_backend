@@ -435,9 +435,7 @@ exports.otherCountryUserRegistration = async (req, res) => {
             .json({ message: "this userId is already taken" });
         }
 
-        if (!isValidPhone(phone)) {
-          return res.status(400).json({ message: "Invalid phone." });
-        }
+      
         if (password.length < 8) {
           return res.status(400).json({
             message: "Password must be minimum length of 8 charector!",
@@ -461,7 +459,7 @@ exports.otherCountryUserRegistration = async (req, res) => {
         });
         await user.save();
         const phone4 = "+" + user.phone;
-        // SuccessfullRegistrationSms(phone4, { "userid": user.userid, "password": password })
+      
         const token = jwt.sign(
           { userId: user._id },
           process.env.SECRET_KEY,
@@ -1011,6 +1009,23 @@ exports.changeUserPaymentStatus = async (req, res) => {
 
   const reffered_id = userExist.reffered_id;
 
+
+  const referaluser = await User.findOne({
+    refferal_id:reffered_id
+  })
+
+
+
+  if (referaluser) {
+    await Admin.updateOne(
+      { referralId: "admin@123" },
+      { $inc: { adminWallet: 2500 } }
+    );
+  
+   
+  }
+  
+
   const user = await User.updateOne(
     { userid: userid },
     {
@@ -1027,18 +1042,23 @@ exports.changeUserPaymentStatus = async (req, res) => {
     userid: userid,
     activationAmount: serviceAmount,
   });
-  userActivate.save();
+  await userActivate.save();
+  
+
   if (reffered_id === "admin@123") {
+    console.log(reffered_id, "refferer");
     const admin = await Admin.findOne({
-      referralId: "admin@123", // Assuming "admin@123" is the admin's referralId
+      refferal_id: "admin@123",
     });
+    console.log(admin ,"hhhh")
+
 
     if (admin) {
       let adminWallet = admin.adminWallet;
-      adminWallet += 3500;
-      // Update admin's wallet
+      console.log(adminWallet, "adminwallet")
+      adminWallet += 2500;
       await Admin.updateOne(
-        { referralId: "admin@123" }, // Assuming "admin@123" is the admin's referralId
+        { refferal_id: "admin@123" }, 
         { $set: { adminWallet: adminWallet } }
       );
 
@@ -1088,6 +1108,10 @@ exports.changeUserPaymentStatus = async (req, res) => {
               Type: "New",
             });
           userCreditWalletTransactionsDetails.save();
+
+       
+    
+
 
           if (insertUserWalletAmount) {
             return res.status(200).json({
@@ -1297,11 +1321,7 @@ exports.changeUserPaymentStatus = async (req, res) => {
             });
             await memberCreditWalletTransactionDetails.save();
 
-            // admin_id: admin.admin_id,
-            // creditAmount: 1400,
-            // Type: "New",
-            // refferUserId: stateHandler.stateHandlerId,
-
+            
 
           if (insertWalletAmount) {
             return res.status(200).json({
@@ -1309,58 +1329,7 @@ exports.changeUserPaymentStatus = async (req, res) => {
             });
           }
         } else {
-          const memberid = findUserFromMemberRefferedId[0].memberid;
-          const referredId = findUserFromMemberRefferedId[0].reffered_id;
-
-          console.log(referredId, "[[[[[[[");
-          let wallet = findUserFromMemberRefferedId[0].wallet;
-          wallet = wallet + 500;
-
-          // Update member wallet
-          const insertWalletAmount = await Member.updateOne(
-            { memberid },
-            {
-              $set: {
-                wallet,
-              },
-            }
-          );
-
-          // Create referral details for renewal member
-          const myReferralDetails = new MyReferral({
-            userid: userExist.userid,
-            joininigDate: userExist.doj,
-            refferal_id: userExist.reffered_id,
-            referralAmount: 500,
-            userType: "Renewal",
-            role: "Member",
-            refferUserID: memberid,
-          });
-          await myReferralDetails.save();
-
-          const memberCrediwalletTransactionDetails =
-            new memberCreditWalletTransaction({
-              memberId: memberid,
-              Type: "Renewal",
-              refferUserId: userExist.userid,
-              creditAmount: 500,
-            });
-
-          await memberCrediwalletTransactionDetails.save();
-          const businessDeveloper = await BusinessDeveloper.findOne({
-            referralId: referredId,
-          });
-
-          console.log(businessDeveloper, "1630");
-
-          let businessDeveloperWallet =
-            businessDeveloper.businessDeveloperWallet;
-
-          businessDeveloperWallet += 200;
-          await BusinessDeveloper.updateOne(
-            { referralId: referredId },
-            { $set: { businessDeveloperWallet: businessDeveloperWallet } }
-          );
+   
 
           if (insertWalletAmount) {
             return res.status(200).json({
