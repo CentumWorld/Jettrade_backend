@@ -575,23 +575,24 @@ exports.getOwnBusinessDeveloperInsideStateCreditWalletTransactionDetails =
         return res.status(404).json({ message: "State not found" });
       }
 
-      const sho_reffralid = state.referralId;
-      const franchise = await Frenchise.find({ referredId: sho_reffralid });
 
-      const franchisesId = franchise.map((franchise) => franchise.frenchiseId);
+      const franchise = await Frenchise.find({ referredId: state.referralId});
 
-      const FranchiseCreditWalletTransactions =
-        await FranchiseCreditWalletTransactionSchema.find({
-          frenchiseId: franchisesId,
-        });
+      console.log(franchise, "lllllllll")
 
-      const busisnessDeveloperReferralIds = franchise.map(
-        (businessDeveloper) => businessDeveloper.referredId
+
+
+      const franchiseReferralIds = franchise.map(
+        (franchise) => franchise.referralId
       );
 
+      console.log(franchiseReferralIds, "pppppppp")
+
       const businessDevelopers = await BusinessDeveloper.find({
-        referredId: { $in: busisnessDeveloperReferralIds },
+        referredId: { $in: franchiseReferralIds },
       });
+
+      console.log(businessDevelopers, "kkkkkkkkk")
 
       const busisnessDeveloperIds = businessDevelopers.map(
         (businessDeveloper) => businessDeveloper.businessDeveloperId
