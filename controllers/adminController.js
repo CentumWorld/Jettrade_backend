@@ -2249,6 +2249,7 @@ exports.createBusinnesDeveloper = async (req, res) => {
 
 //===========================================================================
 //state handler login
+
 exports.stateHandlerLogin = async (req, res) => {
   try {
     const { stateHandlerId, password } = req.body;
@@ -2269,6 +2270,16 @@ exports.stateHandlerLogin = async (req, res) => {
         .json({ message: "Invalid State handler Id or Password" });
     }
 
+    if (existingStateHandler.isDeleted) {
+      return res
+        .status(400)
+        .json({ message: "State not found" });
+    }
+    if (existingStateHandler.isBlocked) {
+      return res
+        .status(400)
+        .json({ message: "Your account has been blocked" });
+    }
     const isPasswordValid = await bcrypt.compare(
       password,
       existingStateHandler.password
@@ -2279,6 +2290,7 @@ exports.stateHandlerLogin = async (req, res) => {
         .status(400)
         .json({ message: "Invalid State handler Id or Password" });
     }
+
     const token = jwt.sign(
       { stateHandlerId: existingStateHandler._id },
       process.env.SECRET_KEY,
@@ -2298,6 +2310,7 @@ exports.stateHandlerLogin = async (req, res) => {
   }
 };
 
+
 //============================================================================
 //frenchise login
 exports.frenchiseLogin = async (req, res) => {
@@ -2314,10 +2327,23 @@ exports.frenchiseLogin = async (req, res) => {
       frenchiseId: frenchiseId,
     });
 
+
+
     if (!existingFrenchiseId) {
       return res
         .status(400)
         .json({ message: "Invalid frenchise Id or Password" });
+    }
+
+    if (existingFrenchiseId.isDeleted) {
+      return res
+        .status(400)
+        .json({ message: "Franchise not found" });
+    }
+    if (existingFrenchiseId.isBlocked) {
+      return res
+        .status(400)
+        .json({ message: "Your account has been blocked" });
     }
 
     const isPasswordValid = await bcrypt.compare(
