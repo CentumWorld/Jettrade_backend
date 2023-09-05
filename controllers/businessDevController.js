@@ -365,13 +365,13 @@ exports.getOwnBusinessDeveloperWalletTransactionDetails = async (req, res) => {
 exports.getOwnMembersInsideBusinessDeveloperCreditWalletTransactionDetails =
   async (req, res) => {
     try {
-      const { businessDeveloperId } = get.body;
+      const { businessDeveloperId } = req.body;
 
       // Fetch member IDs referred by the Business Developer
       const businessDeveloper = await BusinessDeveloper.findOne({
         businessDeveloperId: businessDeveloperId,
       });
-
+console.log(businessDeveloper, ";;;;;;")
       // Fetch members based on the referred member IDs
       const referredMembers = await Member.find({
         referredId: businessDeveloper.referralId,
@@ -392,7 +392,7 @@ exports.getOwnMembersInsideBusinessDeveloperCreditWalletTransactionDetails =
       });
     } catch (error) {
       console.log(error.message);
-      return res.status(500).json({ message: "Internal server error" });
+      return res.status(500).json({ message: "pppInternal server error" });
     }
   };
 

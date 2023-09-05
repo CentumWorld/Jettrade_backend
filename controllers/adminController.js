@@ -57,8 +57,11 @@ const FranchisePaymentRequest = require("../model/franchisePaymentRequestSchema"
 const FranchisePaymentApprove = require("../model/franchisePaymentApproveSchema");
 const BussinessDeveloperPaymentRequest = require("../model/businessDeveloperPaymentRequestSchema");
 const BussinessDeveloperPaymentApprove = require("../model/businessDeveloperPaymentApproveSchema");
+const MemberCreditWalletTransaction = require("../model/memberCreditWalletTransaction");
+const UserCreditWalletTransaction = require("../model/userCreditWalletTransaction");
+// const memberCreditWalletTransaction = require("../model/memberCreditWalletTransaction");
+// const userCreditWalletTransaction = require("../model/userCreditWalletTransaction");
 
-require("dotenv").config();
 
 // admin Login
 
@@ -2703,6 +2706,35 @@ exports.fetchAdminCreditwalletTransactionDetails = async (req, res) => {
     return res.status(500).json({ message: "Internal server error" });
   }
 };
+//==========================================================================
+//fetchMemberCreditwalletTransactionDetails
+exports.fetchMemberCreditwalletTransactionDetails = async(re1q, res) => {
+  try {
+    const fetchedData = await MemberCreditWalletTransaction.find();
+    if (fetchedData.length == 0) {
+      return res.status(404).json({ message: "Data not found" });
+    }
+
+    return res.status(200).json({ message: "Fetched all data", fetchedData });
+  } catch (error) {
+    console.log(error.message);
+    return res.status(500).json({ message: "Internal server error" });
+  }
+}
+//====================================================================
+exports.fetchUserCreditwalletTransactionDetails = async(re1q, res) => {
+  try {
+    const fetchedData = await UserCreditWalletTransaction.find();
+    if (fetchedData.length == 0) {
+      return res.status(404).json({ message: "Data not found" });
+    }
+
+    return res.status(200).json({ message: "Fetched all data", fetchedData });
+  } catch (error) {
+    console.log(error.message);
+    return res.status(500).json({ message: "Internal server error" });
+  }
+}
 
 // stateOnlineOrNot
 exports.stateOnlineOrNot = async (req, res) => {
@@ -3942,3 +3974,52 @@ exports.adminFetchBusinessDeveloperApproveWithdrawal = async (req, res) => {
   }
 };
 
+
+//=====================================================================
+
+// filter credit wallet transaction details by userid
+
+exports.filterCreditWalletTransactionByUserId = async (req, res) => {
+  try {
+    const { type, id } = req.body; 
+
+    if (!type || !id) {
+      res.status(400).json({ error: "Both 'type' and 'id' must be provided in the request body" });
+      return;
+    }
+
+    let transactions;
+
+    if (type === "franchise") {
+      transactions = await FranchiseCreditWalletTransaction.find({ frenchiseId: id });
+    } else if (type === "statehandler") {
+      transactions = await StateHandlerCreditWalletTransaction.find({ stateHandlerId: id });
+    }else if(type === "businessdeveloper"){
+      transactions = await BusinessDeveloperCreditWalletTransaction.find({
+        businessDeveloperId: id
+      })
+    }else if (type === "member"){
+      transactions = await MemberCreditWalletTransaction.find({
+        memberId: id
+      })  
+    }else if (type === "trader"){
+      transactions = await UserCreditWalletTransaction.find({
+        userId: id
+      })  
+    }
+     else {
+      res.status(400).json({ error: "Invalid 'type' specified in the request body" });
+      return;
+    }
+
+     if (!transactions || transactions.length === 0) {
+      res.status(404).json({ error: "No transactions found for the provided 'id'" });
+      return;
+    }
+
+    res.json(transactions);
+  } catch (error) {
+    console.error("Error fetching transactions:", error);
+    res.status(500).json({ error: "Error fetching transactions" });
+  }
+};

@@ -221,7 +221,9 @@ const searchRenewalUsers = require('./routes/search-renewal-users')
 const searchNewUsers = require('./routes/search-new-users')
 const findUsersOnTheBasisOfPaymentStatus = require('./routes/find_Users_On_The_Basis_Of_Payment_Status')
 const searchRefferalPayoutByRefferUserid = require('./routes/search-refferal-payout-by-reffer-userid')
- 
+ const filterCreditWalletTransactionByUserId = require('./routes/filter-Credit-Wallet-Transaction-By-UserId')
+ const fetchMemberCreditwalletTransactionDetails = require('./routes/fetch-Member-Credit-wallet-Transaction-Details')
+ const fetchUserCreditwalletTransactionDetails = require('./routes/fetch-User-Credit-wallet-Transaction-Details')
 //=======================State=================================================
 
 const getFranchisesByReferralId = require("./routes/state/fetch-frenchise-in-state");
@@ -431,7 +433,9 @@ app.use('/admin', adminFetchBusinessDeveloperPaymentWithdrawalRequest)
 app.use('/admin', adminFetchBusinessDeveloperApproveWithdrawal)
 
 app.use('/user', getOwnTraderCreditWalletTransactionDetails)
-
+app.use('/admin', filterCreditWalletTransactionByUserId)
+app.use('/admin', fetchMemberCreditwalletTransactionDetails)
+app.use('/admin', fetchUserCreditwalletTransactionDetails)
 // refferal
 app.use("/member", memberRegistration);
 app.use("/member", memberLogin);
