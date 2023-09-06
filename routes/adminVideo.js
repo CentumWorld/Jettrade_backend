@@ -9,7 +9,6 @@ router.post(
     '/createvideo',
     upload.fields([{ name: 'videoOne', maxCount: 1 }, { name: 'thumbnail', maxCount: 1 }]),
     authenticateAdmin,
-    authorizeRole(['admin', 'subAdmin']), // Allow both admin and subadmin roles
     authorizeVideoUpload,
     adminController.createVideo
   );

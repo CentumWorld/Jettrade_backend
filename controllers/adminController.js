@@ -3030,6 +3030,88 @@ exports.updateStateHandler = async (req, res) => {
   }
 };
 
+//update pan state
+exports.updatePanCardStateHandler = async (req, res) => {
+  try {
+    const { id } = req.body;
+    const panCardFile = req.files["panCard"][0];
+
+    // Check if panCard image is valid using isValidImage function
+    if (!isValidImage(panCardFile.originalname)) {
+      return res.status(422).json({
+        message:
+          "Invalid panCard image format, image must be in jpeg, jpg, tiff, png, webp, or bmp format.",
+      });
+    }
+
+    const panCardLocation = panCardFile.location;
+
+    // Update state handler's PAN card information
+    const updateData = {
+      panCard: panCardLocation,
+    };
+
+    const stateHandler = await StateHandler.findOneAndUpdate(
+      { _id: id },
+      { $set: updateData },
+      { new: true }
+    );
+
+    if (!stateHandler) {
+      return res.status(404).json({ message: "State handler not found" });
+    }
+
+    res.status(200).json({
+      message: "PAN card updated successfully",
+      panCard: stateHandler.panCard,
+    });
+  } catch (error) {
+    console.error(error.message);
+    res.status(500).json({ message: "Internal server error" });
+  }
+};
+//====================================================================
+exports.updateAdharCardStateHandler = async (req, res) => {
+  try {
+    const { id } = req.body;
+    const adharCardFile = req.files["adharCard"][0];
+
+    // Check if adharCard image is valid using isValidImage function
+    if (!isValidImage(adharCardFile.originalname)) {
+      return res.status(422).json({
+        message:
+          "Invalid adharCard image format, image must be in jpeg, jpg, tiff, png, webp, or bmp format.",
+      });
+    }
+
+    const adharCardLocation = adharCardFile.location;
+
+    // Update state handler's Aadhar card information
+    const updateData = {
+      adharCard: adharCardLocation,
+    };
+
+    const stateHandler = await StateHandler.findOneAndUpdate(
+      { _id: id },
+      { $set: updateData },
+      { new: true }
+    );
+
+    if (!stateHandler) {
+      return res.status(404).json({ message: "State handler not found" });
+    }
+
+    res.status(200).json({
+      message: "Aadhar card updated successfully",
+      adharCard: stateHandler.adharCard,
+    });
+  } catch (error) {
+    console.error(error.message);
+    res.status(500).json({ message: "Internal server error" });
+  }
+};
+
+
 //======================================================================
 //update franchise
 exports.updateFranchise = async (req, res) => {
@@ -3211,7 +3293,7 @@ exports.updatePanCardBusinessDeveloper = async (req, res) => {
     };
 
     const businessDeveloper = await BusinessDeveloper.findOneAndUpdate(
-      { _id: id, isDeleted: false },
+      { _id: id },
       { $set: updateData },
       { new: true }
     );
@@ -3490,7 +3572,7 @@ exports.updateAdharcardBusinessDeveloper = async (req, res) => {
     };
 
     const businessDeveloper = await BusinessDeveloper.findOneAndUpdate(
-      { _id: id, isDeleted: false },
+      { _id: id},
       { $set: updateData },
       { new: true }
     );

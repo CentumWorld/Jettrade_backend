@@ -66,10 +66,10 @@ const subadminSchema = new mongoose.Schema({
     type: Boolean,
     default: false,
   },
-  
+
   doj: {
     type: Date,
-    default:Date.now
+    default: Date.now,
   },
   isOnline: {
     type: Boolean,
@@ -81,13 +81,12 @@ const subadminSchema = new mongoose.Schema({
   },
   isSubAdmin: {
     type: Boolean,
-    default: true
+    default: true,
   },
   isVideoCreator: {
     type: Boolean,
-    default: false
-  }
-  
+    default: false,
+  },
 });
 
 // Hash your password using bcrypt

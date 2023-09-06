@@ -1024,7 +1024,7 @@ exports.changeUserPaymentStatus = async (req, res) => {
   if (referaluser) {
     await Admin.updateOne(
       { referralId: "admin@123" },
-      { $inc: { adminWallet: 2500 } }
+      { $inc: { adminWallet: 2600 } }
     );
   
    
@@ -1061,7 +1061,7 @@ exports.changeUserPaymentStatus = async (req, res) => {
         if (findUserfromUser.length > 0 && payment < 1) {
           const userid = findUserFromRefferedId[0].userid;
           let wallet = findUserFromRefferedId[0].wallet;
-          wallet = wallet + 1000;
+          wallet = wallet + 900;
           console.log(wallet);
           const insertUserWalletAmount = await User.updateOne(
             { userid: userid },
@@ -1075,7 +1075,7 @@ exports.changeUserPaymentStatus = async (req, res) => {
             userid: userExist.userid,
             joininigDate: userExist.doj,
             refferal_id: userExist.reffered_id,
-            referralAmount: 1000,
+            referralAmount: 900,
             userType: "New",
             role: "User",
             refferUserID: userid,
@@ -1086,7 +1086,7 @@ exports.changeUserPaymentStatus = async (req, res) => {
               userId: userExist.userid,
               joininigDate: userExist.doj,
               refferUserId: userid,
-              creditAmount: 1000,
+              creditAmount: 900,
               Type: "New",
             });
           userCreditWalletTransactionsDetails.save();
@@ -1098,7 +1098,7 @@ exports.changeUserPaymentStatus = async (req, res) => {
         } else {
           const userid = findUserFromRefferedId[0].userid;
           let wallet = findUserFromRefferedId[0].wallet;
-          wallet = wallet + 700;
+          wallet = wallet + 500;
           console.log(wallet);
           const insertUserWalletAmount = await User.updateOne(
             { userid: userid },
@@ -1112,7 +1112,7 @@ exports.changeUserPaymentStatus = async (req, res) => {
             userid: userExist.userid,
             joininigDate: userExist.doj,
             refferal_id: userExist.reffered_id,
-            referralAmount: 700,
+            referralAmount: 500,
             userType: "Renewal",
             role: "User",
             refferUserID: userid,
@@ -1123,7 +1123,7 @@ exports.changeUserPaymentStatus = async (req, res) => {
               userId: userExist.userid,
               joininigDate: userExist.doj,
               refferUserId: userid,
-              creditAmount: 700,
+              creditAmount: 500,
               Type: "Renewal",
             });
           userCreditWalletTransactionsDetails.save();
@@ -1147,7 +1147,7 @@ exports.changeUserPaymentStatus = async (req, res) => {
           if (bdDetails) {
             const bdUserid = bdDetails.businessDeveloperId;
             let businessDeveloperWallet = bdDetails.businessDeveloperWallet;
-            const WALLET_CREDIT_AMOUNT = 500;
+            const WALLET_CREDIT_AMOUNT = 450;
             businessDeveloperWallet =
               businessDeveloperWallet + WALLET_CREDIT_AMOUNT;
             // Update business developer wallet
@@ -1173,9 +1173,9 @@ exports.changeUserPaymentStatus = async (req, res) => {
               referralId: bdDetails.referredId,
             });
             console.log(franchise, "ggggggg");
-            if (franchise) {
+
               let frenchiseWallet = franchise.frenchiseWallet;
-              frenchiseWallet += 300;
+              frenchiseWallet += 450;
               await Franchise.updateOne(
                 { referralId: bdDetails.referredId },
                 { $set: { frenchiseWallet: frenchiseWallet } }
@@ -1183,19 +1183,23 @@ exports.changeUserPaymentStatus = async (req, res) => {
               const frenchiseCreditWalletDetails =
                 new FranchiseCreditWalletTransaction({
                   frenchiseId: franchise.frenchiseId,
-                  creditAmount: 300,
+                  creditAmount: 450,
                   Type: "New",
                   refferUserId: bdDetails.businessDeveloperId,
                 });
               await frenchiseCreditWalletDetails.save();
-            }
+
+            
+
+              const transferPercentage = 2.5
+              const transferAmount = (450 * transferPercentage) / 100;
             const stateHandler = await StateHandler.findOne({
               referralId: franchise.referredId,
             });
             console.log(stateHandler, ";;;;;");
             if (stateHandler) {
               let stateHandlerWallet = stateHandler.stateHandlerWallet;
-              stateHandlerWallet += 300;
+              stateHandlerWallet += transferAmount;
               await StateHandler.updateOne(
                 { referralId: franchise.referredId },
                 { $set: { stateHandlerWallet: stateHandlerWallet } }
@@ -1203,7 +1207,7 @@ exports.changeUserPaymentStatus = async (req, res) => {
               const statehandlerCreditWalletDetails =
                 new StateHandlerCreditWalletTransaction({
                   stateHandlerId: stateHandler.stateHandlerId,
-                  creditAmount: 300,
+                  creditAmount: transferAmount,
                   Type: "New",
                   refferUserId: franchise.frenchiseId,
                 });
@@ -1216,7 +1220,7 @@ exports.changeUserPaymentStatus = async (req, res) => {
             if (admin) {
               console.log(admin.adminWallet);
               let adminWallet = admin.adminWallet;
-              adminWallet += 1400;
+              adminWallet += 1688.75;
               await Admin.updateOne(
                 { referralId: stateHandler.referredId },
                 { $set: { adminWallet: adminWallet } }
@@ -1224,7 +1228,7 @@ exports.changeUserPaymentStatus = async (req, res) => {
               const adminCreditWalletDetails = new AdminCreditWalletTransaction(
                 {
                   admin_id: admin.admin_id,
-                  creditAmount: 1400,
+                  creditAmount: 1688.75,
                   Type: "New",
                   refferUserId: stateHandler.stateHandlerId,
                 }
@@ -1233,7 +1237,7 @@ exports.changeUserPaymentStatus = async (req, res) => {
             }
           }
           let wallet = findUserFromMemberRefferedId[0].wallet;
-          wallet = wallet + 1000;
+          wallet = wallet + 900;
           // Update member wallet
           const insertWalletAmount = await Member.updateOne(
             { memberid },
@@ -1248,7 +1252,7 @@ exports.changeUserPaymentStatus = async (req, res) => {
             userid: userExist.userid,
             joininigDate: userExist.doj,
             refferal_id: userExist.reffered_id,
-            referralAmount: 1000,
+            referralAmount: 900,
             userType: "New",
             role: "Member",
             refferUserID: memberid,
@@ -1257,7 +1261,7 @@ exports.changeUserPaymentStatus = async (req, res) => {
             // Create referral details for new member
             const memberCreditWalletTransactionDetails  = new memberCreditWalletTransaction({
               memberId:findUserFromMemberRefferedId[0].memberid,
-              creditAmount: 1000,
+              creditAmount: 900,
               Type: "New",
               refferUserId: userExist.userid,
             });
@@ -1332,391 +1336,6 @@ exports.changeUserPaymentStatus = async (req, res) => {
     }
   }
 };
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-// exports.changeUserPaymentStatus = async (req, res) => {
-//   const { userid } = req.body;
-//   const serviceAmount = 3500;
-
-//   const userExist = await User.findOne({ userid: userid });
-
-//   const payment = userExist.paymentCount;
-
-//   const reffered_id = userExist.reffered_id;
-
-
-//   const referaluser = await User.findOne({
-//     refferal_id:reffered_id
-//   })
-
-
-//   if (referaluser) {
-//     await Admin.updateOne(
-//       { referralId: "admin@123" },
-//       { $inc: { adminWallet: 2500 } }
-//     );
-  
-   
-//   }
-  
-
-//   const user = await User.updateOne(
-//     { userid: userid },
-//     {
-//       $set: {
-//         paymentStatus: true,
-//         paymentCount: payment + 1,
-//         isBlocked: false,
-//         doj: new Date(),
-//       },
-//     }
-//   );
-
-//   const userActivate = new AllNewPaidUser({
-//     userid: userid,
-//     activationAmount: serviceAmount,
-//   });
-//   await userActivate.save();
-  
-
-//   if (reffered_id === "admin@123") {
-//     console.log(reffered_id, "refferer");
-//     const admin = await Admin.findOne({
-//       refferal_id: "admin@123",
-//     });
-//     console.log(admin ,"hhhh")
-
-
-//     if (admin) {
-//       let adminWallet = admin.adminWallet;
-//       console.log(adminWallet, "adminwallet")
-//       adminWallet += 2500;
-//       await Admin.updateOne(
-//         { refferal_id: "admin@123" }, 
-//         { $set: { adminWallet: adminWallet } }
-//       );
-
-//       return res.status(200).json({ message: "Your payment successful" });
-//     } else {
-//       return res.status(500).json({ message: "Admin not found" });
-//     }
-//   } else {
-//     if (user) {
-//       const findUserFromRefferedId = await User.find({
-//         refferal_id: reffered_id,
-//       });
-//       console.log(findUserFromRefferedId, "592");
-
-//       if (findUserFromRefferedId.length > 0) {
-//         const findUserfromUser = await User.find({ refferal_id: reffered_id });
-//         if (findUserfromUser.length > 0 && payment < 1) {
-//           const userid = findUserFromRefferedId[0].userid;
-//           let wallet = findUserFromRefferedId[0].wallet;
-//           wallet = wallet + 1000;
-//           console.log(wallet);
-//           const insertUserWalletAmount = await User.updateOne(
-//             { userid: userid },
-//             {
-//               $set: {
-//                 wallet: wallet,
-//               },
-//             }
-//           );
-//           const myReferralDetails = new MyReferral({
-//             userid: userExist.userid,
-//             joininigDate: userExist.doj,
-//             refferal_id: userExist.reffered_id,
-//             referralAmount: 1000,
-//             userType: "New",
-//             role: "User",
-//             refferUserID: userid,
-//           });
-//           myReferralDetails.save();
-
-//           const userCreditWalletTransactionsDetails =
-//             new userCreditWalletTransaction({
-//               userId: userExist.userid,
-//               joininigDate: userExist.doj,
-//               refferUserId: userid,
-//               creditAmount: 1000,
-//               Type: "New",
-//             });
-//           userCreditWalletTransactionsDetails.save();
-
-       
-    
-
-
-//           if (insertUserWalletAmount) {
-//             return res.status(200).json({
-//               message: "Payment Successfull",
-//             });
-//           }
-//         } else {
-//           const userid = findUserFromRefferedId[0].userid;
-//           let wallet = findUserFromRefferedId[0].wallet;
-//           wallet = wallet + 700;
-//           console.log(wallet);
-//           const insertUserWalletAmount = await User.updateOne(
-//             { userid: userid },
-//             {
-//               $set: {
-//                 wallet: wallet,
-//               },
-//             }
-//           );
-//           const myReferralDetails = new MyReferral({
-//             userid: userExist.userid,
-//             joininigDate: userExist.doj,
-//             refferal_id: userExist.reffered_id,
-//             referralAmount: 700,
-//             userType: "Renewal",
-//             role: "User",
-//             refferUserID: userid,
-//           });
-//           myReferralDetails.save();
-
-//           const userCreditWalletTransactionsDetails =
-//             new userCreditWalletTransaction({
-//               userId: userExist.userid,
-//               joininigDate: userExist.doj,
-//               refferUserId: userid,
-//               creditAmount: 700,
-//               Type: "Renewal",
-//             });
-//           userCreditWalletTransactionsDetails.save();
-
-//           if (insertUserWalletAmount) {
-//             return res.status(200).json({
-//               message: "Payment Successfull",
-//             });
-//           }
-//         }
-//       } else {
-//         const findUserFromMemberRefferedId = await Member.find({
-//           refferal_id: reffered_id,
-//         });
-
-//         if (findUserFromMemberRefferedId.length > 0 && payment < 1) {
-//           const memberid = findUserFromMemberRefferedId[0].memberid;
-          
-
-
-//           const bdrefferid = findUserFromMemberRefferedId[0].reffered_id;
-
-//           const bdDetails = await BusinessDeveloper.findOne({
-//             referralId: bdrefferid,
-//           });
-
-//           console.log(bdDetails, "jjj");
-
-//           if (bdDetails) {
-//             const bdUserid = bdDetails.businessDeveloperId;
-//             let businessDeveloperWallet = bdDetails.businessDeveloperWallet;
-//             const WALLET_CREDIT_AMOUNT = 500;
-//             businessDeveloperWallet =
-//               businessDeveloperWallet + WALLET_CREDIT_AMOUNT;
-
-//             // Update business developer wallet
-//             await BusinessDeveloper.updateOne(
-//               { referralId: bdrefferid },
-//               {
-//                 $set: {
-//                   businessDeveloperWallet,
-//                 },
-//               }
-//             );
-
-//             // Create business developer credit wallet transaction record
-
-//             const bdCreditWalletDetails =
-//               new BusinessDeveloperCreditWalletTransaction({
-//                 businessDeveloperId: bdUserid,
-
-//                 creditAmount: WALLET_CREDIT_AMOUNT,
-//                 Type: "New",
-//                 refferUserId: memberid,
-//               });
-
-//             await bdCreditWalletDetails.save();
-
-//             console.log(bdDetails.referredId);
-
-//             const franchise = await Franchise.findOne({
-//               referralId: bdDetails.referredId,
-//             });
-
-//             console.log(franchise, "ggggggg");
-
-//             if (franchise) {
-//               let frenchiseWallet = franchise.frenchiseWallet;
-//               frenchiseWallet += 300;
-//               await Franchise.updateOne(
-//                 { referralId: bdDetails.referredId },
-//                 { $set: { frenchiseWallet: frenchiseWallet } }
-//               );
-
-//               const frenchiseCreditWalletDetails =
-//                 new FranchiseCreditWalletTransaction({
-//                   frenchiseId: franchise.frenchiseId,
-//                   creditAmount: 300,
-//                   Type: "New",
-//                   refferUserId: bdDetails.businessDeveloperId,
-//                 });
-
-//               await frenchiseCreditWalletDetails.save();
-//             }
-//             const stateHandler = await StateHandler.findOne({
-//               referralId: franchise.referredId,
-//             });
-
-//             console.log(stateHandler, ";;;;;");
-
-//             if (stateHandler) {
-//               let stateHandlerWallet = stateHandler.stateHandlerWallet;
-//               stateHandlerWallet += 300;
-
-//               await StateHandler.updateOne(
-//                 { referralId: franchise.referredId },
-//                 { $set: { stateHandlerWallet: stateHandlerWallet } }
-//               );
-//               const statehandlerCreditWalletDetails =
-//                 new StateHandlerCreditWalletTransaction({
-//                   stateHandlerId: stateHandler.stateHandlerId,
-
-//                   creditAmount: 300,
-//                   Type: "New",
-//                   refferUserId: franchise.frenchiseId,
-//                 });
-
-//               await statehandlerCreditWalletDetails.save();
-//             }
-
-//             const admin = await Admin.findOne({
-//               referralId: stateHandler.referredId,
-//             });
-
-//             console.log(admin, "1195admin details");
-
-//             if (admin) {
-//               console.log(admin.adminWallet);
-//               let adminWallet = admin.adminWallet;
-//               adminWallet += 1400;
-
-//               await Admin.updateOne(
-//                 { referralId: stateHandler.referredId },
-//                 { $set: { adminWallet: adminWallet } }
-//               );
-
-//               const adminCreditWalletDetails = new AdminCreditWalletTransaction(
-//                 {
-//                   admin_id: admin.admin_id,
-//                   creditAmount: 1400,
-//                   Type: "New",
-//                   refferUserId: stateHandler.stateHandlerId,
-//                 }
-//               );
-
-//               await adminCreditWalletDetails.save();
-//             }
-//           }
-
-//           let wallet = findUserFromMemberRefferedId[0].wallet;
-//           wallet = wallet + 1000;
-
-//           // Update member wallet
-//           const insertWalletAmount = await Member.updateOne(
-//             { memberid },
-//             {
-//               $set: {
-//                 wallet,
-//               },
-//             }
-//           );
-
-//           // Create referral details for new member
-//           const myReferralDetails = new MyReferral({
-//             userid: userExist.userid,
-//             joininigDate: userExist.doj,
-//             refferal_id: userExist.reffered_id,
-//             referralAmount: 1000,
-//             userType: "New",
-//             role: "Member",
-//             refferUserID: memberid,
-//           });
-//          await myReferralDetails.save();
-
-//             // Create referral details for new member
-//             const memberCreditWalletTransactionDetails  = new memberCreditWalletTransaction({
-//               memberId:findUserFromMemberRefferedId[0].memberid,
-//               creditAmount: 1000,
-//               Type: "New",
-//               refferUserId: userExist.userid,
-//             });
-//             await memberCreditWalletTransactionDetails.save();
-
-            
-
-//             console.log(insertWalletAmount, "iiiiiiiiiii")
-//           if (insertWalletAmount) {
-//             return res.status(200).json({
-//               message: "Payment Successful",
-//             });
-//           }
-//         } else {
-   
-
-//           if (insertWalletAmount) {
-//             return res.status(200).json({
-//               message: "Payment Successful",
-//             });
-//           }
-//         }
-//       }
-//     } else {
-//       console.log(error.message);
-//       return res.status(500).json({
-//         message: "Internal Server Error",
-//       });
-//     }
-//   }
-// };
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 // userfetchRefferalPayout
 exports.userfetchRefferalPayout = async (req, res) => {
@@ -2227,12 +1846,11 @@ exports.userTotalWithdrawalFromTradingWallet = async (req, res) => {
 // changePaymentStatusForRenewal
 exports.changePaymentStatusForRenewal = async (req, res) => {
   const { userid } = req.body;
-  const renewAmount = 1500;
+  const renewAmount = 1800;
 
   const userExist = await User.findOne({ userid: userid });
   const payment = userExist.paymentCount;
   const reffered_id = userExist.reffered_id;
-  console.log(reffered_id, "582");
 
   const user = await User.updateOne(
     { userid: userid },
@@ -2281,7 +1899,7 @@ exports.changePaymentStatusForRenewal = async (req, res) => {
         if (findUserfromUser.length > 0 && payment < 1) {
           const userid = findUserFromRefferedId[0].userid;
           let wallet = findUserFromRefferedId[0].wallet;
-          wallet = wallet + 1200;
+          wallet = wallet + 900;
           console.log(wallet);
           const insertUserWalletAmount = await User.updateOne(
             { userid: userid },
@@ -2295,7 +1913,7 @@ exports.changePaymentStatusForRenewal = async (req, res) => {
             userid: userExist.userid,
             joininigDate: userExist.doj,
             refferal_id: userExist.reffered_id,
-            referralAmount: 1200,
+            referralAmount: 900,
             userType: "New",
             role: "User",
             refferUserID: userid,
@@ -2309,7 +1927,7 @@ exports.changePaymentStatusForRenewal = async (req, res) => {
         } else {
           const userid = findUserFromRefferedId[0].userid;
           let wallet = findUserFromRefferedId[0].wallet;
-          wallet = wallet + 700;
+          wallet = wallet + 500;
           console.log(wallet);
           const insertUserWalletAmount = await User.updateOne(
             { userid: userid },
@@ -2323,7 +1941,7 @@ exports.changePaymentStatusForRenewal = async (req, res) => {
             userid: userExist.userid,
             joininigDate: userExist.doj,
             refferal_id: userExist.reffered_id,
-            referralAmount: 700,
+            referralAmount: 500,
             userType: "Renewal",
             role: "User",
             refferUserID: userid,
@@ -2344,7 +1962,7 @@ exports.changePaymentStatusForRenewal = async (req, res) => {
 
 
           let wallet = findUserFromMemberRefferedId[0].wallet;
-          wallet = wallet + 1000;
+          wallet = wallet + 900;
           console.log(wallet);
           const insertWalletAmount = await Member.updateOne(
             { memberid: memberid },
@@ -2358,7 +1976,7 @@ exports.changePaymentStatusForRenewal = async (req, res) => {
             userid: userExist.userid,
             joininigDate: userExist.doj,
             refferal_id: userExist.reffered_id,
-            referralAmount: 1000,
+            referralAmount: 900,
             userType: "New",
             role: "Member",
             refferUserID: memberid,
@@ -2411,7 +2029,7 @@ exports.changePaymentStatusForRenewal = async (req, res) => {
 
           let businessDeveloperWallet =
             businessDeveloper.businessDeveloperWallet;
-          businessDeveloperWallet += 200;
+          businessDeveloperWallet += 300;
 
           await BusinessDeveloper.updateOne(
             { referralId: referredId },
@@ -2421,7 +2039,7 @@ exports.changePaymentStatusForRenewal = async (req, res) => {
           const bdCreditWalletDetails =
             new BusinessDeveloperCreditWalletTransaction({
               businessDeveloperId: businessDeveloper.businessDeveloperId,
-              creditAmount: 200,
+              creditAmount: 300,
               Type: "Renewal",
               refferUserId: memberid,
             });
@@ -2433,7 +2051,9 @@ exports.changePaymentStatusForRenewal = async (req, res) => {
           });
 
           let frenchiseWallet = franchise.frenchiseWallet;
-          frenchiseWallet += 200;
+          frenchiseWallet += 300;
+
+         
 
           await Franchise.updateOne(
             { referralId: businessDeveloper.referredId },
@@ -2443,12 +2063,16 @@ exports.changePaymentStatusForRenewal = async (req, res) => {
           const frenchiseCreditWalletDetails =
             new FranchiseCreditWalletTransaction({
               frenchiseId: franchise.frenchiseId,
-              creditAmount: 200,
+              creditAmount: 300,
               Type: "Renewal",
               refferUserId: businessDeveloper.businessDeveloperId,
             });
 
           await frenchiseCreditWalletDetails.save();
+
+          const transferPercentage = 2.5;
+          const transferAmount = (300 * transferPercentage) / 100;
+
 
           const stateHandler = await StateHandler.findOne({
             referralId: franchise.referredId,
@@ -2457,7 +2081,7 @@ exports.changePaymentStatusForRenewal = async (req, res) => {
           console.log(stateHandler, "2421");
 
           let stateHandlerWallet = stateHandler.stateHandlerWallet;
-          stateHandlerWallet += 100;
+          stateHandlerWallet += transferAmount;
 
           await StateHandler.updateOne(
             { referralId: franchise.referredId },
@@ -2467,7 +2091,7 @@ exports.changePaymentStatusForRenewal = async (req, res) => {
           const stateHandlerCreditWalletDetails =
             new StateHandlerCreditWalletTransaction({
               stateHandlerId: stateHandler.stateHandlerId,
-              creditAmount: 100,
+              creditAmount: transferAmount,
               Type: "Renewal",
               refferUserId: franchise.frenchiseId,
             });
@@ -2479,7 +2103,7 @@ exports.changePaymentStatusForRenewal = async (req, res) => {
           });
 
           let adminWallet = admin.adminWallet;
-          adminWallet += 500;
+          adminWallet += 692.5;
 
           await Admin.updateOne(
             { referralId: stateHandler.referredId },
@@ -2488,7 +2112,7 @@ exports.changePaymentStatusForRenewal = async (req, res) => {
 
           const adminCreditWalletDetails = new AdminCreditWalletTransaction({
             admin_id: admin.admin_id,
-            creditAmount: 500,
+            creditAmount: 692.5,
             Type: "Renewal",
             refferUserId: stateHandler.stateHandlerId,
           });

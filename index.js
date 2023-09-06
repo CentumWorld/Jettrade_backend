@@ -134,7 +134,8 @@ const fetchAdminCreditwalletTransactionDetails = require("./routes/fetch-admin-c
 const deleteState = require('./routes/delete-State')
 const deleteFranchise = require('./routes/delete-Franchise')
 const deleteBusinessDeveloper = require('./routes/delete-business-developer')
-
+const updateAdharCardStateHandler = require('./routes/update-adhar-card-state-handler')
+const updatePanCardStateHandler = require('./routes/update-pan-card-state-handler')
 // refferal
 const memberRegistration = require("./routes/refferal/member-registration");
 const memberLogin = require("./routes/refferal/member-login");
@@ -308,11 +309,14 @@ const getBusinessDeveloperOwnUpi = require('./routes/businessDeveloper/get-Busin
 const getOwnSubAdminDetails = require("./routes/subAdmin/get-own-sub-admin-details")
 const updateOwnSubAdminDetails = require("./routes/subAdmin/update-own-sub-admin-details")
 
+//==========================Video creator===================================
+const videoCreatorLogin = require("./routes/videoCreator/videoCreatorLogin")
 
-app.use(express.static(path.join(__dirname, "public")));
-app.use(express.urlencoded({ extended: true }));
-app.use(express.json());
-app.use(cookieParser());
+
+// app.use(express.static(path.join(__dirname, "public")));
+// app.use(express.urlencoded({ extended: true }));
+// app.use(express.json());
+// app.use(cookieParser());
 
 app.use("/admin", adminLogin);
 app.use("/admin", adminLogout);
@@ -436,6 +440,8 @@ app.use('/user', getOwnTraderCreditWalletTransactionDetails)
 app.use('/admin', filterCreditWalletTransactionByUserId)
 app.use('/admin', fetchMemberCreditwalletTransactionDetails)
 app.use('/admin', fetchUserCreditwalletTransactionDetails)
+app.use('/admin', updateAdharCardStateHandler)
+app.use('/admin', updatePanCardStateHandler)
 // refferal
 app.use("/member", memberRegistration);
 app.use("/member", memberLogin);
@@ -626,5 +632,8 @@ app.use('/businessDeveloper', getBusinessDeveloperOwnUpi)
 //=============================Sub- Admin======================================
 app.use('/subAdmin',getOwnSubAdminDetails);
 app.use('/subAdmin', updateOwnSubAdminDetails)
+
+//=====================Video Creator============================
+app.use('/videoCreator', videoCreatorLogin)
 
 module.exports = app;
