@@ -1657,7 +1657,6 @@ exports.createSubAdminInsideAdmin = async (req, res) => {
     pan,
     subAdminId,
     password,
-    isVideoCreator,
   } = req.body;
 
   // Check if any required field is missing
@@ -1716,7 +1715,6 @@ exports.createSubAdminInsideAdmin = async (req, res) => {
       pan_card,
       subAdminId,
       password,
-      isVideoCreator,
     });
     await subadmin.save();
     const phone2 = "+" + subadmin.phone;
