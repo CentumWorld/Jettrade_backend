@@ -22,6 +22,8 @@ exports.videoCreatorLogin = async (req, res) => {
           process.env.SECRET_KEY,
           { expiresIn: "8h" }
         );
+
+
         const userId = videoCreaterLogin.userId;
         res.status(201).json({
           message: "Admin Login Successfully",
