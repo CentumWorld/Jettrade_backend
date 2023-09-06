@@ -2931,31 +2931,14 @@ exports.blockBusinessDeveloperByAdmin = async (req, res) => {
 
 exports.updateStateHandler = async (req, res) => {
   try {
-    const { fname, lname, phone, email, password, gender, selectedState } =
+    const { fname, lname, phone, email, gender, selectedState } =
       req.body;
     const id = req.body.id;
 
-    const adharCardFile = req.files["adharCard"][0];
-    const panCardFile = req.files["panCard"][0];
+  
 
-    // Check if adharCard image is valid using isValidImage function
-    if (!isValidImage(adharCardFile.originalname)) {
-      return res.status(422).json({
-        message:
-          "Invalid adharCard image format, image must be in jpeg, jpg, tiff, png, webp, or bmp format.",
-      });
-    }
+  
 
-    // Check if panCard image is valid using isValidImage function
-    if (!isValidImage(panCardFile.originalname)) {
-      return res.status(422).json({
-        message:
-          "Invalid panCard image format, image must be in jpeg, jpg, tiff, png, webp, or bmp format.",
-      });
-    }
-
-    const adharCardLocation = adharCardFile.location;
-    const panCardLocation = panCardFile.location;
 
     // Validate input fields
     if (
@@ -2963,7 +2946,7 @@ exports.updateStateHandler = async (req, res) => {
       !lname ||
       !phone ||
       !email ||
-      !password ||
+
       !gender ||
       !selectedState
     ) {
@@ -2985,13 +2968,7 @@ exports.updateStateHandler = async (req, res) => {
       return res.status(422).json({ message: "Invalid email format." });
     }
 
-    // Validate password strength
-    if (!isValidPassword(password)) {
-      return res.status(422).json({
-        message:
-          "Password must be 8 to 15 characters long and contain at least one lowercase letter, one uppercase letter, and one digit.",
-      });
-    }
+ 
 
     // Validate phone number format
     if (!isValidPhone(phone)) {
@@ -3004,11 +2981,9 @@ exports.updateStateHandler = async (req, res) => {
       lname,
       phone,
       email,
-      password,
       gender,
       selectedState,
-      panCard: panCardLocation,
-      adharCard: adharCardLocation,
+
     };
 
     const updatedState = await StateHandler.findOneAndUpdate(

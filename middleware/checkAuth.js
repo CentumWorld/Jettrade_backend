@@ -6,6 +6,7 @@ const SubAdmin = require("../model/subadminSchema");
 const State = require("../model/stateHandlerSchema");
 const Franchise = require("../model/frenchiseSchema");
 const BusinessDeveloper = require("../model/businessDeveloperSchema");
+const VideoCreater = require("../model/VideoCreaterSchema");
 // exports.checkAuth = (req, res, next) => {
 //   const token = req.headers.authorization?.split(" ")[1];
 
@@ -51,8 +52,10 @@ exports.authenticateAdmin = async (req, res, next) => {
     const businessDeveloper = await BusinessDeveloper.findById(
       decoded.businessDeveloperId
     );
+    const videoCreator = await VideoCreater.findById(decoded.userId)
 
-    if (!admin && !subAdmin && !state && !franchise && !businessDeveloper) {
+
+    if (!admin && !subAdmin && !state && !franchise && !businessDeveloper && !videoCreator) {
       return res.status(401).json({ message: "User not found" });
     }
 
@@ -80,6 +83,10 @@ exports.authenticateAdmin = async (req, res, next) => {
 
     if (businessDeveloper) {
       req.userRoles.push("businessDeveloper");
+    }
+
+    if(videoCreator){
+      req.userRoles.push("videoCreator");
     }
 
     next();
