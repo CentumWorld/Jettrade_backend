@@ -1,4 +1,5 @@
 const SubAdmin = require("../model/subadminSchema");
+const VideoCreater = require('../model/VideoCreaterSchema');
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
 exports.videoCreatorLogin = async (req, res) => {
@@ -7,7 +8,7 @@ exports.videoCreatorLogin = async (req, res) => {
     const { password, userId } = req.body;
 
     // Find the video creator by email
-    const videoCreator = await SubAdmin.findOne({ subAdminId: userId });
+    const videoCreator = await VideoCreater.findOne({ subAdminId: userId });
 
     if (!videoCreator) {
       return res.status(404).json({ message: "Video creator not found" });
