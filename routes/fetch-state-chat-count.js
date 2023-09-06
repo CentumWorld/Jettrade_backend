@@ -5,7 +5,7 @@ require('dotenv').config();
 const adminController = require('../controllers/adminController');
 const {authenticateAdmin,  authorizeRole} = require('../middleware/checkAuth');
 
-router.get('/fetch-state-chat-count',authenticateAdmin,authorizeRole(["admin"]), adminController.fetchStateChatCount);
+router.get('/fetch-state-chat-count',authenticateAdmin,authorizeRole(["admin","subAdmin"]), adminController.fetchStateChatCount);
 
 
 module.exports = router;

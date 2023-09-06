@@ -4,7 +4,7 @@ require('dotenv').config();
 
 const adminController = require('../controllers/adminController');
 const {authenticateAdmin, authorizeRole} = require('../middleware/checkAuth');
-router.post('/admin-state-online-or-not',authenticateAdmin,authorizeRole(["admin"]), adminController.stateOnlineOrNot);
+router.post('/admin-state-online-or-not',authenticateAdmin,authorizeRole(["admin","subAdmin"]), adminController.stateOnlineOrNot);
 
 
 module.exports = router;

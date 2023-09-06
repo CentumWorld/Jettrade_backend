@@ -930,7 +930,9 @@ exports.fetchChatMessageAdmin = async (req, res) => {
 // UserOnlineOrNot
 exports.UserOnlineOrNot = async (req, res) => {
   const { userid } = req.body;
-  let userOnlineOrNot = await User.findOne({ userid: userid });
+  console.log(userid,'933')
+  let userOnlineOrNot = await User.findOne({ userid });
+  console.log(userOnlineOrNot,'935')
   if (userOnlineOrNot) {
     const isOnline = userOnlineOrNot.isOnline;
     return res.status(200).json({
