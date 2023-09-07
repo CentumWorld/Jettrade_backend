@@ -776,11 +776,11 @@ exports.createStatePaymentRequest = async (req, res) => {
     await stateHandler.updateOne(
       { stateHandlerId: stateHandlerId },
       {
-        $inc: { stateHandlerWallet: -amount ,paymentRequestCount: 1 },
-        $set: {firstPayment: false,verifyDate: Date.now }
-  
+        $inc: { stateHandlerWallet: -amount, paymentRequestCount: 1 },
+        $set: { firstPayment: false, verifyDate: Date.now() }
       }
     );
+    
 
     const savedPaymentRequest = await newPaymentRequest.save();
     res.status(201).json({
