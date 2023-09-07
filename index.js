@@ -225,6 +225,9 @@ const searchRefferalPayoutByRefferUserid = require('./routes/search-refferal-pay
  const filterCreditWalletTransactionByUserId = require('./routes/filter-Credit-Wallet-Transaction-By-UserId')
  const fetchMemberCreditwalletTransactionDetails = require('./routes/fetch-Member-Credit-wallet-Transaction-Details')
  const fetchUserCreditwalletTransactionDetails = require('./routes/fetch-User-Credit-wallet-Transaction-Details')
+ const verifyState = require('./routes/verify-State')
+ const verifyBusinessDeveloper = require('./routes/verify-Business-Developer')
+ const verifyFranchise = require('./routes/verify-Franchise')
 //=======================State=================================================
 
 const getFranchisesByReferralId = require("./routes/state/fetch-frenchise-in-state");
@@ -524,6 +527,9 @@ app.use('/admin', searchNewUsers)
 app.use('/admin', fetchParticularUserPaymentStatus)
 app.use('/admin', findUsersOnTheBasisOfPaymentStatus)
 app.use('/admin', searchRefferalPayoutByRefferUserid)
+app.use('/admin', verifyState)
+app.use('/admin', verifyBusinessDeveloper)
+app.use('/admin', verifyFranchise)
 // refferalin
 app.use("/member", memberLogin);
 app.use("/admin", fetchMemberDetails);

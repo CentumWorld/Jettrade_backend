@@ -62,7 +62,6 @@ const UserCreditWalletTransaction = require("../model/userCreditWalletTransactio
 // const memberCreditWalletTransaction = require("../model/memberCreditWalletTransaction");
 // const userCreditWalletTransaction = require("../model/userCreditWalletTransaction");
 
-
 // admin Login
 
 exports.adminLogin = async (req, res) => {
@@ -930,9 +929,9 @@ exports.fetchChatMessageAdmin = async (req, res) => {
 // UserOnlineOrNot
 exports.UserOnlineOrNot = async (req, res) => {
   const { userid } = req.body;
-  console.log(userid,'933')
+  console.log(userid, "933");
   let userOnlineOrNot = await User.findOne({ userid });
-  console.log(userOnlineOrNot,'935')
+  console.log(userOnlineOrNot, "935");
   if (userOnlineOrNot) {
     const isOnline = userOnlineOrNot.isOnline;
     return res.status(200).json({
@@ -1767,7 +1766,7 @@ exports.createStateHandler = async (req, res) => {
       stateHandlerId,
       selectedState,
       referredId,
-      paymentRequestCount
+      paymentRequestCount,
     } = req.body;
 
     if (!req.files["adharCard"]) {
@@ -1942,7 +1941,7 @@ exports.createFrenchise = async (req, res) => {
       franchiseCity,
       frenchiseId,
       franchiseState,
-      paymentRequestCount
+      paymentRequestCount,
     } = req.body;
 
     if (!req.files["adharCard"]) {
@@ -2106,7 +2105,7 @@ exports.createBusinnesDeveloper = async (req, res) => {
       businessDeveloperId,
       referredId,
       buisnessCity,
-      paymentRequestCount
+      paymentRequestCount,
     } = req.body;
 
     if (!req.files["adharCard"]) {
@@ -2234,7 +2233,7 @@ exports.createBusinnesDeveloper = async (req, res) => {
       referredId,
       businessDeveloperWallet,
       buisnessCity,
-      paymentRequestCount
+      paymentRequestCount,
     });
 
     const savedBusinessDeveloper = await newBusinessDeveloper.save();
@@ -2274,14 +2273,10 @@ exports.stateHandlerLogin = async (req, res) => {
     }
 
     if (existingStateHandler.isDeleted) {
-      return res
-        .status(400)
-        .json({ message: "State not found" });
+      return res.status(400).json({ message: "State not found" });
     }
     if (existingStateHandler.isBlocked) {
-      return res
-        .status(400)
-        .json({ message: "Your account has been blocked" });
+      return res.status(400).json({ message: "Your account has been blocked" });
     }
     const isPasswordValid = await bcrypt.compare(
       password,
@@ -2313,7 +2308,6 @@ exports.stateHandlerLogin = async (req, res) => {
   }
 };
 
-
 //============================================================================
 //frenchise login
 exports.frenchiseLogin = async (req, res) => {
@@ -2330,8 +2324,6 @@ exports.frenchiseLogin = async (req, res) => {
       frenchiseId: frenchiseId,
     });
 
-
-
     if (!existingFrenchiseId) {
       return res
         .status(400)
@@ -2339,14 +2331,10 @@ exports.frenchiseLogin = async (req, res) => {
     }
 
     if (existingFrenchiseId.isDeleted) {
-      return res
-        .status(400)
-        .json({ message: "Franchise not found" });
+      return res.status(400).json({ message: "Franchise not found" });
     }
     if (existingFrenchiseId.isBlocked) {
-      return res
-        .status(400)
-        .json({ message: "Your account has been blocked" });
+      return res.status(400).json({ message: "Your account has been blocked" });
     }
 
     const isPasswordValid = await bcrypt.compare(
@@ -2708,7 +2696,7 @@ exports.fetchAdminCreditwalletTransactionDetails = async (req, res) => {
 };
 //==========================================================================
 //fetchMemberCreditwalletTransactionDetails
-exports.fetchMemberCreditwalletTransactionDetails = async(re1q, res) => {
+exports.fetchMemberCreditwalletTransactionDetails = async (re1q, res) => {
   try {
     const fetchedData = await MemberCreditWalletTransaction.find();
     if (fetchedData.length == 0) {
@@ -2720,9 +2708,9 @@ exports.fetchMemberCreditwalletTransactionDetails = async(re1q, res) => {
     console.log(error.message);
     return res.status(500).json({ message: "Internal server error" });
   }
-}
+};
 //====================================================================
-exports.fetchUserCreditwalletTransactionDetails = async(re1q, res) => {
+exports.fetchUserCreditwalletTransactionDetails = async (re1q, res) => {
   try {
     const fetchedData = await UserCreditWalletTransaction.find();
     if (fetchedData.length == 0) {
@@ -2734,7 +2722,7 @@ exports.fetchUserCreditwalletTransactionDetails = async(re1q, res) => {
     console.log(error.message);
     return res.status(500).json({ message: "Internal server error" });
   }
-}
+};
 
 // stateOnlineOrNot
 exports.stateOnlineOrNot = async (req, res) => {
@@ -2931,25 +2919,11 @@ exports.blockBusinessDeveloperByAdmin = async (req, res) => {
 
 exports.updateStateHandler = async (req, res) => {
   try {
-    const { fname, lname, phone, email, gender, selectedState } =
-      req.body;
+    const { fname, lname, phone, email, gender, selectedState } = req.body;
     const id = req.body.id;
 
-  
-
-  
-
-
     // Validate input fields
-    if (
-      !fname ||
-      !lname ||
-      !phone ||
-      !email ||
-
-      !gender ||
-      !selectedState
-    ) {
+    if (!fname || !lname || !phone || !email || !gender || !selectedState) {
       return res.status(422).json({ message: "All fields are required." });
     }
 
@@ -2968,8 +2942,6 @@ exports.updateStateHandler = async (req, res) => {
       return res.status(422).json({ message: "Invalid email format." });
     }
 
- 
-
     // Validate phone number format
     if (!isValidPhone(phone)) {
       return res.status(422).json({ message: "Invalid phone number format." });
@@ -2983,7 +2955,6 @@ exports.updateStateHandler = async (req, res) => {
       email,
       gender,
       selectedState,
-
     };
 
     const updatedState = await StateHandler.findOneAndUpdate(
@@ -3085,7 +3056,6 @@ exports.updateAdharCardStateHandler = async (req, res) => {
     res.status(500).json({ message: "Internal server error" });
   }
 };
-
 
 //======================================================================
 //update franchise
@@ -3547,7 +3517,7 @@ exports.updateAdharcardBusinessDeveloper = async (req, res) => {
     };
 
     const businessDeveloper = await BusinessDeveloper.findOneAndUpdate(
-      { _id: id},
+      { _id: id },
       { $set: updateData },
       { new: true }
     );
@@ -3674,7 +3644,7 @@ exports.approvePaymentRequestOfState = async (req, res) => {
       { stateHandlerId: paymentRequest.stateHandlerId },
       { $inc: { paymentRequestCount: -1 } }
     );
-    
+
     res.status(201).json({
       message: "Payment request approved successfully",
       savedPaymentApproval,
@@ -3708,10 +3678,12 @@ exports.approvePaymentRequestOfFranchise = async (req, res) => {
 
     await FranchisePaymentRequest.findByIdAndDelete(id);
 
-    await Franchise.updateOne({
-      frenchiseId: paymentRequest.franchiseId},
-      { $inc: { paymentRequestCount: -1 } },
-    )
+    await Franchise.updateOne(
+      {
+        frenchiseId: paymentRequest.franchiseId,
+      },
+      { $inc: { paymentRequestCount: -1 } }
+    );
 
     res.status(201).json({
       message: "Payment request approved successfully",
@@ -3779,12 +3751,10 @@ exports.adminFetchParticularStateHandlerDetails = async (req, res) => {
     });
 
     if (!particularStateHandlerDetails) {
-      return res
-        .status(404)
-        .json({
-          message:
-            "State handler details not found for the provided stateHandlerId",
-        });
+      return res.status(404).json({
+        message:
+          "State handler details not found for the provided stateHandlerId",
+      });
     }
 
     return res.status(200).json({
@@ -3809,12 +3779,9 @@ exports.adminFetchStateHandlerPaymentWithdrawalRequest = async (req, res) => {
       await StatePaymentRequest.find({ stateHandlerId: stateHandlerId });
 
     if (stateHandlerPaymentWithdrawalRequests.length === 0) {
-      return res
-        .status(404)
-        .json({
-          message:
-            "No withdrawal requests found for the provided state handler",
-        });
+      return res.status(404).json({
+        message: "No withdrawal requests found for the provided state handler",
+      });
     }
 
     return res.status(200).json({
@@ -3840,12 +3807,9 @@ exports.adminFetchStateHandlerApproveWithdrawal = async (req, res) => {
     });
 
     if (stateHandlerApproveWithdrawal.length === 0) {
-      return res
-        .status(404)
-        .json({
-          message:
-            "No approve withdrawals found for the provided state handler",
-        });
+      return res.status(404).json({
+        message: "No approve withdrawals found for the provided state handler",
+      });
     }
 
     return res.status(200).json({
@@ -3857,7 +3821,6 @@ exports.adminFetchStateHandlerApproveWithdrawal = async (req, res) => {
     return res.status(500).json({ message: "Internal server error" });
   }
 };
-
 
 //adminFetchParticularFranchiseDetails
 exports.adminFetchParticularFranchiseDetails = async (req, res) => {
@@ -3897,7 +3860,8 @@ exports.adminFetchFranchisePaymentWithdrawalRequest = async (req, res) => {
       return res.status(400).json({ message: "franchiseId is required" });
     }
 
-    const franchisePaymentWithdrawalRequests = await FranchisePaymentRequest.find({ franchiseId: franchiseId });
+    const franchisePaymentWithdrawalRequests =
+      await FranchisePaymentRequest.find({ franchiseId: franchiseId });
 
     if (franchisePaymentWithdrawalRequests.length === 0) {
       return res.status(404).json({
@@ -3910,7 +3874,10 @@ exports.adminFetchFranchisePaymentWithdrawalRequest = async (req, res) => {
       franchisePaymentWithdrawalRequests,
     });
   } catch (error) {
-    console.error("Error fetching franchise payment withdrawal requests:", error);
+    console.error(
+      "Error fetching franchise payment withdrawal requests:",
+      error
+    );
     return res.status(500).json({ message: "Internal server error" });
   }
 };
@@ -3944,14 +3911,15 @@ exports.adminFetchFranchiseApproveWithdrawal = async (req, res) => {
   }
 };
 
-
 //adminFetchParticularBusinessDeveloperDetails
 exports.adminFetchParticularBusinessDeveloperDetails = async (req, res) => {
   try {
     const { businessDeveloperId } = req.body;
 
     if (!businessDeveloperId) {
-      return res.status(400).json({ message: "business developer Id is required" });
+      return res
+        .status(400)
+        .json({ message: "business developer Id is required" });
     }
 
     const particularBusinessDeveloperDetails = await BusinessDeveloper.findOne({
@@ -3974,21 +3942,29 @@ exports.adminFetchParticularBusinessDeveloperDetails = async (req, res) => {
   }
 };
 
-
 //adminFetchBusinessDeveloperPaymentWithdrawalRequest
-exports.adminFetchBusinessDeveloperPaymentWithdrawalRequest = async (req, res) => {
+exports.adminFetchBusinessDeveloperPaymentWithdrawalRequest = async (
+  req,
+  res
+) => {
   try {
     const { businessDeveloperId } = req.body;
 
     if (!businessDeveloperId) {
-      return res.status(400).json({ message: "businessDeveloperId is required" });
+      return res
+        .status(400)
+        .json({ message: "businessDeveloperId is required" });
     }
-    
-    const businessDeveloperPaymentWithdrawalRequests = await BussinessDeveloperPaymentRequest.find({ businessDeveloperId: businessDeveloperId });
+
+    const businessDeveloperPaymentWithdrawalRequests =
+      await BussinessDeveloperPaymentRequest.find({
+        businessDeveloperId: businessDeveloperId,
+      });
 
     if (businessDeveloperPaymentWithdrawalRequests.length === 0) {
       return res.status(404).json({
-        message: "No withdrawal requests found for the provided business developer",
+        message:
+          "No withdrawal requests found for the provided business developer",
       });
     }
 
@@ -3997,7 +3973,10 @@ exports.adminFetchBusinessDeveloperPaymentWithdrawalRequest = async (req, res) =
       businessDeveloperPaymentWithdrawalRequests,
     });
   } catch (error) {
-    console.error("Error fetching business developer payment withdrawal requests:", error.message);
+    console.error(
+      "Error fetching business developer payment withdrawal requests:",
+      error.message
+    );
     return res.status(500).json({ message: "Internal server error" });
   }
 };
@@ -4007,17 +3986,20 @@ exports.adminFetchBusinessDeveloperApproveWithdrawal = async (req, res) => {
     const { businessDeveloperId } = req.body;
 
     if (!businessDeveloperId) {
-      return res.status(400).json({ message: "businessDeveloperId is required" });
+      return res
+        .status(400)
+        .json({ message: "businessDeveloperId is required" });
     }
 
-    const businessDeveloperApproveWithdrawal = await BussinessDeveloperPaymentApprove
-    .find({
-      businessDeveloperId: businessDeveloperId,
-    });
+    const businessDeveloperApproveWithdrawal =
+      await BussinessDeveloperPaymentApprove.find({
+        businessDeveloperId: businessDeveloperId,
+      });
 
     if (businessDeveloperApproveWithdrawal.length === 0) {
       return res.status(404).json({
-        message: "No approve withdrawals found for the provided business developer",
+        message:
+          "No approve withdrawals found for the provided business developer",
       });
     }
 
@@ -4026,11 +4008,13 @@ exports.adminFetchBusinessDeveloperApproveWithdrawal = async (req, res) => {
       businessDeveloperApproveWithdrawal,
     });
   } catch (error) {
-    console.error("Error fetching business developer approve withdrawals:", error);
+    console.error(
+      "Error fetching business developer approve withdrawals:",
+      error
+    );
     return res.status(500).json({ message: "Internal server error" });
   }
 };
-
 
 //=====================================================================
 
@@ -4038,39 +4022,48 @@ exports.adminFetchBusinessDeveloperApproveWithdrawal = async (req, res) => {
 
 exports.filterCreditWalletTransactionByUserId = async (req, res) => {
   try {
-    const { type, id } = req.body; 
+    const { type, id } = req.body;
 
     if (!type || !id) {
-      res.status(400).json({ error: "Both 'type' and 'id' must be provided in the request body" });
+      res.status(400).json({
+        error: "Both 'type' and 'id' must be provided in the request body",
+      });
       return;
     }
 
     let transactions;
 
     if (type === "franchise") {
-      transactions = await FranchiseCreditWalletTransaction.find({ frenchiseId: id });
+      transactions = await FranchiseCreditWalletTransaction.find({
+        frenchiseId: id,
+      });
     } else if (type === "statehandler") {
-      transactions = await StateHandlerCreditWalletTransaction.find({ stateHandlerId: id });
-    }else if(type === "businessdeveloper"){
+      transactions = await StateHandlerCreditWalletTransaction.find({
+        stateHandlerId: id,
+      });
+    } else if (type === "businessdeveloper") {
       transactions = await BusinessDeveloperCreditWalletTransaction.find({
-        businessDeveloperId: id
-      })
-    }else if (type === "member"){
+        businessDeveloperId: id,
+      });
+    } else if (type === "member") {
       transactions = await MemberCreditWalletTransaction.find({
-        memberId: id
-      })  
-    }else if (type === "trader"){
+        memberId: id,
+      });
+    } else if (type === "trader") {
       transactions = await UserCreditWalletTransaction.find({
-        userId: id
-      })  
-    }
-     else {
-      res.status(400).json({ error: "Invalid 'type' specified in the request body" });
+        userId: id,
+      });
+    } else {
+      res
+        .status(400)
+        .json({ error: "Invalid 'type' specified in the request body" });
       return;
     }
 
-     if (!transactions || transactions.length === 0) {
-      res.status(404).json({ error: "No transactions found for the provided 'id'" });
+    if (!transactions || transactions.length === 0) {
+      res
+        .status(404)
+        .json({ error: "No transactions found for the provided 'id'" });
       return;
     }
 
@@ -4078,5 +4071,88 @@ exports.filterCreditWalletTransactionByUserId = async (req, res) => {
   } catch (error) {
     console.error("Error fetching transactions:", error);
     res.status(500).json({ error: "Error fetching transactions" });
+  }
+};
+//======================================================================
+
+exports.verifyState = async (req, res) => {
+  try {
+    const { id } = req.body;
+
+    const state = await StateHandler.findById(id);
+
+    if (!state) {
+      return res.status(404).json({ message: "State not found" });
+    }
+
+    const updatedState = await StateHandler.findByIdAndUpdate(
+      id,
+      { isVerify: true, verifyDate: Date.now() },
+      { new: true } 
+    );
+
+    return res.status(200).json({
+      message: "State verified successfully",
+      state: updatedState,
+    });
+  } catch (error) {
+    console.log(error.message); 
+    return res.status(500).json({ message: "Internal server error" });
+  }
+};
+
+
+//verify franchise
+exports.verifyFranchise = async (req, res) => {
+  try {
+    const { id } = req.body;
+
+    const franchise = await Franchise.findById(id);
+
+    if (!franchise) {
+      return res.status(404).json({ message: "Franchise not found" });
+    }
+
+    const updatedFranchise = await Franchise.findByIdAndUpdate(
+      id,
+      { isVerify: true, verifyDate: Date.now() },
+      { new: true } 
+    );
+
+    return res.status(200).json({
+      message: "Franchise verified successfully",
+      state: updatedFranchise,
+    });
+  } catch (error) {
+    console.log(error.message); 
+    return res.status(500).json({ message: "Internal server error" });
+  }
+};
+
+//verify Business Developer 
+
+exports.verifyBusinessDeveloper = async (req, res) => {
+  try {
+    const { id } = req.body;
+
+    const businessDeveloper = await BusinessDeveloper.findById(id);
+
+    if (!businessDeveloper) {
+      return res.status(404).json({ message: "BusinessDeveloper not found" });
+    }
+
+    const updatedBusinessDeveloper = await BusinessDeveloper.findByIdAndUpdate(
+      id,
+      { isVerify: true, verifyDate: Date.now() },
+      { new: true } 
+    );
+
+    return res.status(200).json({
+      message: "BusinessDeveloper verified successfully",
+      state: updatedBusinessDeveloper,
+    });
+  } catch (error) {
+    console.log(error.message); 
+    return res.status(500).json({ message: "Internal server error" });
   }
 };

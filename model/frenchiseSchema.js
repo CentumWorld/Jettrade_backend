@@ -85,6 +85,13 @@ const frenchiseSchema = new mongoose.Schema(
     paymentRequestCount: {
       type: Number,
       default:0
+    },
+    isVerify: {
+      type: Boolean, 
+      default: false
+    },
+    verifyDate: {
+      type: Date,
     }
   },
   { timestamps: true }
