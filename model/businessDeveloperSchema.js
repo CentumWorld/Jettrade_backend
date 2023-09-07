@@ -76,13 +76,23 @@ const businessDeveloperSchema = new mongoose.Schema(
       default: false,
     },
     paymentRequestCount: {
-      type:Number,
-      default:0
-    }
+      type: Number,
+      default: 0,
+    },
+    isVerify: {
+      type: Boolean,
+      default: false,
+    },
+    verifyDate: {
+      type: Date,
+    },
   },
   { timestamps: true }
 );
 
-const businessDeveloper = mongoose.model("BusinessDeveloper",businessDeveloperSchema);
+const businessDeveloper = mongoose.model(
+  "BusinessDeveloper",
+  businessDeveloperSchema
+);
 
 module.exports = businessDeveloper;

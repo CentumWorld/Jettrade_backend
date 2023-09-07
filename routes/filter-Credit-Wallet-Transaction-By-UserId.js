@@ -10,7 +10,7 @@ const {
 router.post(
   "/filter-credit-wallet-transaction-by-userid",
   authenticateAdmin,
-  authorizeRole(["admin","state"]),
+  authorizeRole(["admin","state", "franchise", "businessDeveloper"]),
   adminController.filterCreditWalletTransactionByUserId
 );
 
