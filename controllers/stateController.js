@@ -777,6 +777,7 @@ exports.createStatePaymentRequest = async (req, res) => {
       { stateHandlerId: stateHandlerId },
       {
         $inc: { stateHandlerWallet: -amount ,paymentRequestCount: 1 },
+        $set: {firstPayment: false,verifyDate: Date.now }
   
       }
     );
