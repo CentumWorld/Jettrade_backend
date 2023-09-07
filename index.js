@@ -136,6 +136,8 @@ const deleteFranchise = require('./routes/delete-Franchise')
 const deleteBusinessDeveloper = require('./routes/delete-business-developer')
 const updateAdharCardStateHandler = require('./routes/update-adhar-card-state-handler')
 const updatePanCardStateHandler = require('./routes/update-pan-card-state-handler')
+const blockSubAdminByAdmin = require('./routes/block-subAdmin-by-Admin');
+
 // refferal
 const memberRegistration = require("./routes/refferal/member-registration");
 const memberLogin = require("./routes/refferal/member-login");
@@ -523,7 +525,10 @@ app.use('/admin', searchRenewalUsers)
 app.use('/admin', searchNewUsers)
 app.use('/admin', fetchParticularUserPaymentStatus)
 app.use('/admin', findUsersOnTheBasisOfPaymentStatus)
-app.use('/admin', searchRefferalPayoutByRefferUserid)
+app.use('/admin', searchRefferalPayoutByRefferUserid);
+app.use('/admin',blockSubAdminByAdmin);
+
+
 // refferalin
 app.use("/member", memberLogin);
 app.use("/admin", fetchMemberDetails);

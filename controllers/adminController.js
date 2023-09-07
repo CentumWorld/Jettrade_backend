@@ -1575,35 +1575,35 @@ exports.getVideos = async (req, res) => {
 exports.subAdminLogin = async (req, res) => {
   try {
     const { subAdminId, password } = req.body;
-
+  
     if (!subAdminId || !password) {
       return res
         .status(400)
         .json({ message: "Please provide User Id and password" });
     }
-
+  
     const subadmin = await subAdmin.findOne({ subAdminId: subAdminId });
-
+  
     if (!subadmin) {
       return res.status(404).json({ message: "Sub admin not found" });
     }
-
-    // if (subadmin.isSubAdmin === false) {
-    //   return res.status(400).json({ message: "You are not a sub admin" });
-    // }
-
+  
+    if (subadmin.isBlocked) {
+      return res.status(401).json({ message: "You are Blocked" });
+    }
+  
     const passwordMatch = await bcrypt.compare(password, subadmin.password);
-
+  
     if (!passwordMatch) {
       return res.status(401).json({ message: "Incorrect userId and password" });
     }
-
+  
     const token = jwt.sign(
       { subAdminId: subadmin._id },
       process.env.SECRET_KEY,
       { expiresIn: "8h" }
     );
-
+  
     return res.status(200).json({
       message: "Sub admin login successful",
       subadmin: subadmin,
@@ -1613,6 +1613,7 @@ exports.subAdminLogin = async (req, res) => {
     console.error(error.message);
     return res.status(500).json({ message: "Internal server error" });
   }
+  
 };
 
 // createSubAdminInsideAdmin
@@ -4080,3 +4081,30 @@ exports.filterCreditWalletTransactionByUserId = async (req, res) => {
     res.status(500).json({ error: "Error fetching transactions" });
   }
 };
+
+// blockSubAdminByAdmin
+exports.blockSubAdminByAdmin = async (req,res) => {
+  const { block, id } = req.body;
+  // console.log(block);
+  let result = await subAdmin.updateOne(
+    { _id: id },
+    {
+      $set: { isBlocked: block },
+    }
+  );
+  if (result.modifiedCount > 0) {
+    if (block) {
+      return res.status(200).json({
+        message: "SubAdmin Blocked",
+      });
+    } else {
+      return res.status(200).json({
+        message: "SubAdmin Unblocked",
+      });
+    }
+  } else {
+    return res.status(404).json({
+      message: "Something Went wrong",
+    });
+  }
+}
