@@ -1,3 +1,4 @@
+const { DataExchange } = require("aws-sdk");
 const mongoose = require("mongoose");
 
 const frenchiseSchema = new mongoose.Schema(
@@ -92,6 +93,13 @@ const frenchiseSchema = new mongoose.Schema(
     },
     verifyDate: {
       type: Date,
+    },
+    firstPayment: {
+      type: Boolean,
+      default: false
+    }, 
+    verifyDate: {
+      type: DataExchange
     }
   },
   { timestamps: true }

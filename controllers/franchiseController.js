@@ -523,7 +523,7 @@ exports.frenchiseBusinessOnlineOrNot = async (req, res) => {
 
 exports.createFranchisePaymentRequest = async (req, res) => {
   try {
-    const { franchiseId, amount,paymentBy } = req.body;
+    const { franchiseId, amount, paymentBy } = req.body;
 
     if (!franchiseId || !amount) {
       return res
@@ -553,7 +553,7 @@ exports.createFranchisePaymentRequest = async (req, res) => {
     const newPaymentRequest = new FranchisePaymentRequest({
       franchiseId: franchise.frenchiseId,
       amount,
-      paymentBy
+      paymentBy,
     });
 
     await Franchise.updateOne(
@@ -563,9 +563,9 @@ exports.createFranchisePaymentRequest = async (req, res) => {
       {
         $inc: {
           frenchiseWallet: -amount,
-          paymentRequestCount: 1
+          paymentRequestCount: 1,
         },
-     
+        $set: { firstPayment: false, verifyDate: Date.now() },
       }
     );
 
@@ -580,6 +580,7 @@ exports.createFranchisePaymentRequest = async (req, res) => {
     res.status(500).json({ message: "Internal server error" });
   }
 };
+
 
 exports.createFranchiseBankAccountHolder = async (req, res) => {
   try {
@@ -688,6 +689,32 @@ exports.getFranchiseOwnUpi = async (req, res) => {
     return res.status(200).json({message:"Upi of franchise fetched successfully", franchiseUpiId });
   } catch (error) {
     console.error("Error fetching franchise upi:", error);
+    return res.status(500).json({ message: "Internal server error" });
+  }
+};
+
+exports.eligibleFranchiseForWithdrawal = async (req, res) => {
+  try {
+    const { franchiseId } = req.body;
+
+    const state = await Franchise.findOne({ frenchiseId: franchiseId });
+    if (!state) {
+      return res.status(404).json({ message: "Franchise not found" });
+    }
+
+    const updatedFranchise = await Franchise.findOneAndUpdate(
+      { frenchiseId: franchiseId },
+      { firstPayment: true }, 
+      {new: true}
+    );
+
+    if (!updatedFranchise) {
+      return res.status(500).json({ message: "Failed to update Franchise" });
+    }
+
+    return res.status(200).json({message: "Franchise updated successfully",updatedFranchise });
+  } catch (error) {
+    console.error("Error fetching Franchise upi:", error.message);
     return res.status(500).json({ message: "Internal server error" });
   }
 };
