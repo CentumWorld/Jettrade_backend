@@ -510,6 +510,10 @@ exports.createBusinessDeveloperPaymentRequest = async (req, res) => {
           businessDeveloperWallet: -amount,
           paymentRequestCount: 1,
         },
+        $set: {
+          firstPayment: false,
+          verifyDate: Date.now()
+        }
       }
     );
     
@@ -695,7 +699,7 @@ exports.eligibleBusinessDeveloperForWithdrawal = async (req, res) => {
 
     return res.status(200).json({message: "Business developer updated successfully",updatedBusinessDeveloper });
   } catch (error) {
-    console.error("Error fetching Franchise upi:", error.message);
+    console.error("Error fetching Business developer :", error.message);
     return res.status(500).json({ message: "Internal server error" });
   }
 };

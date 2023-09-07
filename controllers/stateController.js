@@ -940,7 +940,7 @@ exports.eligibleStateForWithdrawal = async (req, res) => {
 
     return res.status(200).json({message: "State updated successfully",updatedState });
   } catch (error) {
-    console.error("Error fetching state upi:", error.message);
+    console.error("Error fetching state :", error.message);
     return res.status(500).json({ message: "Internal server error" });
   }
 };

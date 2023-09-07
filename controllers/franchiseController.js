@@ -714,7 +714,7 @@ exports.eligibleFranchiseForWithdrawal = async (req, res) => {
 
     return res.status(200).json({message: "Franchise updated successfully",updatedFranchise });
   } catch (error) {
-    console.error("Error fetching Franchise upi:", error.message);
+    console.error("Error fetching Franchise :", error.message);
     return res.status(500).json({ message: "Internal server error" });
   }
 };
