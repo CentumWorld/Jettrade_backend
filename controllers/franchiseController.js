@@ -697,8 +697,8 @@ exports.eligibleFranchiseForWithdrawal = async (req, res) => {
   try {
     const { franchiseId } = req.body;
 
-    const state = await Franchise.findOne({ frenchiseId: franchiseId });
-    if (!state) {
+    const franchise = await Franchise.findOne({ frenchiseId: franchiseId });
+    if (!franchise) {
       return res.status(404).json({ message: "Franchise not found" });
     }
 

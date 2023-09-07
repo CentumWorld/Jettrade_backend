@@ -313,6 +313,7 @@ const createBusinessDeveloperBankAccountHolder = require('./routes/businessDevel
 const createBusinessDeveloperUpiHolder = require('./routes/businessDeveloper/create-business-developer-upi-holder')
 const getBusinessDeveloperOwnBankDetails = require('./routes/businessDeveloper/get-Business-Developer-Own-Bank-Details')
 const getBusinessDeveloperOwnUpi = require('./routes/businessDeveloper/get-Business-Developer-Own-Upi')
+const eligibleBusinessDeveloperForWithdrawal = require('./routes/businessDeveloper/eligible-business-developer-for-withdrawal')
 //==============================SubAdmin====================================
 const getOwnSubAdminDetails = require("./routes/subAdmin/get-own-sub-admin-details")
 const updateOwnSubAdminDetails = require("./routes/subAdmin/update-own-sub-admin-details")
@@ -645,6 +646,7 @@ app.use('/businessDeveloper', createBusinessDeveloperBankAccountHolder)
 app.use('/businessDeveloper', createBusinessDeveloperUpiHolder)
 app.use('/businessDeveloper',getBusinessDeveloperOwnBankDetails)
 app.use('/businessDeveloper', getBusinessDeveloperOwnUpi)
+app.use('/businessDeveloper', eligibleBusinessDeveloperForWithdrawal)
 //=============================Sub- Admin======================================
 app.use('/subAdmin',getOwnSubAdminDetails);
 app.use('/subAdmin', updateOwnSubAdminDetails)

@@ -91,15 +91,13 @@ const frenchiseSchema = new mongoose.Schema(
       type: Boolean, 
       default: false
     },
-    verifyDate: {
-      type: Date,
-    },
+
     firstPayment: {
       type: Boolean,
       default: false
     }, 
     verifyDate: {
-      type: DataExchange
+      type: Date
     }
   },
   { timestamps: true }

@@ -672,3 +672,30 @@ exports.getBusinessDeveloperOwnUpi = async (req, res) => {
     return res.status(500).json({ message: "Internal server error" });
   }
 };
+
+//eligibleBusinessDeveloperForWithdrawal
+exports.eligibleBusinessDeveloperForWithdrawal = async (req, res) => {
+  try {
+    const { businessDeveloperId } = req.body;
+
+    const businessDeveloper = await BusinessDeveloper.findOne({ businessDeveloperId: businessDeveloperId });
+    if (!businessDeveloper) {
+      return res.status(404).json({ message: "Business Developer not found" });
+    }
+
+    const updatedBusinessDeveloper = await BusinessDeveloper.findOneAndUpdate(
+      { businessDeveloperId: businessDeveloperId  },
+      { firstPayment: true }, 
+      {new: true}
+    );
+
+    if (!updatedBusinessDeveloper) {
+      return res.status(500).json({ message: "Failed to update Business developer" });
+    }
+
+    return res.status(200).json({message: "Business developer updated successfully",updatedBusinessDeveloper });
+  } catch (error) {
+    console.error("Error fetching Franchise upi:", error.message);
+    return res.status(500).json({ message: "Internal server error" });
+  }
+};
