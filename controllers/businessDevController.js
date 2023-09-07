@@ -491,10 +491,10 @@ exports.createBusinessDeveloperPaymentRequest = async (req, res) => {
     if (!businessDeveloper) {
       return res.status(404).json({ message: "Business developer not found" });
     }
-    if (amount < 500) {
+    if (amount < 1) {
       return res
         .status(400)
-        .json({ message: "Minimum request amount should be 500" });
+        .json({ message: "Minimum request amount should be 1" });
     }
 
     if (businessDeveloper.businessDeveloperWallet < amount) {
