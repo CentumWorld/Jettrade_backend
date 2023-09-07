@@ -9,7 +9,7 @@ router.put(
   '/update-pan-card-business-developer',
   upload.fields([{ name: 'panCard'}]),
   authenticateAdmin,
-  authorizeRole(["admin", "state", "franchise"]),
+  authorizeRole(["admin", "state", "franchise","subAdmin"]),
   updatePanCardBusinessDeveloper
 );
 

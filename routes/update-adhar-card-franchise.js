@@ -9,7 +9,7 @@ router.put(
   '/update-adhar-card-franchise',
   upload.fields([{ name: 'adharCard' }]),
   authenticateAdmin,
-  authorizeRole(["admin", "state"]),
+  authorizeRole(["admin", "state","subAdmin"]),
   updateAdharcardFranchise
 );
 
