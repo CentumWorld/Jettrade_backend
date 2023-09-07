@@ -73,6 +73,10 @@ const stateHandlerSchema = new mongoose.Schema({
   },
   verifyDate: {
     type: Date,
+  },
+  firstPayment: {
+    type: Boolean,
+    default: false
   }
 
 }, {timestamps: true});

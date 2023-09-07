@@ -929,7 +929,8 @@ exports.eligibleStateForWithdrawal = async (req, res) => {
 
     const updatedState = await stateHandler.findOneAndUpdate(
       { stateHandlerId: stateHandlerId },
-      { firstPayment: true }
+      { firstPayment: true }, 
+      {new: true}
     );
 
     if (!updatedState) {
