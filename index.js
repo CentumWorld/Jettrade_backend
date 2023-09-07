@@ -230,6 +230,7 @@ const searchRefferalPayoutByRefferUserid = require('./routes/search-refferal-pay
  const verifyState = require('./routes/verify-State')
  const verifyBusinessDeveloper = require('./routes/verify-Business-Developer')
  const verifyFranchise = require('./routes/verify-Franchise')
+ 
 //=======================State=================================================
 
 const getFranchisesByReferralId = require("./routes/state/fetch-frenchise-in-state");
@@ -262,6 +263,7 @@ const createStateBankAccountHolder = require('./routes/state/create-State-Bank-A
 const createStateUpiHolder = require('./routes/state/create-state-upi-holder')
 const getStateOwnBankDetails = require('./routes/state/get-state-own-bank-details')
 const getStateOwnUpi = require('./routes/state/get-state-own-upi')
+const eligibleStateForWithdrawal = require('./routes/state/eligible-State-For-Withdrawal')
 //======================Frenchise==============================================
 const getBusinessDevelopersInFranchise = require("./routes/frenchise/fetch-bdeveloper-in-franchise");
 const getMembersInFranchise = require("./routes/frenchise/fetch-members-in-franchise");
@@ -593,6 +595,7 @@ app.use('/state',createStateBankAccountHolder)
 app.use('/state', createStateUpiHolder)
 app.use('/state',getStateOwnBankDetails)
 app.use('/state', getStateOwnUpi)
+app.use('/state', eligibleStateForWithdrawal)
 //============================Franchise=============================================
 
 app.use("/franchise", getBusinessDevelopersInFranchise);;

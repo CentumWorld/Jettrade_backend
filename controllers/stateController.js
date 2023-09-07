@@ -916,3 +916,29 @@ exports.getStateOwnUpi = async (req, res) => {
     return res.status(500).json({ message: "Internal server error" });
   }
 };
+
+
+exports.eligibleStateForWithdrawal = async (req, res) => {
+  try {
+    const { stateHandlerId } = req.body;
+
+    const state = await stateHandler.findOne({ stateHandlerId: stateHandlerId });
+    if (!state) {
+      return res.status(404).json({ message: "State not found" });
+    }
+
+    const updatedState = await stateHandler.findOneAndUpdate(
+      { stateHandlerId: stateHandlerId },
+      { firstPayment: true }
+    );
+
+    if (!updatedState) {
+      return res.status(500).json({ message: "Failed to update state" });
+    }
+
+    return res.status(200).json({message: "State updated successfully",updatedState });
+  } catch (error) {
+    console.error("Error fetching state upi:", error.message);
+    return res.status(500).json({ message: "Internal server error" });
+  }
+};
