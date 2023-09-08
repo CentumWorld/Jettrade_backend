@@ -12,7 +12,9 @@ const memberRefferalPayoutRequestSchema = new mongoose.Schema({
     requestDate:{
         type: Date,
     },
-    
+    paymentBy : {
+        type: String
+    }
 
 })
 

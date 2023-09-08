@@ -666,46 +666,64 @@ exports.memberFetchRefferalPayout = async (req, res) => {
 };
 
 // refferalPayoutRequestMember
+
 exports.refferalPayoutRequestMember = async (req, res) => {
-  const { memberid, requestAmount } = req.body;
-  if (!requestAmount) {
-    return res.status(422).json({ message: "Please Enter Amount" });
-  }
-  const memberWalletFetch = await Member.findOne({ memberid: memberid });
-  if (memberWalletFetch) {
-    let walletAmount = memberWalletFetch.wallet;
+  const { memberid, requestAmount, paymentBy } = req.body;
+
+  try {
+    if (!requestAmount) {
+      return res.status(422).json({ data: null, message: "Please Enter Amount" });
+    }
+
+    const memberWalletFetch = await Member.findOne({ memberid: memberid });
+
+    if (!memberWalletFetch) {
+      return res.status(400).json({ data: null, message: "Member not found" });
+    }
+
+    const walletAmount = memberWalletFetch.wallet;
+
     if (requestAmount > walletAmount) {
       return res.status(400).json({
+        data: null,
         message: "Insufficient Balance",
       });
-    } else {
-      const restAmount = walletAmount - requestAmount;
-      let requestDate = new Date();
-      const requestWithdrawal = new memberRefferalPayoutRequest({
-        memberid,
-        walletAmount: requestAmount,
-        requestDate,
-      });
-      await requestWithdrawal.save();
-      if (requestWithdrawal) {
-        await Member.updateOne(
-          { memberid: memberid },
-          {
-            $set: {
-              wallet: restAmount,
-            },
-          }
-        );
-        return res.status(201).json({
-          message: "Withdrawal request sent",
-        });
-      } else {
-        return res.status(500).json({ message: "Something went wrong" });
-      }
     }
-    // console.log(walletAmount,'694');
+
+    const restAmount = walletAmount - requestAmount;
+    const requestDate = new Date();
+    const requestWithdrawal = new memberRefferalPayoutRequest({
+      memberid,
+      walletAmount: requestAmount,
+      requestDate,
+      paymentBy,
+    });
+
+    const savedRequest = await requestWithdrawal.save();
+
+    if (savedRequest) {
+      await Member.updateOne(
+        { memberid: memberid },
+        {
+          $set: {
+            wallet: restAmount,
+          },
+        }
+      );
+
+      return res.status(201).json({
+        data: savedRequest, // Include the created data here
+        message: "Withdrawal request sent",
+      });
+    } else {
+      return res.status(500).json({ data: null, message: "Something went wrong" });
+    }
+  } catch (error) {
+    return res.status(500).json({ data: null, message: "Internal server error" });
   }
 };
+
+
 
 // fetchMemberRefferalPayoutRequestWithdrawal
 exports.fetchMemberRefferalPayoutRequestWithdrawal = async (req, res) => {
