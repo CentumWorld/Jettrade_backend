@@ -87,14 +87,14 @@ const userTotalWithdrawalFromTradingWallet = require("./routes/users/user-total-
 const adminFetchAllRenewalUser = require("./routes/admin-fetch-all-renewal-user");
 const fetchAllNewPaidUser = require("./routes/fetch-all-new-paid-user");
 const changePaymentStatusForRenewal = require("./routes/users/change-payment-status-for-renewal");
-const getOwnTraderCreditWalletTransactionDetails = require("./routes/users/get-Own-Trader-Credit-Wallet-Transaction-Details")
+const getOwnTraderCreditWalletTransactionDetails = require("./routes/users/get-Own-Trader-Credit-Wallet-Transaction-Details");
 
 //admin
-const adminFetchBusinessDeveloperApproveWithdrawal = require('./routes/admin-Fetch-Business-Developer-Approve-Withdrawal')
-const adminFetchBusinessDeveloperPaymentWithdrawalRequest = require('./routes/admin-Fetch-Business-Developer-Payment-Withdrawal-Request')
-const adminFetchParticularBusinessDeveloperDetails = require('./routes/admin-Fetch-Particular-Business-Developer-Details')
-const adminFetchFranchiseApproveWithdrawal = require('./routes/admin-Fetch-Franchise-Approve-Withdrawal')
-const adminFetchFranchisePaymentWithdrawalRequest = require('./routes/admin-Fetch-Franchise-Payment-Withdrawal-Request')
+const adminFetchBusinessDeveloperApproveWithdrawal = require("./routes/admin-Fetch-Business-Developer-Approve-Withdrawal");
+const adminFetchBusinessDeveloperPaymentWithdrawalRequest = require("./routes/admin-Fetch-Business-Developer-Payment-Withdrawal-Request");
+const adminFetchParticularBusinessDeveloperDetails = require("./routes/admin-Fetch-Particular-Business-Developer-Details");
+const adminFetchFranchiseApproveWithdrawal = require("./routes/admin-Fetch-Franchise-Approve-Withdrawal");
+const adminFetchFranchisePaymentWithdrawalRequest = require("./routes/admin-Fetch-Franchise-Payment-Withdrawal-Request");
 const adminSumOfAllNewRenewalUserAmount = require("./routes/admin-sum-of-all-new-renewal-user-amount");
 const filterTransactionsForWithdrawlWithYearMonth = require("./routes/filter-Transactions-For-Withdrawl-With-Year-Month");
 const tradingWalletTransferFromOneUserToAnother = require("./routes/users/trading-wallet-transfer-from-one-user-to-another");
@@ -116,27 +116,27 @@ const createFrenchise = require("./routes/create-frenchise");
 const verifyFranchieBeforeRegistration = require("./routes/verify-franchie-before-registration");
 const verifyBuisnessDeveloperBeforeRegistration = require("./routes/verify-buisness-developer-before-registration");
 const fetchRefferalPayoutOnRoleBasis = require("./routes/fetch-refferal-payout-on-role-basis");
-const fetchBusinessDeveloperCreditwalletTransactionDetails = require("./routes/fetch_business_Developer_Credit_wallet_Transaction_Details")
-const fetchFranchiseCreditwalletTransactionDetails = require("./routes/fetch-Franchise-Credit-wallet-Transaction-Details")
+const fetchBusinessDeveloperCreditwalletTransactionDetails = require("./routes/fetch_business_Developer_Credit_wallet_Transaction_Details");
+const fetchFranchiseCreditwalletTransactionDetails = require("./routes/fetch-Franchise-Credit-wallet-Transaction-Details");
 const fetchStateHandlerCreditwalletTransactionDetails = require("./routes/fetch-State-Handler-Credit-wallet-Transaction-Details");
-const stateOnlineOrNot = require('./routes/admin-state-online-or-not');
-const fetchStateChatMessageAdmin = require('./routes/fetch-state-chat-message-admin');
-const fetchStateChatCount = require('./routes/fetch-state-chat-count');
-const fetchFrenchiseChatCount = require('./routes/fetch-frenchise-chat-count');
-const fethcFrenchiseChatMessageAdmin = require('./routes/fetch-frenchise-chat-message-admin');
-const adminFrenchiseOnlineOrNot = require('./routes/admin-frenchise-online-or-not');
-const fetchBusinessChatCount = require('./routes/fetch-business-chat-count');
-const fetchBusinessChatMessageAdmin = require('./routes/fetch-business-chat-message-admin');
-const adminBusinessOnlineOrNot = require('./routes/admin-business-online-or-not');
-const fetchAdmin = require("./routes/fetch-admin") 
-const fetchCityByReferralIdInFranchise = require("./routes/fetch-city-by-referralId-infranchise")
-const fetchAdminCreditwalletTransactionDetails = require("./routes/fetch-admin-credit-wallet-transaction-details")
-const deleteState = require('./routes/delete-State')
-const deleteFranchise = require('./routes/delete-Franchise')
-const deleteBusinessDeveloper = require('./routes/delete-business-developer')
-const updateAdharCardStateHandler = require('./routes/update-adhar-card-state-handler')
-const updatePanCardStateHandler = require('./routes/update-pan-card-state-handler')
-const blockSubAdminByAdmin = require('./routes/block-subAdmin-by-Admin');
+const stateOnlineOrNot = require("./routes/admin-state-online-or-not");
+const fetchStateChatMessageAdmin = require("./routes/fetch-state-chat-message-admin");
+const fetchStateChatCount = require("./routes/fetch-state-chat-count");
+const fetchFrenchiseChatCount = require("./routes/fetch-frenchise-chat-count");
+const fethcFrenchiseChatMessageAdmin = require("./routes/fetch-frenchise-chat-message-admin");
+const adminFrenchiseOnlineOrNot = require("./routes/admin-frenchise-online-or-not");
+const fetchBusinessChatCount = require("./routes/fetch-business-chat-count");
+const fetchBusinessChatMessageAdmin = require("./routes/fetch-business-chat-message-admin");
+const adminBusinessOnlineOrNot = require("./routes/admin-business-online-or-not");
+const fetchAdmin = require("./routes/fetch-admin");
+const fetchCityByReferralIdInFranchise = require("./routes/fetch-city-by-referralId-infranchise");
+const fetchAdminCreditwalletTransactionDetails = require("./routes/fetch-admin-credit-wallet-transaction-details");
+const deleteState = require("./routes/delete-State");
+const deleteFranchise = require("./routes/delete-Franchise");
+const deleteBusinessDeveloper = require("./routes/delete-business-developer");
+const updateAdharCardStateHandler = require("./routes/update-adhar-card-state-handler");
+const updatePanCardStateHandler = require("./routes/update-pan-card-state-handler");
+const blockSubAdminByAdmin = require("./routes/block-subAdmin-by-Admin");
 
 // refferal
 const memberRegistration = require("./routes/refferal/member-registration");
@@ -170,10 +170,9 @@ const adminOnlineOrNotRefferal = require("./routes/refferal/admin-online-or-not-
 const refferalTotalWithdrawal = require("./routes/refferal/refferal-total-withdrawal");
 const refferalMyTeam = require("./routes/refferal/refferal-my-team");
 
-const getOwnMemberCreditWalletTransactionDetails = require('./routes/refferal/get-Member-Credit-Wallet-Transaction-Details')
-const getOwnTradersInsideMemberCreditWalletTransactionDetails = require('./routes/refferal/get-Own-Traders-Inside-Member-Credit-Wallet-Transaction-Details')
-
-
+const getOwnMemberCreditWalletTransactionDetails = require("./routes/refferal/get-Member-Credit-Wallet-Transaction-Details");
+const getOwnTradersInsideMemberCreditWalletTransactionDetails = require("./routes/refferal/get-Own-Traders-Inside-Member-Credit-Wallet-Transaction-Details");
+const createMemberBankAccountHolder = require("./routes/refferal/create-member-bank-account-holder");
 
 //admin
 const videoUpload = require("./routes/adminVideo");
@@ -205,32 +204,32 @@ const blockBusinessDeveloperByAdmin = require("./routes/block-business-developer
 const updateFranchise = require("./routes/update-franchise");
 const updateStateHandler = require("./routes/update-state-handler");
 const updateBusinessDeveloper = require("./routes/update-business-developer");
-const getOneFranchiseDetails = require("./routes/get-one-franchise-details")
-const getOneBDDetails = require("./routes/get-one-business-developer") 
-const getOneStateDetails = require("./routes/get-one-state-details")
-const getOneMemberDetails = require("./routes/get-one-member-details") 
-const updateAdharcardFranchise = require("./routes/update-adhar-card-franchise")
-const updatePanCardFranchise = require("./routes/update-pan-card-franchise")
-const updatePanCardBusinessDeveloper = require('./routes/update-pan-card-business-developer')
-const updateAdharcardBusinessDeveloper = require('./routes/update-adhar-card-business-developer')
-const  approvePaymentRequestOfState = require('./routes/approve-payment-requet-of-state') 
-const approvePaymentRequestOfFranchise = require('./routes/approve-Payment-Request-Of-Franchise')
-const approvePaymentRequestOfBusinessDeveloper = require('./routes/approve-Payment-Request-Of-Business-Developer');
-const adminFetchParticularStateHandlerDetails = require('./routes/admin-fetch-particular-state-handler-details');
-const adminFetchStateHandlerPaymentWithdrawalRequest = require('./routes/admin-fetch-state-handler-payment-withdrawal-request');
-const adminFetchStateHandlerApproveWithdrawal = require('./routes/admin-fetch-state-handler-approve-withdrawal');
-const adminFetchParticularFranchiseDetails = require('./routes/admin-Fetch-Particular-Franchise-Details') 
-const searchRenewalUsers = require('./routes/search-renewal-users')
-const searchNewUsers = require('./routes/search-new-users')
-const findUsersOnTheBasisOfPaymentStatus = require('./routes/find_Users_On_The_Basis_Of_Payment_Status')
-const searchRefferalPayoutByRefferUserid = require('./routes/search-refferal-payout-by-reffer-userid')
- const filterCreditWalletTransactionByUserId = require('./routes/filter-Credit-Wallet-Transaction-By-UserId')
- const fetchMemberCreditwalletTransactionDetails = require('./routes/fetch-Member-Credit-wallet-Transaction-Details')
- const fetchUserCreditwalletTransactionDetails = require('./routes/fetch-User-Credit-wallet-Transaction-Details')
- const verifyState = require('./routes/verify-State')
- const verifyBusinessDeveloper = require('./routes/verify-Business-Developer')
- const verifyFranchise = require('./routes/verify-Franchise')
- 
+const getOneFranchiseDetails = require("./routes/get-one-franchise-details");
+const getOneBDDetails = require("./routes/get-one-business-developer");
+const getOneStateDetails = require("./routes/get-one-state-details");
+const getOneMemberDetails = require("./routes/get-one-member-details");
+const updateAdharcardFranchise = require("./routes/update-adhar-card-franchise");
+const updatePanCardFranchise = require("./routes/update-pan-card-franchise");
+const updatePanCardBusinessDeveloper = require("./routes/update-pan-card-business-developer");
+const updateAdharcardBusinessDeveloper = require("./routes/update-adhar-card-business-developer");
+const approvePaymentRequestOfState = require("./routes/approve-payment-requet-of-state");
+const approvePaymentRequestOfFranchise = require("./routes/approve-Payment-Request-Of-Franchise");
+const approvePaymentRequestOfBusinessDeveloper = require("./routes/approve-Payment-Request-Of-Business-Developer");
+const adminFetchParticularStateHandlerDetails = require("./routes/admin-fetch-particular-state-handler-details");
+const adminFetchStateHandlerPaymentWithdrawalRequest = require("./routes/admin-fetch-state-handler-payment-withdrawal-request");
+const adminFetchStateHandlerApproveWithdrawal = require("./routes/admin-fetch-state-handler-approve-withdrawal");
+const adminFetchParticularFranchiseDetails = require("./routes/admin-Fetch-Particular-Franchise-Details");
+const searchRenewalUsers = require("./routes/search-renewal-users");
+const searchNewUsers = require("./routes/search-new-users");
+const findUsersOnTheBasisOfPaymentStatus = require("./routes/find_Users_On_The_Basis_Of_Payment_Status");
+const searchRefferalPayoutByRefferUserid = require("./routes/search-refferal-payout-by-reffer-userid");
+const filterCreditWalletTransactionByUserId = require("./routes/filter-Credit-Wallet-Transaction-By-UserId");
+const fetchMemberCreditwalletTransactionDetails = require("./routes/fetch-Member-Credit-wallet-Transaction-Details");
+const fetchUserCreditwalletTransactionDetails = require("./routes/fetch-User-Credit-wallet-Transaction-Details");
+const verifyState = require("./routes/verify-State");
+const verifyBusinessDeveloper = require("./routes/verify-Business-Developer");
+const verifyFranchise = require("./routes/verify-Franchise");
+
 //=======================State=================================================
 
 const getFranchisesByReferralId = require("./routes/state/fetch-frenchise-in-state");
@@ -242,85 +241,83 @@ const getAllUsersInState = require("./routes/state/fetch-users-in-state");
 const blockFranchiseForState = require("./routes/state/block-franchise-for-state");
 const deleteFranchiseForState = require("./routes/state/delete-franchise-for-state");
 
-const getFranchiseForState = require("./routes/state/get-franchise-for-state")
+const getFranchiseForState = require("./routes/state/get-franchise-for-state");
 const getBusinessDeveloperForState = require("./routes/state/get-business-developer-for-state");
-const adminOnlineOrNot = require('./routes/state/admin-online-or-not');
-const fetchChatMessageState = require('./routes/state/fetch-chat-message-state');
-const fetchChatDetailsState = require('./routes/state/fetch-chat-details-state');
-const updateStateDetails = require("./routes/state/update-state-details")
-const getOwnStateDetails = require("./routes/state/get-own-state-details")
-const fetchFrenchiseChatCountWithState = require('./routes/state/fetch-frenchise-chat-count-with-state');
-const stateFetchFrenchChatMessage = require('./routes/state/state-fetch-french-chat-message');
-const stateFrenchiseOnlineOrNot = require('./routes/state/state-frenchise-online-or-not');
+const adminOnlineOrNot = require("./routes/state/admin-online-or-not");
+const fetchChatMessageState = require("./routes/state/fetch-chat-message-state");
+const fetchChatDetailsState = require("./routes/state/fetch-chat-details-state");
+const updateStateDetails = require("./routes/state/update-state-details");
+const getOwnStateDetails = require("./routes/state/get-own-state-details");
+const fetchFrenchiseChatCountWithState = require("./routes/state/fetch-frenchise-chat-count-with-state");
+const stateFetchFrenchChatMessage = require("./routes/state/state-fetch-french-chat-message");
+const stateFrenchiseOnlineOrNot = require("./routes/state/state-frenchise-online-or-not");
 
-const getOwnStateCreditWalletTransactionDetails =require('./routes/state/get-own-state-credit-wallet-transaction-details')
-const getOwnFranchiseInsideStateCreditWalletTransactionDetails = require('./routes/state/get-own-franchise-inside-state-credit-wallet-transaction-details')
-const getOwnBusinessDeveloperInsideStateCreditWalletTransactionDetails= require("./routes/state/get-Own-Business-Developer-Inside-State-Credit-Wallet-Transaction-Details")
-const getOwnMemberInsideStateCreditWalletTransactionDetails = require('./routes/state/get-Own-Member-Inside-State-Credit-Wallet-Transaction-Details')
-const getOwnTraderInsideStateCreditWalletTransactionDetails = require('./routes/state/get-Own-Trader-Inside-State-Credit-Wallet-Transaction-Details')
-const createStatePaymentRequest = require('./routes/state/create-state-payment-request')
-const createStateBankAccountHolder = require('./routes/state/create-State-Bank-Account-Holder')
-const createStateUpiHolder = require('./routes/state/create-state-upi-holder')
-const getStateOwnBankDetails = require('./routes/state/get-state-own-bank-details')
-const getStateOwnUpi = require('./routes/state/get-state-own-upi')
-const eligibleStateForWithdrawal = require('./routes/state/eligible-State-For-Withdrawal')
+const getOwnStateCreditWalletTransactionDetails = require("./routes/state/get-own-state-credit-wallet-transaction-details");
+const getOwnFranchiseInsideStateCreditWalletTransactionDetails = require("./routes/state/get-own-franchise-inside-state-credit-wallet-transaction-details");
+const getOwnBusinessDeveloperInsideStateCreditWalletTransactionDetails = require("./routes/state/get-Own-Business-Developer-Inside-State-Credit-Wallet-Transaction-Details");
+const getOwnMemberInsideStateCreditWalletTransactionDetails = require("./routes/state/get-Own-Member-Inside-State-Credit-Wallet-Transaction-Details");
+const getOwnTraderInsideStateCreditWalletTransactionDetails = require("./routes/state/get-Own-Trader-Inside-State-Credit-Wallet-Transaction-Details");
+const createStatePaymentRequest = require("./routes/state/create-state-payment-request");
+const createStateBankAccountHolder = require("./routes/state/create-State-Bank-Account-Holder");
+const createStateUpiHolder = require("./routes/state/create-state-upi-holder");
+const getStateOwnBankDetails = require("./routes/state/get-state-own-bank-details");
+const getStateOwnUpi = require("./routes/state/get-state-own-upi");
+const eligibleStateForWithdrawal = require("./routes/state/eligible-State-For-Withdrawal");
 //======================Frenchise==============================================
 const getBusinessDevelopersInFranchise = require("./routes/frenchise/fetch-bdeveloper-in-franchise");
 const getMembersInFranchise = require("./routes/frenchise/fetch-members-in-franchise");
-const fetchChatDetailsFrenchisee = require('./routes/frenchise/fetch-chat-details-frenchisee');
-const fetchChatMessage = require('./routes/frenchise/fetch-chat-message');
-const adminOnlineOrNotFrench = require('./routes/frenchise/admin-online-or-not-french');
+const fetchChatDetailsFrenchisee = require("./routes/frenchise/fetch-chat-details-frenchisee");
+const fetchChatMessage = require("./routes/frenchise/fetch-chat-message");
+const adminOnlineOrNotFrench = require("./routes/frenchise/admin-online-or-not-french");
 const getUsersInFranchise = require("./routes/frenchise/fetch-user-in-franchise");
-const fetchChatDetailsFrenchiseWithSHO = require('./routes/frenchise/fetch-chat-details-frechise-with-sho');
-const fetchChatWithSHOMessage = require('./routes/frenchise/fetch-chat-with-SHO-message');
-const SHOonlineOrNotFrench = require('./routes/frenchise/SHO-online-or-not-french');
-const getOwnFranchiseDetails = require("./routes/frenchise/get-own-franchise-details")
+const fetchChatDetailsFrenchiseWithSHO = require("./routes/frenchise/fetch-chat-details-frechise-with-sho");
+const fetchChatWithSHOMessage = require("./routes/frenchise/fetch-chat-with-SHO-message");
+const SHOonlineOrNotFrench = require("./routes/frenchise/SHO-online-or-not-french");
+const getOwnFranchiseDetails = require("./routes/frenchise/get-own-franchise-details");
 const updateOwnFranchiseDetails = require("./routes/frenchise/update-own-franchise-details");
 
-const frenchiseFetchBusinessChatMessage = require('./routes/frenchise/frenchise-fetch-business-chat-message'); 
-const frenchiseBusinessOnlineOrNot = require('./routes/frenchise/frenchise-business-online-or-not');
-const getBusinessChatCountWithFrenchise = require('./routes/frenchise/get-business-chat-count-with-frenchise');
+const frenchiseFetchBusinessChatMessage = require("./routes/frenchise/frenchise-fetch-business-chat-message");
+const frenchiseBusinessOnlineOrNot = require("./routes/frenchise/frenchise-business-online-or-not");
+const getBusinessChatCountWithFrenchise = require("./routes/frenchise/get-business-chat-count-with-frenchise");
 
-
-const getOwnFranchiseCreditWalletTransactionDetails = require('./routes/frenchise/get-Own-Franchise-Credit-Wallet-Transaction-Details')
-const getOwnBusinessDeveloperInsideFranchiseCreditWalletTransactionDetails=require('./routes/frenchise/get-Own-Business-Developer-Inside-Franchise-Credit-Wallet-Transaction-Details')
-const getOwnMembersInsideFranchiseCreditWalletTransactionDetails = require('./routes/frenchise/get-Own-Members-Inside-Franchise-Credit-Wallet-Transaction-Details')
-const getOwnTradersInsideFranchiseCreditWalletTransactionDetails = require('./routes/frenchise/get-own-traders-franchise-credit-wallet-transaction-details')
-const createFranchisePaymentRequest = require('./routes/frenchise/create-franchise-payment-request')
-const createFranchiseBankAccountHolder = require('./routes/frenchise/create-franchise-bank-account-holder') 
-const createFranchiseUpiHolder = require('./routes/frenchise/create-franchise-upi-holder')
-const getFranchiseOwnBankDetails = require('./routes/frenchise/get-franchise-own-bank-details')
-const getFranchiseOwnUpi = require('./routes/frenchise/get-Franchise-Own-Upi')
-const eligibleFranchiseForWithdrawal = require('./routes/frenchise/eligible.franchise.for.withdrawal')
+const getOwnFranchiseCreditWalletTransactionDetails = require("./routes/frenchise/get-Own-Franchise-Credit-Wallet-Transaction-Details");
+const getOwnBusinessDeveloperInsideFranchiseCreditWalletTransactionDetails = require("./routes/frenchise/get-Own-Business-Developer-Inside-Franchise-Credit-Wallet-Transaction-Details");
+const getOwnMembersInsideFranchiseCreditWalletTransactionDetails = require("./routes/frenchise/get-Own-Members-Inside-Franchise-Credit-Wallet-Transaction-Details");
+const getOwnTradersInsideFranchiseCreditWalletTransactionDetails = require("./routes/frenchise/get-own-traders-franchise-credit-wallet-transaction-details");
+const createFranchisePaymentRequest = require("./routes/frenchise/create-franchise-payment-request");
+const createFranchiseBankAccountHolder = require("./routes/frenchise/create-franchise-bank-account-holder");
+const createFranchiseUpiHolder = require("./routes/frenchise/create-franchise-upi-holder");
+const getFranchiseOwnBankDetails = require("./routes/frenchise/get-franchise-own-bank-details");
+const getFranchiseOwnUpi = require("./routes/frenchise/get-Franchise-Own-Upi");
+const eligibleFranchiseForWithdrawal = require("./routes/frenchise/eligible.franchise.for.withdrawal");
 //=========================Business developer======================================
 const getAllMembersInBusinessDeveloper = require("./routes/businessDeveloper/fetch-all-members-in-business-developer");
 const blockMemberByBusinessDeveloper = require("./routes/businessDeveloper/block-member-by-business-developer");
 const getOneMemberByIdByBusinessDeveloper = require("./routes/businessDeveloper/get-one-member-by-id-by-business-developer");
 const getAllUsersInBusinessDeveloper = require("./routes/businessDeveloper/fetch -all-users-in-bd");
-const fetchChatDetailsBusiness = require('./routes/businessDeveloper/fetch-chat-details-business');
-const fetchChatMessageBusiness = require('./routes/businessDeveloper/fetch-chat-message-business');
-const adminOnlineOrNotBusiness = require('./routes/businessDeveloper/admin-online-or-not-business');;
+const fetchChatDetailsBusiness = require("./routes/businessDeveloper/fetch-chat-details-business");
+const fetchChatMessageBusiness = require("./routes/businessDeveloper/fetch-chat-message-business");
+const adminOnlineOrNotBusiness = require("./routes/businessDeveloper/admin-online-or-not-business");
 const getOwnBusinessDeveloperDetails = require("./routes/businessDeveloper/get-own-business-developer-details");
 const updateOwnBusinessDeveloperDetails = require("./routes/businessDeveloper/update-own-business-developer-details");
-const businessDFetchChatDetailsWithFrench = require('./routes/businessDeveloper/businessD-fetch-chat-details-with-french');
-const businessDFetchChatMessageWithFrench = require('./routes/businessDeveloper/businessD-fetch-chat-message-with-french');
-const frenchiseOnlineOrNotForBusiness = require('./routes/businessDeveloper/Frenchise-online-or-not-for-businessD');
-const getOwnBusinessDeveloperWalletTransactionDetails = require('./routes/businessDeveloper/get-Own-Business-Developer-Wallet-Transaction-Details')
-const getOwnMembersInsideBusinessDeveloperCreditWalletTransactionDetails = require('./routes/businessDeveloper/get-Own-Members-Inside-Business-Developer-Credit-Wallet-Transaction-Details')
-const getOwnTradersInsideBusinessDeveloperCreditWalletTransactionDetails = require('./routes/businessDeveloper/get-Own-Traders-Inside-Business-Developer-Credit-Wallet-Transaction-Details')
-const createBusinessDeveloperPaymentRequest = require('./routes/businessDeveloper/create-Business-Developer-Payment-Request')
-const createBusinessDeveloperBankAccountHolder = require('./routes/businessDeveloper/creat-business-developer-bank-account-holder')
-const createBusinessDeveloperUpiHolder = require('./routes/businessDeveloper/create-business-developer-upi-holder')
-const getBusinessDeveloperOwnBankDetails = require('./routes/businessDeveloper/get-Business-Developer-Own-Bank-Details')
-const getBusinessDeveloperOwnUpi = require('./routes/businessDeveloper/get-Business-Developer-Own-Upi')
-const eligibleBusinessDeveloperForWithdrawal = require('./routes/businessDeveloper/eligible-business-developer-for-withdrawal')
+const businessDFetchChatDetailsWithFrench = require("./routes/businessDeveloper/businessD-fetch-chat-details-with-french");
+const businessDFetchChatMessageWithFrench = require("./routes/businessDeveloper/businessD-fetch-chat-message-with-french");
+const frenchiseOnlineOrNotForBusiness = require("./routes/businessDeveloper/Frenchise-online-or-not-for-businessD");
+const getOwnBusinessDeveloperWalletTransactionDetails = require("./routes/businessDeveloper/get-Own-Business-Developer-Wallet-Transaction-Details");
+const getOwnMembersInsideBusinessDeveloperCreditWalletTransactionDetails = require("./routes/businessDeveloper/get-Own-Members-Inside-Business-Developer-Credit-Wallet-Transaction-Details");
+const getOwnTradersInsideBusinessDeveloperCreditWalletTransactionDetails = require("./routes/businessDeveloper/get-Own-Traders-Inside-Business-Developer-Credit-Wallet-Transaction-Details");
+const createBusinessDeveloperPaymentRequest = require("./routes/businessDeveloper/create-Business-Developer-Payment-Request");
+const createBusinessDeveloperBankAccountHolder = require("./routes/businessDeveloper/creat-business-developer-bank-account-holder");
+const createBusinessDeveloperUpiHolder = require("./routes/businessDeveloper/create-business-developer-upi-holder");
+const getBusinessDeveloperOwnBankDetails = require("./routes/businessDeveloper/get-Business-Developer-Own-Bank-Details");
+const getBusinessDeveloperOwnUpi = require("./routes/businessDeveloper/get-Business-Developer-Own-Upi");
+const eligibleBusinessDeveloperForWithdrawal = require("./routes/businessDeveloper/eligible-business-developer-for-withdrawal");
 //==============================SubAdmin====================================
-const getOwnSubAdminDetails = require("./routes/subAdmin/get-own-sub-admin-details")
-const updateOwnSubAdminDetails = require("./routes/subAdmin/update-own-sub-admin-details")
+const getOwnSubAdminDetails = require("./routes/subAdmin/get-own-sub-admin-details");
+const updateOwnSubAdminDetails = require("./routes/subAdmin/update-own-sub-admin-details");
 
 //==========================Video creator===================================
-const videoCreatorLogin = require("./routes/videoCreator/videoCreatorLogin")
-
+const videoCreatorLogin = require("./routes/videoCreator/videoCreatorLogin");
 
 // app.use(express.static(path.join(__dirname, "public")));
 // app.use(express.urlencoded({ extended: true }));
@@ -422,35 +419,35 @@ app.use("/admin", fetchFranchiseCreditwalletTransactionDetails);
 app.use("/admin", fetchStateHandlerCreditwalletTransactionDetails);
 app.use("/admin", totalCountOfPaymentStatusOfUser);
 app.use("/user", totalCountOfPaymentStatusOfUseruser);
-app.use('/admin',stateOnlineOrNot);
-app.use('/admin',fetchStateChatMessageAdmin);
-app.use('/admin',fetchStateChatCount);
-app.use('/admin',fetchFrenchiseChatCount);
-app.use('/admin',fethcFrenchiseChatMessageAdmin);
-app.use('/admin',adminFrenchiseOnlineOrNot);;
-app.use("/admin", getOneFranchiseDetails)
+app.use("/admin", stateOnlineOrNot);
+app.use("/admin", fetchStateChatMessageAdmin);
+app.use("/admin", fetchStateChatCount);
+app.use("/admin", fetchFrenchiseChatCount);
+app.use("/admin", fethcFrenchiseChatMessageAdmin);
+app.use("/admin", adminFrenchiseOnlineOrNot);
+app.use("/admin", getOneFranchiseDetails);
 
-app.use("/admin",getOneBDDetails )
-app.use("/admin", getOneStateDetails)
-app.use("/admin", getOneMemberDetails)
-app.use("/admin", updateAdharcardFranchise)
-app.use("/admin",updatePanCardFranchise)
-app.use('/admin',fetchBusinessChatCount);
-app.use('/admin',adminBusinessOnlineOrNot);
-app.use('/admin',deleteState )
-app.use('/admin',deleteFranchise )
-app.use('/admin',deleteBusinessDeveloper )
-app.use('/admin',adminFetchFranchiseApproveWithdrawal)
-app.use('/admin', adminFetchParticularBusinessDeveloperDetails)
-app.use('/admin', adminFetchBusinessDeveloperPaymentWithdrawalRequest)
-app.use('/admin', adminFetchBusinessDeveloperApproveWithdrawal)
+app.use("/admin", getOneBDDetails);
+app.use("/admin", getOneStateDetails);
+app.use("/admin", getOneMemberDetails);
+app.use("/admin", updateAdharcardFranchise);
+app.use("/admin", updatePanCardFranchise);
+app.use("/admin", fetchBusinessChatCount);
+app.use("/admin", adminBusinessOnlineOrNot);
+app.use("/admin", deleteState);
+app.use("/admin", deleteFranchise);
+app.use("/admin", deleteBusinessDeveloper);
+app.use("/admin", adminFetchFranchiseApproveWithdrawal);
+app.use("/admin", adminFetchParticularBusinessDeveloperDetails);
+app.use("/admin", adminFetchBusinessDeveloperPaymentWithdrawalRequest);
+app.use("/admin", adminFetchBusinessDeveloperApproveWithdrawal);
 
-app.use('/user', getOwnTraderCreditWalletTransactionDetails)
-app.use('/admin', filterCreditWalletTransactionByUserId)
-app.use('/admin', fetchMemberCreditwalletTransactionDetails)
-app.use('/admin', fetchUserCreditwalletTransactionDetails)
-app.use('/admin', updateAdharCardStateHandler)
-app.use('/admin', updatePanCardStateHandler)
+app.use("/user", getOwnTraderCreditWalletTransactionDetails);
+app.use("/admin", filterCreditWalletTransactionByUserId);
+app.use("/admin", fetchMemberCreditwalletTransactionDetails);
+app.use("/admin", fetchUserCreditwalletTransactionDetails);
+app.use("/admin", updateAdharCardStateHandler);
+app.use("/admin", updatePanCardStateHandler);
 // refferal
 app.use("/member", memberRegistration);
 app.use("/member", memberLogin);
@@ -482,8 +479,8 @@ app.use("/member", fetchChatMessageRefferal);
 app.use("/member", adminOnlineOrNotRefferal);
 app.use("/member", refferalTotalWithdrawal);
 app.use("/member", refferalMyTeam);
-app.use("/member", getOwnMemberCreditWalletTransactionDetails)
-app.use("/member", getOwnTradersInsideMemberCreditWalletTransactionDetails)
+app.use("/member", getOwnMemberCreditWalletTransactionDetails);
+app.use("/member", getOwnTradersInsideMemberCreditWalletTransactionDetails);
 
 app.use("/admin", getvideos);
 
@@ -513,32 +510,31 @@ app.use("/admin", blockBusinessDeveloperByAdmin);
 app.use("/admin", updateFranchise);
 app.use("/admin", updateStateHandler);
 app.use("/admin", updateBusinessDeveloper);
-app.use('/admin',fetchBusinessChatMessageAdmin);
-app.use('/admin', fetchAdmin)
-app.use('/admin', fetchCityByReferralIdInFranchise)
-app.use('/admin', updateAdharcardBusinessDeveloper)
+app.use("/admin", fetchBusinessChatMessageAdmin);
+app.use("/admin", fetchAdmin);
+app.use("/admin", fetchCityByReferralIdInFranchise);
+app.use("/admin", updateAdharcardBusinessDeveloper);
 
-app.use('/admin', updatePanCardBusinessDeveloper)
-app.use('/admin', fetchAdminCreditwalletTransactionDetails)
-app.use('/admin', approvePaymentRequestOfState)
-app.use('/admin',approvePaymentRequestOfFranchise)
-app.use('/admin', approvePaymentRequestOfBusinessDeveloper);
-app.use('/admin',adminFetchParticularStateHandlerDetails);
-app.use('/admin',adminFetchStateHandlerPaymentWithdrawalRequest);
-app.use('/admin',adminFetchStateHandlerApproveWithdrawal);
-app.use('/admin', adminFetchParticularFranchiseDetails)
-app.use('/admin',adminFetchFranchisePaymentWithdrawalRequest)
-app.use('/admin', searchRenewalUsers)
-app.use('/admin', searchNewUsers)
-app.use('/admin', fetchParticularUserPaymentStatus)
-app.use('/admin', findUsersOnTheBasisOfPaymentStatus)
-app.use('/admin', searchRefferalPayoutByRefferUserid);
-app.use('/admin',blockSubAdminByAdmin);
+app.use("/admin", updatePanCardBusinessDeveloper);
+app.use("/admin", fetchAdminCreditwalletTransactionDetails);
+app.use("/admin", approvePaymentRequestOfState);
+app.use("/admin", approvePaymentRequestOfFranchise);
+app.use("/admin", approvePaymentRequestOfBusinessDeveloper);
+app.use("/admin", adminFetchParticularStateHandlerDetails);
+app.use("/admin", adminFetchStateHandlerPaymentWithdrawalRequest);
+app.use("/admin", adminFetchStateHandlerApproveWithdrawal);
+app.use("/admin", adminFetchParticularFranchiseDetails);
+app.use("/admin", adminFetchFranchisePaymentWithdrawalRequest);
+app.use("/admin", searchRenewalUsers);
+app.use("/admin", searchNewUsers);
+app.use("/admin", fetchParticularUserPaymentStatus);
+app.use("/admin", findUsersOnTheBasisOfPaymentStatus);
+app.use("/admin", searchRefferalPayoutByRefferUserid);
+app.use("/admin", blockSubAdminByAdmin);
 
-
-app.use('/admin', verifyState)
-app.use('/admin', verifyBusinessDeveloper)
-app.use('/admin', verifyFranchise)
+app.use("/admin", verifyState);
+app.use("/admin", verifyBusinessDeveloper);
+app.use("/admin", verifyFranchise);
 // refferalin
 app.use("/member", memberLogin);
 app.use("/admin", fetchMemberDetails);
@@ -569,6 +565,7 @@ app.use("/member", fetchChatMessageRefferal);
 app.use("/member", adminOnlineOrNotRefferal);
 app.use("/member", refferalTotalWithdrawal);
 app.use("/member", refferalMyTeam);
+app.use("/member", createMemberBankAccountHolder);
 
 //===============================State=============================================
 app.use("/state", getFranchisesByReferralId);
@@ -579,52 +576,64 @@ app.use("/state", blockFranchiseForState);
 app.use("/state", deleteFranchiseForState);
 app.use("/state", getFranchiseForState);
 app.use("/state", getBusinessDeveloperForState);
-app.use('/state',adminOnlineOrNot);
-app.use('/state',fetchChatMessageState);
-app.use('/state',fetchChatDetailsState);;
+app.use("/state", adminOnlineOrNot);
+app.use("/state", fetchChatMessageState);
+app.use("/state", fetchChatDetailsState);
 app.use("/state", updateStateDetails);
 app.use("/state", getOwnStateDetails);
-app.use('/state',fetchFrenchiseChatCountWithState);
-app.use('/state',stateFetchFrenchChatMessage);
-app.use('/state',stateFrenchiseOnlineOrNot);
-app.use('/state', getOwnStateCreditWalletTransactionDetails)
-app.use('/state', getOwnFranchiseInsideStateCreditWalletTransactionDetails)
-app.use('/state', getOwnBusinessDeveloperInsideStateCreditWalletTransactionDetails)
-app.use('/state', getOwnMemberInsideStateCreditWalletTransactionDetails)
-app.use('/state', getOwnTraderInsideStateCreditWalletTransactionDetails)
-app.use('/state', createStatePaymentRequest)
-app.use('/state',createStateBankAccountHolder)
-app.use('/state', createStateUpiHolder)
-app.use('/state',getStateOwnBankDetails)
-app.use('/state', getStateOwnUpi)
-app.use('/state', eligibleStateForWithdrawal)
+app.use("/state", fetchFrenchiseChatCountWithState);
+app.use("/state", stateFetchFrenchChatMessage);
+app.use("/state", stateFrenchiseOnlineOrNot);
+app.use("/state", getOwnStateCreditWalletTransactionDetails);
+app.use("/state", getOwnFranchiseInsideStateCreditWalletTransactionDetails);
+app.use(
+  "/state",
+  getOwnBusinessDeveloperInsideStateCreditWalletTransactionDetails
+);
+app.use("/state", getOwnMemberInsideStateCreditWalletTransactionDetails);
+app.use("/state", getOwnTraderInsideStateCreditWalletTransactionDetails);
+app.use("/state", createStatePaymentRequest);
+app.use("/state", createStateBankAccountHolder);
+app.use("/state", createStateUpiHolder);
+app.use("/state", getStateOwnBankDetails);
+app.use("/state", getStateOwnUpi);
+app.use("/state", eligibleStateForWithdrawal);
 //============================Franchise=============================================
 
-app.use("/franchise", getBusinessDevelopersInFranchise);;
+app.use("/franchise", getBusinessDevelopersInFranchise);
 app.use("/franchise", getMembersInFranchise);
-app.use('/franchise',fetchChatDetailsFrenchisee);
-app.use('/franchise',fetchChatMessage);
-app.use('/franchise',adminOnlineOrNotFrench);;
+app.use("/franchise", fetchChatDetailsFrenchisee);
+app.use("/franchise", fetchChatMessage);
+app.use("/franchise", adminOnlineOrNotFrench);
 app.use("/franchise", getUsersInFranchise);
-app.use('/frenchise',fetchChatDetailsFrenchiseWithSHO);
-app.use('/frenchise',fetchChatWithSHOMessage);
-app.use('/frenchise',SHOonlineOrNotFrench);
-app.use("/franchise", getOwnFranchiseDetails)
+app.use("/frenchise", fetchChatDetailsFrenchiseWithSHO);
+app.use("/frenchise", fetchChatWithSHOMessage);
+app.use("/frenchise", SHOonlineOrNotFrench);
+app.use("/franchise", getOwnFranchiseDetails);
 app.use("/franchise", updateOwnFranchiseDetails);
 // app.use('/frenchise',fetchBusinessChatCountWithFrenchise);
-app.use('/frenchise',frenchiseFetchBusinessChatMessage);
-app.use('/frenchise',frenchiseBusinessOnlineOrNot);
-app.use("/franchise", getOwnFranchiseCreditWalletTransactionDetails)
-app.use('/franchise', getOwnBusinessDeveloperInsideFranchiseCreditWalletTransactionDetails)
-app.use('/franchise', getOwnMembersInsideFranchiseCreditWalletTransactionDetails)
-app.use('/frenchise',getBusinessChatCountWithFrenchise);
-app.use('/franchise', getOwnTradersInsideFranchiseCreditWalletTransactionDetails)
-app.use('/franchise', createFranchisePaymentRequest)
-app.use('/franchise', createFranchiseBankAccountHolder)
-app.use('/franchise', createFranchiseUpiHolder)
-app.use('/franchise', getFranchiseOwnBankDetails)
-app.use('/franchise', getFranchiseOwnUpi)
-app.use('/franchise', eligibleFranchiseForWithdrawal)
+app.use("/frenchise", frenchiseFetchBusinessChatMessage);
+app.use("/frenchise", frenchiseBusinessOnlineOrNot);
+app.use("/franchise", getOwnFranchiseCreditWalletTransactionDetails);
+app.use(
+  "/franchise",
+  getOwnBusinessDeveloperInsideFranchiseCreditWalletTransactionDetails
+);
+app.use(
+  "/franchise",
+  getOwnMembersInsideFranchiseCreditWalletTransactionDetails
+);
+app.use("/frenchise", getBusinessChatCountWithFrenchise);
+app.use(
+  "/franchise",
+  getOwnTradersInsideFranchiseCreditWalletTransactionDetails
+);
+app.use("/franchise", createFranchisePaymentRequest);
+app.use("/franchise", createFranchiseBankAccountHolder);
+app.use("/franchise", createFranchiseUpiHolder);
+app.use("/franchise", getFranchiseOwnBankDetails);
+app.use("/franchise", getFranchiseOwnUpi);
+app.use("/franchise", eligibleFranchiseForWithdrawal);
 //============================Business developer===========================
 app.use("/businessDeveloper", getAllMembersInBusinessDeveloper);
 app.use("/businessDeveloper", blockMemberByBusinessDeveloper);
@@ -632,26 +641,32 @@ app.use("/businessDeveloper", getOneMemberByIdByBusinessDeveloper);
 app.use("/businessDeveloper", getAllUsersInBusinessDeveloper);
 app.use("/businessDeveloper", getOwnBusinessDeveloperDetails);
 app.use("/businessDeveloper", updateOwnBusinessDeveloperDetails);
-app.use('/businessDeveloper',fetchChatDetailsBusiness);
-app.use('/businessDeveloper',fetchChatMessageBusiness);
-app.use('/businessDeveloper',adminOnlineOrNotBusiness);
-app.use('/businessDeveloper',businessDFetchChatDetailsWithFrench);
-app.use('/businessDeveloper',businessDFetchChatMessageWithFrench);
-app.use('/businessDeveloper',frenchiseOnlineOrNotForBusiness);
-app.use('/businessDeveloper',getOwnBusinessDeveloperWalletTransactionDetails);
-app.use('/businessDeveloper', getOwnMembersInsideBusinessDeveloperCreditWalletTransactionDetails)
-app.use('/businessDeveloper', getOwnTradersInsideBusinessDeveloperCreditWalletTransactionDetails)
-app.use('/businessDeveloper', createBusinessDeveloperPaymentRequest)
-app.use('/businessDeveloper', createBusinessDeveloperBankAccountHolder)
-app.use('/businessDeveloper', createBusinessDeveloperUpiHolder)
-app.use('/businessDeveloper',getBusinessDeveloperOwnBankDetails)
-app.use('/businessDeveloper', getBusinessDeveloperOwnUpi)
-app.use('/businessDeveloper', eligibleBusinessDeveloperForWithdrawal)
+app.use("/businessDeveloper", fetchChatDetailsBusiness);
+app.use("/businessDeveloper", fetchChatMessageBusiness);
+app.use("/businessDeveloper", adminOnlineOrNotBusiness);
+app.use("/businessDeveloper", businessDFetchChatDetailsWithFrench);
+app.use("/businessDeveloper", businessDFetchChatMessageWithFrench);
+app.use("/businessDeveloper", frenchiseOnlineOrNotForBusiness);
+app.use("/businessDeveloper", getOwnBusinessDeveloperWalletTransactionDetails);
+app.use(
+  "/businessDeveloper",
+  getOwnMembersInsideBusinessDeveloperCreditWalletTransactionDetails
+);
+app.use(
+  "/businessDeveloper",
+  getOwnTradersInsideBusinessDeveloperCreditWalletTransactionDetails
+);
+app.use("/businessDeveloper", createBusinessDeveloperPaymentRequest);
+app.use("/businessDeveloper", createBusinessDeveloperBankAccountHolder);
+app.use("/businessDeveloper", createBusinessDeveloperUpiHolder);
+app.use("/businessDeveloper", getBusinessDeveloperOwnBankDetails);
+app.use("/businessDeveloper", getBusinessDeveloperOwnUpi);
+app.use("/businessDeveloper", eligibleBusinessDeveloperForWithdrawal);
 //=============================Sub- Admin======================================
-app.use('/subAdmin',getOwnSubAdminDetails);
-app.use('/subAdmin', updateOwnSubAdminDetails)
+app.use("/subAdmin", getOwnSubAdminDetails);
+app.use("/subAdmin", updateOwnSubAdminDetails);
 
 //=====================Video Creator============================
-app.use('/videoCreator', videoCreatorLogin)
+app.use("/videoCreator", videoCreatorLogin);
 
 module.exports = app;

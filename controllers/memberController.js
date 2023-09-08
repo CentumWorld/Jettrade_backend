@@ -20,7 +20,9 @@ const validator = require("validator");
 const MyReferral = require("../model/myReferralSchema");
 
 const BusinessDeveloper = require("../model/businessDeveloperSchema");
-const MemberCreditWalletTransaction = require('../model/memberCreditWalletTransaction')
+const MemberCreditWalletTransaction = require("../model/memberCreditWalletTransaction");
+const BankAccountHolder = require("../model/BankAccountHolderSchema");
+const UpiHolder = require("../model/UpiHolderSchema");
 
 // refferalRegistration
 exports.memberRegistration = async (req, res) => {
@@ -104,16 +106,16 @@ exports.memberRegistration = async (req, res) => {
     const refferal_id = memberid + Math.floor(Math.random() * 10000 + 1);
     console.log(refferal_id);
 
-    const memberExist = await Member.findOne({ memberid: memberid })
+    const memberExist = await Member.findOne({ memberid: memberid });
 
     if (memberExist) {
       return res.status(200).json({ message: "Member already exist!" });
     }
-    
+
     const existingreferredId = await BusinessDeveloper.findOne({
       referralId: reffered_id,
     });
-    console.log(existingreferredId, "115")
+    console.log(existingreferredId, "115");
 
     if (!existingreferredId) {
       return res
@@ -138,7 +140,7 @@ exports.memberRegistration = async (req, res) => {
       memberid,
       password,
       reffered_id,
-     userType: "indian"
+      userType: "indian",
     });
     await member.save();
     res.status(201).json({ message: "Member registered successfully" });
@@ -187,7 +189,6 @@ exports.otherCountryMemberRegistration = async (req, res) => {
     memberid,
     password,
     reffered_id,
-    
   } = req.body;
 
   const requiredFields = [
@@ -242,12 +243,14 @@ exports.otherCountryMemberRegistration = async (req, res) => {
       const existingreferredId = await BusinessDeveloper.findOne({
         referralId: reffered_id,
       });
-      console.log(existingreferredId, "242")
-  
+      console.log(existingreferredId, "242");
+
       if (!existingreferredId) {
         return res
           .status(400)
-          .send({ message: "You are providing wrong business developer referral Id" });
+          .send({
+            message: "You are providing wrong business developer referral Id",
+          });
       }
 
       const member = new Member({
@@ -264,10 +267,12 @@ exports.otherCountryMemberRegistration = async (req, res) => {
         memberid,
         password,
         reffered_id,
-        userType: "other"
+        userType: "other",
       });
       await member.save();
-      res.status(201).json({ message: "Member registered successfully" ,member});
+      res
+        .status(201)
+        .json({ message: "Member registered successfully", member });
     } catch (error) {
       console.log(error);
     }
@@ -862,17 +867,17 @@ exports.refferalMyTeam = async (req, res) => {
   });
 };
 
-
 //==============================================================
-
-
 
 exports.getOwnMemberCreditWalletTransactionDetails = async (req, res) => {
   try {
     const { memberId } = req.body;
+    console.log(memberId, "memberid");
 
     // Fetch member based on the given member ID
-    const member = await Member.findOne({ memberId: memberId });
+    const member = await Member.findOne({ memberid: memberId });
+
+    console.log(member, "member");
 
     // Check if the member exists
     if (!member) {
@@ -881,8 +886,12 @@ exports.getOwnMemberCreditWalletTransactionDetails = async (req, res) => {
 
     // Fetch member credit wallet transactions based on member ID
     const memberTransactions = await MemberCreditWalletTransaction.find({
-      userid: memberId, // Assuming memberId is a unique identifier
+      memberId: memberId,
     });
+
+    if (memberTransactions.length == 0) {
+      return res.status(400).json({ message: "member transaction not found" });
+    }
 
     return res.status(200).json({
       message: "Fetched Member Credit Wallet Transaction details",
@@ -895,7 +904,10 @@ exports.getOwnMemberCreditWalletTransactionDetails = async (req, res) => {
 };
 //=================================================================
 
-exports.getOwnTradersInsideMemberCreditWalletTransactionDetails = async (req, res) => {
+exports.getOwnTradersInsideMemberCreditWalletTransactionDetails = async (
+  req,
+  res
+) => {
   try {
     const { memberId } = req.body;
 
@@ -908,10 +920,12 @@ exports.getOwnTradersInsideMemberCreditWalletTransactionDetails = async (req, re
     const traders = await User.find({
       reffered_id: member.refferal_id,
     });
-    console.log(traders, "traders details")
+    console.log(traders, "traders details");
 
-     if (traders.length === 0) {
-      return res.status(404).json({ message: "No traders referred by this Member" });
+    if (traders.length === 0) {
+      return res
+        .status(404)
+        .json({ message: "No traders referred by this Member" });
     }
 
     const traderIds = traders.map((trader) => trader.userid);
@@ -927,5 +941,86 @@ exports.getOwnTradersInsideMemberCreditWalletTransactionDetails = async (req, re
   } catch (error) {
     console.log(error.message);
     return res.status(500).json({ message: "Internal server error" });
+  }
+};
+
+//===================================================================
+
+exports.createMemberBankAccountHolder = async (req, res) => {
+  try {
+    const {
+      userId,
+      accountHolderName,
+      accountNumber,
+      bankName,
+      branchName,
+      ifscCode,
+    } = req.body;
+
+    if (
+      !accountHolderName ||
+      !accountNumber ||
+      !bankName ||
+      !branchName ||
+      !ifscCode
+    ) {
+      return res.status(400).json({ message: "All fields are required" });
+    }
+
+    // Check if the state handler exists
+    const member = await Member.findOne({ memberid: userId });
+
+    if (!member) {
+      return res.status(404).json({ message: "Member not found" });
+    }
+
+    const newAccountHolder = new BankAccountHolder({
+      userId,
+      accountHolderName,
+      accountNumber,
+      bankName,
+      branchName,
+      ifscCode,
+    });
+
+    const savedAccountHolder = await newAccountHolder.save();
+
+    return res.status(201).json({
+      message: "Member Account holder created successfully",
+      accountHolder: savedAccountHolder,
+    });
+  } catch (error) {
+    console.error("Error creating account holder:", error);
+    res.status(500).json({ message: "Internal server error" });
+  }
+};
+
+//========================================================================
+
+exports.createMemberUpiHolder = async (req, res) => {
+  try {
+    const { upiId, userId } = req.body;
+
+    if (!upiId) {
+      return res.status(400).json({ message: "UpiId is required" });
+    }
+    const member = await Member.findOne({ memberid: userId });
+
+    if (!member) {
+      return res.status(404).json({ message: "Member not found" });
+    }
+
+    const newUpi = new UpiHolder({
+      upiId,
+      userId,
+    });
+
+    const savedUpi = await newUpi.save();
+    return res
+      .status(201)
+      .json({ message: "State upi created successfully", savedUpi });
+  } catch (error) {
+    console.error("Error creating UPI ID:", error.message);
+    res.status(500).json({ message: "Internal server error" });
   }
 };
