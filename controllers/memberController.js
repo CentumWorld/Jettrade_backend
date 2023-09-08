@@ -1018,7 +1018,7 @@ exports.createMemberUpiHolder = async (req, res) => {
     const savedUpi = await newUpi.save();
     return res
       .status(201)
-      .json({ message: "State upi created successfully", savedUpi });
+      .json({ message: "Member upi created successfully", savedUpi });
   } catch (error) {
     console.error("Error creating UPI ID:", error.message);
     res.status(500).json({ message: "Internal server error" });

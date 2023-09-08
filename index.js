@@ -173,6 +173,7 @@ const refferalMyTeam = require("./routes/refferal/refferal-my-team");
 const getOwnMemberCreditWalletTransactionDetails = require("./routes/refferal/get-Member-Credit-Wallet-Transaction-Details");
 const getOwnTradersInsideMemberCreditWalletTransactionDetails = require("./routes/refferal/get-Own-Traders-Inside-Member-Credit-Wallet-Transaction-Details");
 const createMemberBankAccountHolder = require("./routes/refferal/create-member-bank-account-holder");
+const createMemberUpiHolder = require("./routes/refferal/create-member-upi-holder")
 
 //admin
 const videoUpload = require("./routes/adminVideo");
@@ -481,6 +482,7 @@ app.use("/member", refferalTotalWithdrawal);
 app.use("/member", refferalMyTeam);
 app.use("/member", getOwnMemberCreditWalletTransactionDetails);
 app.use("/member", getOwnTradersInsideMemberCreditWalletTransactionDetails);
+app.use("/member", createMemberUpiHolder)
 
 app.use("/admin", getvideos);
 
