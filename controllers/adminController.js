@@ -782,15 +782,18 @@ exports.fetchRefferalPayoutMember = async (req, res) => {
 
 // fetchRefferalPayoutWithdrawalRequest
 exports.fetchRefferalPayoutWithdrawalRequest = async (req, res) => {
-  MoneyWithdrawlTransaction.find((err, result) => {
-    if (err) {
-      return res.status(500).json({ message: "Something went wrong" });
+  const {memberid} = req.body
+  const memberWithdrawalRequest = await memberRefferalPayoutRequest.find({memberid:memberid})
+    if (memberWithdrawalRequest.length > 0){
+      return res.status(200).json({ message: "Withdrawal Request fetched",
+      memberWithdrawalRequest
+    });
     } else {
       return res
-        .status(200)
-        .json({ message: "Withdrawal Request fetched", result });
-    }
-  });
+        .status(400)
+        .json({ message: "something went wrong",});
+    
+  }
 };
 
 // approveUserRefferalPayout
@@ -867,12 +870,15 @@ exports.approveMemberRefferalPayout = async (req, res) => {
     let memberid = member.memberid;
     let walletAmount = member.walletAmount;
     let requestDate = member.requestDate;
+    let paymentBy = member.paymentBy;
     console.log(memberid, walletAmount, requestDate, "548");
     const approveRequestAmount = new memberRefferalPayoutApproveWithdrawal({
       memberid: memberid,
       walletAmount: walletAmount,
       requestDate: requestDate,
+      paymentBy:paymentBy,
       approveDate: new Date(),
+
     });
     approveRequestAmount.save();
     const deleteRequestMemberRefferalPayout =
@@ -891,15 +897,17 @@ exports.approveMemberRefferalPayout = async (req, res) => {
 
 // fetchMemberRefferalPayoutApproveWithdrawal
 exports.fetchMemberRefferalPayoutApproveWithdrawal = async (req, res) => {
-  memberRefferalPayoutApproveWithdrawal.find((err, result) => {
-    if (err) {
-      return res.status(500).json({ message: "Something went wrong" });
+  const {memberid} = req.body
+   const memberApproveWithdrawal = await memberRefferalPayoutApproveWithdrawal.find({memberid})
+    if (memberApproveWithdrawal) {
+      return res.status(200).json({ message: "Member approve withdrawal fetched",
+      memberApproveWithdrawal 
+    });
     } else {
       return res
-        .status(200)
-        .json({ message: "Withdrawal Request fetched", result });
+        .status(400)
+        .json({ message: "Something went to wrong" });
     }
-  });
 };
 
 // fetchUserChatCount
@@ -4211,3 +4219,15 @@ exports.getMemberBankAndUpiDetails = async (req, res) => {
     return res.status(500).json({ message: "Internal server error" });
   }
 };
+
+// fetchParticularMemberDetailsUsingMemberid
+exports.fetchParticularMemberDetailsUsingMemberid = async (req,res) => {
+  const {memberId} = req.body
+  const particularMemberDetails = await Member.findOne({memberId:memberId})
+  if(!particularMemberDetails){
+    return res.status(400).send("Invalid member Id")
+  }
+  return res.status(200).json({message:"fetched particular member details ",
+  particularMemberDetails
+})
+}
