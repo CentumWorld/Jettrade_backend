@@ -7,7 +7,7 @@ require('dotenv').config();
 const adminController = require('../controllers/adminController');
 const {authenticateAdmin, authorizeAdmin, authorizeRole} = require('../middleware/checkAuth');
 
-router.post('/verify-member',authenticateAdmin,authorizeRole(["admin","subAdmin","businessDeveloper"]), adminController.verifyMember);
+router.post('/verify-member',authenticateAdmin,authorizeRole(["admin","subAdmin","businessDeveloper", "state", "franchise"]), adminController.verifyMember);
 
 
 module.exports = router;

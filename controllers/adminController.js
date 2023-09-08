@@ -199,7 +199,8 @@ exports.verifyMember = async (req, res) => {
   let result = await Member.updateOne(
     { _id: id },
     {
-      $set: { status: status },
+      $set: { status: status , verifyDate: Date.now()},
+      
     }
   );
   if (result.modifiedCount > 0) {
