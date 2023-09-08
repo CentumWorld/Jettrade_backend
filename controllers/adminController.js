@@ -59,6 +59,8 @@ const BussinessDeveloperPaymentRequest = require("../model/businessDeveloperPaym
 const BussinessDeveloperPaymentApprove = require("../model/businessDeveloperPaymentApproveSchema");
 const MemberCreditWalletTransaction = require("../model/memberCreditWalletTransaction");
 const UserCreditWalletTransaction = require("../model/userCreditWalletTransaction");
+const UpiHolder = require("../model/UpiHolderSchema")
+const BankAccountHolder = require("../model/BankAccountHolderSchema")
 // const memberCreditWalletTransaction = require("../model/memberCreditWalletTransaction");
 // const userCreditWalletTransaction = require("../model/userCreditWalletTransaction");
 
@@ -4185,3 +4187,27 @@ exports.blockSubAdminByAdmin = async (req,res) => {
     });
   }
 }
+
+exports.getMemberBankAndUpiDetails = async (req, res) => {
+  try {
+    const { userId } = req.body;
+
+    const memberBankDetails = await BankAccountHolder.find({ userId: userId });
+    const memberUpiId = await UpiHolder.find({ userId: userId });
+
+    if (!memberBankDetails || !memberUpiId) {
+      return res.status(404).json({
+        message: "Bank details or UPI ID not found for the provided member",
+      });
+    }
+
+    return res.status(200).json({
+      message: "Bank and UPI details of member fetched successfully",
+      memberBankDetails,
+      memberUpiId,
+    });
+  } catch (error) {
+    console.error("Error fetching member details:", error);
+    return res.status(500).json({ message: "Internal server error" });
+  }
+};

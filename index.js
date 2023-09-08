@@ -176,6 +176,7 @@ const createMemberBankAccountHolder = require("./routes/refferal/create-member-b
 const createMemberUpiHolder = require("./routes/refferal/create-member-upi-holder")
 const getMemberOwnBankDetails = require("./routes/refferal/get-member-own-bank-details")
 const getMemberOwnUpi = require('./routes/refferal/get-member-own-upi')
+const getMemberBankAndUpiDetails = require('./routes/get-member-bank-and-upi-details')
 //admin
 const videoUpload = require("./routes/adminVideo");
 
@@ -535,6 +536,7 @@ app.use("/admin", fetchParticularUserPaymentStatus);
 app.use("/admin", findUsersOnTheBasisOfPaymentStatus);
 app.use("/admin", searchRefferalPayoutByRefferUserid);
 app.use("/admin", blockSubAdminByAdmin);
+app.use('/admin', getMemberBankAndUpiDetails)
 
 app.use("/admin", verifyState);
 app.use("/admin", verifyBusinessDeveloper);
@@ -572,6 +574,7 @@ app.use("/member", refferalMyTeam);
 app.use("/member", createMemberBankAccountHolder);
 app.use("/member", getMemberOwnBankDetails)
 app.use("/member", getMemberOwnUpi)
+
 //===============================State=============================================
 app.use("/state", getFranchisesByReferralId);
 app.use("/state", getBusinessDevelopersInState);
