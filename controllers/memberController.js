@@ -707,6 +707,7 @@ exports.refferalPayoutRequestMember = async (req, res) => {
         {
           $set: {
             wallet: restAmount,
+            verifyDate: Date.now()
           },
         }
       );
