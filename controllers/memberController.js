@@ -1024,3 +1024,47 @@ exports.createMemberUpiHolder = async (req, res) => {
     res.status(500).json({ message: "Internal server error" });
   }
 };
+//======================================================================
+
+exports.getMemberOwnBankDetails = async (req, res) => {
+  try {
+    const { userId } = req.body;
+
+    const memberBankDetails = await BankAccountHolder.find({ userId: userId });
+
+    if (!memberBankDetails) {
+      return res
+        .status(404)
+        .json({ message: "Bank details not found for the provided member" });
+    }
+
+    return res.status(200).json({
+      message: "bank details of member fetched successfully",
+      memberBankDetails,
+    });
+  } catch (error) {
+    console.error("Error fetching member bank details:", error);
+    return res.status(500).json({ message: "Internal server error" });
+  }
+};
+
+exports.getMemberOwnUpi = async (req, res) => {
+  try {
+    const { userId } = req.body;
+
+    const memberUpiId = await UpiHolder.find({ userId: userId });
+
+    if (!memberUpiId) {
+      return res
+        .status(404)
+        .json({ message: "upi id not found for the provided member" });
+    }
+
+    return res
+      .status(200)
+      .json({ message: "Upi of member fetched successfully", memberUpiId });
+  } catch (error) {
+    console.error("Error fetching member:", error);
+    return res.status(500).json({ message: "Internal server error" });
+  }
+};

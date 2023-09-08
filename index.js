@@ -174,7 +174,8 @@ const getOwnMemberCreditWalletTransactionDetails = require("./routes/refferal/ge
 const getOwnTradersInsideMemberCreditWalletTransactionDetails = require("./routes/refferal/get-Own-Traders-Inside-Member-Credit-Wallet-Transaction-Details");
 const createMemberBankAccountHolder = require("./routes/refferal/create-member-bank-account-holder");
 const createMemberUpiHolder = require("./routes/refferal/create-member-upi-holder")
-
+const getMemberOwnBankDetails = require("./routes/refferal/get-member-own-bank-details")
+const getMemberOwnUpi = require('./routes/refferal/get-member-own-upi')
 //admin
 const videoUpload = require("./routes/adminVideo");
 
@@ -569,7 +570,8 @@ app.use("/member", adminOnlineOrNotRefferal);
 app.use("/member", refferalTotalWithdrawal);
 app.use("/member", refferalMyTeam);
 app.use("/member", createMemberBankAccountHolder);
-
+app.use("/member", getMemberOwnBankDetails)
+app.use("/member", getMemberOwnUpi)
 //===============================State=============================================
 app.use("/state", getFranchisesByReferralId);
 app.use("/state", getBusinessDevelopersInState);
