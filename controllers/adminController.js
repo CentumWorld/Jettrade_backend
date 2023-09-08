@@ -1456,21 +1456,21 @@ exports.findUsersOnTheBasisOfPaymentStatus = async (req, res) => {
         user.isBlocked === false
     );
 
-    if (filteredInactiveUsers.length === 0) {
-      return res
-        .status(404)
-        .json({ message: "No users found with inactive payment statuses" });
-    }
-    if (filteredRunningUsers.length === 0) {
-      return res
-        .status(404)
-        .json({ message: "No users found with Running payment statuses" });
-    }
-    if (filteredExpiredUsers.length === 0) {
-      return res
-        .status(404)
-        .json({ message: "No users found with expired payment statuses" });
-    }
+    // if (filteredInactiveUsers.length === 0) {
+    //   return res
+    //     .status(404)
+    //     .json({ message: "No users found with inactive payment statuses" });
+    // }
+    // if (filteredRunningUsers.length === 0) {
+    //   return res
+    //     .status(404)
+    //     .json({ message: "No users found with Running payment statuses" });
+    // }
+    // if (filteredExpiredUsers.length === 0) {
+    //   return res
+    //     .status(404)
+    //     .json({ message: "No users found with expired payment statuses" });
+    // }
 
     return res.status(200).json({
       message:
