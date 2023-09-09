@@ -135,20 +135,31 @@ exports.fetchParticularUserDetails = (req, res) => {
 };
 
 // verifyUser
+
 exports.verifyUser = async (req, res) => {
   const { status, id } = req.body;
-  let result = await User.updateOne(
-    { _id: id },
-    {
-      $set: { status: status },
+
+
+  try {
+    const updatedUser = await User.findOneAndUpdate(
+      { _id: id },
+      { $set: { status: status, verifyDate: Date.now() } },
+      { new: true } 
+    );
+
+    if (!updatedUser) {
+      return res.status(404).json({
+        message: "User not found or already verified",
+      });
     }
-  );
-  if (result.modifiedCount > 0) {
+
     return res.status(200).json({
       message: "Verified Successfully",
+      user: updatedUser, 
     });
-  } else {
-    return res.status(404).json({
+  } catch (error) {
+    console.error(error); // Log the error for debugging
+    return res.status(500).json({
       message: "Something Went wrong",
     });
   }

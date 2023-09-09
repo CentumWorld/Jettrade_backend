@@ -126,6 +126,10 @@ const userSchema = new mongoose.Schema({
     type: Boolean,
     default: false
   }
+  ,
+  verifyDate: {
+    type: Date
+  }
 });
 
 // Hash your password using bcrypt

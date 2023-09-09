@@ -37,6 +37,8 @@ const StateHandlerCreditWalletTransaction = require("../model/stateHandlerCredit
 const AdminCreditWalletTransaction = require("../model/adminCreditWalletTransaction");
 const userCreditWalletTransaction = require("../model/userCreditWalletTransaction");
 const memberCreditWalletTransaction = require("../model/memberCreditWalletTransaction");
+const BankAccountHolder = require("../model/BankAccountHolderSchema");
+const UpiHolder = require("../model/UpiHolderSchema");
 
 //const profilePhoto = require('../model/profilePhotoSchema');
 
@@ -2544,5 +2546,84 @@ exports.getOwnTraderCreditWalletTransactionDetails = async (req, res) => {
   } catch (error) {
     console.log(error.message);
     return res.status(500).json({ message: "Internal server error" });
+  }
+};
+
+exports.createUserBankAccountHolder = async (req, res) => {
+  try {
+    const {
+      userId,
+      accountHolderName,
+      accountNumber,
+      bankName,
+      branchName,
+      ifscCode,
+    } = req.body;
+
+    if (
+      !accountHolderName ||
+      !accountNumber ||
+      !bankName ||
+      !branchName ||
+      !ifscCode
+    ) {
+      return res.status(400).json({ message: "All fields are required" });
+    }
+
+    // Check if the state handler exists
+    const user = await User.findOne({ memberid: userId });
+
+    if (!user) {
+      return res.status(404).json({ message: "User not found" });
+    }
+
+    const newAccountHolder = new BankAccountHolder({
+      userId,
+      accountHolderName,
+      accountNumber,
+      bankName,
+      branchName,
+      ifscCode,
+    });
+
+    const savedAccountHolder = await newAccountHolder.save();
+
+    return res.status(201).json({
+      message: "User Account holder created successfully",
+      accountHolder: savedAccountHolder,
+    });
+  } catch (error) {
+    console.error("Error creating account holder:", error.message);
+    res.status(500).json({ message: "Internal server error" });
+  }
+};
+
+//=====================================================================
+
+exports.createUserUpiHolder = async (req, res) => {
+  try {
+    const { upiId, userId } = req.body;
+
+    if (!upiId) {
+      return res.status(400).json({ message: "UPI Id is required" });
+    }
+    const user = await User.findOne({ memberid: userId });
+
+    if (!user) {
+      return res.status(404).json({ message: "User not found" });
+    }
+
+    const newUpi = new UpiHolder({
+      upiId,
+      userId,
+    });
+
+    const savedUpi = await newUpi.save();
+    return res
+      .status(201)
+      .json({ message: "User UPI created successfully", savedUpi });
+  } catch (error) {
+    console.error("Error creating UPI ID:", error.message);
+    res.status(500).json({ message: "Internal server error" });
   }
 };

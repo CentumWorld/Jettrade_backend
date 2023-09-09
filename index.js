@@ -88,6 +88,8 @@ const adminFetchAllRenewalUser = require("./routes/admin-fetch-all-renewal-user"
 const fetchAllNewPaidUser = require("./routes/fetch-all-new-paid-user");
 const changePaymentStatusForRenewal = require("./routes/users/change-payment-status-for-renewal");
 const getOwnTraderCreditWalletTransactionDetails = require("./routes/users/get-Own-Trader-Credit-Wallet-Transaction-Details");
+const createUserBankAccountHolder = require("./routes/users/create-user-bank-account-holder")
+const createUserUpiHolder = require("./routes/users/create-user-upi-holder")
 
 //admin
 const adminFetchBusinessDeveloperApproveWithdrawal = require("./routes/admin-Fetch-Business-Developer-Approve-Withdrawal");
@@ -397,6 +399,7 @@ app.use("/user", updateDayCount);
 app.use("/user", updateExpire);
 app.use("/admin", videoUpload);
 app.use("/user", getVideo);
+app.use("/user", createUserBankAccountHolder)
 app.use("/user", addingAmountToTradingWallet);
 app.use("/user", withdrawlAmountFromTradingWallet);
 app.use("/admin", fetchParticularUserDetailsFromAdminUsingUserid);
@@ -451,7 +454,7 @@ app.use("/admin", fetchMemberCreditwalletTransactionDetails);
 app.use("/admin", fetchUserCreditwalletTransactionDetails);
 app.use("/admin", updateAdharCardStateHandler);
 app.use("/admin", updatePanCardStateHandler);
-
+app.use("/user", createUserUpiHolder)
 // refferal
 app.use("/member", memberRegistration);
 app.use("/member", memberLogin);
