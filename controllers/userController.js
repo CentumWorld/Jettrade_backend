@@ -2177,7 +2177,7 @@ exports.tradingWalletTransferFromOneUserToAnother = async (req, res) => {
 
 exports.withdrawlFromWalletAndTradingWallet = async (req, res) => {
   try {
-    let { userid, requestAmount, date } = req.body;
+    let { userid, requestAmount, date , paymentBy} = req.body;
 
     if (requestAmount < 500) {
       return res
@@ -2212,6 +2212,7 @@ exports.withdrawlFromWalletAndTradingWallet = async (req, res) => {
       userid: userid,
       amountWithdrawn: requestAmount,
       date: date || Date.now(),
+      paymentBy
     });
 
     await withdrawalTransaction.save();
