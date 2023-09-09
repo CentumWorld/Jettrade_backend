@@ -234,6 +234,7 @@ const fetchUserCreditwalletTransactionDetails = require("./routes/fetch-User-Cre
 const verifyState = require("./routes/verify-State");
 const verifyBusinessDeveloper = require("./routes/verify-Business-Developer");
 const verifyFranchise = require("./routes/verify-Franchise");
+const fetchParticularMemberDetailsUsingMemberid = require('./routes/fetch-particular-member-details-using-memberid');
 
 //=======================State=================================================
 
@@ -544,6 +545,7 @@ app.use('/admin', getMemberBankAndUpiDetails)
 app.use("/admin", verifyState);
 app.use("/admin", verifyBusinessDeveloper);
 app.use("/admin", verifyFranchise);
+app.use('/admin',fetchParticularMemberDetailsUsingMemberid);
 // refferalin
 app.use("/member", memberLogin);
 app.use("/admin", fetchMemberDetails);

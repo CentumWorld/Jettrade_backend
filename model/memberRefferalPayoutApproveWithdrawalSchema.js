@@ -14,6 +14,9 @@ const memberRefferalPayoutApproveWithdrawalSchema = new mongoose.Schema({
     },
     approveDate:{
         type:Date
+    },
+    paymentBy : {
+        type: String
     }
 
 })
