@@ -144,7 +144,7 @@ exports.verifyUser = async (req, res) => {
     const updatedUser = await User.findOneAndUpdate(
       { _id: id },
       { $set: { status: status, verifyDate: Date.now() } },
-      { new: true } 
+      { new: true }
     );
 
     if (!updatedUser) {
@@ -155,7 +155,7 @@ exports.verifyUser = async (req, res) => {
 
     return res.status(200).json({
       message: "Verified Successfully",
-      user: updatedUser, 
+      user: updatedUser,
     });
   } catch (error) {
     console.error(error); // Log the error for debugging
@@ -212,8 +212,8 @@ exports.verifyMember = async (req, res) => {
   let result = await Member.updateOne(
     { _id: id },
     {
-      $set: { status: status , verifyDate: Date.now()},
-      
+      $set: { status: status, verifyDate: Date.now() },
+
     }
   );
   if (result.modifiedCount > 0) {
@@ -793,17 +793,18 @@ exports.fetchRefferalPayoutMember = async (req, res) => {
 
 // fetchRefferalPayoutWithdrawalRequest
 exports.fetchRefferalPayoutWithdrawalRequest = async (req, res) => {
-  const {memberid} = req.body
-  const memberWithdrawalRequest = await memberRefferalPayoutRequest.find({memberid:memberid})
-    if (memberWithdrawalRequest.length > 0){
-      return res.status(200).json({ message: "Withdrawal Request fetched",
+  const { memberid } = req.body
+  const memberWithdrawalRequest = await memberRefferalPayoutRequest.find({ memberid: memberid })
+  if (memberWithdrawalRequest.length > 0) {
+    return res.status(200).json({
+      message: "Withdrawal Request fetched",
       memberWithdrawalRequest
     });
-    } else {
-      return res
-        .status(400)
-        .json({ message: "something went wrong",});
-    
+  } else {
+    return res
+      .status(400)
+      .json({ message: "something went wrong", });
+
   }
 };
 
@@ -887,7 +888,7 @@ exports.approveMemberRefferalPayout = async (req, res) => {
       memberid: memberid,
       walletAmount: walletAmount,
       requestDate: requestDate,
-      paymentBy:paymentBy,
+      paymentBy: paymentBy,
       approveDate: new Date(),
 
     });
@@ -908,17 +909,18 @@ exports.approveMemberRefferalPayout = async (req, res) => {
 
 // fetchMemberRefferalPayoutApproveWithdrawal
 exports.fetchMemberRefferalPayoutApproveWithdrawal = async (req, res) => {
-  const {memberid} = req.body
-   const memberApproveWithdrawal = await memberRefferalPayoutApproveWithdrawal.find({memberid})
-    if (memberApproveWithdrawal) {
-      return res.status(200).json({ message: "Member approve withdrawal fetched",
-      memberApproveWithdrawal 
+  const { memberid } = req.body
+  const memberApproveWithdrawal = await memberRefferalPayoutApproveWithdrawal.find({ memberid })
+  if (memberApproveWithdrawal) {
+    return res.status(200).json({
+      message: "Member approve withdrawal fetched",
+      memberApproveWithdrawal
     });
-    } else {
-      return res
-        .status(400)
-        .json({ message: "Something went to wrong" });
-    }
+  } else {
+    return res
+      .status(400)
+      .json({ message: "Something went to wrong" });
+  }
 };
 
 // fetchUserChatCount
@@ -1596,35 +1598,35 @@ exports.getVideos = async (req, res) => {
 exports.subAdminLogin = async (req, res) => {
   try {
     const { subAdminId, password } = req.body;
-  
+
     if (!subAdminId || !password) {
       return res
         .status(400)
         .json({ message: "Please provide User Id and password" });
     }
-  
+
     const subadmin = await subAdmin.findOne({ subAdminId: subAdminId });
-  
+
     if (!subadmin) {
       return res.status(404).json({ message: "Sub admin not found" });
     }
-  
+
     if (subadmin.isBlocked) {
       return res.status(401).json({ message: "You are Blocked" });
     }
-  
+
     const passwordMatch = await bcrypt.compare(password, subadmin.password);
-  
+
     if (!passwordMatch) {
       return res.status(401).json({ message: "Incorrect userId and password" });
     }
-  
+
     const token = jwt.sign(
       { subAdminId: subadmin._id },
       process.env.SECRET_KEY,
       { expiresIn: "8h" }
     );
-  
+
     return res.status(200).json({
       message: "Sub admin login successful",
       subadmin: subadmin,
@@ -1634,7 +1636,7 @@ exports.subAdminLogin = async (req, res) => {
     console.error(error.message);
     return res.status(500).json({ message: "Internal server error" });
   }
-  
+
 };
 
 // createSubAdminInsideAdmin
@@ -1896,7 +1898,15 @@ exports.createStateHandler = async (req, res) => {
     console.log(referralId, "1886");
 
     const frenchiseWallet = 0;
+    console.log(typeof (selectedState), 1899)
+    // ------------------------
 
+    const inputString = selectedState;
+    const resultArray = inputString.split(',');
+
+    console.log(resultArray);
+
+    // -----------------------
     const newStateHandler = new StateHandler({
       fname,
       lname,
@@ -1908,7 +1918,7 @@ exports.createStateHandler = async (req, res) => {
       frenchiseWallet,
       referralId,
       referredId,
-      selectedState,
+      selectedState: resultArray,
       paymentRequestCount,
       adharCard: adharCardLocation,
       panCard: panCardLocation,
@@ -2916,9 +2926,8 @@ exports.blockBusinessDeveloperByAdmin = async (req, res) => {
 
     if (block === businessDeveloper.isBlocked) {
       return res.status(400).json({
-        message: `Business Developer is already ${
-          block ? "blocked" : "unblocked"
-        }`,
+        message: `Business Developer is already ${block ? "blocked" : "unblocked"
+          }`,
       });
     }
 
@@ -2928,9 +2937,8 @@ exports.blockBusinessDeveloperByAdmin = async (req, res) => {
     );
 
     return res.status(200).json({
-      message: `Business Developer ${
-        block ? "blocked" : "unblocked"
-      } successfully`,
+      message: `Business Developer ${block ? "blocked" : "unblocked"
+        } successfully`,
     });
   } catch (error) {
     console.log(error.message);
@@ -4111,7 +4119,7 @@ exports.verifyState = async (req, res) => {
     const updatedState = await StateHandler.findByIdAndUpdate(
       id,
       { isVerify: true, verifyDate: Date.now() },
-      { new: true } 
+      { new: true }
     );
 
     return res.status(200).json({
@@ -4119,7 +4127,7 @@ exports.verifyState = async (req, res) => {
       state: updatedState,
     });
   } catch (error) {
-    console.log(error.message); 
+    console.log(error.message);
     return res.status(500).json({ message: "Internal server error" });
   }
 };
@@ -4139,7 +4147,7 @@ exports.verifyFranchise = async (req, res) => {
     const updatedFranchise = await Franchise.findByIdAndUpdate(
       id,
       { isVerify: true, verifyDate: Date.now() },
-      { new: true } 
+      { new: true }
     );
 
     return res.status(200).json({
@@ -4147,7 +4155,7 @@ exports.verifyFranchise = async (req, res) => {
       state: updatedFranchise,
     });
   } catch (error) {
-    console.log(error.message); 
+    console.log(error.message);
     return res.status(500).json({ message: "Internal server error" });
   }
 };
@@ -4167,7 +4175,7 @@ exports.verifyBusinessDeveloper = async (req, res) => {
     const updatedBusinessDeveloper = await BusinessDeveloper.findByIdAndUpdate(
       id,
       { isVerify: true, verifyDate: Date.now() },
-      { new: true } 
+      { new: true }
     );
 
     return res.status(200).json({
@@ -4175,13 +4183,13 @@ exports.verifyBusinessDeveloper = async (req, res) => {
       state: updatedBusinessDeveloper,
     });
   } catch (error) {
-    console.log(error.message); 
+    console.log(error.message);
     return res.status(500).json({ message: "Internal server error" });
   }
 };
 
 // blockSubAdminByAdmin
-exports.blockSubAdminByAdmin = async (req,res) => {
+exports.blockSubAdminByAdmin = async (req, res) => {
   const { block, id } = req.body;
   // console.log(block);
   let result = await subAdmin.updateOne(
@@ -4225,18 +4233,19 @@ exports.getMemberBankAndUpiDetails = async (req, res) => {
 };
 
 // fetchParticularMemberDetailsUsingMemberid
-exports.fetchParticularMemberDetailsUsingMemberid = async (req,res) => {
-  const {memberId} = req.body
-  const particularMemberDetails = await Member.findOne({memberId:memberId})
-  if(!particularMemberDetails){
+exports.fetchParticularMemberDetailsUsingMemberid = async (req, res) => {
+  const { memberId } = req.body
+  const particularMemberDetails = await Member.findOne({ memberId: memberId })
+  if (!particularMemberDetails) {
     return res.status(400).send("Invalid member Id")
   }
-  return res.status(200).json({message:"fetched particular member details ",
-  particularMemberDetails
-})
+  return res.status(200).json({
+    message: "fetched particular member details ",
+    particularMemberDetails
+  })
 }
 
-exports.getUserBankAndUpiDetails = async(req, res) => {
+exports.getUserBankAndUpiDetails = async (req, res) => {
   try {
     const { userId } = req.body;
 
