@@ -1756,7 +1756,7 @@ exports.addingAmountToTradingWallet = async (req, res) => {
 };
 
 exports.withdrawlAmountFromTradingWallet = async (req, res) => {
-  const { userid, amountWithdrawn, date } = req.body;
+  const { userid, amountWithdrawn, date, paymentBy } = req.body;
 
   // Validate that the "amountWithdrawn" is a valid number and greater than zero
   if (isNaN(amountWithdrawn) || amountWithdrawn <= 0) {
@@ -1793,6 +1793,7 @@ exports.withdrawlAmountFromTradingWallet = async (req, res) => {
       userid: userid,
       amountWithdrawn: amountWithdrawn,
       date: date,
+      paymentBy
     });
 
     // Save the transaction document
