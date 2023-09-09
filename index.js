@@ -139,7 +139,8 @@ const deleteBusinessDeveloper = require("./routes/delete-business-developer");
 const updateAdharCardStateHandler = require("./routes/update-adhar-card-state-handler");
 const updatePanCardStateHandler = require("./routes/update-pan-card-state-handler");
 const blockSubAdminByAdmin = require("./routes/block-subAdmin-by-Admin");
-
+const getOwnUserBankAndUpiDetails = require("./routes/users/get-own-user-bank-and-upi-details")
+const getUserBankAndUpiDetails = require("./routes/get-user-bank-and-upi-details")
 // refferal
 const memberRegistration = require("./routes/refferal/member-registration");
 const memberLogin = require("./routes/refferal/member-login");
@@ -456,6 +457,9 @@ app.use("/admin", fetchUserCreditwalletTransactionDetails);
 app.use("/admin", updateAdharCardStateHandler);
 app.use("/admin", updatePanCardStateHandler);
 app.use("/user", createUserUpiHolder)
+app.use("/user", getOwnUserBankAndUpiDetails)
+
+app.use("/admin", getUserBankAndUpiDetails)
 // refferal
 app.use("/member", memberRegistration);
 app.use("/member", memberLogin);

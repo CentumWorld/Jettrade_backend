@@ -2627,3 +2627,23 @@ exports.createUserUpiHolder = async (req, res) => {
     res.status(500).json({ message: "Internal server error" });
   }
 };
+//==============================================================
+
+exports.getOwnUserBankAndUpiDetails = async(req, res) => {
+  try {
+    const { userId } = req.body;
+
+    const userBankDetails = await BankAccountHolder.find({ userId: userId });
+    const userUpiId = await UpiHolder.find({ userId: userId });
+
+
+    return res.status(200).json({
+      message: "Bank and UPI details of user fetched successfully",
+      userBankDetails,
+      userUpiId,
+    });
+  } catch (error) {
+    console.error("Error fetching user details:", error.message);
+    return res.status(500).json({ message: "Internal server error" });
+  }
+}

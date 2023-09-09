@@ -4213,13 +4213,6 @@ exports.getMemberBankAndUpiDetails = async (req, res) => {
 
     const memberBankDetails = await BankAccountHolder.find({ userId: userId });
     const memberUpiId = await UpiHolder.find({ userId: userId });
-
-    if (!memberBankDetails || !memberUpiId) {
-      return res.status(404).json({
-        message: "Bank details or UPI ID not found for the provided member",
-      });
-    }
-
     return res.status(200).json({
       message: "Bank and UPI details of member fetched successfully",
       memberBankDetails,
@@ -4241,4 +4234,23 @@ exports.fetchParticularMemberDetailsUsingMemberid = async (req,res) => {
   return res.status(200).json({message:"fetched particular member details ",
   particularMemberDetails
 })
+}
+
+exports.getUserBankAndUpiDetails = async(req, res) => {
+  try {
+    const { userId } = req.body;
+
+    const userBankDetails = await BankAccountHolder.find({ userId: userId });
+    const userUpiId = await UpiHolder.find({ userId: userId });
+
+
+    return res.status(200).json({
+      message: "Bank and UPI details of user fetched successfully",
+      userBankDetails,
+      userUpiId,
+    });
+  } catch (error) {
+    console.error("Error fetching user details:", error.message);
+    return res.status(500).json({ message: "Internal server error" });
+  }
 }
