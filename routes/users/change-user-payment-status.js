@@ -5,8 +5,7 @@ const userController = require("../../controllers/userController");
 const {authenticateUser,authorizeUser} = require('../../middleware/checkAuth');
 
 router.post(
-  "/users/change-user-payment-status",authenticateUser,
-  authorizeUser,
+  "/users/change-user-payment-status",
   userController.changeUserPaymentStatus
 );
 
