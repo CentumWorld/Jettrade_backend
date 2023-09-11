@@ -26,7 +26,7 @@ const adminSchema = new mongoose.Schema({
     type: String
   },
   adminWallet: {
-    type: Number,
+    type: Float64Array
   }
 });
 
