@@ -1884,7 +1884,7 @@ exports.createStateHandler = async (req, res) => {
     if (!isValidUserId(stateHandlerId)) {
       return res.status(422).json({
         message:
-          "frenchise Id Should have at least 1 letter and 1 digit, minimum length 6.",
+          "State Handler  Id Should have at least 1 letter and 1 digit, minimum length 6.",
       });
     }
 
