@@ -1898,7 +1898,6 @@ exports.createStateHandler = async (req, res) => {
     console.log(referralId, "1886");
 
     const frenchiseWallet = 0;
-    console.log(typeof (selectedState), 1899)
     // ------------------------
 
     const inputString = selectedState;
@@ -2091,6 +2090,11 @@ exports.createFrenchise = async (req, res) => {
     console.log(referralId, "1886");
 
     const frenchiseWallet = 0;
+    
+    const inputString = franchiseCity;
+    const resultArray = inputString.split(',');
+
+    console.log(resultArray);
 
     const newFranchise = new Frenchise({
       fname,
@@ -2099,7 +2103,7 @@ exports.createFrenchise = async (req, res) => {
       email,
       password: hashedPassword,
       gender,
-      franchiseCity,
+      franchiseCity : resultArray,
       frenchiseId,
       referredId,
       frenchiseWallet,
