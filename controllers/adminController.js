@@ -87,10 +87,12 @@ exports.adminLogin = async (req, res) => {
           { expiresIn: "8h" }
         );
         const admin_id = adminLogin.admin_id;
+        const referralId = adminLogin.referralId
         res.status(201).json({
           message: "Admin Login Successfully",
           token: token,
           admin_id,
+          referralId,
           expires: new Date().getTime() + 60000,
         });
       } else {
