@@ -1235,7 +1235,7 @@ exports.changeUserPaymentStatus = async (req, res) => {
             if (admin) {
               console.log(admin.adminWallet);
               let adminWallet = admin.adminWallet;
-              adminWallet += 1688.75;
+              adminWallet += 1612.50;
               await Admin.updateOne(
                 { referralId: stateHandler.referredId },
                 { $set: { adminWallet: adminWallet } }
@@ -1243,7 +1243,7 @@ exports.changeUserPaymentStatus = async (req, res) => {
               const adminCreditWalletDetails = new AdminCreditWalletTransaction(
                 {
                   admin_id: admin.admin_id,
-                  creditAmount: 1688.75,
+                  creditAmount: 1612.50,
                   Type: "New",
                   refferUserId: stateHandler.stateHandlerId,
                 }
@@ -2155,7 +2155,7 @@ exports.changePaymentStatusForRenewal = async (req, res) => {
           });
 
           let adminWallet = admin.adminWallet;
-          adminWallet += 692.5;
+          adminWallet += 655;
 
           await Admin.updateOne(
             { referralId: stateHandler.referredId },
@@ -2164,7 +2164,7 @@ exports.changePaymentStatusForRenewal = async (req, res) => {
 
           const adminCreditWalletDetails = new AdminCreditWalletTransaction({
             admin_id: admin.admin_id,
-            creditAmount: 692.5,
+            creditAmount: 655,
             Type: "Renewal",
             refferUserId: stateHandler.stateHandlerId,
           });

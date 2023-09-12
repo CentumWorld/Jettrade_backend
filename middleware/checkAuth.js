@@ -7,28 +7,6 @@ const State = require("../model/stateHandlerSchema");
 const Franchise = require("../model/frenchiseSchema");
 const BusinessDeveloper = require("../model/businessDeveloperSchema");
 const VideoCreater = require("../model/VideoCreaterSchema");
-// exports.checkAuth = (req, res, next) => {
-//   const token = req.headers.authorization?.split(" ")[1];
-
-//   if (!token) {
-//     return res.status(403).json("Unauthorized");
-//   }
-
-//   try {
-//     jwt.verify(token, process.env.SECRET_KEY, (err, decoded) => {
-//       if (err) {
-//         return res.status(400).json({ status: false, message: err.message });
-//       }
-//       req.user = decoded; // Set the decoded token on the request object for further use
-
-//       const userId = req.user.userId; // Extract the user ID from req.user
-
-//       next(); // Proceed to the next middleware
-//     });
-//   } catch (error) {
-//     return res.status(400).json("Invalid Token");
-//   }
-// };
 
 exports.authenticateAdmin = async (req, res, next) => {
   const token = req.headers.authorization?.split(" ")[1];
@@ -52,10 +30,16 @@ exports.authenticateAdmin = async (req, res, next) => {
     const businessDeveloper = await BusinessDeveloper.findById(
       decoded.businessDeveloperId
     );
-    const videoCreator = await VideoCreater.findById(decoded.userId)
+    const videoCreator = await VideoCreater.findById(decoded.userId);
 
-
-    if (!admin && !subAdmin && !state && !franchise && !businessDeveloper && !videoCreator) {
+    if (
+      !admin &&
+      !subAdmin &&
+      !state &&
+      !franchise &&
+      !businessDeveloper &&
+      !videoCreator
+    ) {
       return res.status(401).json({ message: "User not found" });
     }
 
@@ -65,12 +49,10 @@ exports.authenticateAdmin = async (req, res, next) => {
       req.userRoles.push("admin");
     }
 
-   
-
     if (subAdmin) {
       req.userRoles.push("subAdmin");
-      req.isSubAdmin = true; // Set isSubAdmin to true for subadmin
-      req.isVideoCreator = subAdmin.isVideoCreator; // Set isVideoCreator based on subadmin property
+      req.isSubAdmin = true;
+      req.isVideoCreator = subAdmin.isVideoCreator;
     }
 
     if (state) {
@@ -85,7 +67,7 @@ exports.authenticateAdmin = async (req, res, next) => {
       req.userRoles.push("businessDeveloper");
     }
 
-    if(videoCreator){
+    if (videoCreator) {
       req.userRoles.push("videoCreator");
     }
 
@@ -112,27 +94,14 @@ exports.authorizeRole = (allowedRoles) => {
   };
 };
 
-exports.authorizeAdmin = async (req, res, next) => {
-  try {
-    if (req.isAdmin) {
-      // If user is an admin, allow access
-      next();
-    } else {
-      return res
-        .status(403)
-        .json({ message: "You are not authorized as an admin" });
-    }
-  } catch (error) {
-    console.log(error.message);
-    return res.status(500).json({ message: "Internal Server Error" });
-  }
-};
-
 //===================
 
 exports.authorizeVideoUpload = async (req, res, next) => {
   try {
-    if (req.userRoles.includes('admin')||req.userRoles.includes('subAdmin') && req.isVideoCreator) {
+    if (
+      req.userRoles.includes("admin") ||
+      (req.userRoles.includes("subAdmin") && req.isVideoCreator)
+    ) {
       // If user is a subadmin and is a video creator, allow video upload
       next();
     } else {
@@ -146,69 +115,6 @@ exports.authorizeVideoUpload = async (req, res, next) => {
   }
 };
 //==================
-
-//==========
-
-// exports.authenticateAdmin = async (req, res, next) => {
-//   const token = req.headers.authorization?.split(" ")[1];
-
-//   if (!token) {
-//     return res.status(401).json({ message: "Unauthorized" });
-//   }
-
-//   try {
-//     const decoded = jwt.verify(token, process.env.SECRET_KEY);
-//     console.log(decoded.userId, "dddddd");
-//     req.userId = decoded.userId; // Save the user ID from the token in the request object
-
-//     console.log(req.userId, "uuuuu");
-
-//     const user = await User.findById(decoded.userId);
-
-//     const admin = await Admin.findById(decoded.userId);
-
-//     console.log(admin, "4444444444");
-
-//     console.log(admin, "admin");
-
-//     if (!user && !admin) {
-//       return res.status(403).json({ message: "You are not authorized1111" });
-//     }
-
-//     req.adminId = admin ? admin._id : user._id;
-
-//     next();
-//   } catch (error) {
-//     console.log(error.message);
-//     return res.status(500).json({ message: "Internal Server Error" });
-//   }
-// };
-
-// exports.authorizeAdmin = async (req, res, next) => {
-//   const adminId = req.adminId;
-
-//   if (!adminId) {
-//     return res.status(403).json({ message: "You are not authorized" });
-//   }
-
-//   try {
-//     const user = await User.findById(adminId);
-//     const admin = await Admin.findById(adminId);
-
-//     if (user && user.isSubAdmin) {
-//       next();
-//     } else if (admin) {
-//       next();
-//     } else {
-//       return res.status(403).json({ message: "You are not authorized as an admin or a sub admin" });
-//     }
-//   } catch (error) {
-//     console.error(error.message);
-//     return res.status(500).json({ message: "Internal Server Error" });
-//   }
-// };
-
-//======
 
 exports.authenticateUser = async (req, res, next) => {
   const token = req.headers.authorization?.split(" ")[1];
@@ -280,47 +186,6 @@ exports.authorizeMember = async (req, res, next) => {
     next();
   } catch (error) {
     console.log(error.message, "middleware seever error");
-    return res
-      .status(500)
-      .json({ status: false, message: "Internal server error" });
-  }
-};
-
-//======================================================================
-
-exports.authenticateState = async (req, res, next) => {
-  try {
-    const token = req.headers.authorization?.split(" ")[1];
-    if (!token) {
-      return res.status(401).json({ status: false, message: "Unauthorized" });
-    }
-    const decoded = jwt.verify(token, process.env.SECRET_KEY);
-
-    req.stateHandlerId = decoded.stateHandlerId;
-
-    next();
-  } catch (error) {
-    return res
-      .status(500)
-      .json({ status: false, message: "Internal server error" });
-  }
-};
-
-//==========================================================================
-
-exports.authorizeState = async (req, res, next) => {
-  try {
-    const stateHandlerId = req.stateHandlerId;
-    const state = await State.findById(stateHandlerId);
-    if (!state) {
-      return res.status(403).json({
-        status: false,
-        message: "You are not authorized as an state handler",
-      });
-    }
-    next();
-  } catch (error) {
-    console.log(error.message, "middleware server error");
     return res
       .status(500)
       .json({ status: false, message: "Internal server error" });
