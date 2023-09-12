@@ -1207,7 +1207,7 @@ exports.changeUserPaymentStatus = async (req, res) => {
             await frenchiseCreditWalletDetails.save();
 
             const transferPercentage = 2.5;
-            const transferAmount = (450 * transferPercentage) / 100;
+            const transferAmount = (3500 * transferPercentage) / 100;
             const stateHandler = await StateHandler.findOne({
               referralId: franchise.referredId,
             });
@@ -2125,7 +2125,8 @@ exports.changePaymentStatusForRenewal = async (req, res) => {
           await frenchiseCreditWalletDetails.save();
 
           const transferPercentage = 2.5;
-          const transferAmount = (300 * transferPercentage) / 100;
+          const transferAmount = (1800
+             * transferPercentage) / 100;
 
           const stateHandler = await StateHandler.findOne({
             referralId: franchise.referredId,
@@ -2698,3 +2699,5 @@ exports.getOwnUserBankAndUpiDetails = async (req, res) => {
     return res.status(500).json({ message: "Internal server error" });
   }
 };
+//===============================================================
+

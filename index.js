@@ -322,6 +322,10 @@ const eligibleBusinessDeveloperForWithdrawal = require("./routes/businessDevelop
 //==============================SubAdmin====================================
 const getOwnSubAdminDetails = require("./routes/subAdmin/get-own-sub-admin-details");
 const updateOwnSubAdminDetails = require("./routes/subAdmin/update-own-sub-admin-details");
+//==========================Portfolio=====================================
+
+const getAllStates = require("./routes/portfolio/get-all-state")
+const getAllFranchises = require("./routes/portfolio/get-all-franchise")
 
 //==========================Video creator===================================
 const videoCreatorLogin = require("./routes/videoCreator/videoCreatorLogin");
@@ -685,5 +689,11 @@ app.use("/subAdmin", updateOwnSubAdminDetails);
 
 //=====================Video Creator============================
 app.use("/videoCreator", videoCreatorLogin);
+
+//==========================Portfolio=====================================
+app.use("/portfolio", getAllStates)
+
+app.use("/portfolio", getAllFranchises)
+
 
 module.exports = app;
