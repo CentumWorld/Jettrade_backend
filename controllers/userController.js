@@ -2132,8 +2132,6 @@ exports.changePaymentStatusForRenewal = async (req, res) => {
             referralId: franchise.referredId,
           });
 
-          console.log(stateHandler, "2421");
-
           let stateHandlerWallet = stateHandler.stateHandlerWallet;
           stateHandlerWallet += transferAmount;
 
