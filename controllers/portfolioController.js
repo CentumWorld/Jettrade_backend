@@ -1,4 +1,5 @@
 const Franchise = require("../model/frenchiseSchema");
+const stateHandler = require("../model/stateHandlerSchema");
 const StateHandler = require("../model/stateHandlerSchema");
 
 
@@ -11,7 +12,7 @@ exports.getAllStates = async (req, res) => {
 
     return res.status(200).json({ message: "Fetched all S.H.O", data: states });
   } catch (error) {
-    console.error(error);
+    console.log(error.message);
 
     return res.status(500).json({ error: "Internal Server Error" });
   }
@@ -32,5 +33,20 @@ exports.getAllFranchises = async (req, res) => {
     console.error(error);
 
     return res.status(500).json({ error: "Internal Server Error" });
+  }
+};
+
+
+
+exports.filterSHOByState = async (req, res) => {
+  try {
+    const { state } = req.body;
+
+    const filteredDocuments = await stateHandler.find({ selectedState: state });
+
+    res.status(200).json(filteredDocuments);
+  } catch (error) {
+    console.error(error.message);
+    res.status(500).json({ error: "Internal Server Error" });
   }
 };

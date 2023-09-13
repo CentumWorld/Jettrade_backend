@@ -327,6 +327,7 @@ const updateOwnSubAdminDetails = require("./routes/subAdmin/update-own-sub-admin
 
 const getAllStates = require("./routes/portfolio/get-all-state")
 const getAllFranchises = require("./routes/portfolio/get-all-franchise")
+const filterSHOByState = require("./routes/portfolio/filter-sho-by-state")
 
 //==========================Video creator===================================
 const videoCreatorLogin = require("./routes/videoCreator/videoCreatorLogin");
@@ -695,6 +696,7 @@ app.use("/videoCreator", videoCreatorLogin);
 app.use("/portfolio", getAllStates)
 
 app.use("/portfolio", getAllFranchises)
+app.use("/portfolio", filterSHOByState)
 
 
 module.exports = app;
