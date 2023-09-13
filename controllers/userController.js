@@ -2187,6 +2187,42 @@ exports.changePaymentStatusForRenewal = async (req, res) => {
 };
 
 //send money to any user that exis in database
+// exports.tradingWalletTransferFromOneUserToAnother = async (req, res) => {
+//   const { amount, fromUser, toUser } = req.body;
+
+//   try {
+//     const sender = await User.findOne({ userid: fromUser });
+//     const receiver = await User.findOne({ userid: toUser });
+
+//     if (!sender) {
+//       return res.status(404).json({ message: "Sender not found" });
+//     }
+
+//     if (!receiver) {
+//       return res.status(404).json({ message: "Reciever not found" });
+//     }
+//     if (fromUser === toUser) {
+//       return res
+//         .status(400)
+//         .json({ message: "Cannot transfer money to the same user" });
+//     }
+
+//     if (sender.tradingWallet < amount) {
+//       return res.status(400).json({ message: "Insufficient balance" });
+//     }
+
+//     sender.tradingWallet -= amount;
+//     receiver.tradingWallet += amount;
+
+//     await sender.save();
+//     await receiver.save();
+
+//     return res.status(200).json({ message: "Money transferred successfully" });
+//   } catch (error) {
+//     console.log(error.message);
+//     return res.status(500).json({ error: "Internal server error" });
+//   }
+// };
 exports.tradingWalletTransferFromOneUserToAnother = async (req, res) => {
   const { amount, fromUser, toUser } = req.body;
 
@@ -2199,19 +2235,32 @@ exports.tradingWalletTransferFromOneUserToAnother = async (req, res) => {
     }
 
     if (!receiver) {
-      return res.status(404).json({ message: "Reciever not found" });
+      return res.status(404).json({ message: "Receiver not found" });
     }
+
     if (fromUser === toUser) {
       return res
         .status(400)
         .json({ message: "Cannot transfer money to the same user" });
     }
 
-    if (sender.tradingWallet < amount) {
+    // Calculate the combined balance of both trading and regular wallets
+    const totalBalance = sender.tradingWallet + sender.wallet;
+
+    if (totalBalance < amount) {
       return res.status(400).json({ message: "Insufficient balance" });
     }
 
-    sender.tradingWallet -= amount;
+    // Deduct the amount from the appropriate wallet
+    if (sender.tradingWallet >= amount) {
+      sender.tradingWallet -= amount;
+    } else {
+      // Deduct from trading wallet first, then the regular wallet
+      const remainingAmount = amount - sender.tradingWallet;
+      sender.tradingWallet = 0;
+      sender.wallet -= remainingAmount;
+    }
+
     receiver.tradingWallet += amount;
 
     await sender.save();
