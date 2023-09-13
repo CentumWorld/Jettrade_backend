@@ -50,3 +50,16 @@ exports.filterSHOByState = async (req, res) => {
     res.status(500).json({ error: "Internal Server Error" });
   }
 };
+
+exports.filterFranchiseByState = async (req, res) => {
+  try {
+    const { state } = req.body;
+
+    const filteredDocuments = await Franchise.find({ franchiseState: state });
+
+    res.status(200).json(filteredDocuments);
+  } catch (error) {
+    console.error(error.message);
+    res.status(500).json({ error: "Internal Server Error" });
+  }
+};
