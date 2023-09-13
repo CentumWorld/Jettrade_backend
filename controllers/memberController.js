@@ -112,16 +112,16 @@ exports.memberRegistration = async (req, res) => {
       return res.status(200).json({ message: "Member already exist!" });
     }
 
-    const existingreferredId = await BusinessDeveloper.findOne({
-      referralId: reffered_id,
-    });
-    console.log(existingreferredId, "115");
+    // const existingreferredId = await BusinessDeveloper.findOne({
+    //   referralId: reffered_id,
+    // });
+    // console.log(existingreferredId, "115");
 
-    if (!existingreferredId) {
-      return res
-        .status(400)
-        .send({ message: "You are providing wrong referral Id" });
-    }
+    // if (!existingreferredId) {
+    //   return res
+    //     .status(400)
+    //     .send({ message: "You are providing wrong referral Id" });
+    // }
 
     const member = new Member({
       fname,
