@@ -142,6 +142,7 @@ const updatePanCardStateHandler = require("./routes/update-pan-card-state-handle
 const blockSubAdminByAdmin = require("./routes/block-subAdmin-by-Admin");
 const getOwnUserBankAndUpiDetails = require("./routes/users/get-own-user-bank-and-upi-details")
 const getUserBankAndUpiDetails = require("./routes/get-user-bank-and-upi-details")
+const changePaymentStatus = require("./routes/users/change-payment-status")
 // refferal
 const memberRegistration = require("./routes/refferal/member-registration");
 const memberLogin = require("./routes/refferal/member-login");
@@ -324,6 +325,8 @@ const createBusinessDeveloperUpiHolder = require("./routes/businessDeveloper/cre
 const getBusinessDeveloperOwnBankDetails = require("./routes/businessDeveloper/get-Business-Developer-Own-Bank-Details");
 const getBusinessDeveloperOwnUpi = require("./routes/businessDeveloper/get-Business-Developer-Own-Upi");
 const eligibleBusinessDeveloperForWithdrawal = require("./routes/businessDeveloper/eligible-business-developer-for-withdrawal");
+const uploadBDProfilePhoto = require("./routes/businessDeveloper/uplaod-bd-profile-photo")
+const getBDProfilePhoto = require("./routes/businessDeveloper/get-bd-profile-photo")
 //==============================SubAdmin====================================
 const getOwnSubAdminDetails = require("./routes/subAdmin/get-own-sub-admin-details");
 const updateOwnSubAdminDetails = require("./routes/subAdmin/update-own-sub-admin-details");
@@ -471,6 +474,7 @@ app.use("/user", createUserUpiHolder)
 app.use("/user", getOwnUserBankAndUpiDetails)
 
 app.use("/admin", getUserBankAndUpiDetails)
+app.use("/user", changePaymentStatus)
 // refferal
 app.use("/member", memberRegistration);
 app.use("/member", memberLogin);
@@ -694,6 +698,8 @@ app.use("/businessDeveloper", createBusinessDeveloperUpiHolder);
 app.use("/businessDeveloper", getBusinessDeveloperOwnBankDetails);
 app.use("/businessDeveloper", getBusinessDeveloperOwnUpi);
 app.use("/businessDeveloper", eligibleBusinessDeveloperForWithdrawal);
+app.use("/businessDeveloper",uploadBDProfilePhoto)
+app.use("/businessDeveloper", getBDProfilePhoto)
 //=============================Sub- Admin======================================
 app.use("/subAdmin", getOwnSubAdminDetails);
 app.use("/subAdmin", updateOwnSubAdminDetails);

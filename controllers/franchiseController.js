@@ -743,23 +743,30 @@ exports.uploadFranchiseProfilePhoto = async (req, res) => {
       return res.status(404).json({ message: "Profile photo not found" });
     }
 
-    let existingProfilePhoto = await ProfilePhoto.findOne({ userid });
+    const existingProfilePhoto = await ProfilePhoto.findOne({ userid });
     if (existingProfilePhoto) {
       existingProfilePhoto.imageUrl = profilePhoto;
       await existingProfilePhoto.save();
-    } else {
-      existingProfilePhoto = new ProfilePhoto({
-        userid: userid,
-        imageUrl: profilePhoto,
-      });
-      await existingProfilePhoto.save();
-    }
-    return res
+      return res
       .status(200)
       .json({
         message: "Profile photo uploaded successfully",
         data: existingProfilePhoto,
       });
+    } else {
+    const newProfilePhoto = new ProfilePhoto({
+        userid: userid,
+        imageUrl: profilePhoto,
+      });
+      await newProfilePhoto.save();
+    
+    return res
+      .status(200)
+      .json({
+        message: "Profile photo uploaded successfully",
+        data: newProfilePhoto,
+      });
+    }
   } catch (error) {
     console.log(error.message)
     return res.status(500).json({ message: "Internal server error" });

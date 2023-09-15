@@ -20,6 +20,7 @@ const BusinessDeveloperPaymentRequest = require("../model/businessDeveloperPayme
 const BankAccountHolder = require("../model/BankAccountHolderSchema");
 const UpiHolder = require("../model/UpiHolderSchema");
 const MemberCreditWalletTransaction = require("../model/memberCreditWalletTransaction");
+const ProfilePhoto = require("../model/profilePhotoSchema");
 
 //============================================================================
 //all members fetch by business developer's referral id
@@ -371,7 +372,7 @@ exports.getOwnMembersInsideBusinessDeveloperCreditWalletTransactionDetails =
       const businessDeveloper = await BusinessDeveloper.findOne({
         businessDeveloperId: businessDeveloperId,
       });
-console.log(businessDeveloper, ";;;;;;")
+      console.log(businessDeveloper, ";;;;;;");
       // Fetch members based on the referred member IDs
       const referredMembers = await Member.find({
         referredId: businessDeveloper.referralId,
@@ -474,12 +475,9 @@ exports.createBusinessDeveloperPaymentRequest = async (req, res) => {
     const { businessDeveloperId, amount, paymentBy } = req.body;
 
     if (!businessDeveloperId || !amount || !paymentBy) {
-      return res
-        .status(400)
-        .json({
-          error:
-            "Business developer ID and amount and payment by are required.",
-        });
+      return res.status(400).json({
+        error: "Business developer ID and amount and payment by are required.",
+      });
     }
 
     const businessDeveloper = await BusinessDeveloper.findOne({
@@ -512,11 +510,10 @@ exports.createBusinessDeveloperPaymentRequest = async (req, res) => {
         },
         $set: {
           firstPayment: false,
-          verifyDate: Date.now()
-        }
+          verifyDate: Date.now(),
+        },
       }
     );
-    
 
     const newData = {
       businessDeveloperId,
@@ -611,12 +608,10 @@ exports.createBusinessDeveloperUpiHolder = async (req, res) => {
     });
 
     const savedUpi = await newUpi.save();
-    res
-      .status(201)
-      .json({
-        message: "Business developer upi created successfully",
-        savedUpi,
-      });
+    res.status(201).json({
+      message: "Business developer upi created successfully",
+      savedUpi,
+    });
   } catch (error) {
     console.error("Error creating UPI ID:", error.message);
     res.status(500).json({ message: "Internal server error" });
@@ -632,19 +627,15 @@ exports.getBusinessDeveloperOwnBankDetails = async (req, res) => {
     });
 
     if (!businessDeveloperBankDetails) {
-      return res
-        .status(404)
-        .json({
-          message: "Bank details not found for the provided business developer",
-        });
+      return res.status(404).json({
+        message: "Bank details not found for the provided business developer",
+      });
     }
 
-    return res
-      .status(200)
-      .json({
-        message: "bank details of business developer fetched successfully",
-        businessDeveloperBankDetails,
-      });
+    return res.status(200).json({
+      message: "bank details of business developer fetched successfully",
+      businessDeveloperBankDetails,
+    });
   } catch (error) {
     console.error("Error fetching business developer bank details:", error);
     return res.status(500).json({ message: "Internal server error" });
@@ -658,19 +649,15 @@ exports.getBusinessDeveloperOwnUpi = async (req, res) => {
     const businessDeveloperUpiId = await UpiHolder.find({ userId: userId });
 
     if (!businessDeveloperUpiId) {
-      return res
-        .status(404)
-        .json({
-          message: "upi id not found for the provided business developer",
-        });
+      return res.status(404).json({
+        message: "upi id not found for the provided business developer",
+      });
     }
 
-    return res
-      .status(200)
-      .json({
-        message: "Upi of business developer fetched successfully",
-        businessDeveloperUpiId,
-      });
+    return res.status(200).json({
+      message: "Upi of business developer fetched successfully",
+      businessDeveloperUpiId,
+    });
   } catch (error) {
     console.error("Error fetching business developer upi:", error);
     return res.status(500).json({ message: "Internal server error" });
@@ -682,24 +669,88 @@ exports.eligibleBusinessDeveloperForWithdrawal = async (req, res) => {
   try {
     const { businessDeveloperId } = req.body;
 
-    const businessDeveloper = await BusinessDeveloper.findOne({ businessDeveloperId: businessDeveloperId });
+    const businessDeveloper = await BusinessDeveloper.findOne({
+      businessDeveloperId: businessDeveloperId,
+    });
     if (!businessDeveloper) {
       return res.status(404).json({ message: "Business Developer not found" });
     }
 
     const updatedBusinessDeveloper = await BusinessDeveloper.findOneAndUpdate(
-      { businessDeveloperId: businessDeveloperId  },
-      { firstPayment: true }, 
-      {new: true}
+      { businessDeveloperId: businessDeveloperId },
+      { firstPayment: true },
+      { new: true }
     );
 
     if (!updatedBusinessDeveloper) {
-      return res.status(500).json({ message: "Failed to update Business developer" });
+      return res
+        .status(500)
+        .json({ message: "Failed to update Business developer" });
     }
 
-    return res.status(200).json({message: "Business developer updated successfully",updatedBusinessDeveloper });
+    return res
+      .status(200)
+      .json({
+        message: "Business developer updated successfully",
+        updatedBusinessDeveloper,
+      });
   } catch (error) {
     console.error("Error fetching Business developer :", error.message);
+    return res.status(500).json({ message: "Internal server error" });
+  }
+};
+//uploadBDProfilePhoto
+exports.uploadBDProfilePhoto = async (req, res) => {
+  try {
+    const profilePhoto = req.files["profilePhoto"][0]?.location;
+    const userid = req.body.userid;
+
+    if (!profilePhoto) {
+      return res.status(422).json({ message: "Profile photo is requires" });
+    }
+
+    let existingProfilePhoto = await ProfilePhoto.findOne({ userid });
+    if (existingProfilePhoto) {
+      existingProfilePhoto.imageUrl = profilePhoto;
+      await existingProfilePhoto.save();
+      return res
+        .status(200)
+        .json({
+          message: "Profile photo updated successfully",
+          data: existingProfilePhoto,
+        });
+    } else {
+      let newProfilePhoto = new ProfilePhoto({
+        userid: userid,
+        imageUrl: profilePhoto,
+      });
+      await newProfilePhoto.save();
+      return res
+        .status(200)
+        .json({
+          message: "Profile photo uploaded successfully",
+          data: newProfilePhoto,
+        });
+    }
+  } catch (error) {
+    console.error(error.message);
+    return res.status(500).json({ message: "Internal server error" });
+  }
+};
+
+exports.getBDProfilePhoto = async (req, res) => {
+  try {
+    let userid = req.body.userid;
+    const photo = await ProfilePhoto.findOne({ userid });
+    if (!photo) {
+      return res.status(404).json({ message: "Profile photo not found" });
+    }
+
+    return res
+      .status(200)
+      .json({ message: "profile photo fetched successfully", data: photo });
+  } catch (error) {
+    console.log(error.message);
     return res.status(500).json({ message: "Internal server error" });
   }
 };

@@ -953,25 +953,32 @@ exports.uploadSHOProfilePhoto = async (req, res) => {
       return res.status(400).json({ message: "No profile photo provided" });
     }
 
-    let existingProfilePhoto = await ProfilePhoto.findOne({ userid });
+    const existingProfilePhoto = await ProfilePhoto.findOne({ userid });
 
     if (existingProfilePhoto) {
       existingProfilePhoto.imageUrl = profilePhoto;
       await existingProfilePhoto.save();
+      return res
+      .status(200)
+      .json({
+        message: "Profile photo updated successfully.",
+        data: existingProfilePhoto,
+      });
     } else {
-      existingProfilePhoto = new ProfilePhoto({
+      const newProfilePhoto = new ProfilePhoto({
         userid: userid,
         imageUrl: profilePhoto,
       });
-      await existingProfilePhoto.save();
-    }
-
-    return res
+      await newProfilePhoto.save();
+      return res
       .status(200)
       .json({
         message: "Profile photo uploaded successfully.",
-        data: existingProfilePhoto,
+        data: newProfilePhoto,
       });
+    }
+
+ 
   } catch (error) {
     console.log(error.message);
     res.status(500).json({ message: "Internal server error" });
