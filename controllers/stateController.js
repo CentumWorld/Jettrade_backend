@@ -977,3 +977,21 @@ exports.uploadSHOProfilePhoto = async (req, res) => {
     res.status(500).json({ message: "Internal server error" });
   }
 };
+
+exports.getSHOProfilePhoto = async(req, res) => {
+  try {
+
+    let userid = req.body.userid
+    const photo = await ProfilePhoto.findOne({userid})
+    if(!photo){
+      return res.status(404).json({message: "Profile photo not found"})
+    }
+
+    return res.status(200).json({message: "profile photo fetched successfully", data:photo})
+    
+  } catch (error) {
+    console.log(error.message)
+    res.status(500).json({message: "Internal server error"})
+    
+  }
+}
