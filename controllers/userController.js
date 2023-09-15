@@ -733,8 +733,6 @@ exports.resetPassword = async (req, res) => {
 
 // Profile photo Upload
 exports.profilePhotoUpload = async (req, res) => {
-  //const photo = req.file.filename;
-  console.log(req.file, "290");
   if (!req.file) {
     return res.status(400).json({ message: "No File Uploaded" });
   }
