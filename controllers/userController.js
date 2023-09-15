@@ -2747,10 +2747,9 @@ exports.getOwnUserBankAndUpiDetails = async (req, res) => {
 //===============================================================
 exports.changePaymentStatus = async (req, res) => {
   try {
-    const id = req.userId;
-
+    const userid = req.body.userid;
     const user = await User.findOneAndUpdate(
-      { _id: id },
+      { userid: userid },
       { $set: { paymentStatus: false } },
       { new: true }
     );
