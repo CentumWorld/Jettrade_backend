@@ -28,7 +28,7 @@ const upload = multer({
     }
   }),
   fileFilter: (req, file, cb) => {
-    if (file.fieldname === 'videoOne' || file.fieldname === 'thumbnail'|| file.fieldname === 'adharCard'|| file.fieldname === 'panCard') {
+    if (file.fieldname === 'videoOne' || file.fieldname === 'thumbnail'|| file.fieldname === 'adharCard'|| file.fieldname === 'panCard'|| file.fieldname=== "profilePhoto") {
       cb(null, true);
     } else {
       cb(new Error('Invalid field name for the file upload.'));

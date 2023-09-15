@@ -25,8 +25,9 @@ const {
 const FranchisePaymentRequest = require("../model/franchisePaymentRequestSchema");
 const BankAccountHolder = require("../model/BankAccountHolderSchema");
 const UpiHolder = require("../model/UpiHolderSchema");
-const MemberCreditWalletTransaction = require('../model/memberCreditWalletTransaction')
-const UserCreditWalletTransaction = require('../model/userCreditWalletTransaction')
+const MemberCreditWalletTransaction = require("../model/memberCreditWalletTransaction");
+const UserCreditWalletTransaction = require("../model/userCreditWalletTransaction");
+const ProfilePhoto = require("../model/profilePhotoSchema");
 
 exports.getBusinessDevelopersInFranchise = async (req, res) => {
   try {
@@ -397,9 +398,10 @@ exports.getOwnMembersInsideFranchiseCreditWalletTransactionDetails = async (
   const memberIds = members.map((member) => member.memberid);
 
   // Fetch member credit wallet transactions based on memberIds
-  const memberCreditWalletTransactions = await MemberCreditWalletTransaction.find({
-    userid: { $in: memberIds },
-  });
+  const memberCreditWalletTransactions =
+    await MemberCreditWalletTransaction.find({
+      userid: { $in: memberIds },
+    });
   return res.status(200).json({
     message: "Fetched Member Credit Wallet Transaction details",
     memberCreditWalletTransactions,
@@ -444,9 +446,10 @@ exports.getOwnTradersInsideFranchiseCreditWalletTransactionDetails = async (
     // Fetch trader credit wallet transactions based on traderIds
     const traderIds = traders.map((trader) => trader.userid);
 
-    const traderCreditWalletTransactions = await UserCreditWalletTransaction.find({
-      userid: { $in: traderIds },
-    });
+    const traderCreditWalletTransactions =
+      await UserCreditWalletTransaction.find({
+        userid: { $in: traderIds },
+      });
 
     return res.status(200).json({
       message: "Fetched Trader Credit Wallet Transaction details",
@@ -581,7 +584,6 @@ exports.createFranchisePaymentRequest = async (req, res) => {
   }
 };
 
-
 exports.createFranchiseBankAccountHolder = async (req, res) => {
   try {
     const {
@@ -633,10 +635,8 @@ exports.createFranchiseBankAccountHolder = async (req, res) => {
 exports.createFranchiseUpiHolder = async (req, res) => {
   try {
     const { upiId, userId } = req.body;
-    if (!upiId ) {
-      return res
-        .status(400)
-        .json({ message: "UpiId is required" });
+    if (!upiId) {
+      return res.status(400).json({ message: "UpiId is required" });
     }
     const franchise = await Franchise.findOne({ frenchiseId: userId });
 
@@ -663,13 +663,20 @@ exports.getFranchiseOwnBankDetails = async (req, res) => {
   try {
     const { userId } = req.body;
 
-    const franchiseBankDetails = await BankAccountHolder.find({ userId: userId });
+    const franchiseBankDetails = await BankAccountHolder.find({
+      userId: userId,
+    });
 
     if (!franchiseBankDetails) {
-      return res.status(404).json({ message: "Bank details not found for the provided franchise" });
+      return res
+        .status(404)
+        .json({ message: "Bank details not found for the provided franchise" });
     }
 
-    return res.status(200).json({message:"bank details of franchise fetched successfully", franchiseBankDetails });
+    return res.status(200).json({
+      message: "bank details of franchise fetched successfully",
+      franchiseBankDetails,
+    });
   } catch (error) {
     console.error("Error fetching franchise bank details:", error);
     return res.status(500).json({ message: "Internal server error" });
@@ -683,10 +690,15 @@ exports.getFranchiseOwnUpi = async (req, res) => {
     const franchiseUpiId = await UpiHolder.find({ userId: userId });
 
     if (!franchiseUpiId) {
-      return res.status(404).json({ message: "upi id not found for the provided franchise" });
+      return res
+        .status(404)
+        .json({ message: "upi id not found for the provided franchise" });
     }
 
-    return res.status(200).json({message:"Upi of franchise fetched successfully", franchiseUpiId });
+    return res.status(200).json({
+      message: "Upi of franchise fetched successfully",
+      franchiseUpiId,
+    });
   } catch (error) {
     console.error("Error fetching franchise upi:", error);
     return res.status(500).json({ message: "Internal server error" });
@@ -704,17 +716,70 @@ exports.eligibleFranchiseForWithdrawal = async (req, res) => {
 
     const updatedFranchise = await Franchise.findOneAndUpdate(
       { frenchiseId: franchiseId },
-      { firstPayment: true }, 
-      {new: true}
+      { firstPayment: true },
+      { new: true }
     );
 
     if (!updatedFranchise) {
       return res.status(500).json({ message: "Failed to update Franchise" });
     }
 
-    return res.status(200).json({message: "Franchise updated successfully",updatedFranchise });
+    return res
+      .status(200)
+      .json({ message: "Franchise updated successfully", updatedFranchise });
   } catch (error) {
     console.error("Error fetching Franchise :", error.message);
     return res.status(500).json({ message: "Internal server error" });
   }
 };
+
+//=====================upload franchise profile photo ========================
+
+exports.uploadFranchiseProfilePhoto = async (req, res) => {
+  try {
+    const profilePhoto = req.files["profilePhoto"][0]?.location;
+    const userid = req.body.userid;
+    if (!profilePhoto) {
+      return res.status(404).json({ message: "Profile photo not found" });
+    }
+
+    let existingProfilePhoto = await ProfilePhoto.findOne({ userid });
+    if (existingProfilePhoto) {
+      existingProfilePhoto.imageUrl = profilePhoto;
+      await existingProfilePhoto.save();
+    } else {
+      existingProfilePhoto = new ProfilePhoto({
+        userid: userid,
+        imageUrl: profilePhoto,
+      });
+      await existingProfilePhoto.save();
+    }
+    return res
+      .status(200)
+      .json({
+        message: "Profile photo uploaded successfully",
+        data: existingProfilePhoto,
+      });
+  } catch (error) {
+    console.log(error.message)
+    return res.status(500).json({ message: "Internal server error" });
+  }
+};
+
+//==================================get franchise profile photo=============
+exports.getFranchiseProfilePhoto = async(req, res) => {
+  try {
+
+    let userid = req.body.userid
+    const photo = await ProfilePhoto.findOne({userid})
+    if(!photo){
+      return res.status(404).json({message: "Profile photo not found"})
+    }
+
+    return res.status(200).json({message: "profile photo fetched successfully", data:photo})
+    
+  } catch (error) {
+    console.log(error.message)
+    return res.status(500).json({ message: "Internal server error" });
+  }
+}

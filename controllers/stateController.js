@@ -24,6 +24,7 @@ const StatePaymentRequest = require("../model/statePaymentRequestSchema");
 const BankAccountHolder = require("../model/BankAccountHolderSchema");
 const UpiHolder = require("../model/UpiHolderSchema");
 const UserCreditWalletTransaction = require("../model/userCreditWalletTransaction");
+const ProfilePhoto = require("../model/profilePhotoSchema");
 
 //===============================================================================
 //fetch all franchise list
@@ -575,24 +576,21 @@ exports.getOwnBusinessDeveloperInsideStateCreditWalletTransactionDetails =
         return res.status(404).json({ message: "State not found" });
       }
 
+      const franchise = await Frenchise.find({ referredId: state.referralId });
 
-      const franchise = await Frenchise.find({ referredId: state.referralId});
-
-      console.log(franchise, "lllllllll")
-
-
+      console.log(franchise, "lllllllll");
 
       const franchiseReferralIds = franchise.map(
         (franchise) => franchise.referralId
       );
 
-      console.log(franchiseReferralIds, "pppppppp")
+      console.log(franchiseReferralIds, "pppppppp");
 
       const businessDevelopers = await BusinessDeveloper.find({
         referredId: { $in: franchiseReferralIds },
       });
 
-      console.log(businessDevelopers, "kkkkkkkkk")
+      console.log(businessDevelopers, "kkkkkkkkk");
 
       const busisnessDeveloperIds = businessDevelopers.map(
         (businessDeveloper) => businessDeveloper.businessDeveloperId
@@ -761,7 +759,6 @@ exports.createStatePaymentRequest = async (req, res) => {
         .json({ message: "Minimum request amount should be 1" });
     }
 
-
     if (state.stateHandlerWallet < amount) {
       return res.status(400).json({ message: "Insufficient funds" });
     }
@@ -777,10 +774,9 @@ exports.createStatePaymentRequest = async (req, res) => {
       { stateHandlerId: stateHandlerId },
       {
         $inc: { stateHandlerWallet: -amount, paymentRequestCount: 1 },
-        $set: { firstPayment: false, verifyDate: Date.now() }
+        $set: { firstPayment: false, verifyDate: Date.now() },
       }
     );
-    
 
     const savedPaymentRequest = await newPaymentRequest.save();
     res.status(201).json({
@@ -918,29 +914,84 @@ exports.getStateOwnUpi = async (req, res) => {
   }
 };
 
-
 exports.eligibleStateForWithdrawal = async (req, res) => {
   try {
     const { stateHandlerId } = req.body;
 
-    const state = await stateHandler.findOne({ stateHandlerId: stateHandlerId });
+    const state = await stateHandler.findOne({
+      stateHandlerId: stateHandlerId,
+    });
     if (!state) {
       return res.status(404).json({ message: "State not found" });
     }
 
     const updatedState = await stateHandler.findOneAndUpdate(
       { stateHandlerId: stateHandlerId },
-      { firstPayment: true }, 
-      {new: true}
+      { firstPayment: true },
+      { new: true }
     );
 
     if (!updatedState) {
       return res.status(500).json({ message: "Failed to update state" });
     }
 
-    return res.status(200).json({message: "State updated successfully",updatedState });
+    return res
+      .status(200)
+      .json({ message: "State updated successfully", updatedState });
   } catch (error) {
     console.error("Error fetching state :", error.message);
     return res.status(500).json({ message: "Internal server error" });
   }
 };
+
+exports.uploadSHOProfilePhoto = async (req, res) => {
+  try {
+    const profilePhoto = req.files["profilePhoto"][0]?.location;
+    const userid = req.body.userid;
+
+    if (!profilePhoto) {
+      return res.status(400).json({ message: "No profile photo provided" });
+    }
+
+    let existingProfilePhoto = await ProfilePhoto.findOne({ userid });
+
+    if (existingProfilePhoto) {
+      existingProfilePhoto.imageUrl = profilePhoto;
+      await existingProfilePhoto.save();
+    } else {
+      existingProfilePhoto = new ProfilePhoto({
+        userid: userid,
+        imageUrl: profilePhoto,
+      });
+      await existingProfilePhoto.save();
+    }
+
+    return res
+      .status(200)
+      .json({
+        message: "Profile photo uploaded successfully.",
+        data: existingProfilePhoto,
+      });
+  } catch (error) {
+    console.log(error.message);
+    res.status(500).json({ message: "Internal server error" });
+  }
+};
+
+exports.getSHOProfilePhoto = async(req, res) => {
+  try {
+
+    let userid = req.body.userid
+    const photo = await ProfilePhoto.findOne({userid})
+    if(!photo){
+      return res.status(404).json({message: "Profile photo not found"})
+    }
+
+    return res.status(200).json({message: "profile photo fetched successfully", data:photo})
+    
+  } catch (error) {
+    console.log(error.message)
+    res.status(500).json({message: "Internal server error"})
+    
+  }
+}
