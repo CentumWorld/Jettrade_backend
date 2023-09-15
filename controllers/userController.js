@@ -2748,3 +2748,27 @@ exports.getOwnUserBankAndUpiDetails = async (req, res) => {
 };
 //===============================================================
 
+
+exports.verifyRefferalIdInUser = async (req,res) => {
+  const {referralId} = req.body
+
+  let findRefferalUser = await User.find({refferal_id: referralId })
+  console.log('findRefferalUser',findRefferalUser ,'2756')
+  if(findRefferalUser.length>0){
+    return 	res.status(200).json({
+      message:"Refferal Id verified successfully"
+    })
+  }else {
+    let findRefferalMember = await Member.find({refferal_id: referralId})
+    // console.log('findRefferalMember',findRefferalMember ,'2756')
+    if(findRefferalMember.length>0){
+      return 	res.status(200).json({
+        message:"Refferal Id verified successfully"
+      })
+    }else{
+      return   res.status(404).json({
+        message:"Invalid referral Id"
+      })
+    }
+  }
+}
