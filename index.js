@@ -90,7 +90,8 @@ const fetchAllNewPaidUser = require("./routes/fetch-all-new-paid-user");
 const changePaymentStatusForRenewal = require("./routes/users/change-payment-status-for-renewal");
 const getOwnTraderCreditWalletTransactionDetails = require("./routes/users/get-Own-Trader-Credit-Wallet-Transaction-Details");
 const createUserBankAccountHolder = require("./routes/users/create-user-bank-account-holder")
-const createUserUpiHolder = require("./routes/users/create-user-upi-holder")
+const createUserUpiHolder = require("./routes/users/create-user-upi-holder");
+const verifyRefferalIdInUser = require('./routes/users/verify-refferalId-in-user');
 
 //admin
 const adminFetchBusinessDeveloperApproveWithdrawal = require("./routes/admin-Fetch-Business-Developer-Approve-Withdrawal");
@@ -430,6 +431,9 @@ app.use("/user", tradingWalletTransferFromOneUserToAnother);
 app.use("/user", withdrawlFromWalletAndTradingWallet);
 app.use("/user", fetchWalletWithdrawalHistory);
 app.use("/user", fetchWalletHistory);
+app.use("/user",verifyRefferalIdInUser);
+
+
 app.use("/admin", totalWithdrawalMoney);
 app.use("/admin", deleteVideo);
 app.use("/admin", getVideos);

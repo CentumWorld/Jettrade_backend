@@ -1,10 +1,10 @@
 const express = require('express');
 const router = express.Router();
 
-const { getAllFranchises } = require('../../controllers/portfolioController');
+const portfolioController = require('../../controllers/portfolioController');
 
 
-router.get('/get-all-franchises', getAllFranchises);
+router.get('/portfolio/get-all-franchise', portfolioController.getAllFranchises);
 
 
 module.exports = router;
