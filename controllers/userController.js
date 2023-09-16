@@ -44,7 +44,6 @@ const UpiHolder = require("../model/UpiHolderSchema");
 
 // userRegistartion
 exports.userRegistration = async (req, res) => {
-  console.log("askgha");
   if (
     !req.files ||
     !req.files["aadhar_front_side"] ||
@@ -100,6 +99,16 @@ exports.userRegistration = async (req, res) => {
     });
   }
 
+  let isValidRefferedIdUser = await User.findOne({ refferal_id: reffered_id });
+  let isValidRefferedIdMember = await Member.findOne({ refferal_id: reffered_id });
+  let isValidRefferedIdAdmin = await Admin.findOne({ referralId: reffered_id });
+  
+  
+  if (!isValidRefferedIdUser && !isValidRefferedIdMember &&!isValidRefferedIdAdmin) {
+    return res.status(400).json({ message: "You are providing a wrong referral id" });
+  }
+  
+
   if (!validator.isEmail(email)) {
     return res
       .status(400)
@@ -108,7 +117,7 @@ exports.userRegistration = async (req, res) => {
 
   const aadhar_length = aadhar;
   const pan_length = pan;
-  //console.log(aadhar_length.length,'35');
+
   if (aadhar_length.length < 12 || aadhar_length.length > 12) {
     return res.status(422).json({
       message: "Inavlid Aadhar !",
@@ -147,8 +156,6 @@ exports.userRegistration = async (req, res) => {
           message: "Password must be minimum length of 8 charector!",
         });
       }
-      //const userid = userid;
-      // const pass = password;
 
       const userExist = await User.findOne({ userid: userid });
       if (userExist) {
@@ -156,10 +163,6 @@ exports.userRegistration = async (req, res) => {
           .status(400)
           .json({ message: "this userId is already taken" });
       }
-
-      // if (!isValidPhone(phone)) {
-      //   return res.status(400).json({ message: "Invalid phone." });
-      // }
 
       const user = new User({
         fname,
@@ -313,6 +316,15 @@ exports.otherCountryUserRegistration = async (req, res) => {
     return res.status(422).json({
       message: `Please fill all details: ${missingFields.join(", ")}`,
     });
+  }
+
+  let isValidRefferedIdUser = await User.findOne({ refferal_id: reffered_id });
+  let isValidRefferedIdMember = await Member.findOne({ refferal_id: reffered_id });
+  let isValidRefferedIdAdmin = await Admin.findOne({ referralId: reffered_id });
+  
+  
+  if (!isValidRefferedIdUser && !isValidRefferedIdMember &&!isValidRefferedIdAdmin) {
+    return res.status(400).json({ message: "You are providing a wrong referral id" });
   }
 
   //console.log(aadhar_length.length,'35');
