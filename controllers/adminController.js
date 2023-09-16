@@ -460,6 +460,18 @@ exports.userRegistrationByAdmin = async (req, res) => {
     userid,
     password,
   } = req.body;
+  
+  let isValidRefferedIdUser = await User.findOne({ refferal_id: reffered_id });
+  let isValidRefferedIdMember = await Member.findOne({ refferal_id: reffered_id });
+  let isValidRefferedIdAdmin = await Admin.findOne({ referralId: reffered_id });
+  
+  
+  if (!isValidRefferedIdUser && !isValidRefferedIdMember &&!isValidRefferedIdAdmin) {
+    return res.status(400).json({ message: "You are providing a wrong referral id" });
+  }
+
+  
+
 
   const aadhar_length = aadhar;
   const pan_length = pan;
