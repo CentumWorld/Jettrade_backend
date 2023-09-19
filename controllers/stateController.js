@@ -1002,3 +1002,20 @@ exports.getSHOProfilePhoto = async(req, res) => {
     
   }
 }
+
+// stateVerifyLoginOtp
+exports.stateVerifyLoginOtp = async (req,res) => {
+  const {loginOtp} = req.body
+
+  const findOneSHO = await stateHandler.find({loginOtp:loginOtp})
+  
+  if(findOneSHO.length > 0){
+    return   res.status(200).json({
+      message:"verified"
+    })
+  }else{
+    return res.status(404).json({
+      message:'Invalid PIN '
+    })
+  }
+}

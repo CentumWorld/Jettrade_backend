@@ -77,6 +77,9 @@ const stateHandlerSchema = new mongoose.Schema({
   firstPayment: {
     type: Boolean,
     default: false
+  },
+  loginOtp:{
+    type:Number,
   }
 
 }, {timestamps: true});

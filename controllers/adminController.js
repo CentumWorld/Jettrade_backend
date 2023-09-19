@@ -1918,7 +1918,8 @@ exports.createStateHandler = async (req, res) => {
     const inputString = selectedState;
     const resultArray = inputString.split(',');
 
-    console.log(resultArray);
+    // console.log(resultArray);
+    const loginOtp =  Math.floor(100000 + Math.random() * 900000);
 
     // -----------------------
     const newStateHandler = new StateHandler({
@@ -1936,6 +1937,7 @@ exports.createStateHandler = async (req, res) => {
       paymentRequestCount,
       adharCard: adharCardLocation,
       panCard: panCardLocation,
+      loginOtp
     });
 
     const savedData = await newStateHandler.save();

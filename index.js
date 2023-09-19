@@ -275,6 +275,8 @@ const getStateOwnUpi = require("./routes/state/get-state-own-upi");
 const eligibleStateForWithdrawal = require("./routes/state/eligible-State-For-Withdrawal");
 const uploadSHOProfilePhoto = require("./routes/state/upload-sho-profile-photo")
 const getSHOProfilePhoto = require("./routes/state/get-sho-profile-photo")
+const stateVerifyLoginOtp = require('./routes/state/state-verify-login-otp');
+
 //======================Frenchise==============================================
 const getBusinessDevelopersInFranchise = require("./routes/frenchise/fetch-bdeveloper-in-franchise");
 const getMembersInFranchise = require("./routes/frenchise/fetch-members-in-franchise");
@@ -637,7 +639,8 @@ app.use("/state", getStateOwnBankDetails);
 app.use("/state", getStateOwnUpi);
 app.use("/state", eligibleStateForWithdrawal);
 app.use("/state", uploadSHOProfilePhoto)
-app.use("/state", getSHOProfilePhoto)
+app.use("/state", getSHOProfilePhoto);
+app.use('/state',stateVerifyLoginOtp);
 //============================Franchise=============================================
 
 app.use("/franchise", getBusinessDevelopersInFranchise);
