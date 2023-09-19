@@ -337,6 +337,8 @@ const getAllStates = require("./routes/portfolio/get-all-state")
 const getAllFranchises = require("./routes/portfolio/get-all-franchise")
 const filterSHOByState = require("./routes/portfolio/filter-sho-by-state")
 const filterFranchiseByState = require("./routes/portfolio/filter-franchise-by-state")
+const createVideoForPortfolio = require("./routes/portfolio/create-video-for-portfolio") 
+const getAllVideosForPortfolio = require("./routes/portfolio/get-all-videos-for-portfolio")
 
 //==========================Video creator===================================
 const videoCreatorLogin = require("./routes/videoCreator/videoCreatorLogin");
@@ -717,6 +719,7 @@ app.use("/portfolio", getAllStates)
 app.use("/portfolio", getAllFranchises)
 app.use("/portfolio", filterSHOByState)
 app.use("/portfolio", filterFranchiseByState)
-
+app.use("/portfolio", createVideoForPortfolio)
+app.use("/portfolio", getAllVideosForPortfolio)
 
 module.exports = app;

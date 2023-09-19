@@ -1039,6 +1039,7 @@ exports.createVideo = async (req, res) => {
     if (!thumbnailLocation) {
       return res.status(400).json({ message: "Thumbnail file is required" });
     }
+    
     const MAX_VIDEO_SIZE_BYTES = 1024 * 1024 * 1024; // 1024MB
 
     const videoFile = req.files["videoOne"][0];
