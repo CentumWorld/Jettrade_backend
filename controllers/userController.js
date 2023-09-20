@@ -572,7 +572,7 @@ exports.profileVerification = async (req, res) => {
     !req.files["aadhar_back_side"] ||
     !req.files["pan_card"]
   ) {
-    return res.status(422).json({ message: "Please Fill all Details1!" });
+    return res.status(422).json({ message: "Please Fill all Details!" });
   }
 
   console.log(req.files);
@@ -587,10 +587,9 @@ exports.profileVerification = async (req, res) => {
   }
   // console.log(userid);
   // ------------------------------------------
-  const user = await User.find({ userid });
-  console.log(user.length, "176");
-  if (user.length > 0) {
-    User.updateOne({ userid: userid })
+  const user = await User.find({ id: userid });
+  if (user) {
+    User.updateMany({ id: userid })
       .set({
         aadhar_front_side: aadhar_front_side,
         aadhar_back_side: aadhar_back_side,
