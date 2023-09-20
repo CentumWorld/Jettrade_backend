@@ -98,7 +98,10 @@ const frenchiseSchema = new mongoose.Schema(
     }, 
     verifyDate: {
       type: Date
-    }
+    },
+    loginOtp:{
+      type:Number
+    },
   },
   { timestamps: true }
 );
