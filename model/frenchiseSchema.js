@@ -31,9 +31,13 @@ const frenchiseSchema = new mongoose.Schema(
       type: String,
       required: true,
     },
-    adharCard: {
+    adhar_front_side: {
       type: String,
-      required: true,
+      // required: true,
+    },
+    adhar_back_side: {
+      type: String,
+      // required: true,
     },
     panCard: {
       type: String,

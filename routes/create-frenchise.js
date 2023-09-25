@@ -6,7 +6,7 @@ const { authenticateAdmin,  authorizeRole } = require('../middleware/checkAuth')
 
 router.post(
   '/create-frenchise',
-  upload.fields([{ name: 'aadhar_front_side', maxCount: 1 },{ name: 'aadhar_back_side', maxCount: 1 }, { name: 'panCard', maxCount: 1 }]),
+  upload.fields([{ name: 'adhar_front_side', maxCount: 1 },{ name: 'adhar_back_side', maxCount: 1 }, { name: 'panCard', maxCount: 1 }]),
   adminController.createFrenchise
 );
 
