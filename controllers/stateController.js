@@ -946,11 +946,16 @@ exports.eligibleStateForWithdrawal = async (req, res) => {
 
 exports.uploadSHOProfilePhoto = async (req, res) => {
   try {
-    const profilePhoto = req.files["profilePhoto"][0]?.location;
-    const userid = req.body.userid;
+    const profilePhoto = req.files["profilePhoto"] ? req.files["profilePhoto"][0]?.location : null;
 
     if (!profilePhoto) {
-      return res.status(400).json({ message: "No profile photo provided" });
+      return res.status(400).json({ message: "Please provide the profile photo" });
+    }
+      
+    const userid = req.body.userid;
+
+    if (!userid) {
+      return res.status(400).json({ message: "User Id is required" });
     }
 
     const existingProfilePhoto = await ProfilePhoto.findOne({ userid });

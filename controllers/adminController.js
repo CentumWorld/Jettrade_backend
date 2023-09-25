@@ -1027,19 +1027,19 @@ exports.fetchRefferalChatMessageAdmin = async (req, res) => {
 exports.createVideo = async (req, res) => {
   try {
     const { title } = req.body;
-    const videoLocation = req.files["videoOne"][0]?.location;
-    const thumbnailLocation = req.files["thumbnail"][0]?.location;
+    const videoLocation = req.files["videoOne"]?.[0]?.location || null;
+    const thumbnailLocation = req.files["thumbnail"]?.[0]?.location || null;
 
     if (!title) {
-      return res.status(400).json({ message: "Title is required" });
+      return res.status(400).json({ message: "Please provide title." });
     }
     if (!videoLocation) {
-      return res.status(400).json({ message: "Video file is required" });
+      return res.status(400).json({ message: "Please upload Video." });
     }
     if (!thumbnailLocation) {
-      return res.status(400).json({ message: "Thumbnail file is required" });
+      return res.status(400).json({ message: "Please upload Thumbnail file." });
     }
-    
+
     const MAX_VIDEO_SIZE_BYTES = 1024 * 1024 * 1024; // 1024MB
 
     const videoFile = req.files["videoOne"][0];
@@ -1065,6 +1065,7 @@ exports.createVideo = async (req, res) => {
     res.status(500).json({ message: "Internal server error" });
   }
 };
+
 
 exports.fetchParticularUserDetailsFromAdminUsingUserid = async (req, res) => {
   const { userid } = req.body;
@@ -2054,6 +2055,8 @@ exports.createFrenchise = async (req, res) => {
 
     // Is referred id exist in Frenchise collection
 
+    
+
     const existReferredId = await StateHandler.findOne({
       referralId: referredId,
     });
@@ -2470,29 +2473,42 @@ exports.businessDeveloperLogin = async (req, res) => {
 
 // verifyFranchieBeforeRegistration
 exports.verifyFranchieBeforeRegistration = async (req, res) => {
-  const { refferId } = req.body;
-  if (!refferId) {
-    return res.status(422).json({
-      message: "Please enter refferId",
-    });
-  }
-
-  const stateUser = await StateHandler.findOne({ referralId: refferId });
-  if (stateUser) {
-    const stateUserState = stateUser.selectedState;
-    return res.status(200).json({
-      message: "State user found",
-      stateUserState,
-    });
-  } else {
-    return res.status(404).json({
-      message: "Not found",
-    });
-  }
+try {
+  
+  
+    const { refferId } = req.body;
+    if (!refferId) {
+      return res.status(422).json({
+        message: "Please enter refferId",
+      });
+    }
+  
+    const stateUser = await StateHandler.findOne({ referralId: refferId });
+    if (stateUser) {
+      const stateUserState = stateUser.selectedState;
+      return res.status(200).json({
+        message: "State user found",
+        stateUserState,
+      });
+    } else {
+      return res.status(404).json({
+        message: "Please provide a valid referral Id",
+      });
+    }
+    
+} catch (error) {
+  console.log(error.message)
+  res.status(500).json({message: "Internal server error."})
+  
+}
 };
 
 // verifyBuisnessDeveloperBeforeRegistration
 exports.verifyBuisnessDeveloperBeforeRegistration = async (req, res) => {
+
+  try {
+    
+ 
   const { refferId } = req.body;
   if (!refferId) {
     return res.status(422).json({
@@ -2505,14 +2521,18 @@ exports.verifyBuisnessDeveloperBeforeRegistration = async (req, res) => {
   if (franchieUser) {
     const franchieUserCity = franchieUser.franchiseCity;
     return res.status(200).json({
-      message: "Franchie user found",
+      message: "Franchise user found",
       franchieUserCity,
     });
   } else {
     return res.status(404).json({
-      message: " Franchie user not found",
+      message: "Please provide a valid referral Id",
     });
   }
+} catch (error) {
+  console.log(error.message)
+  res.status(500).json({message: "Internal server error."}) 
+}
 };
 //=======================================================================
 

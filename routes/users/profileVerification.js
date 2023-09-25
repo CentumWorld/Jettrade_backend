@@ -50,7 +50,8 @@ var multipleUpload = upload.fields([
 ]);
 router.post(
   "/profileVerification",
-  multipleUpload,authenticateUser,
+  multipleUpload,
+  authenticateUser,
   authorizeUser,
   userController.profileVerification
 );
