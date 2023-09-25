@@ -1994,22 +1994,46 @@ exports.createFrenchise = async (req, res) => {
       paymentRequestCount,
     } = req.body;
 
-    if (!req.files["adharCard"]) {
-      return res.status(400).json({ message: "Adhar card file is missing." });
+    // if (!req.files["adharCard"]) {
+    //   return res.status(400).json({ message: "Adhar card file is missing." });
+    // }
+    if (!req.files["aadhar_front_side"]) {
+      return res.status(400).json({ message: "Adhar card front side file is missing." });
+    }
+
+    if (!req.files["aadhar_back_side"]) {
+      return res.status(400).json({ message: "Adhar card back side file is missing." });
     }
 
     if (!req.files["panCard"]) {
       return res.status(400).json({ message: "Pan card file is missing." });
     }
 
-    const adharCardFile = req.files["adharCard"][0];
+    // const adharCardFile = req.files["adharCard"][0];
+    const adharFrontSideFile = req.files["aadhar_front_side"][0]
+    const adharBackSideFile = req.files["aadhar_back_side"][0]
+
     const panCardFile = req.files["panCard"][0];
 
     // Check if adharCard image is valid using isValidImage function
-    if (!isValidImage(adharCardFile.originalname)) {
+    // if (!isValidImage(adharCardFile.originalname)) {
+    //   return res.status(422).json({
+    //     message:
+    //       "Invalid adharCard image format, image must be in jpeg, jpg, tiff, png, webp, or bmp format.",
+    //   });
+    // }
+
+    if (!isValidImage(adharFrontSideFile.originalname)) {
       return res.status(422).json({
         message:
-          "Invalid adharCard image format, image must be in jpeg, jpg, tiff, png, webp, or bmp format.",
+          "Invalid aadhar Card front side image format, image must be in jpeg, jpg, tiff, png, webp, or bmp format.",
+      });
+    }
+
+    if (!isValidImage(adharBackSideFile.originalname)) {
+      return res.status(422).json({
+        message:
+          "Invalid adhar Card back side image format, image must be in jpeg, jpg, tiff, png, webp, or bmp format.",
       });
     }
 
@@ -2017,11 +2041,15 @@ exports.createFrenchise = async (req, res) => {
     if (!isValidImage(panCardFile.originalname)) {
       return res.status(422).json({
         message:
-          "Invalid panCard image format, image must be in jpeg, jpg, tiff, png, webp, or bmp format.",
+          "Invalid pan Card image format, image must be in jpeg, jpg, tiff, png, webp, or bmp format.",
       });
     }
 
-    const adharCardLocation = adharCardFile.location;
+    // const adharCardLocation = adharCardFile.location;
+
+    const adharFrontSideLocation = adharFrontSideFile.location
+    const adharbackSideLocation = adharBackSideFile.location
+
     const panCardLocation = panCardFile.location;
 
     const requiredFields = [
@@ -2130,7 +2158,8 @@ exports.createFrenchise = async (req, res) => {
       referralId,
       franchiseState,
       paymentRequestCount,
-      adharCard: adharCardLocation,
+      adharCardFrontSide: adharFrontSideLocation,
+      adharCardBackSide: adharbackSideLocation,
       panCard: panCardLocation,
     });
 
