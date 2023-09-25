@@ -6,7 +6,7 @@ const { authenticateAdmin, authorizeRole } = require('../middleware/checkAuth');
 
 router.post(
   '/create_State_Handler',
-  upload.fields([{ name: 'adharCard' }, { name: 'panCard'}]),
+  upload.fields([{ name: 'adhar_front_side', maxCount: 1 },{ name: 'adhar_back_side', maxCount: 1 }, { name: 'panCard'}]),
 
   adminController.createStateHandler
 );

@@ -33,11 +33,11 @@ const frenchiseSchema = new mongoose.Schema(
     },
     adhar_front_side: {
       type: String,
-      // required: true,
+      required: true,
     },
     adhar_back_side: {
       type: String,
-      // required: true,
+      required: true,
     },
     panCard: {
       type: String,

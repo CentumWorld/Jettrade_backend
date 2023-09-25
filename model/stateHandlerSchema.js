@@ -30,8 +30,13 @@ const stateHandlerSchema = new mongoose.Schema({
     required: true
 
   },
-  adharCard: {
+  adhar_front_side: {
     type: String,
+    required: true,
+  },
+  adhar_back_side: {
+    type: String,
+    required: true,
   },
   panCard: {
     type: String,

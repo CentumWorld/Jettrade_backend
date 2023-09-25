@@ -2164,7 +2164,7 @@ exports.createFrenchise = async (req, res) => {
       franchiseState,
       paymentRequestCount,
       adhar_front_side: adharFrontSideLocation,
-      adhar_back_side: adharbackSideLocation,
+      adhar__side: adharbackSideLocation,
       panCard: panCardLocation,
     });
 
@@ -2199,22 +2199,34 @@ exports.createBusinnesDeveloper = async (req, res) => {
       paymentRequestCount,
     } = req.body;
 
-    if (!req.files["adharCard"]) {
-      return res.status(400).json({ message: "Adhar card file is missing." });
+    if (!req.files["adhar_back_side"]) {
+      return res.status(400).json({ message: "Adhar card  back side file is missing." });
+    }
+
+    if (!req.files["adhar_front_side"]) {
+      return res.status(400).json({ message: "Adhar card front side file is missing." });
     }
 
     if (!req.files["panCard"]) {
       return res.status(400).json({ message: "Pan card file is missing." });
     }
 
-    const adharCardFile = req.files["adharCard"][0];
+    const adharCardBackFile = req.files["adhar_back_side"][0];
+    const adharCardFrontFile = req.files["adhar_front_side"][0];
     const panCardFile = req.files["panCard"][0];
 
     // Check if adharCard image is valid using isValidImage function
-    if (!isValidImage(adharCardFile.originalname)) {
+    if (!isValidImage(adharCardBackFile.originalname)) {
       return res.status(422).json({
         message:
-          "Invalid adharCard image format, image must be in jpeg, jpg, tiff, png, webp, or bmp format.",
+          "Invalid adhar Card back side image format, image must be in jpeg, jpg, tiff, png, webp, or bmp format.",
+      });
+    }
+
+    if (!isValidImage(adharCardFrontFile.originalname)) {
+      return res.status(422).json({
+        message:
+          "Invalid adhar Card front side image format, image must be in jpeg, jpg, tiff, png, webp, or bmp format.",
       });
     }
 
@@ -2226,7 +2238,8 @@ exports.createBusinnesDeveloper = async (req, res) => {
       });
     }
 
-    const adharCardLocation = adharCardFile.location;
+    const adharBackLocation = adharCardBackFile.location;
+    const adharFrontLocation = adharCardFrontFile.location
     const panCardLocation = panCardFile.location;
 
     const requiredFields = [
@@ -2238,6 +2251,7 @@ exports.createBusinnesDeveloper = async (req, res) => {
       "businessDeveloperId",
       "referredId",
       "buisnessCity",
+      "gender"
     ];
 
     const missingFields = requiredFields.filter((field) => !req.body[field]);
@@ -2318,7 +2332,9 @@ exports.createBusinnesDeveloper = async (req, res) => {
       password: hashedPassword,
       gender,
       businessDeveloperId,
-      adharCard: adharCardLocation,
+      adhar_back_side: adharBackLocation,
+      adhar_front_side: adharFrontLocation,
+
       panCard: panCardLocation,
       referralId,
       referredId,
