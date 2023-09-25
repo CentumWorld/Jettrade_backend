@@ -275,6 +275,8 @@ const getStateOwnUpi = require("./routes/state/get-state-own-upi");
 const eligibleStateForWithdrawal = require("./routes/state/eligible-State-For-Withdrawal");
 const uploadSHOProfilePhoto = require("./routes/state/upload-sho-profile-photo")
 const getSHOProfilePhoto = require("./routes/state/get-sho-profile-photo")
+const stateVerifyLoginOtp = require('./routes/state/state-verify-login-otp');
+
 //======================Frenchise==============================================
 const getBusinessDevelopersInFranchise = require("./routes/frenchise/fetch-bdeveloper-in-franchise");
 const getMembersInFranchise = require("./routes/frenchise/fetch-members-in-franchise");
@@ -303,7 +305,9 @@ const getFranchiseOwnBankDetails = require("./routes/frenchise/get-franchise-own
 const getFranchiseOwnUpi = require("./routes/frenchise/get-Franchise-Own-Upi");
 const eligibleFranchiseForWithdrawal = require("./routes/frenchise/eligible.franchise.for.withdrawal");
 const uploadFranchiseProfilePhoto = require("./routes/frenchise/upload-franchise-profile-photo")
-const getFranchiseProfilePhoto = require("./routes/frenchise/get-franchise-profile-photo")
+const getFranchiseProfilePhoto = require("./routes/frenchise/get-franchise-profile-photo");
+const frenchiseVerifyLoginOtp = require('./routes/frenchise/frenchise-verify-login-otp');
+
 //=========================Business developer======================================
 const getAllMembersInBusinessDeveloper = require("./routes/businessDeveloper/fetch-all-members-in-business-developer");
 const blockMemberByBusinessDeveloper = require("./routes/businessDeveloper/block-member-by-business-developer");
@@ -637,7 +641,8 @@ app.use("/state", getStateOwnBankDetails);
 app.use("/state", getStateOwnUpi);
 app.use("/state", eligibleStateForWithdrawal);
 app.use("/state", uploadSHOProfilePhoto)
-app.use("/state", getSHOProfilePhoto)
+app.use("/state", getSHOProfilePhoto);
+app.use('/state',stateVerifyLoginOtp);
 //============================Franchise=============================================
 
 app.use("/franchise", getBusinessDevelopersInFranchise);
@@ -676,6 +681,9 @@ app.use("/franchise", getFranchiseOwnUpi);
 app.use("/franchise", eligibleFranchiseForWithdrawal);
 app.use("/franchise", uploadFranchiseProfilePhoto)
 app.use("/franchise", getFranchiseProfilePhoto)
+app.use('/franchise',frenchiseVerifyLoginOtp);
+
+
 //============================Business developer===========================
 app.use("/businessDeveloper", getAllMembersInBusinessDeveloper);
 app.use("/businessDeveloper", blockMemberByBusinessDeveloper);
