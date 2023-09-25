@@ -1810,11 +1810,11 @@ exports.createStateHandler = async (req, res) => {
       paymentRequestCount,
     } = req.body;
 
-    if (!req.files["aadhar_front_side"]) {
+    if (!req.files["adhar_front_side"]) {
       return res.status(400).json({ message: "Adhar card front side file is missing." });
     }
 
-    if (!req.files["aadhar_back_side"]) {
+    if (!req.files["adhar_back_side"]) {
       return res.status(400).json({ message: "Adhar card back side file is missing." });
     }
 
@@ -1822,8 +1822,8 @@ exports.createStateHandler = async (req, res) => {
       return res.status(400).json({ message: "Pan card file is missing." });
     }
 
-    const adharCardFrontFile = req.files["aadhar_front_side"][0];
-    const adharCardBackFile = req.files["aadhar_back_side"][0];
+    const adharCardFrontFile = req.files["adhar_front_side"][0];
+    const adharCardBackFile = req.files["adhar_back_side"][0];
 
     const panCardFile = req.files["panCard"][0];
 
@@ -1952,7 +1952,8 @@ exports.createStateHandler = async (req, res) => {
       referredId,
       selectedState: resultArray,
       paymentRequestCount,
-      adharCard: adharCardFrontLocation,
+      adhar_front_side: adharCardFrontLocation,
+      adhar_back_side: adharCardBackLocation,
       panCard: panCardLocation,
       loginOtp
     });
