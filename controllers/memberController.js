@@ -34,24 +34,23 @@ const {
 
 // refferalRegistration
 exports.memberRegistration = async (req, res) => {
-
-  if (
-    !req.files ||
-    !req.files["aadhar_front_side"] ||
-    !req.files["aadhar_back_side"] ||
-    !req.files["pan_card"]
-  ) {
+  if (!req.files["aadhar_front_side"]) {
     return res
       .status(422)
-      .json({ message: "please provide adhar front, adhar back and pan" });
+      .json({ message: "please provide adhar card front side" });
   }
+
+  if (!req.files["aadhar_back_side"]) {
+    return res.status(422).json({ message: "please provide adhar back side" });
+  }
+
+  if (!req.files["pan_card"]) {
+    return res.status(422).json({ message: "please provide pan card" });
+  }
+
   const aadhar_front_side = req.files.aadhar_front_side[0].location;
   const aadhar_back_side = req.files.aadhar_back_side[0].location;
   const pan_card = req.files.pan_card[0].location;
-
-  if (!aadhar_front_side || !aadhar_back_side || !pan_card) {
-    return res.status(422).json({ message: "All field required" });
-  }
 
   const {
     fname,
@@ -68,8 +67,6 @@ exports.memberRegistration = async (req, res) => {
     reffered_id,
   } = req.body;
 
-  
-
   // if (!isValidImage(aadhar_front_side.originalname)) {
   //   return res.status(422).json({
   //     message:
@@ -83,6 +80,7 @@ exports.memberRegistration = async (req, res) => {
   //       "Invalid adhar Card back side image format, image must be in jpeg, jpg, tiff, png, webp, or bmp format.",
   //   });
   // }
+
   // if (!isValidImage(panCardFile.originalname)) {
   //   return res.status(422).json({
   //     message:
@@ -105,7 +103,7 @@ exports.memberRegistration = async (req, res) => {
     "reffered_id",
   ];
   const missingFields = requiredFields.filter((field) => !req.body[field]);
- 
+
   if (missingFields.length > 0) {
     return res
       .status(422)
@@ -168,16 +166,15 @@ exports.memberRegistration = async (req, res) => {
       return res.status(200).json({ message: "Member already exist!" });
     }
 
-    // const existingreferredId = await BusinessDeveloper.findOne({
-    //   referralId: reffered_id,
-    // });
-    // console.log(existingreferredId, "115");
+    const existingreferredId = await BusinessDeveloper.findOne({
+      referralId: reffered_id,
+    });
 
-    // if (!existingreferredId) {
-    //   return res
-    //     .status(400)
-    //     .send({ message: "You are providing wrong referral Id" });
-    // }
+    if (!existingreferredId) {
+      return res
+        .status(400)
+        .send({ message: "You are providing wrong referral Id" });
+    }
 
     const member = new Member({
       fname,
@@ -199,7 +196,7 @@ exports.memberRegistration = async (req, res) => {
       userType: "indian",
     });
     await member.save();
-    res.status(201).json({ message: "Member registered successfully" });
+    res.status(201).json({ message: "Member registered successfully", member });
   } catch (error) {
     console.log(error);
   }
@@ -302,11 +299,9 @@ exports.otherCountryMemberRegistration = async (req, res) => {
       console.log(existingreferredId, "242");
 
       if (!existingreferredId) {
-        return res
-          .status(400)
-          .send({
-            message: "You are providing wrong business developer referral Id",
-          });
+        return res.status(400).send({
+          message: "You are providing wrong business developer referral Id",
+        });
       }
 
       const member = new Member({
@@ -728,7 +723,9 @@ exports.refferalPayoutRequestMember = async (req, res) => {
 
   try {
     if (!requestAmount) {
-      return res.status(422).json({ data: null, message: "Please Enter Amount" });
+      return res
+        .status(422)
+        .json({ data: null, message: "Please Enter Amount" });
     }
 
     const memberWalletFetch = await Member.findOne({ memberid: memberid });
@@ -763,7 +760,7 @@ exports.refferalPayoutRequestMember = async (req, res) => {
         {
           $set: {
             wallet: restAmount,
-            verifyDate: Date.now()
+            verifyDate: Date.now(),
           },
         }
       );
@@ -773,14 +770,16 @@ exports.refferalPayoutRequestMember = async (req, res) => {
         message: "Withdrawal request sent",
       });
     } else {
-      return res.status(500).json({ data: null, message: "Something went wrong" });
+      return res
+        .status(500)
+        .json({ data: null, message: "Something went wrong" });
     }
   } catch (error) {
-    return res.status(500).json({ data: null, message: "Internal server error" });
+    return res
+      .status(500)
+      .json({ data: null, message: "Internal server error" });
   }
 };
-
-
 
 // fetchMemberRefferalPayoutRequestWithdrawal
 exports.fetchMemberRefferalPayoutRequestWithdrawal = async (req, res) => {
