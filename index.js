@@ -597,7 +597,7 @@ app.use("/member", memberFetchRefferalPayout);
 app.use("/member", refferalPayoutRequestMember);
 app.use("/member", fetchMemberRefferalPayoutRequestWithdrawal);
 app.use("/member", memberFetchRefferalPayoutApproveWithdrawal);
-app.use("/member", otherCountryMemberRegistration);
+// app.use("/member", otherCountryMemberRegistration);
 app.use("/member", fetchMemberNotificationStatus);
 app.use("/member", setNotificationToFalseMember);
 app.use("/member", fetchChatDetailsRefferal);

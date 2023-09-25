@@ -23,9 +23,18 @@ const BusinessDeveloper = require("../model/businessDeveloperSchema");
 const MemberCreditWalletTransaction = require("../model/memberCreditWalletTransaction");
 const BankAccountHolder = require("../model/BankAccountHolderSchema");
 const UpiHolder = require("../model/UpiHolderSchema");
+const {
+  isValidPassword,
+  isValidName,
+  isValidImage,
+  isValidPhone,
+  isValidEmail,
+  isValidUserId,
+} = require("../validation/validation");
 
 // refferalRegistration
 exports.memberRegistration = async (req, res) => {
+
   if (
     !req.files ||
     !req.files["aadhar_front_side"] ||
@@ -59,6 +68,28 @@ exports.memberRegistration = async (req, res) => {
     reffered_id,
   } = req.body;
 
+  
+
+  // if (!isValidImage(aadhar_front_side.originalname)) {
+  //   return res.status(422).json({
+  //     message:
+  //       "Invalid aadhar Card front side image format, image must be in jpeg, jpg, tiff, png, webp, or bmp format.",
+  //   });
+  // }
+
+  // if (!isValidImage(aadhar_back_side.originalname)) {
+  //   return res.status(422).json({
+  //     message:
+  //       "Invalid adhar Card back side image format, image must be in jpeg, jpg, tiff, png, webp, or bmp format.",
+  //   });
+  // }
+  // if (!isValidImage(panCardFile.originalname)) {
+  //   return res.status(422).json({
+  //     message:
+  //       "Invalid pan Card image format, image must be in jpeg, jpg, tiff, png, webp, or bmp format.",
+  //   });
+  // }
+
   const requiredFields = [
     "fname",
     "lname",
@@ -73,9 +104,8 @@ exports.memberRegistration = async (req, res) => {
     "password",
     "reffered_id",
   ];
-
   const missingFields = requiredFields.filter((field) => !req.body[field]);
-
+ 
   if (missingFields.length > 0) {
     return res
       .status(422)
@@ -86,6 +116,32 @@ exports.memberRegistration = async (req, res) => {
     return res.status(400).json({ message: "Invalid email address" });
   }
 
+  // if (!isValidPhone(phone)) {
+  //   return res.status(422).json({
+  //     message:
+  //       "Invalid phone number format. Use 10 digits or include country code.",
+  //   });
+  // }
+
+  if (!isValidName(fname) || !isValidName(lname)) {
+    return res.status(422).json({
+      message: "Invalid name format.",
+    });
+  }
+
+  if (!isValidPassword(password)) {
+    return res.status(422).json({
+      message:
+        "Password must be 8 to 15 characters long and contain at least one lowercase letter, one uppercase letter, and one digit.",
+    });
+  }
+
+  if (!isValidUserId(memberid)) {
+    return res.status(422).json({
+      message:
+        "Member Id Should have at least 1 letter and 1 digit, minimum length 6.",
+    });
+  }
   const aadhar_length = aadhar;
   const pan_length = pan;
   //console.log(aadhar_length.length,'35');
