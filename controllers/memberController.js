@@ -213,22 +213,8 @@ exports.otherCountryMemberRegistration = async (req, res) => {
   //console.log(aadhar_back, aadhar_front, pan_card,'140');
 
   if (!ID_Card) {
-    return res.status(422).json({ message: "All field required" });
+    return res.status(422).json({ message: "Please provide Id card." });
   }
-
-  // if (!req.files || !req.files['aadhar_front_side'] || !req.files['aadhar_back_side'] || !req.files['pan_card']) {
-
-  //     return res.status(422).json({ message: "Please Fill all Details!" })
-
-  // }
-  // const aadhar_front_side = req.files.aadhar_front_side[0].location;
-  // const aadhar_back_side = req.files.aadhar_back_side[0].location;
-  // const pan_card = req.files.pan_card[0].location;
-
-  // if (!aadhar_front_side || !aadhar_back_side || !pan_card) {
-
-  //     return res.status(422).json({ message: "All field required" })
-  // }
 
   const {
     fname,
