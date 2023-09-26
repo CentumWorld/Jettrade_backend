@@ -1212,6 +1212,8 @@ exports.changeUserPaymentStatus = async (req, res) => {
             });
             console.log(franchise, "ggggggg");
 
+            if(franchise){
+
             let frenchiseWallet = franchise.frenchiseWallet;
             frenchiseWallet += 450;
             await Franchise.updateOne(
@@ -1226,6 +1228,8 @@ exports.changeUserPaymentStatus = async (req, res) => {
                 refferUserId: bdDetails.businessDeveloperId,
               });
             await frenchiseCreditWalletDetails.save();
+
+            }
 
             const transferPercentage = 2.5;
             const transferAmount = (3500 * transferPercentage) / 100;
