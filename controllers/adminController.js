@@ -1961,7 +1961,7 @@ exports.createStateHandler = async (req, res) => {
     const savedData = await newStateHandler.save();
 
     return res.status(201).json({
-      message: "State handler created successfully",
+      message: "S.H.O created successfully.",
       savedData,
     });
   } catch (error) {
@@ -2165,7 +2165,7 @@ exports.createFrenchise = async (req, res) => {
       franchiseState,
       paymentRequestCount,
       adhar_front_side: adharFrontSideLocation,
-      adhar__side: adharbackSideLocation,
+      adhar_back_side: adharbackSideLocation,
       panCard: panCardLocation,
     });
 
