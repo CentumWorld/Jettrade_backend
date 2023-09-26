@@ -27,7 +27,7 @@ const AllNewPaidUser = require("../model/allNewPaidUserSchema");
 const MyReferral = require("../model/myReferralSchema");
 const Like = require("../model/likeModel");
 const DisLike = require("../model/disLikeModel");
-const { isValidPassword, isValidPhone } = require("../validation/validation");
+const { isValidPassword, isValidPhone, isValidUserId } = require("../validation/validation");
 const BusinessDeveloper = require("../model/businessDeveloperSchema");
 const BusinessDeveloperCreditWalletTransaction = require("../model/businessDeveloperCreditWalletTransaction");
 const Franchise = require("../model/frenchiseSchema");
@@ -44,15 +44,22 @@ const UpiHolder = require("../model/UpiHolderSchema");
 
 // userRegistartion
 exports.userRegistration = async (req, res) => {
-  if (
-    !req.files ||
-    !req.files["aadhar_front_side"] ||
-    !req.files["aadhar_back_side"] ||
-    !req.files["pan_card"]
-  ) {
+
+
+  if ( !req.files["aadhar_front_side"]) {
     return res.status(422).json({
-      message:
-        "Please upload all required files (aadhar_front_side, aadhar_back_side, pan_card)",
+      message: "Please upload adhar card front side.",
+    });
+  }
+  if ( !req.files["aadhar_back_side"]) {
+    return res.status(422).json({
+      message: "Please upload adhar card back side.",
+    });
+  }
+
+  if ( !req.files["pan_card"]) {
+    return res.status(422).json({
+      message: "Please upload pan card.",
     });
   }
 
@@ -100,14 +107,20 @@ exports.userRegistration = async (req, res) => {
   }
 
   let isValidRefferedIdUser = await User.findOne({ refferal_id: reffered_id });
-  let isValidRefferedIdMember = await Member.findOne({ refferal_id: reffered_id });
+  let isValidRefferedIdMember = await Member.findOne({
+    refferal_id: reffered_id,
+  });
   let isValidRefferedIdAdmin = await Admin.findOne({ referralId: reffered_id });
-  
-  
-  if (!isValidRefferedIdUser && !isValidRefferedIdMember &&!isValidRefferedIdAdmin) {
-    return res.status(400).json({ message: "You are providing a wrong referral id" });
+
+  if (
+    !isValidRefferedIdUser &&
+    !isValidRefferedIdMember &&
+    !isValidRefferedIdAdmin
+  ) {
+    return res
+      .status(400)
+      .json({ message: "You are providing a wrong referral id" });
   }
-  
 
   if (!validator.isEmail(email)) {
     return res
@@ -135,6 +148,7 @@ exports.userRegistration = async (req, res) => {
       const refferal_id = userid + Math.floor(Math.random() * 100000 + 1);
       console.log(refferal_id);
       console.log(userid, "59");
+
       function makepassword(length) {
         let result = "";
         const characters =
@@ -151,10 +165,18 @@ exports.userRegistration = async (req, res) => {
       }
 
       const password = makepassword(8);
-      if (password.length < 8) {
+
+
+      // if (password.length < 8) {
+      //   return res.status(400).json({
+      //     message: "Password must be minimum length of 8 charector!",
+      //   });
+      // }
+
+      if(!isValidPassword(password)){
         return res.status(400).json({
-          message: "Password must be minimum length of 8 charector!",
-        });
+              message: "Password mmmmmust be minimum length of 8 charector!",
+            }); 
       }
 
       const userExist = await User.findOne({ userid: userid });
@@ -216,14 +238,22 @@ exports.userRegistration = async (req, res) => {
       if (userExist) {
         return res
           .status(400)
-          .json({ message: "this userId is already taken" });
+          .json({ message: "this userId is already taken." });
       }
 
-      if (password.length < 8) {
+      if (!isValidPassword(password)) {
         return res.status(400).json({
-          message: "Password must be minimum length of 8 charector!",
+          message: "Password must at least one digit, one lowercase letter, one uppercase letter, and be 8 to 15 characters long.",
         });
       }
+
+      if (!isValidUserId(userid)) {
+        return res.status(400).json({
+          message: "User ID must be a combination of at least one letter and one digit, and it should be a minimum of 6 characters in length.",
+        });
+      }
+      
+      
 
       const user = new User({
         fname,
@@ -270,89 +300,78 @@ exports.userRegistration = async (req, res) => {
 };
 
 // otherCountryUserRegistration
+//==
 exports.otherCountryUserRegistration = async (req, res) => {
-  if (!req.file) {
-    return res.status(400).json({ message: "No File Uploaded" });
-  }
+  try {
+    if (!req.file) {
+      return res.status(400).json({ message: "No File Uploaded" });
+    }
 
-  const ID_Card = req.file.location;
-  const userType = "otherCountry";
-  //console.log(aadhar_back, aadhar_front, pan_card,'140');
+    const ID_Card = req.file.location;
+    const userType = "otherCountry";
 
-  if (!ID_Card) {
-    return res.status(422).json({ message: "Id card is required" });
-  }
+    const requiredFields = [
+      "fname",
+      "lname",
+      "email",
+      "phone",
+      "address",
+      "gender",
+      "dob",
+      "Id_No",
+      "reffered_id",
+    ];
 
-  const requiredFields = [
-    "fname",
-    "lname",
-    "email",
-    "phone",
-    "address",
-    "gender",
-    "dob",
-    "Id_No",
-    "reffered_id",
-  ];
+    const {
+      fname,
+      lname,
+      email,
+      phone,
+      address,
+      gender,
+      dob,
+      Id_No,
+      reffered_id,
+      userid,
+      password,
+      doj,
+    } = req.body;
 
-  const {
-    fname,
-    lname,
-    email,
-    phone,
-    address,
-    gender,
-    dob,
-    Id_No,
-    reffered_id,
-    userid,
-    password,
-    doj,
-  } = req.body;
+    // Check if any required field is missing
+    const missingFields = requiredFields.filter((field) => !req.body[field]);
+    if (missingFields.length > 0) {
+      return res.status(422).json({
+        message: `Please fill in all details: ${missingFields.join(", ")}`,
+      });
+    }
 
-  // Check if any required field is missing
-  const missingFields = requiredFields.filter((field) => !req.body[field]);
-  if (missingFields.length > 0) {
-    return res.status(422).json({
-      message: `Please fill all details: ${missingFields.join(", ")}`,
+    let isValidRefferedIdUser = await User.findOne({ refferal_id: reffered_id });
+    let isValidRefferedIdMember = await Member.findOne({
+      refferal_id: reffered_id,
     });
-  }
-
-  let isValidRefferedIdUser = await User.findOne({ refferal_id: reffered_id });
-  let isValidRefferedIdMember = await Member.findOne({ refferal_id: reffered_id });
-  let isValidRefferedIdAdmin = await Admin.findOne({ referralId: reffered_id });
+    let isValidRefferedIdAdmin = await Admin.findOne({ referralId: reffered_id });
   
-  
-  if (!isValidRefferedIdUser && !isValidRefferedIdMember &&!isValidRefferedIdAdmin) {
-    return res.status(400).json({ message: "You are providing a wrong referral id" });
-  }
-
-  //console.log(aadhar_length.length,'35');
-  if (!validator.isEmail(email)) {
-    return res
-      .status(400)
-      .json({ status: false, message: "Invalid email address" });
-  }
-
-  if (userid === "" && password === "") {
     if (
-      !fname ||
-      !lname ||
-      !phone ||
-      !address ||
-      !gender ||
-      !Id_No ||
-      !dob ||
-      !reffered_id
+      !isValidRefferedIdUser &&
+      !isValidRefferedIdMember &&
+      !isValidRefferedIdAdmin
     ) {
-      return res.status(422).json({ message: "Please Fill all Details2!" });
-    } else {
-      try {
-        const userid = fname + Math.floor(Math.random() * 100000 + 1);
-        const refferal_id = userid + Math.floor(Math.random() * 100000 + 1);
-        console.log(refferal_id);
-        console.log(userid, "59");
-        function makepassword(length) {
+      return res
+        .status(400)
+        .json({ message: "You are providing a wrong referral id" });
+    }
+
+    if (!validator.isEmail(email)) {
+      return res
+        .status(400)
+        .json({ status: false, message: "Invalid email address" });
+    }
+
+    if (!userid && !password) {
+      const generatedUserId = fname + Math.floor(Math.random() * 100000 + 1);
+      const refferal_id = generatedUserId + Math.floor(Math.random() * 100000 + 1);
+
+              function makepassword(length) {
           let result = "";
           const characters =
             "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789%&@#";
@@ -367,134 +386,127 @@ exports.otherCountryUserRegistration = async (req, res) => {
           return result;
         }
 
-        const password = makepassword(8);
-        if (password.length < 8) {
-          return res.status(400).json({
-            message: "Password must be minimum length of 8 charector!",
-          });
-        }
+      const generatedPassword = makepassword(8);
 
-        const userExist = await User.findOne({ userid: userid });
-        if (userExist) {
-          return res
-            .status(400)
-            .json({ message: "this userId is already taken" });
-        }
-
-        // if (!isValidPhone(phone)) {
-        //   return res.status(400).json({ message: "Invalid phone." });
-        // }
-
-        const user = new User({
-          fname,
-          lname,
-          email,
-          phone,
-          address,
-          gender,
-          dob,
-          refferal_id,
-          reffered_id,
-          Id_No,
-          ID_Card,
-          userType,
-          userid,
-          password,
-        });
-        await user.save();
-        const phone3 = "+" + user.phone;
-        // SuccessfullRegistrationSms(phone3, { "userid": user.userid, "password": password })
-
-        const token = jwt.sign(
-          { userId: user._id },
-          process.env.SECRET_KEY,
-          { expiresIn: 6000 } // Set the token to expire in 1 hour
-        );
-        res.status(201).json({
-          message: "User registered successfully",
-          _id: user._id,
-          fname,
-          refferal_id,
-          userType,
-          userid,
-          token,
-          password,
-        });
-      } catch (error) {
-        console.log(error);
+      const userExist = await User.findOne({ userid: generatedUserId });
+      if (userExist) {
+        return res
+          .status(400)
+          .json({ message: "This user ID is already taken" });
       }
-    }
-  } else {
-    if (
-      !fname ||
-      !lname ||
-      !phone ||
-      !address ||
-      !gender ||
-      !dob ||
-      !Id_No ||
-      !reffered_id ||
-      !userid ||
-      !password
-    ) {
-      return res.status(422).json({ message: "Please Fill all Details3!" });
+
+      const user = new User({
+        fname,
+        lname,
+        email,
+        phone,
+        address,
+        gender,
+        dob,
+        referral_id: refferal_id,
+        reffered_id,
+        Id_No,
+        ID_Card,
+        userType,
+        userid: generatedUserId,
+        password: generatedPassword,
+      });
+
+      await user.save();
+      const phone3 = "+" + user.phone;
+      // SuccessfullRegistrationSms(phone3, { "userid": user.userid, "password": generatedPassword })
+
+      const token = jwt.sign(
+        { userId: user._id },
+        process.env.SECRET_KEY,
+        { expiresIn: 6000 } // Set the token to expire in 1 hour
+      );
+      return res.status(201).json({
+        message: "User registered successfully",
+        _id: user._id,
+        fname,
+        referral_id: refferal_id,
+        userType,
+        userid: generatedUserId,
+        token,
+        password: generatedPassword,
+      });
     } else {
-      try {
-        const refferal_id = userid + Math.floor(Math.random() * 100000 + 1);
-
-        const userExist = await User.findOne({ userid: userid });
-        if (userExist) {
-          return res
-            .status(400)
-            .json({ message: "this userId is already taken" });
-        }
-
-        if (password.length < 8) {
-          return res.status(400).json({
-            message: "Password must be minimum length of 8 charector!",
-          });
-        }
-        const user = new User({
-          fname,
-          lname,
-          email,
-          phone,
-          address,
-          gender,
-          dob,
-          refferal_id,
-          reffered_id,
-          Id_No,
-          ID_Card,
-          userType,
-          userid,
-          password,
-        });
-        await user.save();
-        const phone4 = "+" + user.phone;
-
-        const token = jwt.sign(
-          { userId: user._id },
-          process.env.SECRET_KEY,
-          { expiresIn: 6000 } // Set the token to expire in 1 hour
-        );
-        res.status(201).json({
-          message: "User registered successfully",
-          _id: user._id,
-          fname,
-          refferal_id,
-          userType,
-          userid,
-          token,
-          password,
-        });
-      } catch (error) {
-        console.log(error);
+      if (!userid ) {
+        return res.status(422).json({ message: "Please provide User Id" });
       }
+      if (!password ) {
+        return res.status(422).json({ message: "Please provide password" });
+      }
+
+      const refferal_id = userid + Math.floor(Math.random() * 100000 + 1);
+
+      const userExist = await User.findOne({ userid });
+      if (userExist) {
+        return res.status(400).json({ message: "This user ID is already taken" });
+      }
+
+      if (password.length < 8) {
+        return res.status(400).json({
+          message: "Password must be a minimum of 8 characters long!",
+        });
+      }
+
+      if (!isValidUserId(userid)) {
+        return res.status(400).json({
+          message: "User ID must be a combination of at least one letter and one digit, and it should be a minimum of 6 characters in length.",
+        });
+      }
+
+      if (!isValidPassword(password)) {
+        return res.status(400).json({
+          message: "Password must at least one digit, one lowercase letter, one uppercase letter, and be 8 to 15 characters long.",
+        });
+      }
+
+      const user = new User({
+        fname,
+        lname,
+        email,
+        phone,
+        address,
+        gender,
+        dob,
+        referral_id: refferal_id,
+        reffered_id,
+        Id_No,
+        ID_Card,
+        userType,
+        userid,
+        password,
+      });
+
+      await user.save();
+      const phone4 = "+" + user.phone;
+
+      const token = jwt.sign(
+        { userId: user._id },
+        process.env.SECRET_KEY,
+        { expiresIn: 6000 } // Set the token to expire in 1 hour
+      );
+      return res.status(201).json({
+        message: "User registered successfully",
+        _id: user._id,
+        fname,
+        referral_id: refferal_id,
+        userType,
+        userid,
+        token,
+        password,
+      });
     }
+  } catch (error) {
+    console.log(error);
+    return res.status(500).json({ message: "Internal Server Error" });
   }
 };
 
+//==
 exports.userLogin = async (req, res) => {
   try {
     const { userid, password } = req.body;
@@ -1031,19 +1043,19 @@ exports.changeUserPaymentStatus = async (req, res) => {
   });
 
   if (referaluser) {
-  const userId = referaluser.userid;
-  console.log(userId, "1028");
-  await Admin.updateOne(
-    { referralId: "admin@123" },
-    { $inc: { adminWallet: 2600 } }
-  );
-  const adminRefferalTransaction = new AdminCreditWalletTransaction({
-    admin_id: "admin",
-    creditAmount: 2600,
-    refferUserId: userId,
-    Type: "New",
-  });
-  adminRefferalTransaction.save();
+    const userId = referaluser.userid;
+    console.log(userId, "1028");
+    await Admin.updateOne(
+      { referralId: "admin@123" },
+      { $inc: { adminWallet: 2600 } }
+    );
+    const adminRefferalTransaction = new AdminCreditWalletTransaction({
+      admin_id: "admin",
+      creditAmount: 2600,
+      refferUserId: userId,
+      Type: "New",
+    });
+    adminRefferalTransaction.save();
   }
   const userActivate = new AllNewPaidUser({
     userid: userid,
@@ -1062,16 +1074,16 @@ exports.changeUserPaymentStatus = async (req, res) => {
         { referralId: "admin@123" }, // Assuming "admin@123" is the admin's referralId
         { $set: { adminWallet: adminWallet } }
       );
-     // Create an AdminCreditWalletTransaction document
-     const adminCreditWalletTransaction = new AdminCreditWalletTransaction({
-      admin_id: admin.admin_id, // Replace with the actual admin ID
-      creditAmount: 3500,
-      refferUserId: userid, // Assuming the user being referred is the one specified in the request
-      Type: "New",
-    });
+      // Create an AdminCreditWalletTransaction document
+      const adminCreditWalletTransaction = new AdminCreditWalletTransaction({
+        admin_id: admin.admin_id, // Replace with the actual admin ID
+        creditAmount: 3500,
+        refferUserId: userid, // Assuming the user being referred is the one specified in the request
+        Type: "New",
+      });
 
-    // Save the AdminCreditWalletTransaction document
-    await adminCreditWalletTransaction.save();
+      // Save the AdminCreditWalletTransaction document
+      await adminCreditWalletTransaction.save();
       return res.status(200).json({ message: "Your payment successful" });
     } else {
       return res.status(500).json({ message: "Admin not found" });
@@ -1111,7 +1123,7 @@ exports.changeUserPaymentStatus = async (req, res) => {
             new userCreditWalletTransaction({
               userId: userid,
               joininigDate: userExist.doj,
-              refferUserId:  userExist.userid,
+              refferUserId: userExist.userid,
               creditAmount: 900,
               Type: "New",
             });
@@ -1244,7 +1256,7 @@ exports.changeUserPaymentStatus = async (req, res) => {
             if (admin) {
               console.log(admin.adminWallet);
               let adminWallet = admin.adminWallet;
-              adminWallet += 1612.50;
+              adminWallet += 1612.5;
               await Admin.updateOne(
                 { referralId: stateHandler.referredId },
                 { $set: { adminWallet: adminWallet } }
@@ -1252,7 +1264,7 @@ exports.changeUserPaymentStatus = async (req, res) => {
               const adminCreditWalletDetails = new AdminCreditWalletTransaction(
                 {
                   admin_id: admin.admin_id,
-                  creditAmount: 1612.50,
+                  creditAmount: 1612.5,
                   Type: "New",
                   refferUserId: stateHandler.stateHandlerId,
                 }
@@ -1889,8 +1901,6 @@ exports.changePaymentStatusForRenewal = async (req, res) => {
     }
   );
 
-
-
   const userRenewal = new UserRenewal({
     userid: userid,
     renewalAmount: renewAmount,
@@ -1902,26 +1912,25 @@ exports.changePaymentStatusForRenewal = async (req, res) => {
   });
 
   if (referaluser) {
-  const userId = referaluser.userid;
-  await Admin.updateOne(
-    { referralId: "admin@123" },
-    { $inc: { adminWallet: 1300 } }
-  );
-  const adminRefferalTransaction = new AdminCreditWalletTransaction({
-    admin_id: "admin",
-    creditAmount: 1300,
-    refferUserId: userId,
-    Type: "Renewal",
-  });
-  adminRefferalTransaction.save();
-  const userRefferalTransaction = new userCreditWalletTransaction({
-    userId:userId ,
-    creditAmount: 500,
-    refferUserId: userExist.userid,
-    Type: "Renewal",
-  });
-  userRefferalTransaction.save();
-
+    const userId = referaluser.userid;
+    await Admin.updateOne(
+      { referralId: "admin@123" },
+      { $inc: { adminWallet: 1300 } }
+    );
+    const adminRefferalTransaction = new AdminCreditWalletTransaction({
+      admin_id: "admin",
+      creditAmount: 1300,
+      refferUserId: userId,
+      Type: "Renewal",
+    });
+    adminRefferalTransaction.save();
+    const userRefferalTransaction = new userCreditWalletTransaction({
+      userId: userId,
+      creditAmount: 500,
+      refferUserId: userExist.userid,
+      Type: "Renewal",
+    });
+    userRefferalTransaction.save();
   }
 
   if (reffered_id === "admin@123") {
@@ -1939,15 +1948,15 @@ exports.changePaymentStatusForRenewal = async (req, res) => {
         { $set: { adminWallet: adminWallet } }
       );
 
-    const adminCreditWalletTransaction = new AdminCreditWalletTransaction({
-      admin_id: admin.admin_id, 
-      creditAmount: 1800,
-      refferUserId: userid,
-      Type: "Renewal",
-    });
+      const adminCreditWalletTransaction = new AdminCreditWalletTransaction({
+        admin_id: admin.admin_id,
+        creditAmount: 1800,
+        refferUserId: userid,
+        Type: "Renewal",
+      });
 
-    // Save the AdminCreditWalletTransaction document
-    await adminCreditWalletTransaction.save();
+      // Save the AdminCreditWalletTransaction document
+      await adminCreditWalletTransaction.save();
 
       return res.status(200).json({ message: "Your payment successful" });
     } else {
@@ -2134,8 +2143,7 @@ exports.changePaymentStatusForRenewal = async (req, res) => {
           await frenchiseCreditWalletDetails.save();
 
           const transferPercentage = 2.5;
-          const transferAmount = (1800
-             * transferPercentage) / 100;
+          const transferAmount = (1800 * transferPercentage) / 100;
 
           const stateHandler = await StateHandler.findOne({
             referralId: franchise.referredId,
@@ -2766,7 +2774,9 @@ exports.changePaymentStatus = async (req, res) => {
     );
 
     if (user) {
-      return res.status(200).json({ message: "Payment status updated successfully", user });
+      return res
+        .status(200)
+        .json({ message: "Payment status updated successfully", user });
     } else {
       return res.status(404).json({ message: "User not found" });
     }
@@ -2776,27 +2786,26 @@ exports.changePaymentStatus = async (req, res) => {
   }
 };
 
+exports.verifyRefferalIdInUser = async (req, res) => {
+  const { referralId } = req.body;
 
-exports.verifyRefferalIdInUser = async (req,res) => {
-  const {referralId} = req.body
-
-  let findRefferalUser = await User.find({refferal_id: referralId })
-  console.log('findRefferalUser',findRefferalUser ,'2756')
-  if(findRefferalUser.length>0){
-    return 	res.status(200).json({
-      message:"Refferal Id verified successfully"
-    })
-  }else {
-    let findRefferalMember = await Member.find({refferal_id: referralId})
+  let findRefferalUser = await User.find({ refferal_id: referralId });
+  console.log("findRefferalUser", findRefferalUser, "2756");
+  if (findRefferalUser.length > 0) {
+    return res.status(200).json({
+      message: "Refferal Id verified successfully",
+    });
+  } else {
+    let findRefferalMember = await Member.find({ refferal_id: referralId });
     // console.log('findRefferalMember',findRefferalMember ,'2756')
-    if(findRefferalMember.length>0){
-      return 	res.status(200).json({
-        message:"Refferal Id verified successfully"
-      })
-    }else{
-      return   res.status(404).json({
-        message:"Invalid referral Id"
-      })
+    if (findRefferalMember.length > 0) {
+      return res.status(200).json({
+        message: "Refferal Id verified successfully",
+      });
+    } else {
+      return res.status(404).json({
+        message: "Invalid referral Id",
+      });
     }
   }
-}
+};
