@@ -163,7 +163,7 @@ exports.memberRegistration = async (req, res) => {
     const memberExist = await Member.findOne({ memberid: memberid });
 
     if (memberExist) {
-      return res.status(200).json({ message: "Member already exist!" });
+      return res.status(400).json({ message: "Member already exist!" });
     }
 
     const existingreferredId = await BusinessDeveloper.findOne({
