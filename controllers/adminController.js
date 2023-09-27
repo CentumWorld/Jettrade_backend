@@ -63,6 +63,15 @@ const UpiHolder = require("../model/UpiHolderSchema")
 const BankAccountHolder = require("../model/BankAccountHolderSchema")
 // const memberCreditWalletTransaction = require("../model/memberCreditWalletTransaction");
 // const userCreditWalletTransaction = require("../model/userCreditWalletTransaction");
+const NotificationForAllSho = require('../model/NotificationForAllShoSchema');
+const NotificationsForAllFranchise = require('../model/NotificationForAllFranchiseSchema');
+const NotificationForAllBusinessDev = require('../model/NotificationForAllBusinessDevSchema');
+const NotificationForParticularSho = require('../model/NotificationForParticularShoSchema');
+const NotificationForParticularFranchise = require('../model/notification-for-particular-franchise');
+const NotificationForParticularBusinessDev = require('../model/NotificationForParticularBusinessDev');
+
+
+
 
 // admin Login
 
@@ -460,17 +469,17 @@ exports.userRegistrationByAdmin = async (req, res) => {
     userid,
     password,
   } = req.body;
-  
+
   let isValidRefferedIdUser = await User.findOne({ refferal_id: reffered_id });
   let isValidRefferedIdMember = await Member.findOne({ refferal_id: reffered_id });
   let isValidRefferedIdAdmin = await Admin.findOne({ referralId: reffered_id });
-  
-  
-  if (!isValidRefferedIdUser && !isValidRefferedIdMember &&!isValidRefferedIdAdmin) {
+
+
+  if (!isValidRefferedIdUser && !isValidRefferedIdMember && !isValidRefferedIdAdmin) {
     return res.status(400).json({ message: "You are providing a wrong referral id" });
   }
 
-  
+
 
 
   const aadhar_length = aadhar;
@@ -1936,7 +1945,7 @@ exports.createStateHandler = async (req, res) => {
     const resultArray = inputString.split(',');
 
     // console.log(resultArray);
-    const loginOtp =  Math.floor(100000 + Math.random() * 900000);
+    const loginOtp = Math.floor(100000 + Math.random() * 900000);
 
     // -----------------------
     const newStateHandler = new StateHandler({
@@ -2011,7 +2020,7 @@ exports.createFrenchise = async (req, res) => {
       paymentRequestCount,
     } = req.body;
 
-   
+
     if (!req.files["adhar_front_side"]) {
       return res.status(400).json({ message: "Adhar card front side file is missing." });
     }
@@ -2091,7 +2100,7 @@ exports.createFrenchise = async (req, res) => {
 
     // Is referred id exist in Frenchise collection
 
-    
+
 
     const existReferredId = await StateHandler.findOne({
       referralId: referredId,
@@ -2144,7 +2153,7 @@ exports.createFrenchise = async (req, res) => {
     console.log(referralId, "1886");
 
     const frenchiseWallet = 0;
-    
+
     const inputString = franchiseCity;
     const resultArray = inputString.split(',');
 
@@ -2157,7 +2166,7 @@ exports.createFrenchise = async (req, res) => {
       email,
       password: hashedPassword,
       gender,
-      franchiseCity : resultArray,
+      franchiseCity: resultArray,
       frenchiseId,
       referredId,
       frenchiseWallet,
@@ -2526,16 +2535,16 @@ exports.businessDeveloperLogin = async (req, res) => {
 
 // verifyFranchieBeforeRegistration
 exports.verifyFranchieBeforeRegistration = async (req, res) => {
-try {
-  
-  
+  try {
+
+
     const { refferId } = req.body;
     if (!refferId) {
       return res.status(422).json({
         message: "Please enter refferId",
       });
     }
-  
+
     const stateUser = await StateHandler.findOne({ referralId: refferId });
     if (stateUser) {
       const stateUserState = stateUser.selectedState;
@@ -2548,44 +2557,44 @@ try {
         message: "Please provide a valid referral Id",
       });
     }
-    
-} catch (error) {
-  console.log(error.message)
-  res.status(500).json({message: "Internal server error."})
-  
-}
+
+  } catch (error) {
+    console.log(error.message)
+    res.status(500).json({ message: "Internal server error." })
+
+  }
 };
 
 // verifyBuisnessDeveloperBeforeRegistration
 exports.verifyBuisnessDeveloperBeforeRegistration = async (req, res) => {
 
   try {
-    
- 
-  const { refferId } = req.body;
-  if (!refferId) {
-    return res.status(422).json({
-      message: "Please enter refferId",
-    });
-  }
 
-  const franchieUser = await Frenchise.findOne({ referralId: refferId });
 
-  if (franchieUser) {
-    const franchieUserCity = franchieUser.franchiseCity;
-    return res.status(200).json({
-      message: "Franchise user found",
-      franchieUserCity,
-    });
-  } else {
-    return res.status(404).json({
-      message: "Please provide a valid referral Id",
-    });
+    const { refferId } = req.body;
+    if (!refferId) {
+      return res.status(422).json({
+        message: "Please enter refferId",
+      });
+    }
+
+    const franchieUser = await Frenchise.findOne({ referralId: refferId });
+
+    if (franchieUser) {
+      const franchieUserCity = franchieUser.franchiseCity;
+      return res.status(200).json({
+        message: "Franchise user found",
+        franchieUserCity,
+      });
+    } else {
+      return res.status(404).json({
+        message: "Please provide a valid referral Id",
+      });
+    }
+  } catch (error) {
+    console.log(error.message)
+    res.status(500).json({ message: "Internal server error." })
   }
-} catch (error) {
-  console.log(error.message)
-  res.status(500).json({message: "Internal server error."}) 
-}
 };
 //=======================================================================
 
@@ -4353,5 +4362,207 @@ exports.getUserBankAndUpiDetails = async (req, res) => {
   } catch (error) {
     console.error("Error fetching user details:", error.message);
     return res.status(500).json({ message: "Internal server error" });
+  }
+}
+
+// notificationForAllSho
+exports.notificationForAllSho = async (req, res) => {
+  try {
+    const { investerType, message } = req.body;
+    if (!investerType || !message) {
+      return res.status(400).json({
+        message: "Please provide type and message",
+      });
+    }
+    const notification = new NotificationForAllSho({
+      investerType: investerType,
+      message: message,
+    });
+    await notification.save();
+    if (notification) {
+      StateHandler.updateMany({}, { $inc: { notification: 1 } })
+        .then(() => {
+          return res
+            .status(201)
+            .json({ message: "Notification pushed successfully" });
+        })
+        .catch((error) => {
+          console.error("Error updating notification for SHO", error);
+        });
+    }
+  } catch (error) {
+    return res.status(500).json({ message: "Internal server error" })
+  }
+}
+
+// notificationForAllFranchise
+exports.notificationForAllFranchise = async (req,res) => {
+  try {
+    const { investerType, message } = req.body;
+    if (!investerType || !message) {
+      return res.status(400).json({
+        message: "Please provide type and message",
+      });
+    }
+    const notification = new NotificationsForAllFranchise({
+      investerType: investerType,
+      message: message,
+    });
+    await notification.save();
+    if (notification) {
+      Frenchise.updateMany({}, { $inc: { notification: 1 } })
+        .then(() => {
+          return res
+            .status(201)
+            .json({ message: "Notification pushed successfully" });
+        })
+        .catch((error) => {
+          return res.status(400).json({
+            message:"Something went wrong"
+          })
+        });
+    }
+  } catch (error) {
+    return res.status(500).json({ message: "Internal server error" })
+  }
+}
+
+// notificationForAllBusinessDev
+exports.notificationForAllBusinessDev = async (req,res) => {
+  try {
+    const { investerType, message } = req.body;
+    if (!investerType || !message) {
+      return res.status(400).json({
+        message: "Please provide type and message",
+      });
+    }
+    const notification = new NotificationForAllBusinessDev({
+      investerType: investerType,
+      message: message,
+    });
+    await notification.save();
+    if (notification) {
+      BusinessDeveloper.updateMany({}, { $inc: { notification: 1 } })
+        .then(() => {
+          return res
+            .status(201)
+            .json({ message: "Notification pushed successfully" });
+        })
+        .catch((error) => {
+          return res.status(400).json({
+            message:"Something went wrong"
+          })
+        });
+    }
+  } catch (error) {
+    return res.status(500).json({ message: "Internal server error" })
+  }
+}
+
+// notificationForParticularSho
+exports.notificationForParticularSho = async (req,res) => {
+  try {
+    const { stateHandlerId, message } = req.body;
+    if (!stateHandlerId || !message) {
+      return res.status(400).json({
+        message: "Please provide SHO ID and message",
+      });
+    }
+    const shoExist = await StateHandler.findOne({ stateHandlerId: stateHandlerId });
+    if (!shoExist) {
+      return res.status(400).json({ message: "Invalid SHO ID" });
+    }
+    const notification = new NotificationForParticularSho({
+      stateHandlerId: stateHandlerId,
+      message: message,
+    });
+    await notification.save();
+    if (notification) {
+      StateHandler.updateOne({ stateHandlerId: stateHandlerId }, { $inc: { notification: 1 } })
+        .then(() => {
+          return res
+            .status(201)
+            .json({ message: "Notification pushed successfully" });
+        })
+        .catch((error) => {
+          return res.status(400).json({
+            message:`Error while pushing notification for "${stateHandlerId}"`
+          })
+        });
+    }
+  } catch (error) {
+    return res.status(500).json({message:"Internal server error"})
+  }
+}
+
+// notificationForParticularFranchise
+exports.notificationForParticularFranchise = async (req,res) => {
+  try {
+    const { frenchiseId, message } = req.body;
+    if (!frenchiseId || !message) {
+      return res.status(400).json({
+        message: "Please provide Franchise ID and message",
+      });
+    }
+    const FranchiseExist = await Frenchise.findOne({ frenchiseId: frenchiseId });
+    if (!FranchiseExist) {
+      return res.status(400).json({ message: "Invalid Franchise ID" });
+    }
+    const notification = new NotificationForParticularFranchise({
+      frenchiseId: frenchiseId,
+      message: message,
+    });
+    await notification.save();
+    if (notification) {
+      Frenchise.updateOne({ frenchiseId: frenchiseId }, { $inc: { notification: 1 } })
+        .then(() => {
+          return res
+            .status(201)
+            .json({ message: "Notification pushed successfully" });
+        })
+        .catch((error) => {
+          return res.status(400).json({
+            message:`Error while pushing notification for "${frenchiseId}"`
+          })
+        });
+    }
+  } catch (error) {
+    return res.status(500).json({message:"Internal server error"})
+  }
+}
+
+// notificationForParticularBusinessDev
+exports.notificationForParticularBusinessDev = async(req,res) => {
+  try {
+    const { businessDeveloperId, message } = req.body;
+    if (!businessDeveloperId || !message) {
+      return res.status(400).json({
+        message: "Please provide BusinessDev  ID and message",
+      });
+    }
+    const BusinessDevExist = await BusinessDeveloper.findOne({ businessDeveloperId: businessDeveloperId });
+    if (!BusinessDevExist) {
+      return res.status(400).json({ message: "Invalid Business Developer ID" });
+    }
+    const notification = new NotificationForParticularBusinessDev({
+      businessDeveloperId: businessDeveloperId,
+      message: message,
+    });
+    await notification.save();
+    if (notification) {
+      BusinessDeveloper.updateOne({ businessDeveloperId: businessDeveloperId }, { $inc: { notification: 1 } })
+        .then(() => {
+          return res
+            .status(201)
+            .json({ message: "Notification pushed successfully" });
+        })
+        .catch((error) => {
+          return res.status(400).json({
+            message:`Error while pushing notification for "${businessDeveloperId}"`
+          })
+        });
+    }
+  } catch (error) {
+    return res.status(500).json({message:"Internal server error"})
   }
 }

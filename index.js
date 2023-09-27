@@ -143,7 +143,16 @@ const updatePanCardStateHandler = require("./routes/update-pan-card-state-handle
 const blockSubAdminByAdmin = require("./routes/block-subAdmin-by-Admin");
 const getOwnUserBankAndUpiDetails = require("./routes/users/get-own-user-bank-and-upi-details")
 const getUserBankAndUpiDetails = require("./routes/get-user-bank-and-upi-details")
-const changePaymentStatus = require("./routes/users/change-payment-status")
+const changePaymentStatus = require("./routes/users/change-payment-status");
+const notificationForAllSho = require('./routes/notification-for-all-sho-notification');
+const notificationForAllFranchise = require('./routes/notification-for-all-franchise');
+const notificationForAllBusinessDev = require('./routes/notification-for-all-business-dev');
+const notificationForParticularSho = require('./routes/notification-for-particular-sho');
+const notificationForParticularFranchise = require('./routes/notification-for-particular-franchise');
+const notificationForParticularBusinessDev = require('./routes/notification-for-particular-business-dev');
+
+// ---------------------------------admin ------------------------------------------------------//
+
 // refferal
 const memberRegistration = require("./routes/refferal/member-registration");
 const memberLogin = require("./routes/refferal/member-login");
@@ -520,8 +529,9 @@ app.use("/member", getOwnMemberCreditWalletTransactionDetails);
 app.use("/member", getOwnTradersInsideMemberCreditWalletTransactionDetails);
 app.use("/member", createMemberUpiHolder)
 
-app.use("/admin", getvideos);
+// ---------------------admin ----------------------------//
 
+app.use("/admin", getvideos);
 app.use("/admin", subAdminLogin);
 app.use("/user", fetchOneVideoDetail);
 app.use("/admin", createSubAdminInsideAdmin);
@@ -575,6 +585,16 @@ app.use("/admin", verifyState);
 app.use("/admin", verifyBusinessDeveloper);
 app.use("/admin", verifyFranchise);
 app.use('/admin',fetchParticularMemberDetailsUsingMemberid);
+app.use('/admin',notificationForAllSho);
+app.use('/admin',notificationForAllFranchise);
+app.use('/admin',notificationForAllBusinessDev);
+app.use('/admin',notificationForParticularSho);
+app.use('/admin',notificationForParticularFranchise);
+app.use('/admin',notificationForParticularBusinessDev);
+
+// -------------admin ------------------//
+
+
 // refferalin
 app.use("/member", memberLogin);
 app.use("/admin", fetchMemberDetails);

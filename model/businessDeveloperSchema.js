@@ -94,6 +94,10 @@ const businessDeveloperSchema = new mongoose.Schema(
       type: Boolean,
       default: false
     }, 
+    notification: {
+      type: Number,
+      default: 0,
+    },
     
   },
   { timestamps: true }
