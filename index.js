@@ -138,7 +138,8 @@ const fetchAdminCreditwalletTransactionDetails = require("./routes/fetch-admin-c
 const deleteState = require("./routes/delete-State");
 const deleteFranchise = require("./routes/delete-Franchise");
 const deleteBusinessDeveloper = require("./routes/delete-business-developer");
-const updateAdharCardStateHandler = require("./routes/update-adhar-card-state-handler");
+const updateAdharCardFrontSideStateHandler = require("./routes/update-adhar-card-front-side-state-handler");
+const updateAdharCardBackSideStateHandler = require("./routes/update-adhar-card-back-side-state-handler")
 const updatePanCardStateHandler = require("./routes/update-pan-card-state-handler");
 const blockSubAdminByAdmin = require("./routes/block-subAdmin-by-Admin");
 const getOwnUserBankAndUpiDetails = require("./routes/users/get-own-user-bank-and-upi-details")
@@ -487,7 +488,8 @@ app.use("/user", getOwnTraderCreditWalletTransactionDetails);
 app.use("/admin", filterCreditWalletTransactionByUserId);
 app.use("/admin", fetchMemberCreditwalletTransactionDetails);
 app.use("/admin", fetchUserCreditwalletTransactionDetails);
-app.use("/admin", updateAdharCardStateHandler);
+app.use("/admin", updateAdharCardFrontSideStateHandler);
+app.use("/admin", updateAdharCardBackSideStateHandler)
 app.use("/admin", updatePanCardStateHandler);
 app.use("/user", createUserUpiHolder)
 app.use("/user", getOwnUserBankAndUpiDetails)

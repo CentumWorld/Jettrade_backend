@@ -3149,16 +3149,22 @@ exports.updatePanCardStateHandler = async (req, res) => {
   }
 };
 //====================================================================
-exports.updateAdharCardStateHandler = async (req, res) => {
+exports.updateAdharCardFrontSideStateHandler = async (req, res) => {
   try {
     const { id } = req.body;
-    const adharCardFile = req.files["adharCard"][0];
+
+    if(!req.files['adhar_front_side']){
+      return res.status(400).json({message: "Please uplaod adhar card front side"})
+    }
+
+
+    const adharCardFile = req.files["adhar_front_side"][0];
 
     // Check if adharCard image is valid using isValidImage function
     if (!isValidImage(adharCardFile.originalname)) {
       return res.status(422).json({
         message:
-          "Invalid adharCard image format, image must be in jpeg, jpg, tiff, png, webp, or bmp format.",
+          "Invalid adhar Card front side image format, image must be in jpeg, jpg, tiff, png, webp, or bmp format.",
       });
     }
 
@@ -3180,8 +3186,55 @@ exports.updateAdharCardStateHandler = async (req, res) => {
     }
 
     res.status(200).json({
-      message: "Aadhar card updated successfully",
-      adharCard: stateHandler.adharCard,
+      message: "Aadhar card front side updated successfully",
+      adharCardFrontSide: stateHandler.adhar_front_side,
+    });
+  } catch (error) {
+    console.error(error.message);
+    res.status(500).json({ message: "Internal server error" });
+  }
+};
+//==================================================================
+
+exports.updateAdharCardBackSideStateHandler = async (req, res) => {
+  try {
+    const { id } = req.body;
+
+    if(!req.files['adhar_back_side']){
+      return res.status(400).json({message: "Please uplaod adhar card back side"})
+    }
+
+
+    const adharCardFile = req.files["adhar_back_side"][0];
+
+    // Check if adharCard image is valid using isValidImage function
+    if (!isValidImage(adharCardFile.originalname)) {
+      return res.status(422).json({
+        message:
+          "Invalid adhar Card back side image format, image must be in jpeg, jpg, tiff, png, webp, or bmp format.",
+      });
+    }
+
+    const adharCardLocation = adharCardFile.location;
+
+    // Update state handler's Aadhar card information
+    const updateData = {
+      adharCard: adharCardLocation,
+    };
+
+    const stateHandler = await StateHandler.findOneAndUpdate(
+      { _id: id },
+      { $set: updateData },
+      { new: true }
+    );
+
+    if (!stateHandler) {
+      return res.status(404).json({ message: "State handler not found" });
+    }
+
+    res.status(200).json({
+      message: "Aadhar card back side updated successfully",
+      adharCardBackSide: stateHandler.adhar_back_side,
     });
   } catch (error) {
     console.error(error.message);
