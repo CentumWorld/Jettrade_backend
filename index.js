@@ -227,10 +227,12 @@ const getOneFranchiseDetails = require("./routes/get-one-franchise-details");
 const getOneBDDetails = require("./routes/get-one-business-developer");
 const getOneStateDetails = require("./routes/get-one-state-details");
 const getOneMemberDetails = require("./routes/get-one-member-details");
-const updateAdharcardFranchise = require("./routes/update-adhar-card-franchise");
+const updateAdharCardFrontSideFranchise = require("./routes/update-adhar-card-front-side-franchise");
+const updateAdharCardBackSideFranchise = require("./routes/update-adhar-card-back-side-franchise")
 const updatePanCardFranchise = require("./routes/update-pan-card-franchise");
 const updatePanCardBusinessDeveloper = require("./routes/update-pan-card-business-developer");
-const updateAdharcardBusinessDeveloper = require("./routes/update-adhar-card-business-developer");
+const updateAdharcardFrontSideBusinessDeveloper = require("./routes/update-adhar-card-front-side-business-developer");
+const updateAdharcardBackSideBusinessDeveloper = require("./routes/update-adhar-card-back-side-business-developer")
 const approvePaymentRequestOfState = require("./routes/approve-payment-requet-of-state");
 const approvePaymentRequestOfFranchise = require("./routes/approve-Payment-Request-Of-Franchise");
 const approvePaymentRequestOfBusinessDeveloper = require("./routes/approve-Payment-Request-Of-Business-Developer");
@@ -472,7 +474,7 @@ app.use("/admin", getOneFranchiseDetails);
 app.use("/admin", getOneBDDetails);
 app.use("/admin", getOneStateDetails);
 app.use("/admin", getOneMemberDetails);
-app.use("/admin", updateAdharcardFranchise);
+app.use("/admin", updateAdharCardFrontSideFranchise);
 app.use("/admin", updatePanCardFranchise);
 app.use("/admin", fetchBusinessChatCount);
 app.use("/admin", adminBusinessOnlineOrNot);
@@ -496,6 +498,7 @@ app.use("/user", getOwnUserBankAndUpiDetails)
 
 app.use("/admin", getUserBankAndUpiDetails)
 app.use("/user", changePaymentStatus)
+app.use("/admin", updateAdharCardBackSideFranchise)
 // refferal
 app.use("/member", memberRegistration);
 app.use("/member", memberLogin);
@@ -563,7 +566,8 @@ app.use("/admin", updateBusinessDeveloper);
 app.use("/admin", fetchBusinessChatMessageAdmin);
 app.use("/admin", fetchAdmin);
 app.use("/admin", fetchCityByReferralIdInFranchise);
-app.use("/admin", updateAdharcardBusinessDeveloper);
+app.use("/admin", updateAdharcardFrontSideBusinessDeveloper);
+app.use("/admin", updateAdharcardBackSideBusinessDeveloper)
 
 app.use("/admin", updatePanCardBusinessDeveloper);
 app.use("/admin", fetchAdminCreditwalletTransactionDetails);

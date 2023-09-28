@@ -3172,7 +3172,7 @@ exports.updateAdharCardFrontSideStateHandler = async (req, res) => {
 
     // Update state handler's Aadhar card information
     const updateData = {
-      adharCard: adharCardLocation,
+      adhar_front_side: adharCardLocation,
     };
 
     const stateHandler = await StateHandler.findOneAndUpdate(
@@ -3219,7 +3219,7 @@ exports.updateAdharCardBackSideStateHandler = async (req, res) => {
 
     // Update state handler's Aadhar card information
     const updateData = {
-      adharCard: adharCardLocation,
+      adhar_back_side: adharCardLocation,
     };
 
     const stateHandler = await StateHandler.findOneAndUpdate(
@@ -3321,10 +3321,14 @@ exports.updateFranchise = async (req, res) => {
 
 //=======================================================================
 //=======================================================================
-exports.updateAdharcardFranchise = async (req, res) => {
+exports.updateAdharCardFrontSideFranchise = async (req, res) => {
   try {
     const { id } = req.body;
-    const adharCardFile = req.files["adharCard"][0];
+
+    if(!req.files['adhar_front_side']){
+      return res.status(400).json({message: "Please uplaod adhar card front side"})
+    }
+    const adharCardFile = req.files["adhar_front_side"][0];
 
     // Check if adharCard image is valid using isValidImage function
     if (!isValidImage(adharCardFile.originalname)) {
@@ -3338,7 +3342,7 @@ exports.updateAdharcardFranchise = async (req, res) => {
 
     // Update franchise's adharCard information
     const updateData = {
-      adharCard: adharCardLocation,
+      adhar_front_side: adharCardLocation,
     };
 
     const franchise = await Frenchise.findOneAndUpdate(
@@ -3352,15 +3356,58 @@ exports.updateAdharcardFranchise = async (req, res) => {
     }
 
     res.status(200).json({
-      message: "Aadhar card updated successfully",
-      adharCard: franchise.adharCard,
+      message: "Aadhar card Front Side updated successfully",
+      adharCardFrontSide: franchise.adhar_front_side,
     });
   } catch (error) {
     console.error(error.message);
     res.status(500).json({ message: "Internal server error" });
   }
 };
+//==================================================================
+exports.updateAdharCardBackSideFranchise = async (req, res) => {
+  try {
+    const { id } = req.body;
 
+    if(!req.files['adhar_back_side']){
+      return res.status(400).json({message: "Please uplaod adhar card back side"})
+    }
+    const adharCardFile = req.files["adhar_back_side"][0];
+
+    // Check if adharCard image is valid using isValidImage function
+    if (!isValidImage(adharCardFile.originalname)) {
+      return res.status(422).json({
+        message:
+          "Invalid adharCard image format, image must be in jpeg, jpg, tiff, png, webp, or bmp format.",
+      });
+    }
+
+    const adharCardLocation = adharCardFile.location;
+
+    // Update franchise's adharCard information
+    const updateData = {
+      adhar_back_side: adharCardLocation,
+    };
+
+    const franchise = await Frenchise.findOneAndUpdate(
+      { _id: id, isDeleted: false },
+      { $set: updateData },
+      { new: true }
+    );
+
+    if (!franchise) {
+      return res.status(404).json({ message: "Franchise not found" });
+    }
+
+    res.status(200).json({
+      message: "Aadhar card Back Side updated successfully",
+      adharCardBackSide: franchise.adhar_back_side,
+    });
+  } catch (error) {
+    console.error(error.message);
+    res.status(500).json({ message: "Internal server error" });
+  }
+};
 //=======================================================================
 exports.updatePanCardFranchise = async (req, res) => {
   try {
@@ -3555,7 +3602,9 @@ exports.adminBusinessOnlineOrNot = async (req, res) => {
 exports.getOneFranchiseDetails = async (req, res) => {
   try {
     const id = req.body.id;
-    const franchise = await Frenchise.findOne({ _id: id, isDeleted: false });
+    const franchise = await Frenchise.findOne({ _id: id });
+
+    console.log("franchise", franchise)
 
     if (!franchise) {
       return res.status(404).json({ message: "Franchise not found" });
@@ -3680,11 +3729,14 @@ exports.fetchCityByReferralIdInFranchise = async (req, res) => {
   }
 };
 
-////////////////////////////update pan and adhar bd
-exports.updateAdharcardBusinessDeveloper = async (req, res) => {
+//update  adhar card front side bd
+exports.updateAdharcardFrontSideBusinessDeveloper = async (req, res) => {
   try {
+    if(!req.files['adhar_front_side']){
+      return res.status(400).json({message: "Please uplaod adhar card front side"})
+    }
     const { id } = req.body;
-    const adharCardFile = req.files["adharCard"][0];
+    const adharCardFile = req.files["adhar_front_side"][0];
 
     // Check if adharCard image is valid using isValidImage function
     if (!isValidImage(adharCardFile.originalname)) {
@@ -3698,7 +3750,7 @@ exports.updateAdharcardBusinessDeveloper = async (req, res) => {
 
     // Update business developer's adharCard information
     const updateData = {
-      adharCard: adharCardLocation,
+      adhar_front_side: adharCardLocation,
     };
 
     const businessDeveloper = await BusinessDeveloper.findOneAndUpdate(
@@ -3712,8 +3764,51 @@ exports.updateAdharcardBusinessDeveloper = async (req, res) => {
     }
 
     res.status(200).json({
-      message: "Aadhar card updated successfully",
-      adharCard: businessDeveloper.adharCard,
+      message: "Aadhar card front side updated successfully",
+      adharCard: businessDeveloper.adhar_front_side,
+    });
+  } catch (error) {
+    console.error(error.message);
+    res.status(500).json({ message: "Internal server error" });
+  }
+};
+//update  adhar card back side bd
+exports.updateAdharcardBackSideBusinessDeveloper = async (req, res) => {
+  try {
+    if(!req.files['adhar_back_side']){
+      return res.status(400).json({message: "Please uplaod adhar card back side"})
+    }
+    const { id } = req.body;
+    const adharCardFile = req.files["adhar_back_side"][0];
+
+    // Check if adharCard image is valid using isValidImage function
+    if (!isValidImage(adharCardFile.originalname)) {
+      return res.status(422).json({
+        message:
+          "Invalid adharCard image format, image must be in jpeg, jpg, tiff, png, webp, or bmp format.",
+      });
+    }
+
+    const adharCardLocation = adharCardFile.location;
+
+    // Update business developer's adharCard information
+    const updateData = {
+      adhar_back_side: adharCardLocation,
+    };
+
+    const businessDeveloper = await BusinessDeveloper.findOneAndUpdate(
+      { _id: id },
+      { $set: updateData },
+      { new: true }
+    );
+
+    if (!businessDeveloper) {
+      return res.status(404).json({ message: "Business developer not found" });
+    }
+
+    res.status(200).json({
+      message: "Aadhar card front side updated successfully",
+      adharCard: businessDeveloper.adhar_back_side,
     });
   } catch (error) {
     console.error(error.message);
