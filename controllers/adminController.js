@@ -3807,7 +3807,7 @@ exports.updateAdharcardBackSideBusinessDeveloper = async (req, res) => {
     }
 
     res.status(200).json({
-      message: "Aadhar card front side updated successfully",
+      message: "Aadhar card back side updated successfully",
       adharCard: businessDeveloper.adhar_back_side,
     });
   } catch (error) {
