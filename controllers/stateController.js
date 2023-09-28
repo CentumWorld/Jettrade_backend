@@ -25,6 +25,10 @@ const BankAccountHolder = require("../model/BankAccountHolderSchema");
 const UpiHolder = require("../model/UpiHolderSchema");
 const UserCreditWalletTransaction = require("../model/userCreditWalletTransaction");
 const ProfilePhoto = require("../model/profilePhotoSchema");
+const notificationForAll = require('../model/notificationForAllSchema')
+const notificationForAllSho = require('../model/NotificationForAllShoSchema');
+const notificationForParticularSho = require('../model/NotificationForParticularShoSchema');
+const StateHandler = require('../model/stateHandlerSchema');
 
 //===============================================================================
 //fetch all franchise list
@@ -951,7 +955,7 @@ exports.uploadSHOProfilePhoto = async (req, res) => {
     if (!profilePhoto) {
       return res.status(400).json({ message: "Please provide the profile photo" });
     }
-      
+
     const userid = req.body.userid;
 
     if (!userid) {
@@ -964,11 +968,11 @@ exports.uploadSHOProfilePhoto = async (req, res) => {
       existingProfilePhoto.imageUrl = profilePhoto;
       await existingProfilePhoto.save();
       return res
-      .status(200)
-      .json({
-        message: "Profile photo updated successfully.",
-        data: existingProfilePhoto,
-      });
+        .status(200)
+        .json({
+          message: "Profile photo updated successfully.",
+          data: existingProfilePhoto,
+        });
     } else {
       const newProfilePhoto = new ProfilePhoto({
         userid: userid,
@@ -976,61 +980,113 @@ exports.uploadSHOProfilePhoto = async (req, res) => {
       });
       await newProfilePhoto.save();
       return res
-      .status(200)
-      .json({
-        message: "Profile photo uploaded successfully.",
-        data: newProfilePhoto,
-      });
+        .status(200)
+        .json({
+          message: "Profile photo uploaded successfully.",
+          data: newProfilePhoto,
+        });
     }
 
- 
+
   } catch (error) {
     console.log(error.message);
     res.status(500).json({ message: "Internal server error" });
   }
 };
 
-exports.getSHOProfilePhoto = async(req, res) => {
+exports.getSHOProfilePhoto = async (req, res) => {
   try {
 
     let userid = req.body.userid
-    const photo = await ProfilePhoto.findOne({userid})
-    if(!photo){
-      return res.status(404).json({message: "Profile photo not found"})
+    const photo = await ProfilePhoto.findOne({ userid })
+    if (!photo) {
+      return res.status(404).json({ message: "Profile photo not found" })
     }
 
-    return res.status(200).json({message: "profile photo fetched successfully", data:photo})
-    
+    return res.status(200).json({ message: "profile photo fetched successfully", data: photo })
+
   } catch (error) {
     console.log(error.message)
-    res.status(500).json({message: "Internal server error"})
-    
+    res.status(500).json({ message: "Internal server error" })
+
   }
 }
 
 // stateVerifyLoginOtp
-exports.stateVerifyLoginOtp = async (req,res) => {
-  const {loginOtp,stateHandlerId} = req.body
+exports.stateVerifyLoginOtp = async (req, res) => {
+  const { loginOtp, stateHandlerId } = req.body
 
-  const findOneSHO = await stateHandler.findOne({stateHandlerId:stateHandlerId})
+  const findOneSHO = await stateHandler.findOne({ stateHandlerId: stateHandlerId })
 
-  
-  if(findOneSHO){
-    
+
+  if (findOneSHO) {
+
     const verificationOtp = findOneSHO.loginOtp
-    if((verificationOtp ===loginOtp)){
-        return res.status(200).json({
-          message:"Otp Verified"
-        })
-    }
-    else{
-      return res.status(404).json({
-        message:'Invalid PIN '
+    if ((verificationOtp === loginOtp)) {
+      return res.status(200).json({
+        message: "Otp Verified"
       })
     }
-  }else{
+    else {
+      return res.status(404).json({
+        message: 'Invalid PIN '
+      })
+    }
+  } else {
     return res.status(500).json({
-      message:"Internal server error"
+      message: "Internal server error"
+    })
+  }
+}
+
+// fetchStateNotification
+exports.fetchStateNotification = async (req, res) => {
+  try {
+    const { stateHandlerId } = req.body;
+    const allNotitfication = await notificationForAll.find();
+    //console.log(allNotitfication);
+    if (allNotitfication) {
+      const allShoNotification = await notificationForAllSho.find();
+      if (allShoNotification) {
+        const particularState = await notificationForParticularSho.find({
+          stateHandlerId: stateHandlerId,
+        });
+        if (particularState) {
+          res.status(200).json({
+            message: "SHO notification fetched",
+            allNotitfication,
+            allShoNotification,
+            particularState,
+          });
+        }
+      }
+    }
+  } catch (error) {
+    return res.status(500).json({
+      message: "Internal server error"
+    })
+  }
+}
+
+// setNotificationToFalse
+exports.setNotificationToFalse = async (req, res) => {
+  try {
+    const { stateHandlerId } = req.body;
+
+    let setNotificationStatus = await StateHandler.updateOne(
+      { stateHandlerId: stateHandlerId },
+      {
+        $set: { notification: 0 },
+      }
+    );
+    if (setNotificationStatus) {
+      return res.status(201).json({ message: "Notification set to zero " });
+    } else {
+      return res.status(400).json({ message: "something went wrong" });
+    }
+  } catch (error) {
+    return res.status(500).json({
+      message: "Internal server error"
     })
   }
 }

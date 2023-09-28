@@ -28,6 +28,9 @@ const UpiHolder = require("../model/UpiHolderSchema");
 const MemberCreditWalletTransaction = require("../model/memberCreditWalletTransaction");
 const UserCreditWalletTransaction = require("../model/userCreditWalletTransaction");
 const ProfilePhoto = require("../model/profilePhotoSchema");
+const notificationForAll = require('../model/notificationForAllSchema');
+const notificationForAllFranchise = require('../model/NotificationForAllFranchiseSchema');
+const notificationForParticularFranchise = require('../model/notification-for-particular-franchise');
 
 exports.getBusinessDevelopersInFranchise = async (req, res) => {
   try {
@@ -748,24 +751,24 @@ exports.uploadFranchiseProfilePhoto = async (req, res) => {
       existingProfilePhoto.imageUrl = profilePhoto;
       await existingProfilePhoto.save();
       return res
-      .status(200)
-      .json({
-        message: "Profile photo uploaded successfully",
-        data: existingProfilePhoto,
-      });
+        .status(200)
+        .json({
+          message: "Profile photo uploaded successfully",
+          data: existingProfilePhoto,
+        });
     } else {
-    const newProfilePhoto = new ProfilePhoto({
+      const newProfilePhoto = new ProfilePhoto({
         userid: userid,
         imageUrl: profilePhoto,
       });
       await newProfilePhoto.save();
-    
-    return res
-      .status(200)
-      .json({
-        message: "Profile photo uploaded successfully",
-        data: newProfilePhoto,
-      });
+
+      return res
+        .status(200)
+        .json({
+          message: "Profile photo uploaded successfully",
+          data: newProfilePhoto,
+        });
     }
   } catch (error) {
     console.log(error.message)
@@ -774,17 +777,17 @@ exports.uploadFranchiseProfilePhoto = async (req, res) => {
 };
 
 //==================================get franchise profile photo=============
-exports.getFranchiseProfilePhoto = async(req, res) => {
+exports.getFranchiseProfilePhoto = async (req, res) => {
   try {
 
     let userid = req.body.userid
-    const photo = await ProfilePhoto.findOne({userid})
-    if(!photo){
-      return res.status(404).json({message: "Profile photo not found"})
+    const photo = await ProfilePhoto.findOne({ userid })
+    if (!photo) {
+      return res.status(404).json({ message: "Profile photo not found" })
     }
 
-    return res.status(200).json({message: "profile photo fetched successfully", data:photo})
-    
+    return res.status(200).json({ message: "profile photo fetched successfully", data: photo })
+
   } catch (error) {
     console.log(error.message)
     return res.status(500).json({ message: "Internal server error" });
@@ -792,28 +795,80 @@ exports.getFranchiseProfilePhoto = async(req, res) => {
 }
 
 // frenchiseVerifyLoginOtp
-exports.frenchiseVerifyLoginOtp = async(req,res) => {
-  const {loginOtp,frenchiseId} = req.body
+exports.frenchiseVerifyLoginOtp = async (req, res) => {
+  const { loginOtp, frenchiseId } = req.body
 
-  const findOneFrenchise = await Frenchise.findOne({frenchiseId:frenchiseId})
+  const findOneFrenchise = await Frenchise.findOne({ frenchiseId: frenchiseId })
 
-  
-  if(findOneFrenchise){
-    
+
+  if (findOneFrenchise) {
+
     const verificationOtp = findOneFrenchise.loginOtp
-    if((verificationOtp ===loginOtp)){
-        return res.status(200).json({
-          message:"Otp Verified"
-        })
-    }
-    else{
-      return res.status(404).json({
-        message:'Invalid PIN '
+    if ((verificationOtp === loginOtp)) {
+      return res.status(200).json({
+        message: "Otp Verified"
       })
     }
-  }else{
+    else {
+      return res.status(404).json({
+        message: 'Invalid PIN '
+      })
+    }
+  } else {
     return res.status(500).json({
-      message:"Internal server error"
+      message: "Internal server error"
+    })
+  }
+}
+
+// fetchFranchiseNotification
+exports.fetchFranchiseNotification = async (req, res) => {
+  try {
+    const { frenchiseId } = req.body;
+    const allNotitfication = await notificationForAll.find();
+    //console.log(allNotitfication);
+    if (allNotitfication) {
+      const allFranchiseNotification = await notificationForAllFranchise.find();
+      if (allFranchiseNotification) {
+        const particularFranchise = await notificationForParticularFranchise.find({
+          frenchiseId: frenchiseId,
+        });
+        if (particularFranchise) {
+          res.status(200).json({
+            message: "Franchise notification fetched",
+            allNotitfication,
+            allFranchiseNotification,
+            particularFranchise,
+          });
+        }
+      }
+    }
+  } catch (error) {
+    return res.status(500).json({
+      message: "Internal server error"
+    })
+  }
+}
+
+// setNotificationToFalseFranchise
+exports.setNotificationToFalseFranchise = async (req,res) => {
+  try {
+    const { frenchiseId } = req.body;
+
+    let setNotificationStatus = await Frenchise.updateOne(
+      { frenchiseId: frenchiseId },
+      {
+        $set: { notification: 0 },
+      }
+    );
+    if (setNotificationStatus) {
+      return res.status(201).json({ message: "Notification set to zero " });
+    } else {
+      return res.status(400).json({ message: "something went wrong" });
+    }
+  } catch (error) {
+    return res.status(500).json({
+      message: "Internal server error"
     })
   }
 }
