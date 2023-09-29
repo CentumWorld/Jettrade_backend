@@ -3111,6 +3111,11 @@ exports.updateStateHandler = async (req, res) => {
 //update pan state
 exports.updatePanCardStateHandler = async (req, res) => {
   try {
+
+    
+    if(!req.files['panCard']){
+      return res.status(400).json({message: "Please uplaod Pan Card"})
+    }
     const { id } = req.body;
     const panCardFile = req.files["panCard"][0];
 
@@ -3411,6 +3416,9 @@ exports.updateAdharCardBackSideFranchise = async (req, res) => {
 //=======================================================================
 exports.updatePanCardFranchise = async (req, res) => {
   try {
+    if(!req.files['panCard']){
+      return res.status(400).json({message: "Please uplaod Pan Card"})
+    }
     const { id } = req.body;
     const panCardFile = req.files["panCard"][0];
 
@@ -3451,6 +3459,9 @@ exports.updatePanCardFranchise = async (req, res) => {
 
 exports.updatePanCardBusinessDeveloper = async (req, res) => {
   try {
+    if(!req.files['panCard']){
+      return res.status(400).json({message: "Please uplaod Pan Card"})
+    }
     const { id } = req.body;
     const panCardFile = req.files["panCard"][0];
 

@@ -949,7 +949,7 @@ exports.uploadSHOProfilePhoto = async (req, res) => {
     const profilePhoto = req.files["profilePhoto"] ? req.files["profilePhoto"][0]?.location : null;
 
     if (!profilePhoto) {
-      return res.status(400).json({ message: "Please provide the profile photo" });
+      return res.status(400).json({ message: "Please upload the profile photo" });
     }
       
     const userid = req.body.userid;
