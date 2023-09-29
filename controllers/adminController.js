@@ -1633,7 +1633,7 @@ exports.subAdminLogin = async (req, res) => {
     const subadmin = await subAdmin.findOne({ subAdminId: subAdminId });
 
     if (!subadmin) {
-      return res.status(404).json({ message: "Sub admin not found" });
+      return res.status(404).json({ message: "No subadmin with credentials" });
     }
 
     if (subadmin.isBlocked) {

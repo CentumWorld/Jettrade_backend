@@ -288,6 +288,9 @@ const eligibleStateForWithdrawal = require("./routes/state/eligible-State-For-Wi
 const uploadSHOProfilePhoto = require("./routes/state/upload-sho-profile-photo")
 const getSHOProfilePhoto = require("./routes/state/get-sho-profile-photo")
 const stateVerifyLoginOtp = require('./routes/state/state-verify-login-otp');
+const fetchStateNotification = require('./routes/state/fetch-state-notification');
+const setNotificationToFalse = require('./routes/state/set-notification-to-false-state');
+
 
 //======================Frenchise==============================================
 const getBusinessDevelopersInFranchise = require("./routes/frenchise/fetch-bdeveloper-in-franchise");
@@ -319,6 +322,8 @@ const eligibleFranchiseForWithdrawal = require("./routes/frenchise/eligible.fran
 const uploadFranchiseProfilePhoto = require("./routes/frenchise/upload-franchise-profile-photo")
 const getFranchiseProfilePhoto = require("./routes/frenchise/get-franchise-profile-photo");
 const frenchiseVerifyLoginOtp = require('./routes/frenchise/frenchise-verify-login-otp');
+const fetchFranchiseNotification = require('./routes/frenchise/fetch-franchise-notification');
+const setNotificationToFalseFranchise = require('./routes/frenchise/set-notification-to-false-franchise');
 
 //=========================Business developer======================================
 const getAllMembersInBusinessDeveloper = require("./routes/businessDeveloper/fetch-all-members-in-business-developer");
@@ -669,6 +674,10 @@ app.use("/state", eligibleStateForWithdrawal);
 app.use("/state", uploadSHOProfilePhoto)
 app.use("/state", getSHOProfilePhoto);
 app.use('/state',stateVerifyLoginOtp);
+app.use('/state',fetchStateNotification);
+app.use('/state',setNotificationToFalse);
+
+
 //============================Franchise=============================================
 
 app.use("/franchise", getBusinessDevelopersInFranchise);
@@ -708,6 +717,8 @@ app.use("/franchise", eligibleFranchiseForWithdrawal);
 app.use("/franchise", uploadFranchiseProfilePhoto)
 app.use("/franchise", getFranchiseProfilePhoto)
 app.use('/franchise',frenchiseVerifyLoginOtp);
+app.use('/franchise',fetchFranchiseNotification);
+app.use('/franchise',setNotificationToFalseFranchise);
 
 
 //============================Business developer===========================
