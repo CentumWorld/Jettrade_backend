@@ -2465,6 +2465,13 @@ exports.interactWithVideo = async (req, res) => {
     if (!userId) {
       return res.status(400).json({ message: "User Id is required" });
     }
+
+    const user = await User.findById(userId)
+
+    if (!user) {
+      return res.status(404).json({ message: "User not found" });
+    }
+
     if (action === "like") {
       const existingLike = await Like.findOne({ userId, videoId });
       const existingDisLike = await DisLike.findOne({ userId, videoId });
@@ -2529,6 +2536,8 @@ exports.interactWithVideo = async (req, res) => {
           commentToReply.replies.push({
             text: comments,
             userId: userId,
+            userName: user.fname + " " + user.lname, 
+
           });
         } else {
           return res
@@ -2539,6 +2548,8 @@ exports.interactWithVideo = async (req, res) => {
         video.comments.push({
           text: comments,
           userId: userId,
+          userName: user.fname + " " + user.lname,
+
         });
       }
     } else if (action === "view") {
@@ -2596,6 +2607,8 @@ exports.fetchUserOneVideoLike = async (req, res) => {
     res.status(500).json({ message: "Internal Server Error" });
   }
 };
+
+
 
 exports.fetchUserOneVideoDisLike = async (req, res) => {
   try {

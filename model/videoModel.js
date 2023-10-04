@@ -3,12 +3,15 @@ const mongoose = require('mongoose');
 const replySchema = new mongoose.Schema({
   text: { type: String, required: true },
   userId: { type: mongoose.Schema.Types.ObjectId, ref: 'User' },
+  userName: {type: String}
 });
 
 const commentSchema = new mongoose.Schema({
   text: { type: String, required: true },
   userId: { type: mongoose.Schema.Types.ObjectId, ref: 'User' },
   replies: [replySchema],
+  userName: {type: String}
+
 });
 
 const videoSchema = new mongoose.Schema({

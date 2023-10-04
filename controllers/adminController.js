@@ -59,19 +59,17 @@ const BussinessDeveloperPaymentRequest = require("../model/businessDeveloperPaym
 const BussinessDeveloperPaymentApprove = require("../model/businessDeveloperPaymentApproveSchema");
 const MemberCreditWalletTransaction = require("../model/memberCreditWalletTransaction");
 const UserCreditWalletTransaction = require("../model/userCreditWalletTransaction");
-const UpiHolder = require("../model/UpiHolderSchema")
-const BankAccountHolder = require("../model/BankAccountHolderSchema")
+const UpiHolder = require("../model/UpiHolderSchema");
+const BankAccountHolder = require("../model/BankAccountHolderSchema");
 // const memberCreditWalletTransaction = require("../model/memberCreditWalletTransaction");
 // const userCreditWalletTransaction = require("../model/userCreditWalletTransaction");
-const NotificationForAllSho = require('../model/NotificationForAllShoSchema');
-const NotificationsForAllFranchise = require('../model/NotificationForAllFranchiseSchema');
-const NotificationForAllBusinessDev = require('../model/NotificationForAllBusinessDevSchema');
-const NotificationForParticularSho = require('../model/NotificationForParticularShoSchema');
-const NotificationForParticularFranchise = require('../model/notification-for-particular-franchise');
-const NotificationForParticularBusinessDev = require('../model/NotificationForParticularBusinessDev');
-
-
-
+const NotificationForAllSho = require("../model/NotificationForAllShoSchema");
+const NotificationsForAllFranchise = require("../model/NotificationForAllFranchiseSchema");
+const NotificationForAllBusinessDev = require("../model/NotificationForAllBusinessDevSchema");
+const NotificationForParticularSho = require("../model/NotificationForParticularShoSchema");
+const NotificationForParticularFranchise = require("../model/notification-for-particular-franchise");
+const NotificationForParticularBusinessDev = require("../model/NotificationForParticularBusinessDev");
+const VideoCreater = require("../model/VideoCreaterSchema");
 
 // admin Login
 
@@ -96,7 +94,7 @@ exports.adminLogin = async (req, res) => {
           { expiresIn: "8h" }
         );
         const admin_id = adminLogin.admin_id;
-        const referralId = adminLogin.referralId
+        const referralId = adminLogin.referralId;
         res.status(201).json({
           message: "Admin Login Successfully",
           token: token,
@@ -149,7 +147,6 @@ exports.fetchParticularUserDetails = (req, res) => {
 
 exports.verifyUser = async (req, res) => {
   const { status, id } = req.body;
-
 
   try {
     const updatedUser = await User.findOneAndUpdate(
@@ -224,7 +221,6 @@ exports.verifyMember = async (req, res) => {
     { _id: id },
     {
       $set: { status: status, verifyDate: Date.now() },
-
     }
   );
   if (result.modifiedCount > 0) {
@@ -471,16 +467,20 @@ exports.userRegistrationByAdmin = async (req, res) => {
   } = req.body;
 
   let isValidRefferedIdUser = await User.findOne({ refferal_id: reffered_id });
-  let isValidRefferedIdMember = await Member.findOne({ refferal_id: reffered_id });
+  let isValidRefferedIdMember = await Member.findOne({
+    refferal_id: reffered_id,
+  });
   let isValidRefferedIdAdmin = await Admin.findOne({ referralId: reffered_id });
 
-
-  if (!isValidRefferedIdUser && !isValidRefferedIdMember && !isValidRefferedIdAdmin) {
-    return res.status(400).json({ message: "You are providing a wrong referral id" });
+  if (
+    !isValidRefferedIdUser &&
+    !isValidRefferedIdMember &&
+    !isValidRefferedIdAdmin
+  ) {
+    return res
+      .status(400)
+      .json({ message: "You are providing a wrong referral id" });
   }
-
-
-
 
   const aadhar_length = aadhar;
   const pan_length = pan;
@@ -816,18 +816,17 @@ exports.fetchRefferalPayoutMember = async (req, res) => {
 
 // fetchRefferalPayoutWithdrawalRequest
 exports.fetchRefferalPayoutWithdrawalRequest = async (req, res) => {
-  const { memberid } = req.body
-  const memberWithdrawalRequest = await memberRefferalPayoutRequest.find({ memberid: memberid })
+  const { memberid } = req.body;
+  const memberWithdrawalRequest = await memberRefferalPayoutRequest.find({
+    memberid: memberid,
+  });
   if (memberWithdrawalRequest.length > 0) {
     return res.status(200).json({
       message: "Withdrawal Request fetched",
-      memberWithdrawalRequest
+      memberWithdrawalRequest,
     });
   } else {
-    return res
-      .status(400)
-      .json({ message: "something went wrong", });
-
+    return res.status(400).json({ message: "something went wrong" });
   }
 };
 
@@ -913,7 +912,6 @@ exports.approveMemberRefferalPayout = async (req, res) => {
       requestDate: requestDate,
       paymentBy: paymentBy,
       approveDate: new Date(),
-
     });
     approveRequestAmount.save();
     const deleteRequestMemberRefferalPayout =
@@ -932,17 +930,16 @@ exports.approveMemberRefferalPayout = async (req, res) => {
 
 // fetchMemberRefferalPayoutApproveWithdrawal
 exports.fetchMemberRefferalPayoutApproveWithdrawal = async (req, res) => {
-  const { memberid } = req.body
-  const memberApproveWithdrawal = await memberRefferalPayoutApproveWithdrawal.find({ memberid })
+  const { memberid } = req.body;
+  const memberApproveWithdrawal =
+    await memberRefferalPayoutApproveWithdrawal.find({ memberid });
   if (memberApproveWithdrawal) {
     return res.status(200).json({
       message: "Member approve withdrawal fetched",
-      memberApproveWithdrawal
+      memberApproveWithdrawal,
     });
   } else {
-    return res
-      .status(400)
-      .json({ message: "Something went to wrong" });
+    return res.status(400).json({ message: "Something went to wrong" });
   }
 };
 
@@ -1074,7 +1071,6 @@ exports.createVideo = async (req, res) => {
     res.status(500).json({ message: "Internal server error" });
   }
 };
-
 
 exports.fetchParticularUserDetailsFromAdminUsingUserid = async (req, res) => {
   const { userid } = req.body;
@@ -1661,7 +1657,6 @@ exports.subAdminLogin = async (req, res) => {
     console.error(error.message);
     return res.status(500).json({ message: "Internal server error" });
   }
-
 };
 
 // createSubAdminInsideAdmin
@@ -1820,11 +1815,15 @@ exports.createStateHandler = async (req, res) => {
     } = req.body;
 
     if (!req.files["adhar_front_side"]) {
-      return res.status(400).json({ message: "Adhar card front side file is missing." });
+      return res
+        .status(400)
+        .json({ message: "Adhar card front side file is missing." });
     }
 
     if (!req.files["adhar_back_side"]) {
-      return res.status(400).json({ message: "Adhar card back side file is missing." });
+      return res
+        .status(400)
+        .json({ message: "Adhar card back side file is missing." });
     }
 
     if (!req.files["panCard"]) {
@@ -1835,7 +1834,6 @@ exports.createStateHandler = async (req, res) => {
     const adharCardBackFile = req.files["adhar_back_side"][0];
 
     const panCardFile = req.files["panCard"][0];
-
 
     // Check if adharCard image is valid using isValidImage function
     if (!isValidImage(adharCardFrontFile.originalname)) {
@@ -1942,7 +1940,7 @@ exports.createStateHandler = async (req, res) => {
     // ------------------------
 
     const inputString = selectedState;
-    const resultArray = inputString.split(',');
+    const resultArray = inputString.split(",");
 
     // console.log(resultArray);
     const loginOtp = Math.floor(100000 + Math.random() * 900000);
@@ -1964,7 +1962,7 @@ exports.createStateHandler = async (req, res) => {
       adhar_front_side: adharCardFrontLocation,
       adhar_back_side: adharCardBackLocation,
       panCard: panCardLocation,
-      loginOtp
+      loginOtp,
     });
 
     const savedData = await newStateHandler.save();
@@ -2020,21 +2018,24 @@ exports.createFrenchise = async (req, res) => {
       paymentRequestCount,
     } = req.body;
 
-
     if (!req.files["adhar_front_side"]) {
-      return res.status(400).json({ message: "Adhar card front side file is missing." });
+      return res
+        .status(400)
+        .json({ message: "Adhar card front side file is missing." });
     }
 
     if (!req.files["adhar_back_side"]) {
-      return res.status(400).json({ message: "Adhar card back side file is missing." });
+      return res
+        .status(400)
+        .json({ message: "Adhar card back side file is missing." });
     }
 
     if (!req.files["panCard"]) {
       return res.status(400).json({ message: "Pan card file is missing." });
     }
 
-    const adharFrontSideFile = req.files["adhar_front_side"][0]
-    const adharBackSideFile = req.files["adhar_back_side"][0]
+    const adharFrontSideFile = req.files["adhar_front_side"][0];
+    const adharBackSideFile = req.files["adhar_back_side"][0];
 
     const panCardFile = req.files["panCard"][0];
 
@@ -2062,8 +2063,8 @@ exports.createFrenchise = async (req, res) => {
 
     // const adharCardLocation = adharCardFile.location;
 
-    const adharFrontSideLocation = adharFrontSideFile.location
-    const adharbackSideLocation = adharBackSideFile.location
+    const adharFrontSideLocation = adharFrontSideFile.location;
+    const adharbackSideLocation = adharBackSideFile.location;
 
     const panCardLocation = panCardFile.location;
 
@@ -2099,8 +2100,6 @@ exports.createFrenchise = async (req, res) => {
     }
 
     // Is referred id exist in Frenchise collection
-
-
 
     const existReferredId = await StateHandler.findOne({
       referralId: referredId,
@@ -2155,7 +2154,7 @@ exports.createFrenchise = async (req, res) => {
     const frenchiseWallet = 0;
 
     const inputString = franchiseCity;
-    const resultArray = inputString.split(',');
+    const resultArray = inputString.split(",");
 
     console.log(resultArray);
 
@@ -2210,11 +2209,15 @@ exports.createBusinnesDeveloper = async (req, res) => {
     } = req.body;
 
     if (!req.files["adhar_back_side"]) {
-      return res.status(400).json({ message: "Adhar card  back side file is missing." });
+      return res
+        .status(400)
+        .json({ message: "Adhar card  back side file is missing." });
     }
 
     if (!req.files["adhar_front_side"]) {
-      return res.status(400).json({ message: "Adhar card front side file is missing." });
+      return res
+        .status(400)
+        .json({ message: "Adhar card front side file is missing." });
     }
 
     if (!req.files["panCard"]) {
@@ -2249,7 +2252,7 @@ exports.createBusinnesDeveloper = async (req, res) => {
     }
 
     const adharBackLocation = adharCardBackFile.location;
-    const adharFrontLocation = adharCardFrontFile.location
+    const adharFrontLocation = adharCardFrontFile.location;
     const panCardLocation = panCardFile.location;
 
     const requiredFields = [
@@ -2261,7 +2264,7 @@ exports.createBusinnesDeveloper = async (req, res) => {
       "businessDeveloperId",
       "referredId",
       "buisnessCity",
-      "gender"
+      "gender",
     ];
 
     const missingFields = requiredFields.filter((field) => !req.body[field]);
@@ -2536,8 +2539,6 @@ exports.businessDeveloperLogin = async (req, res) => {
 // verifyFranchieBeforeRegistration
 exports.verifyFranchieBeforeRegistration = async (req, res) => {
   try {
-
-
     const { refferId } = req.body;
     if (!refferId) {
       return res.status(422).json({
@@ -2557,20 +2558,15 @@ exports.verifyFranchieBeforeRegistration = async (req, res) => {
         message: "Please provide a valid referral Id",
       });
     }
-
   } catch (error) {
-    console.log(error.message)
-    res.status(500).json({ message: "Internal server error." })
-
+    console.log(error.message);
+    res.status(500).json({ message: "Internal server error." });
   }
 };
 
 // verifyBuisnessDeveloperBeforeRegistration
 exports.verifyBuisnessDeveloperBeforeRegistration = async (req, res) => {
-
   try {
-
-
     const { refferId } = req.body;
     if (!refferId) {
       return res.status(422).json({
@@ -2592,8 +2588,8 @@ exports.verifyBuisnessDeveloperBeforeRegistration = async (req, res) => {
       });
     }
   } catch (error) {
-    console.log(error.message)
-    res.status(500).json({ message: "Internal server error." })
+    console.log(error.message);
+    res.status(500).json({ message: "Internal server error." });
   }
 };
 //=======================================================================
@@ -2601,7 +2597,30 @@ exports.verifyBuisnessDeveloperBeforeRegistration = async (req, res) => {
 exports.interactWithVideoForAdmin = async (req, res) => {
   try {
     const { videoId, action, comments, replyTo } = req.body;
-    const userId = req.userId || req.stateHandlerId || req.businessDeveloperId;
+    const userId =
+      req.userId ||
+      req.stateHandlerId ||
+      req.businessDeveloperId ||
+      req.franchiseId ||
+      req.subAdminId;
+
+    let user = null;
+
+    if (req.userId) {
+      user = await Admin.findById(userId);
+    } else if (req.stateHandlerId) {
+      user = await StateHandler.findById(userId);
+    } else if (req.businessDeveloperId) {
+      user = await BusinessDeveloper.findById(userId);
+    } else if (req.franchiseId) {
+      user = await Frenchise.findById(userId);
+    } else if (req.subAdminId) {
+      user = await subAdmin.findById(userId);
+    }
+
+    if (!user) {
+      return res.status(404).json({ message: "User not found" });
+    }
 
     if (!videoId || !action) {
       return res
@@ -2679,20 +2698,41 @@ exports.interactWithVideoForAdmin = async (req, res) => {
         );
 
         if (commentToReply) {
-          commentToReply.replies.push({
-            text: comments,
-            userId: userId,
-          });
+          if (user.fname && user.lname) {
+            commentToReply.replies.push({
+              text: comments,
+              userId: userId,
+              userName: user.fname + " " + user.lname,
+            });
+          } else {
+            // Handle the case where both fname and lname are missing
+            commentToReply.replies.push({
+              text: comments,
+              userId: userId,
+              userName: "Admin",
+            });
+          }
         } else {
           return res
             .status(400)
             .json({ message: "Comment to reply not found" });
         }
       } else {
-        video.comments.push({
-          text: comments,
-          userId: userId,
-        });
+        // Check if the user object has both fname and lname properties
+        if (user.fname && user.lname) {
+          video.comments.push({
+            text: comments,
+            userId: userId,
+            userName: user.fname + " " + user.lname,
+          });
+        } else {
+          // Handle the case where both fname and lname are missing
+          video.comments.push({
+            text: comments,
+            userId: userId,
+            userName: "Admin",
+          });
+        }
       }
     } else if (action === "view") {
       video.views += 1;
@@ -2707,8 +2747,54 @@ exports.interactWithVideoForAdmin = async (req, res) => {
       video: updatedVideo,
     });
   } catch (error) {
-    console.log(error.message, "//////////");
+    console.log(error.message);
     return res.status(500).json({ message: "Internal Server Error" });
+  }
+};
+//===========================================================
+exports.AdminfetchUserOneVideoLike = async (req, res) => {
+  try {
+    const { videoId, likeType } = req.body;
+    const userId =
+      req.userId ||
+      req.stateHandlerId ||
+      req.businessDeveloperId ||
+      req.franchiseId ||
+      req.subAdminId;
+
+    const like = await Like.findOne({ userId, videoId, likeType });
+
+    if (!like) {
+      return res.status(404).json({ message: "Like not found" });
+    }
+
+    res.status(200).json({ like });
+  } catch (error) {
+    console.error(error.message);
+    res.status(500).json({ message: "Internal Server Error" });
+  }
+};
+
+exports.AdminfetchUserOneVideoDisLike = async (req, res) => {
+  try {
+    const { videoId, disLikeType } = req.body;
+    const userId =
+      req.userId ||
+      req.stateHandlerId ||
+      req.businessDeveloperId ||
+      req.franchiseId ||
+      req.subAdminId;
+
+    const dislike = await DisLike.findOne({ userId, videoId, disLikeType });
+
+    if (!dislike) {
+      return res.status(404).json({ message: "Dislike not found" });
+    }
+
+    res.status(200).json({ dislike });
+  } catch (error) {
+    console.error(error.message);
+    res.status(500).json({ message: "Internal Server Error" });
   }
 };
 
@@ -3027,8 +3113,9 @@ exports.blockBusinessDeveloperByAdmin = async (req, res) => {
 
     if (block === businessDeveloper.isBlocked) {
       return res.status(400).json({
-        message: `Business Developer is already ${block ? "blocked" : "unblocked"
-          }`,
+        message: `Business Developer is already ${
+          block ? "blocked" : "unblocked"
+        }`,
       });
     }
 
@@ -3038,8 +3125,9 @@ exports.blockBusinessDeveloperByAdmin = async (req, res) => {
     );
 
     return res.status(200).json({
-      message: `Business Developer ${block ? "blocked" : "unblocked"
-        } successfully`,
+      message: `Business Developer ${
+        block ? "blocked" : "unblocked"
+      } successfully`,
     });
   } catch (error) {
     console.log(error.message);
@@ -3111,10 +3199,8 @@ exports.updateStateHandler = async (req, res) => {
 //update pan state
 exports.updatePanCardStateHandler = async (req, res) => {
   try {
-
-    
-    if(!req.files['panCard']){
-      return res.status(400).json({message: "Please uplaod Pan Card"})
+    if (!req.files["panCard"]) {
+      return res.status(400).json({ message: "Please uplaod Pan Card" });
     }
     const { id } = req.body;
     const panCardFile = req.files["panCard"][0];
@@ -3158,10 +3244,11 @@ exports.updateAdharCardFrontSideStateHandler = async (req, res) => {
   try {
     const { id } = req.body;
 
-    if(!req.files['adhar_front_side']){
-      return res.status(400).json({message: "Please uplaod adhar card front side"})
+    if (!req.files["adhar_front_side"]) {
+      return res
+        .status(400)
+        .json({ message: "Please uplaod adhar card front side" });
     }
-
 
     const adharCardFile = req.files["adhar_front_side"][0];
 
@@ -3205,10 +3292,11 @@ exports.updateAdharCardBackSideStateHandler = async (req, res) => {
   try {
     const { id } = req.body;
 
-    if(!req.files['adhar_back_side']){
-      return res.status(400).json({message: "Please uplaod adhar card back side"})
+    if (!req.files["adhar_back_side"]) {
+      return res
+        .status(400)
+        .json({ message: "Please uplaod adhar card back side" });
     }
-
 
     const adharCardFile = req.files["adhar_back_side"][0];
 
@@ -3330,8 +3418,10 @@ exports.updateAdharCardFrontSideFranchise = async (req, res) => {
   try {
     const { id } = req.body;
 
-    if(!req.files['adhar_front_side']){
-      return res.status(400).json({message: "Please uplaod adhar card front side"})
+    if (!req.files["adhar_front_side"]) {
+      return res
+        .status(400)
+        .json({ message: "Please uplaod adhar card front side" });
     }
     const adharCardFile = req.files["adhar_front_side"][0];
 
@@ -3374,8 +3464,10 @@ exports.updateAdharCardBackSideFranchise = async (req, res) => {
   try {
     const { id } = req.body;
 
-    if(!req.files['adhar_back_side']){
-      return res.status(400).json({message: "Please uplaod adhar card back side"})
+    if (!req.files["adhar_back_side"]) {
+      return res
+        .status(400)
+        .json({ message: "Please uplaod adhar card back side" });
     }
     const adharCardFile = req.files["adhar_back_side"][0];
 
@@ -3416,8 +3508,8 @@ exports.updateAdharCardBackSideFranchise = async (req, res) => {
 //=======================================================================
 exports.updatePanCardFranchise = async (req, res) => {
   try {
-    if(!req.files['panCard']){
-      return res.status(400).json({message: "Please uplaod Pan Card"})
+    if (!req.files["panCard"]) {
+      return res.status(400).json({ message: "Please uplaod Pan Card" });
     }
     const { id } = req.body;
     const panCardFile = req.files["panCard"][0];
@@ -3459,8 +3551,8 @@ exports.updatePanCardFranchise = async (req, res) => {
 
 exports.updatePanCardBusinessDeveloper = async (req, res) => {
   try {
-    if(!req.files['panCard']){
-      return res.status(400).json({message: "Please uplaod Pan Card"})
+    if (!req.files["panCard"]) {
+      return res.status(400).json({ message: "Please uplaod Pan Card" });
     }
     const { id } = req.body;
     const panCardFile = req.files["panCard"][0];
@@ -3615,7 +3707,7 @@ exports.getOneFranchiseDetails = async (req, res) => {
     const id = req.body.id;
     const franchise = await Frenchise.findOne({ _id: id });
 
-    console.log("franchise", franchise)
+    console.log("franchise", franchise);
 
     if (!franchise) {
       return res.status(404).json({ message: "Franchise not found" });
@@ -3743,8 +3835,10 @@ exports.fetchCityByReferralIdInFranchise = async (req, res) => {
 //update  adhar card front side bd
 exports.updateAdharcardFrontSideBusinessDeveloper = async (req, res) => {
   try {
-    if(!req.files['adhar_front_side']){
-      return res.status(400).json({message: "Please uplaod adhar card front side"})
+    if (!req.files["adhar_front_side"]) {
+      return res
+        .status(400)
+        .json({ message: "Please uplaod adhar card front side" });
     }
     const { id } = req.body;
     const adharCardFile = req.files["adhar_front_side"][0];
@@ -3786,8 +3880,10 @@ exports.updateAdharcardFrontSideBusinessDeveloper = async (req, res) => {
 //update  adhar card back side bd
 exports.updateAdharcardBackSideBusinessDeveloper = async (req, res) => {
   try {
-    if(!req.files['adhar_back_side']){
-      return res.status(400).json({message: "Please uplaod adhar card back side"})
+    if (!req.files["adhar_back_side"]) {
+      return res
+        .status(400)
+        .json({ message: "Please uplaod adhar card back side" });
     }
     const { id } = req.body;
     const adharCardFile = req.files["adhar_back_side"][0];
@@ -4392,7 +4488,6 @@ exports.verifyState = async (req, res) => {
   }
 };
 
-
 //verify franchise
 exports.verifyFranchise = async (req, res) => {
   try {
@@ -4420,7 +4515,7 @@ exports.verifyFranchise = async (req, res) => {
   }
 };
 
-//verify Business Developer 
+//verify Business Developer
 
 exports.verifyBusinessDeveloper = async (req, res) => {
   try {
@@ -4473,7 +4568,7 @@ exports.blockSubAdminByAdmin = async (req, res) => {
       message: "Something Went wrong",
     });
   }
-}
+};
 
 exports.getMemberBankAndUpiDetails = async (req, res) => {
   try {
@@ -4494,16 +4589,16 @@ exports.getMemberBankAndUpiDetails = async (req, res) => {
 
 // fetchParticularMemberDetailsUsingMemberid
 exports.fetchParticularMemberDetailsUsingMemberid = async (req, res) => {
-  const { memberId } = req.body
-  const particularMemberDetails = await Member.findOne({ memberId: memberId })
+  const { memberId } = req.body;
+  const particularMemberDetails = await Member.findOne({ memberId: memberId });
   if (!particularMemberDetails) {
-    return res.status(400).send("Invalid member Id")
+    return res.status(400).send("Invalid member Id");
   }
   return res.status(200).json({
     message: "fetched particular member details ",
-    particularMemberDetails
-  })
-}
+    particularMemberDetails,
+  });
+};
 
 exports.getUserBankAndUpiDetails = async (req, res) => {
   try {
@@ -4511,7 +4606,6 @@ exports.getUserBankAndUpiDetails = async (req, res) => {
 
     const userBankDetails = await BankAccountHolder.find({ userId: userId });
     const userUpiId = await UpiHolder.find({ userId: userId });
-
 
     return res.status(200).json({
       message: "Bank and UPI details of user fetched successfully",
@@ -4522,7 +4616,7 @@ exports.getUserBankAndUpiDetails = async (req, res) => {
     console.error("Error fetching user details:", error.message);
     return res.status(500).json({ message: "Internal server error" });
   }
-}
+};
 
 // notificationForAllSho
 exports.notificationForAllSho = async (req, res) => {
@@ -4550,12 +4644,12 @@ exports.notificationForAllSho = async (req, res) => {
         });
     }
   } catch (error) {
-    return res.status(500).json({ message: "Internal server error" })
+    return res.status(500).json({ message: "Internal server error" });
   }
-}
+};
 
 // notificationForAllFranchise
-exports.notificationForAllFranchise = async (req,res) => {
+exports.notificationForAllFranchise = async (req, res) => {
   try {
     const { investerType, message } = req.body;
     if (!investerType || !message) {
@@ -4577,17 +4671,17 @@ exports.notificationForAllFranchise = async (req,res) => {
         })
         .catch((error) => {
           return res.status(400).json({
-            message:"Something went wrong"
-          })
+            message: "Something went wrong",
+          });
         });
     }
   } catch (error) {
-    return res.status(500).json({ message: "Internal server error" })
+    return res.status(500).json({ message: "Internal server error" });
   }
-}
+};
 
 // notificationForAllBusinessDev
-exports.notificationForAllBusinessDev = async (req,res) => {
+exports.notificationForAllBusinessDev = async (req, res) => {
   try {
     const { investerType, message } = req.body;
     if (!investerType || !message) {
@@ -4609,17 +4703,17 @@ exports.notificationForAllBusinessDev = async (req,res) => {
         })
         .catch((error) => {
           return res.status(400).json({
-            message:"Something went wrong"
-          })
+            message: "Something went wrong",
+          });
         });
     }
   } catch (error) {
-    return res.status(500).json({ message: "Internal server error" })
+    return res.status(500).json({ message: "Internal server error" });
   }
-}
+};
 
 // notificationForParticularSho
-exports.notificationForParticularSho = async (req,res) => {
+exports.notificationForParticularSho = async (req, res) => {
   try {
     const { stateHandlerId, message } = req.body;
     if (!stateHandlerId || !message) {
@@ -4627,7 +4721,9 @@ exports.notificationForParticularSho = async (req,res) => {
         message: "Please provide SHO ID and message",
       });
     }
-    const shoExist = await StateHandler.findOne({ stateHandlerId: stateHandlerId });
+    const shoExist = await StateHandler.findOne({
+      stateHandlerId: stateHandlerId,
+    });
     if (!shoExist) {
       return res.status(400).json({ message: "Invalid SHO ID" });
     }
@@ -4637,7 +4733,10 @@ exports.notificationForParticularSho = async (req,res) => {
     });
     await notification.save();
     if (notification) {
-      StateHandler.updateOne({ stateHandlerId: stateHandlerId }, { $inc: { notification: 1 } })
+      StateHandler.updateOne(
+        { stateHandlerId: stateHandlerId },
+        { $inc: { notification: 1 } }
+      )
         .then(() => {
           return res
             .status(201)
@@ -4645,17 +4744,17 @@ exports.notificationForParticularSho = async (req,res) => {
         })
         .catch((error) => {
           return res.status(400).json({
-            message:`Error while pushing notification for "${stateHandlerId}"`
-          })
+            message: `Error while pushing notification for "${stateHandlerId}"`,
+          });
         });
     }
   } catch (error) {
-    return res.status(500).json({message:"Internal server error"})
+    return res.status(500).json({ message: "Internal server error" });
   }
-}
+};
 
 // notificationForParticularFranchise
-exports.notificationForParticularFranchise = async (req,res) => {
+exports.notificationForParticularFranchise = async (req, res) => {
   try {
     const { frenchiseId, message } = req.body;
     if (!frenchiseId || !message) {
@@ -4663,7 +4762,9 @@ exports.notificationForParticularFranchise = async (req,res) => {
         message: "Please provide Franchise ID and message",
       });
     }
-    const FranchiseExist = await Frenchise.findOne({ frenchiseId: frenchiseId });
+    const FranchiseExist = await Frenchise.findOne({
+      frenchiseId: frenchiseId,
+    });
     if (!FranchiseExist) {
       return res.status(400).json({ message: "Invalid Franchise ID" });
     }
@@ -4673,7 +4774,10 @@ exports.notificationForParticularFranchise = async (req,res) => {
     });
     await notification.save();
     if (notification) {
-      Frenchise.updateOne({ frenchiseId: frenchiseId }, { $inc: { notification: 1 } })
+      Frenchise.updateOne(
+        { frenchiseId: frenchiseId },
+        { $inc: { notification: 1 } }
+      )
         .then(() => {
           return res
             .status(201)
@@ -4681,17 +4785,17 @@ exports.notificationForParticularFranchise = async (req,res) => {
         })
         .catch((error) => {
           return res.status(400).json({
-            message:`Error while pushing notification for "${frenchiseId}"`
-          })
+            message: `Error while pushing notification for "${frenchiseId}"`,
+          });
         });
     }
   } catch (error) {
-    return res.status(500).json({message:"Internal server error"})
+    return res.status(500).json({ message: "Internal server error" });
   }
-}
+};
 
 // notificationForParticularBusinessDev
-exports.notificationForParticularBusinessDev = async(req,res) => {
+exports.notificationForParticularBusinessDev = async (req, res) => {
   try {
     const { businessDeveloperId, message } = req.body;
     if (!businessDeveloperId || !message) {
@@ -4699,7 +4803,9 @@ exports.notificationForParticularBusinessDev = async(req,res) => {
         message: "Please provide BusinessDev  ID and message",
       });
     }
-    const BusinessDevExist = await BusinessDeveloper.findOne({ businessDeveloperId: businessDeveloperId });
+    const BusinessDevExist = await BusinessDeveloper.findOne({
+      businessDeveloperId: businessDeveloperId,
+    });
     if (!BusinessDevExist) {
       return res.status(400).json({ message: "Invalid Business Developer ID" });
     }
@@ -4709,7 +4815,10 @@ exports.notificationForParticularBusinessDev = async(req,res) => {
     });
     await notification.save();
     if (notification) {
-      BusinessDeveloper.updateOne({ businessDeveloperId: businessDeveloperId }, { $inc: { notification: 1 } })
+      BusinessDeveloper.updateOne(
+        { businessDeveloperId: businessDeveloperId },
+        { $inc: { notification: 1 } }
+      )
         .then(() => {
           return res
             .status(201)
@@ -4717,11 +4826,31 @@ exports.notificationForParticularBusinessDev = async(req,res) => {
         })
         .catch((error) => {
           return res.status(400).json({
-            message:`Error while pushing notification for "${businessDeveloperId}"`
-          })
+            message: `Error while pushing notification for "${businessDeveloperId}"`,
+          });
         });
     }
   } catch (error) {
-    return res.status(500).json({message:"Internal server error"})
+    return res.status(500).json({ message: "Internal server error" });
   }
-}
+};
+
+exports.fetchOneVideo = async (req, res) => {
+  try {
+    const { videoId } = req.body;
+
+    if (!videoId) {
+      return res.status(400).json({ message: "Video Id is required" });
+    }
+
+    const video = await Video.findById(videoId);
+
+    if (!video) {
+      return res.status(404).json({ message: "Video not found" });
+    }
+    return res.status(200).json({ message: "video details fetched", video });
+  } catch (error) {
+    console.log(error.message);
+    return res.status(500).json({ message: "Internal server" });
+  }
+};

@@ -114,6 +114,8 @@ const fetchOneVideoDetail = require("./routes/users/fetch_one_video_details");
 const createSubAdminInsideAdmin = require("./routes/create-sub-admin-inside-admin");
 const fetchUserOneVideoLike = require("./routes/users/fetch-User-One-Video-Like");
 const fetchUserOneVideoDisLike = require("./routes/users/fetch-User-One-Video-DisLike");
+const AdminfetchUserOneVideoDisLike = require("./routes/admin-fetch-user-one-video-disLike")
+const AdminfetchUserOneVideoLike = require("./routes/admin-fetch-user-one-video-like")
 const createStateHandler = require("./routes/create_State_Handler");
 const createFrenchise = require("./routes/create-frenchise");
 
@@ -150,7 +152,8 @@ const notificationForAllFranchise = require('./routes/notification-for-all-franc
 const notificationForAllBusinessDev = require('./routes/notification-for-all-business-dev');
 const notificationForParticularSho = require('./routes/notification-for-particular-sho');
 const notificationForParticularFranchise = require('./routes/notification-for-particular-franchise');
-const notificationForParticularBusinessDev = require('./routes/notification-for-particular-business-dev');
+const notificationForParticularBusinessDev = require('./routes/notification-for-particular-business-dev'); 
+const fetchOneVideo = require('./routes/fetch-one-video')
 
 // ---------------------------------admin ------------------------------------------------------//
 
@@ -504,6 +507,7 @@ app.use("/user", getOwnUserBankAndUpiDetails)
 app.use("/admin", getUserBankAndUpiDetails)
 app.use("/user", changePaymentStatus)
 app.use("/admin", updateAdharCardBackSideFranchise)
+app.use("/admin", fetchOneVideo)
 // refferal
 app.use("/member", memberRegistration);
 app.use("/member", memberLogin);
@@ -540,7 +544,8 @@ app.use("/member", getOwnTradersInsideMemberCreditWalletTransactionDetails);
 app.use("/member", createMemberUpiHolder)
 
 // ---------------------admin ----------------------------//
-
+app.use("/admin", AdminfetchUserOneVideoLike)
+app.use("/admin", AdminfetchUserOneVideoDisLike)
 app.use("/admin", getvideos);
 app.use("/admin", subAdminLogin);
 app.use("/user", fetchOneVideoDetail);

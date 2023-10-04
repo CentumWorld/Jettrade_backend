@@ -2,6 +2,13 @@ const mongoose = require('mongoose');
 const jwt = require('jsonwebtoken');
 
 const VideoCreaterSchema = new mongoose.Schema({
+  fname: {
+    type: String
+  },
+  lname: {
+    type: String
+  },
+  
     userId: {
     type: String,
     required: true,
