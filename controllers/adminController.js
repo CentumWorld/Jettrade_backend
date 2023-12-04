@@ -1923,7 +1923,7 @@ exports.createStateHandler = async (req, res) => {
     if (!isValidUserId(stateHandlerId)) {
       return res.status(422).json({
         message:
-          "State Handler  Id Should have at least 1 letter and 1 digit, minimum length 6.",
+          "User Id Should have at least 1 letter and 1 digit, minimum length 6.",
       });
     }
 
@@ -1933,8 +1933,7 @@ exports.createStateHandler = async (req, res) => {
     const randomDigits = Math.floor(1000 + Math.random() * 9000);
 
     const firstThreeDigits = `${fname.substring(0, 3).toUpperCase()}`;
-    const referralId = "SH" + "-" + firstThreeDigits + randomDigits;
-    console.log(referralId, "1886");
+    const referralId = "BMM" + "-" + firstThreeDigits + randomDigits;
 
     const frenchiseWallet = 0;
     // ------------------------
@@ -1968,7 +1967,7 @@ exports.createStateHandler = async (req, res) => {
     const savedData = await newStateHandler.save();
 
     return res.status(201).json({
-      message: "S.H.O created successfully.",
+      message: "BMM created successfully.",
       savedData,
     });
   } catch (error) {
@@ -4041,6 +4040,8 @@ exports.approvePaymentRequestOfState = async (req, res) => {
     res.status(500).json({ message: "Internal server error" });
   }
 };
+
+
 //======================================================================
 //Franchise approve payment request
 

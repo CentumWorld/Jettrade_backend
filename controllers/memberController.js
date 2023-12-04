@@ -20,6 +20,7 @@ const validator = require("validator");
 const MyReferral = require("../model/myReferralSchema");
 
 const BusinessDeveloper = require("../model/businessDeveloperSchema");
+const Franchise = require("../model/frenchiseSchema")
 const MemberCreditWalletTransaction = require("../model/memberCreditWalletTransaction");
 const BankAccountHolder = require("../model/BankAccountHolderSchema");
 const UpiHolder = require("../model/UpiHolderSchema");
@@ -67,27 +68,6 @@ exports.memberRegistration = async (req, res) => {
     reffered_id,
   } = req.body;
 
-  // if (!isValidImage(aadhar_front_side.originalname)) {
-  //   return res.status(422).json({
-  //     message:
-  //       "Invalid aadhar Card front side image format, image must be in jpeg, jpg, tiff, png, webp, or bmp format.",
-  //   });
-  // }
-
-  // if (!isValidImage(aadhar_back_side.originalname)) {
-  //   return res.status(422).json({
-  //     message:
-  //       "Invalid adhar Card back side image format, image must be in jpeg, jpg, tiff, png, webp, or bmp format.",
-  //   });
-  // }
-
-  // if (!isValidImage(panCardFile.originalname)) {
-  //   return res.status(422).json({
-  //     message:
-  //       "Invalid pan Card image format, image must be in jpeg, jpg, tiff, png, webp, or bmp format.",
-  //   });
-  // }
-
   const requiredFields = [
     "fname",
     "lname",
@@ -114,12 +94,12 @@ exports.memberRegistration = async (req, res) => {
     return res.status(400).json({ message: "Invalid email address" });
   }
 
-  // if (!isValidPhone(phone)) {
-  //   return res.status(422).json({
-  //     message:
-  //       "Invalid phone number format. Use 10 digits or include country code.",
-  //   });
-  // }
+  if (!isValidPhone(phone)) {
+    return res.status(422).json({
+      message:
+        "Invalid phone number format. Use 10 digits or include country code.",
+    });
+  }
 
   if (!isValidName(fname) || !isValidName(lname)) {
     return res.status(422).json({
@@ -166,7 +146,7 @@ exports.memberRegistration = async (req, res) => {
       return res.status(400).json({ message: "Member already exist!" });
     }
 
-    const existingreferredId = await BusinessDeveloper.findOne({
+    const existingreferredId = await Franchise.findOne({
       referralId: reffered_id,
     });
 

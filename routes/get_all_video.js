@@ -9,3 +9,4 @@ router.get('/fetch-all-videos',authenticateAdmin, authorizeRole(['admin', 'subAd
 
 
 module.exports = router;
+

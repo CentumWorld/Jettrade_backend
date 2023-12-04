@@ -16,6 +16,7 @@ const statePaymentRequestSchema = new mongoose.Schema({
       type: Date,
       default: Date.now()
     },
+    
     paymentBy: {
       type: String,
       required: true
