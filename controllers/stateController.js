@@ -609,14 +609,6 @@ exports.getOwnMemberInsideStateCreditWalletTransactionDetails = async (
     const sho_reffralid = state.referralId;
     const franchise = await Frenchise.find({ referredId: sho_reffralid });
 
-    // const busisnessDeveloperReferralIds = franchise.map(
-    //   (businessDeveloper) => businessDeveloper.referralId
-    // );
-
-    // const businessDevelopers = await BusinessDeveloper.find({
-    //   referredId: { $in: busisnessDeveloperReferralIds },
-    // });
-
     const memberReferralIds = franchise.map(
       (member) => member.referralId
     );
@@ -664,23 +656,10 @@ exports.getOwnTraderInsideStateCreditWalletTransactionDetails = async (
     const sho_reffralid = state.referralId;
     const franchise = await Frenchise.find({ referredId: sho_reffralid });
 
-    console.log(franchise, ";;;;");
 
     const franchiseReferralIds = franchise.map(
       (franchise) => franchise.referralId
     );
-
-    // console.log(franchiseReferralIds, "br");
-
-    // const businessDevelopers = await BusinessDeveloper.find({
-    //   referredId: { $in: franchiseReferralIds },
-    // });
-
-    // console.log(businessDevelopers, "703");
-
-    // const memberReferralIds = businessDevelopers.map(
-    //   (member) => member.referralId
-    // );
 
     const members = await Member.find({
       reffered_id: { $in: franchiseReferralIds },

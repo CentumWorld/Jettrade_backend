@@ -384,19 +384,9 @@ exports.getOwnMembersInsideFranchiseCreditWalletTransactionDetails = async (
     return res.status(404).json({ message: "Franchise not found" });
   }
 
-  // const busisnessDeveloperReferredIds = franchise.map(franchise=> franchise.referralId);
-  
-
-  // Fetch business developers based on the referralIds from franchises
-  const businessDevelopers = await BusinessDeveloper.find({
-    referredId: franchise.referralId,
-  });
-
-  const memberReferredIds = businessDevelopers.map((bd) => bd.referralId);
-
   // Fetch members based on the referralIds from business developers
   const members = await Member.find({
-    reffered_id: { $in: memberReferredIds },
+    reffered_id: franchise.referralId,
   });
 
   const memberIds = members.map((member) => member.memberid);
@@ -429,15 +419,15 @@ exports.getOwnTradersInsideFranchiseCreditWalletTransactionDetails = async (
     }
 
     // Fetch business developers based on the referralIds from franchises
-    const businessDevelopers = await BusinessDeveloper.find({
-      referredId: franchise.referralId,
-    });
+    // const businessDevelopers = await BusinessDeveloper.find({
+    //   referredId: franchise.referralId,
+    // });
 
-    const memberReferredIds = businessDevelopers.map((bd) => bd.referralId);
+    // const memberReferredIds = franchise.map((franchise) => franchise.referralId);
 
     // Fetch members based on the referralIds from business developers
     const members = await Member.find({
-      reffered_id: { $in: memberReferredIds },
+      reffered_id: franchise.referralId,
     });
 
     const traderReferredIds = members.map((member) => member.refferal_id);
