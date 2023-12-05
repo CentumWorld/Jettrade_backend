@@ -1233,7 +1233,7 @@ exports.changeUserPaymentStatus = async (req, res) => {
             const bmmCreditWalletDetails =
               new StateHandlerCreditWalletTransaction({
                 stateHandlerId: bmm.stateHandlerId,
-                creditAmount: 450,
+                creditAmount: transferAmount,
                 Type: "New",
                 refferUserId: franchiseDetails.frenchiseId,
               });
@@ -2156,7 +2156,7 @@ exports.changePaymentStatusForRenewal = async (req, res) => {
           const bmmCreditWalletDetails =
             new StateHandlerCreditWalletTransaction({
               stateHandlerId: bmm.stateHandlerId,
-              creditAmount: 45,
+              creditAmount:transferAmount,
               Type: "Renewal",
               refferUserId: franchise.frenchiseId,
             });
