@@ -878,7 +878,7 @@ exports.fetchMemberByReferralIdOfFranchise = async(req, res) => {
     const {referralId} = req.body 
 
     const member = await Member.find({
-      referredId: referralId
+      reffered_id: referralId
     })
     if(!member){
       return res.status(404).json({message: "Member not found"})
