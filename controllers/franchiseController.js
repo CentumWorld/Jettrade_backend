@@ -385,6 +385,7 @@ exports.getOwnMembersInsideFranchiseCreditWalletTransactionDetails = async (
   }
 
   // const busisnessDeveloperReferredIds = franchise.map(franchise=> franchise.referralId);
+  
 
   // Fetch business developers based on the referralIds from franchises
   const businessDevelopers = await BusinessDeveloper.find({

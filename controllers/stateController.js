@@ -120,22 +120,22 @@ exports.getAllMembersInState = async (req, res) => {
       (franchise) => franchise.referralId
     );
 
-    const businessDevelopers = await BusinessDeveloper.find({
-      referredId: { $in: franchiseReferralIds },
-      isDeleted: false,
-    });
-    if (businessDevelopers.length === 0) {
-      return res
-        .status(404)
-        .json({ message: "No business developers found in the given state" });
-    }
+    // const businessDevelopers = await BusinessDeveloper.find({
+    //   referredId: { $in: franchiseReferralIds },
+    //   isDeleted: false,
+    // });
+    // if (businessDevelopers.length === 0) {
+    //   return res
+    //     .status(404)
+    //     .json({ message: "No business developers found in the given state" });
+    // }
 
-    const businessDeveloperReferralIds = businessDevelopers.map(
-      (businessDeveloper) => businessDeveloper.referralId
-    );
+    // const businessDeveloperReferralIds = businessDevelopers.map(
+    //   (businessDeveloper) => businessDeveloper.referralId
+    // );
 
     const members = await Member.find({
-      reffered_id: { $in: businessDeveloperReferralIds },
+      reffered_id: { $in: franchiseReferralIds },
     });
 
     if (members.length === 0) {
@@ -177,27 +177,25 @@ exports.getAllUsersInState = async (req, res) => {
       (franchise) => franchise.referralId
     );
 
-    const businessDevelopers = await BusinessDeveloper.find({
-      referredId: { $in: franchiseReferralIds },
-      isDeleted: false,
-    });
+    // const businessDevelopers = await BusinessDeveloper.find({
+    //   referredId: { $in: franchiseReferralIds },
+    //   isDeleted: false,
+    // });
 
-    console.log(businessDevelopers, "bbbbbbbbbb");
+    // console.log(businessDevelopers, "bbbbbbbbbb");
 
-    if (businessDevelopers.length === 0) {
-      return res
-        .status(404)
-        .json({ message: "No business developers found in the given state" });
-    }
+    // if (businessDevelopers.length === 0) {
+    //   return res
+    //     .status(404)
+    //     .json({ message: "No business developers found in the given state" });
+    // }
 
-    const businessDeveloperReferralIds = businessDevelopers.map(
-      (businessDeveloper) => businessDeveloper.referralId
-    );
+    // const businessDeveloperReferralIds = businessDevelopers.map(
+    //   (businessDeveloper) => businessDeveloper.referralId
+    // );
     const members = await Member.find({
-      reffered_id: { $in: businessDeveloperReferralIds },
+      reffered_id: { $in: franchiseReferralIds },
     });
-
-    console.log(members, "mmmmmmm");
 
     if (members.length === 0) {
       return res
