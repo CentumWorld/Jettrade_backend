@@ -327,6 +327,7 @@ const getFranchiseProfilePhoto = require("./routes/frenchise/get-franchise-profi
 const frenchiseVerifyLoginOtp = require('./routes/frenchise/frenchise-verify-login-otp');
 const fetchFranchiseNotification = require('./routes/frenchise/fetch-franchise-notification');
 const setNotificationToFalseFranchise = require('./routes/frenchise/set-notification-to-false-franchise');
+const fetchMemberByReferralIdOfFranchise = require('./routes/frenchise/fetchMemberByReferralIdOfFranchise')
 
 //=========================Business developer======================================
 const getAllMembersInBusinessDeveloper = require("./routes/businessDeveloper/fetch-all-members-in-business-developer");
@@ -724,6 +725,7 @@ app.use("/franchise", getFranchiseProfilePhoto)
 app.use('/franchise',frenchiseVerifyLoginOtp);
 app.use('/franchise',fetchFranchiseNotification);
 app.use('/franchise',setNotificationToFalseFranchise);
+app.use('/franchise', fetchMemberByReferralIdOfFranchise)
 
 
 //============================Business developer===========================

@@ -872,3 +872,25 @@ exports.setNotificationToFalseFranchise = async (req,res) => {
     })
   }
 }
+
+exports.fetchMemberByReferralIdOfFranchise = async(req, res) => {
+  try {
+    const {referralId} = req.body 
+
+    const member = await Member.find({
+      referredId: referralId
+    })
+    if(!member){
+      return res.status(404).json({message: "Member not found"})
+    }
+
+    return res.status(200).json({message: "Member fetched successfully", data: member})
+
+    
+  } catch (error) {
+    console.log(error.message)
+    return res.status(500).json({
+      message: "Internal server error"
+    })
+  }
+}
