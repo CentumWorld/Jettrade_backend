@@ -25,10 +25,10 @@ const BankAccountHolder = require("../model/BankAccountHolderSchema");
 const UpiHolder = require("../model/UpiHolderSchema");
 const UserCreditWalletTransaction = require("../model/userCreditWalletTransaction");
 const ProfilePhoto = require("../model/profilePhotoSchema");
-const notificationForAll = require('../model/notificationForAllSchema')
-const notificationForAllSho = require('../model/NotificationForAllShoSchema');
-const notificationForParticularSho = require('../model/NotificationForParticularShoSchema');
-const StateHandler = require('../model/stateHandlerSchema');
+const notificationForAll = require("../model/notificationForAllSchema");
+const notificationForAllSho = require("../model/NotificationForAllShoSchema");
+const notificationForParticularSho = require("../model/NotificationForParticularShoSchema");
+const StateHandler = require("../model/stateHandlerSchema");
 
 //===============================================================================
 //fetch all franchise list
@@ -603,25 +603,25 @@ exports.getOwnMemberInsideStateCreditWalletTransactionDetails = async (
     });
 
     if (!state) {
-      return res.status(404).json({ message: "State not found" });
+      return res.status(404).json({ message: "BMM not found" });
     }
 
     const sho_reffralid = state.referralId;
+
     const franchise = await Frenchise.find({ referredId: sho_reffralid });
 
-    const memberReferralIds = franchise.map(
-      (member) => member.referralId
+    const franchiseReferralIds = franchise.map(
+      (franchise) => franchise.referralId
     );
-
     const members = await Member.find({
-      reffered_id: { $in: memberReferralIds },
+      reffered_id: { $in: franchiseReferralIds },
     });
 
     const memberIds = members.map((member) => member.memberid);
 
     const memberCreditWalletTransactions =
       await MemberCreditWalletTransaction.find({
-        userid: memberIds,
+        memberId: memberIds,
       });
 
     return res.status(200).json({
@@ -655,7 +655,6 @@ exports.getOwnTraderInsideStateCreditWalletTransactionDetails = async (
 
     const sho_reffralid = state.referralId;
     const franchise = await Frenchise.find({ referredId: sho_reffralid });
-
 
     const franchiseReferralIds = franchise.map(
       (franchise) => franchise.referralId
@@ -865,7 +864,6 @@ exports.getStateOwnUpi = async (req, res) => {
   }
 };
 
-
 exports.eligibleStateForWithdrawal = async (req, res) => {
   try {
     const { stateHandlerId } = req.body;
@@ -898,10 +896,14 @@ exports.eligibleStateForWithdrawal = async (req, res) => {
 
 exports.uploadSHOProfilePhoto = async (req, res) => {
   try {
-    const profilePhoto = req.files["profilePhoto"] ? req.files["profilePhoto"][0]?.location : null;
+    const profilePhoto = req.files["profilePhoto"]
+      ? req.files["profilePhoto"][0]?.location
+      : null;
 
     if (!profilePhoto) {
-      return res.status(400).json({ message: "Please upload the profile photo" });
+      return res
+        .status(400)
+        .json({ message: "Please upload the profile photo" });
     }
 
     const userid = req.body.userid;
@@ -915,27 +917,21 @@ exports.uploadSHOProfilePhoto = async (req, res) => {
     if (existingProfilePhoto) {
       existingProfilePhoto.imageUrl = profilePhoto;
       await existingProfilePhoto.save();
-      return res
-        .status(200)
-        .json({
-          message: "Profile photo updated successfully.",
-          data: existingProfilePhoto,
-        });
+      return res.status(200).json({
+        message: "Profile photo updated successfully.",
+        data: existingProfilePhoto,
+      });
     } else {
       const newProfilePhoto = new ProfilePhoto({
         userid: userid,
         imageUrl: profilePhoto,
       });
       await newProfilePhoto.save();
-      return res
-        .status(200)
-        .json({
-          message: "Profile photo uploaded successfully.",
-          data: newProfilePhoto,
-        });
+      return res.status(200).json({
+        message: "Profile photo uploaded successfully.",
+        data: newProfilePhoto,
+      });
     }
-
-
   } catch (error) {
     console.log(error.message);
     res.status(500).json({ message: "Internal server error" });
@@ -944,48 +940,46 @@ exports.uploadSHOProfilePhoto = async (req, res) => {
 
 exports.getSHOProfilePhoto = async (req, res) => {
   try {
-
-    let userid = req.body.userid
-    const photo = await ProfilePhoto.findOne({ userid })
+    let userid = req.body.userid;
+    const photo = await ProfilePhoto.findOne({ userid });
     if (!photo) {
-      return res.status(404).json({ message: "Profile photo not found" })
+      return res.status(404).json({ message: "Profile photo not found" });
     }
 
-    return res.status(200).json({ message: "profile photo fetched successfully", data: photo })
-
+    return res
+      .status(200)
+      .json({ message: "profile photo fetched successfully", data: photo });
   } catch (error) {
-    console.log(error.message)
-    res.status(500).json({ message: "Internal server error" })
-
+    console.log(error.message);
+    res.status(500).json({ message: "Internal server error" });
   }
-}
+};
 
 // stateVerifyLoginOtp
 exports.stateVerifyLoginOtp = async (req, res) => {
-  const { loginOtp, stateHandlerId } = req.body
+  const { loginOtp, stateHandlerId } = req.body;
 
-  const findOneSHO = await stateHandler.findOne({ stateHandlerId: stateHandlerId })
-
+  const findOneSHO = await stateHandler.findOne({
+    stateHandlerId: stateHandlerId,
+  });
 
   if (findOneSHO) {
-
-    const verificationOtp = findOneSHO.loginOtp
-    if ((verificationOtp === loginOtp)) {
+    const verificationOtp = findOneSHO.loginOtp;
+    if (verificationOtp === loginOtp) {
       return res.status(200).json({
-        message: "Otp Verified"
-      })
-    }
-    else {
+        message: "Otp Verified",
+      });
+    } else {
       return res.status(404).json({
-        message: 'Invalid PIN '
-      })
+        message: "Invalid PIN ",
+      });
     }
   } else {
     return res.status(500).json({
-      message: "Internal server error"
-    })
+      message: "Internal server error",
+    });
   }
-}
+};
 
 // fetchStateNotification
 exports.fetchStateNotification = async (req, res) => {
@@ -1011,10 +1005,10 @@ exports.fetchStateNotification = async (req, res) => {
     }
   } catch (error) {
     return res.status(500).json({
-      message: "Internal server error"
-    })
+      message: "Internal server error",
+    });
   }
-}
+};
 
 // setNotificationToFalse
 exports.setNotificationToFalse = async (req, res) => {
@@ -1034,7 +1028,7 @@ exports.setNotificationToFalse = async (req, res) => {
     }
   } catch (error) {
     return res.status(500).json({
-      message: "Internal server error"
-    })
+      message: "Internal server error",
+    });
   }
-}
+};
