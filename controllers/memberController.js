@@ -94,7 +94,8 @@ exports.memberRegistration = async (req, res) => {
     return res.status(400).json({ message: "Invalid email address" });
   }
 
-  if (!isValidPhone(phone)) {
+  console.log(phone)
+  if (!isValidPhone('+'+phone)) {
     return res.status(422).json({
       message:
         "Invalid phone number format. Use 10 digits or include country code.",
