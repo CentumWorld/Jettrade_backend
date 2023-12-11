@@ -394,7 +394,7 @@ exports.getOwnMembersInsideFranchiseCreditWalletTransactionDetails = async (
   // Fetch member credit wallet transactions based on memberIds
   const memberCreditWalletTransactions =
     await MemberCreditWalletTransaction.find({
-      userid: { $in: memberIds },
+      memberId: { $in: memberIds },
     });
   return res.status(200).json({
     message: "Fetched Member Credit Wallet Transaction details",
