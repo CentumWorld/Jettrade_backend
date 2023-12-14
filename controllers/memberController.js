@@ -95,12 +95,13 @@ exports.memberRegistration = async (req, res) => {
   }
 
   console.log(phone)
-  if (!isValidPhone('+'+phone)) {
-    return res.status(422).json({
-      message:
-        "Invalid phone number format. Use 10 digits or include country code.",
-    });
-  }
+
+  // if (!isValidPhone('+91'+phone)) {
+  //   return res.status(422).json({
+  //     message:
+  //       "Invalid phone number format. Use 10 digits or include country code.",
+  //   });
+  // }
 
   if (!isValidName(fname) || !isValidName(lname)) {
     return res.status(422).json({
