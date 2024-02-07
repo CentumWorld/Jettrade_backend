@@ -875,62 +875,58 @@ exports.saveEditedUserDetails = async (req, res) => {
     userid,
   } = req.body;
 
-  if (userWhat === "indian") {
-    if (
-      !fname ||
-      !lname ||
-      !phone ||
-      !address ||
-      !gender ||
-      !dob ||
-      !aadhar ||
-      !pan
-    ) {
-      return res.status(400).json({ message: "Please fill all the fields" });
-    }
-    // const dateString = dob;
-    // const parts = dateString.split('/');
-    // const year = parseInt(parts[2]);
-    // const month = parseInt(parts[1]);
-    // const day = parseInt(parts[0]);
-    // const dateofbirth = new Date(year, month - 1, day);
+  try {
+    let updateFields = {};
+    if (userWhat === "indian") {
+      if (!fname || !lname || !phone || !address || !gender || !dob || !aadhar || !pan) {
+        return res.status(400).json({ message: "Please fill all the fields" });
+      }
 
-    // console.log(dateofbirth.toISOString());
-    User.updateOne({ userid: userid })
-      .set({
-        fname: fname,
-        lname: lname,
-        address: address,
-        gender: gender,
-        phone: phone,
-        dob: dob,
-        aadhar: aadhar,
-        pan: pan,
-      })
-      .then(() => {
-        return res.status(201).json({ message: "User Details Updated" });
-      });
-  }
-  if (userWhat === "other") {
-    if (!fname || !lname || !phone || !address || !gender || !dob || !Id_No) {
-      return res.status(400).json({ message: "Please fill all the fields" });
+      updateFields = {
+        $set: {
+          fname: fname,
+          lname: lname,
+          address: address,
+          gender: gender,
+          phone: phone,
+          dob: dob,
+          aadhar: aadhar,
+          pan: pan,
+        },
+      };
+    } else if (userWhat === "other") {
+      if (!fname || !lname || !phone || !address || !gender || !dob || !Id_No) {
+        return res.status(400).json({ message: "Please fill all the fields" });
+      }
+
+      updateFields = {
+        $set: {
+          fname: fname,
+          lname: lname,
+          address: address,
+          gender: gender,
+          phone: phone,
+          dob: dob,
+          Id_No: Id_No,
+        },
+      };
     }
 
-    User.updateOne({ userid: userid })
-      .set({
-        fname: fname,
-        lname: lname,
-        address: address,
-        gender: gender,
-        phone: phone,
-        dob: dob,
-        Id_No: Id_No,
-      })
-      .then(() => {
-        return res.status(201).json({ message: "User Details Updated" });
-      });
+    const updatedUser = await User.findOneAndUpdate({ userid: userid }, updateFields, { new: true });
+
+    if (!updatedUser) {
+      return res.status(404).json({ message: "User not found" });
+    }
+
+    return res.status(201).json({ message: "User Details Updated", updatedUser });
+  } catch (error) {
+    console.error("Error updating user details:", error);
+    return res.status(500).json({ message: "Internal Server Error" });
   }
 };
+
+
+
 
 // fetchUserNotification
 exports.fetchUserNotification = async (req, res) => {

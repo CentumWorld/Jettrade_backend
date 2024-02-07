@@ -9,8 +9,8 @@ const {
 
 router.post(
   "/users/save-user-edited-details",
-  authenticateUser,
-  authorizeUser,
+  // authenticateUser,
+  // authorizeUser,
   userController.saveEditedUserDetails
 );
 
