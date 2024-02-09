@@ -93,6 +93,7 @@ const userSchema = new mongoose.Schema({
   },
   doj: {
     type: Date,
+    default: Date.now,
   },
   wallet: {
     type: Number,
