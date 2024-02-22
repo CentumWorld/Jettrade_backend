@@ -605,45 +605,43 @@ exports.editMemberDetails = async (req, res) => {
 };
 
 // saveMemberEditedDetails
+
 exports.saveMemberEditedDetails = async (req, res) => {
-  const { fname, lname, phone, address, gender, dob, aadhar, pan, userid } =
-    req.body;
+  try {
+    const { fname, lname, phone, address, gender, dob, aadhar, pan, userid } = req.body;
 
-  if (
-    !fname ||
-    !lname ||
-    !phone ||
-    !address ||
-    !gender ||
-    !dob ||
-    !aadhar ||
-    !pan
-  ) {
-    return res.status(400).json({ message: "Please fill all the fields" });
+    if (!fname || !lname || !phone || !address || !gender || !dob || !aadhar || !pan) {
+      return res.status(400).json({ message: "Please fill all the fields" });
+    }
+
+    const updateToMember = await Member.findOneAndUpdate(
+      { memberid: userid },
+      {
+        $set: {
+          fname: fname,
+          lname: lname,
+          address: address,
+          gender: gender,
+          phone: phone,
+          dob: dob,
+          aadhar: aadhar,
+          pan: pan,
+        },
+      },
+      { new: true }
+    );
+
+    if (updateToMember) {
+      return res.status(200).json({ message: "Member Details Updated", data: updateToMember });
+    } else {
+      return res.status(404).json({ message: "Member not found" });
+    }
+  } catch (error) {
+    console.error(error);
+    return res.status(500).json({ message: "Internal Server Error" });
   }
-  // const dateString = dob;
-  // const parts = dateString.split('/');
-  // const year = parseInt(parts[2]);
-  // const month = parseInt(parts[1]);
-  // const day = parseInt(parts[0]);
-  // const dateofbirth = new Date(year, month - 1, day);
-
-  // console.log(dateofbirth.toISOString());
-  Member.updateOne({ memberid: userid })
-    .set({
-      fname: fname,
-      lname: lname,
-      address: address,
-      gender: gender,
-      phone: phone,
-      dob: dob,
-      aadhar: aadhar,
-      pan: pan,
-    })
-    .then(() => {
-      return res.status(201).json({ message: "Member Details Updated" });
-    });
 };
+
 
 // fetchRefferalNotification
 exports.fetchRefferalNotification = async (req, res) => {
