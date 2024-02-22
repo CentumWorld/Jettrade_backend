@@ -629,7 +629,7 @@ exports.saveMemberEditedDetails = async (req, res) => {
   // const dateofbirth = new Date(year, month - 1, day);
 
   // console.log(dateofbirth.toISOString());
-  Member.updateOne({ userid: userid })
+  Member.updateOne({ memberid: userid })
     .set({
       fname: fname,
       lname: lname,
