@@ -1688,6 +1688,9 @@ exports.createSubAdminInsideAdmin = async (req, res) => {
     "dob",
     "aadhar",
     "pan",
+    "password",
+    "subAdminId"
+
   ];
 
   const {
@@ -1701,6 +1704,7 @@ exports.createSubAdminInsideAdmin = async (req, res) => {
     pan,
     subAdminId,
     password,
+
   } = req.body;
 
   // Check if any required field is missing

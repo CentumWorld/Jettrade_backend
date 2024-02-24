@@ -36,7 +36,7 @@ const upload = multer({
     }),
 });
 var multipleUpload = upload.fields([{ name: 'aadhar_front_side' },{ name: 'aadhar_back_side' },{name:'pan_card'}]);
-router.post('/create-sub-admin-inside-admin',multipleUpload,authenticateAdmin,authorizeRole(["admin"]), adminController.createSubAdminInsideAdmin);
+router.post('/create-sub-admin-inside-admin',multipleUpload, adminController.createSubAdminInsideAdmin);
 
 
 module.exports = router;
