@@ -1870,7 +1870,7 @@ exports.createStateHandler = async (req, res) => {
     if (existingstateHandler) {
       return res.status(422).json({
         message:
-          "State Handler Id ID already exists. Please choose a unique ID.",
+          "BMM iD already exists. Please choose a unique ID.",
       });
     }
 
@@ -1967,7 +1967,7 @@ exports.createStateHandler = async (req, res) => {
     const savedData = await newStateHandler.save();
 
     return res.status(201).json({
-      message: "BMM created successfully.",
+      message: "BMM registed successfully.",
       savedData,
     });
   } catch (error) {
@@ -2094,7 +2094,7 @@ exports.createFrenchise = async (req, res) => {
 
     if (existingFrenchise) {
       return res.status(422).json({
-        message: "Frenchise ID already exists. Please choose a unique ID.",
+        message: "User ID already exists. Please choose a unique ID.",
       });
     }
 
@@ -2137,7 +2137,7 @@ exports.createFrenchise = async (req, res) => {
     if (!isValidUserId(frenchiseId)) {
       return res.status(422).json({
         message:
-          "frenchise Id Should have at least 1 letter and 1 digit, minimum length 6.",
+          "User Id Should have at least 1 letter and 1 digit, minimum length 6.",
       });
     }
 
@@ -2179,7 +2179,7 @@ exports.createFrenchise = async (req, res) => {
     const savedFranchise = await newFranchise.save();
 
     return res.status(201).json({
-      message: "Franchise created successfully",
+      message: "Franchise registed successfully",
       savedFranchise,
     });
   } catch (error) {
@@ -2378,7 +2378,7 @@ exports.stateHandlerLogin = async (req, res) => {
     if (!stateHandlerId || !password) {
       return res
         .status(400)
-        .json({ message: "Please provide state handler Id and password" });
+        .json({ message: "Please provide BMM id and Password" });
     }
 
     const existingStateHandler = await StateHandler.findOne({
@@ -2388,7 +2388,7 @@ exports.stateHandlerLogin = async (req, res) => {
     if (!existingStateHandler) {
       return res
         .status(400)
-        .json({ message: "Invalid State handler Id or Password" });
+        .json({ message: "Invalid Credential." });
     }
 
     if (existingStateHandler.isDeleted) {
@@ -2405,7 +2405,7 @@ exports.stateHandlerLogin = async (req, res) => {
     if (!isPasswordValid) {
       return res
         .status(400)
-        .json({ message: "Invalid State handler Id or Password" });
+        .json({ message: "Invalid Credential." });
     }
 
     const token = jwt.sign(
@@ -2436,7 +2436,7 @@ exports.frenchiseLogin = async (req, res) => {
     if (!frenchiseId || !password) {
       return res
         .status(400)
-        .json({ message: "Please provide  frenchise Id and password" });
+        .json({ message: "Please provide  User Id and password" });
     }
 
     const existingFrenchiseId = await Frenchise.findOne({
@@ -2446,7 +2446,7 @@ exports.frenchiseLogin = async (req, res) => {
     if (!existingFrenchiseId) {
       return res
         .status(400)
-        .json({ message: "Invalid frenchise Id or Password" });
+        .json({ message: "Invalid Credential." });
     }
 
     if (existingFrenchiseId.isDeleted) {
@@ -2464,7 +2464,7 @@ exports.frenchiseLogin = async (req, res) => {
     if (!isPasswordValid) {
       return res
         .status(400)
-        .json({ message: "Invalid frenchise Id or Password" });
+        .json({ message: "Invalid Credential." });
     }
     const token = jwt.sign(
       { franchiseId: existingFrenchiseId._id },
