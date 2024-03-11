@@ -147,6 +147,15 @@ exports.getAllMembersInState = async (req, res) => {
 exports.getAllUsersInState = async (req, res) => {
   try {
     const stateReferralId = req.body.stateReferralId;
+
+    const trader = await User.find({ reffered_id: stateReferralId });
+    if (trader.length > 0) {
+      return res.status(200).json({
+        message: "Fetched successfully all Users in the state",
+        data: trader,
+      });
+    }
+
     const franchisesInState = await Frenchise.find({
       referredId: stateReferralId,
     });
@@ -154,9 +163,9 @@ exports.getAllUsersInState = async (req, res) => {
     console.log(franchisesInState, "ffffffffff");
 
     if (franchisesInState.length === 0) {
-      return res
-        .status(404)
-        .json({ message: "No franchises found in the given state" });
+      return res.status(404).json({
+        message: "No franchises found in the given state",
+      });
     }
 
     const franchiseReferralIds = franchisesInState.map(
@@ -168,29 +177,30 @@ exports.getAllUsersInState = async (req, res) => {
     });
 
     if (members.length === 0) {
-      return res
-        .status(404)
-        .json({ message: "No members found in the given state" });
+      return res.status(404).json({
+        message: "No members found in the given state",
+      });
     }
 
     const memberReferralIds = members.map((member) => member.refferal_id);
 
     const users = await User.find({ reffered_id: { $in: memberReferralIds } });
     if (users.length === 0) {
-      return res
-        .status(404)
-        .json({ message: "No users found in the given state" });
+      return res.status(404).json({
+        message: "No users found in the given state",
+      });
     }
+
     res.status(200).json({
       message: "Fetched successfully all Users in the state",
       data: users,
     });
   } catch (error) {
     console.log(error.message);
-
     res.status(500).json({ message: "Internal server error" });
   }
 };
+
 //==============================================================================
 // Get a specific franchise
 exports.getFranchiseForState = async (req, res) => {
