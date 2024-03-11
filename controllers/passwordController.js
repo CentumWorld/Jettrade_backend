@@ -86,50 +86,50 @@ exports.allPasswordChange = async (req, res) => {
     }
   } else if (usertype === "REFERRAL") {
     try {
+      console.log('Before finding member');
       if (!oldpassword || !newpassword) {
-        res.status(422).json({
-          message: "Please fill your password",
+        return res.status(422).json({
+          message: "Please fill in your password",
         });
       }
+
       if (!isValidPassword(newpassword)) {
         return res.status(400).json({
           message:
-            "New password must at least one digit, one lowercase letter, one uppercase letter, and be 8 to 15 characters long.",
+            "New password must have at least one digit, one lowercase letter, one uppercase letter, and be 8 to 15 characters long.",
         });
       }
+
       const existdetails = await MemberHandler.findOne({ memberid: id });
-      //  console.log(existdetails);
+      console.log('After finding member:', existdetails);
+      if (!existdetails) {
+        return res.status(404).json({
+          message: "Member not found",
+        });
+      }
+
       const isPasswordMatch = await bcrypt.compare(
         oldpassword,
         existdetails.password
       );
 
-      console.log(isPasswordMatch);
       if (!isPasswordMatch) {
         return res.status(404).json({
           message: "Old password does not match",
         });
       }
 
-        const hashedNewPassword = await bcrypt.hash(newpassword, 12);
-        existdetails.password = hashedNewPassword;
-        await existdetails.save();
+      existdetails.password = newpassword;
+      await existdetails.save();
 
-      if (!passwordSave) {
-        return res.status(500).json({
-          message: "Failed to update password.",
-        });
-      }
-
-      await passwordSave.save();
       res.status(200).json({
         message: "Password updated successfully",
       });
     } catch (error) {
+      console.error(error);
       res.status(500).json({
         message: "Server error",
       });
     }
-  } else {
   }
 };
