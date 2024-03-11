@@ -150,7 +150,7 @@ exports.allPasswordChange = async (req, res) => {
       const existdetails = await TraderHandler.findOne({ userid: id });
       if (!existdetails) {
         return res.status(404).json({
-          message: "Member not found",
+          message: "User not found",
         });
       }
 
