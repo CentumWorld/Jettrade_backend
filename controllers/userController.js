@@ -175,8 +175,8 @@ exports.userRegistration = async (req, res) => {
 
       if(!isValidPassword(password)){
         return res.status(400).json({
-              message: "Password mmmmmust be minimum length of 8 charector!",
-            }); 
+              message: "Password must be minimum length of 8 charector!",
+        }); 
       }
 
       const userExist = await User.findOne({ userid: userid });

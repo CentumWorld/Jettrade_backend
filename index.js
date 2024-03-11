@@ -368,6 +368,9 @@ const getAllVideosForPortfolio = require("./routes/portfolio/get-all-videos-for-
 //==========================Video creator===================================
 const videoCreatorLogin = require("./routes/videoCreator/videoCreatorLogin");
 
+// ---------------------passwordcontroller---------------------
+const allPasswordChange = require('./routes/passwordChange/allPasswordChange')
+
 // app.use(express.static(path.join(__dirname, "public")));
 // app.use(express.urlencoded({ extended: true }));
 // app.use(express.json());
@@ -773,5 +776,8 @@ app.use("/portfolio", filterSHOByState)
 app.use("/portfolio", filterFranchiseByState)
 app.use("/portfolio", createVideoForPortfolio)
 app.use("/portfolio", getAllVideosForPortfolio)
+
+// ----------------------------password-------------------
+app.use('/password',allPasswordChange);
 
 module.exports = app;
