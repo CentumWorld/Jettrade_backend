@@ -27,7 +27,11 @@ const AllNewPaidUser = require("../model/allNewPaidUserSchema");
 const MyReferral = require("../model/myReferralSchema");
 const Like = require("../model/likeModel");
 const DisLike = require("../model/disLikeModel");
-const { isValidPassword, isValidPhone, isValidUserId } = require("../validation/validation");
+const {
+  isValidPassword,
+  isValidPhone,
+  isValidUserId,
+} = require("../validation/validation");
 const BusinessDeveloper = require("../model/businessDeveloperSchema");
 const BusinessDeveloperCreditWalletTransaction = require("../model/businessDeveloperCreditWalletTransaction");
 const Franchise = require("../model/frenchiseSchema");
@@ -44,20 +48,18 @@ const UpiHolder = require("../model/UpiHolderSchema");
 
 // userRegistartion
 exports.userRegistration = async (req, res) => {
-
-
-  if ( !req.files["aadhar_front_side"]) {
+  if (!req.files["aadhar_front_side"]) {
     return res.status(422).json({
       message: "Please upload adhar card front side.",
     });
   }
-  if ( !req.files["aadhar_back_side"]) {
+  if (!req.files["aadhar_back_side"]) {
     return res.status(422).json({
       message: "Please upload adhar card back side.",
     });
   }
 
-  if ( !req.files["pan_card"]) {
+  if (!req.files["pan_card"]) {
     return res.status(422).json({
       message: "Please upload pan card.",
     });
@@ -111,11 +113,19 @@ exports.userRegistration = async (req, res) => {
     refferal_id: reffered_id,
   });
   let isValidRefferedIdAdmin = await Admin.findOne({ referralId: reffered_id });
+  let isValidRefferedIdFranchise = await Franchise.findOne({
+    referralId: reffered_id,
+  });
+  let isValidRefferedIdBmm = await StateHandler.findOne({
+    referralId: reffered_id,
+  });
 
   if (
     !isValidRefferedIdUser &&
     !isValidRefferedIdMember &&
-    !isValidRefferedIdAdmin
+    !isValidRefferedIdAdmin &&
+    !isValidRefferedIdFranchise &&
+    !isValidRefferedIdBmm
   ) {
     return res
       .status(400)
@@ -166,17 +176,10 @@ exports.userRegistration = async (req, res) => {
 
       const password = makepassword(8);
 
-
-      // if (password.length < 8) {
-      //   return res.status(400).json({
-      //     message: "Password must be minimum length of 8 charector!",
-      //   });
-      // }
-
-      if(!isValidPassword(password)){
+      if (!isValidPassword(password)) {
         return res.status(400).json({
-              message: "Password mmmmmust be minimum length of 8 charector!",
-            }); 
+          message: "Password must be minimum length of 8 charector!",
+        });
       }
 
       const userExist = await User.findOne({ userid: userid });
@@ -243,17 +246,17 @@ exports.userRegistration = async (req, res) => {
 
       if (!isValidPassword(password)) {
         return res.status(400).json({
-          message: "Password must at least one digit, one lowercase letter, one uppercase letter, and be 8 to 15 characters long.",
+          message:
+            "Password must at least one digit, one lowercase letter, one uppercase letter, and be 8 to 15 characters long.",
         });
       }
 
       if (!isValidUserId(userid)) {
         return res.status(400).json({
-          message: "User ID must be a combination of at least one letter and one digit, and it should be a minimum of 6 characters in length.",
+          message:
+            "User ID must be a combination of at least one letter and one digit, and it should be a minimum of 6 characters in length.",
         });
       }
-      
-      
 
       const user = new User({
         fname,
@@ -345,16 +348,28 @@ exports.otherCountryUserRegistration = async (req, res) => {
       });
     }
 
-    let isValidRefferedIdUser = await User.findOne({ refferal_id: reffered_id });
+    let isValidRefferedIdUser = await User.findOne({
+      refferal_id: reffered_id,
+    });
     let isValidRefferedIdMember = await Member.findOne({
       refferal_id: reffered_id,
     });
-    let isValidRefferedIdAdmin = await Admin.findOne({ referralId: reffered_id });
-  
+    let isValidRefferedIdAdmin = await Admin.findOne({
+      referralId: reffered_id,
+    });
+    let isValidRefferedIdFranchise = await Franchise.findOne({
+      referralId: reffered_id,
+    });
+    let isValidRefferedIdBmm = await StateHandler.findOne({
+      referralId: reffered_id,
+    });
+
     if (
       !isValidRefferedIdUser &&
       !isValidRefferedIdMember &&
-      !isValidRefferedIdAdmin
+      !isValidRefferedIdAdmin &&
+      !isValidRefferedIdFranchise &&
+      !isValidRefferedIdBmm
     ) {
       return res
         .status(400)
@@ -370,22 +385,23 @@ exports.otherCountryUserRegistration = async (req, res) => {
     if (!userid && !password) {
       const generatedUserId = fname + Math.floor(Math.random() * 100000 + 1);
 
-      const refferal_id = generatedUserId + Math.floor(Math.random() * 100000 + 1);
+      const refferal_id =
+        generatedUserId + Math.floor(Math.random() * 100000 + 1);
 
-              function makepassword(length) {
-          let result = "";
-          const characters =
-            "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789%&@#";
-          const charactersLength = characters.length;
-          let counter = 0;
-          while (counter < length) {
-            result += characters.charAt(
-              Math.floor(Math.random() * charactersLength)
-            );
-            counter += 1;
-          }
-          return result;
+      function makepassword(length) {
+        let result = "";
+        const characters =
+          "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789%&@#";
+        const charactersLength = characters.length;
+        let counter = 0;
+        while (counter < length) {
+          result += characters.charAt(
+            Math.floor(Math.random() * charactersLength)
+          );
+          counter += 1;
         }
+        return result;
+      }
 
       const generatedPassword = makepassword(8);
 
@@ -396,7 +412,7 @@ exports.otherCountryUserRegistration = async (req, res) => {
           .json({ message: "This user ID is already taken" });
       }
 
-      console.log(refferal_id, "referral")
+      console.log(refferal_id, "referral");
 
       const user = new User({
         fname,
@@ -435,10 +451,10 @@ exports.otherCountryUserRegistration = async (req, res) => {
         password: generatedPassword,
       });
     } else {
-      if (!userid ) {
+      if (!userid) {
         return res.status(422).json({ message: "Please provide User Id" });
       }
-      if (!password ) {
+      if (!password) {
         return res.status(422).json({ message: "Please provide password" });
       }
 
@@ -446,7 +462,9 @@ exports.otherCountryUserRegistration = async (req, res) => {
 
       const userExist = await User.findOne({ userid });
       if (userExist) {
-        return res.status(400).json({ message: "This user ID is already taken" });
+        return res
+          .status(400)
+          .json({ message: "This user ID is already taken" });
       }
 
       if (password.length < 8) {
@@ -457,13 +475,15 @@ exports.otherCountryUserRegistration = async (req, res) => {
 
       if (!isValidUserId(userid)) {
         return res.status(400).json({
-          message: "User ID must be a combination of at least one letter and one digit, and it should be a minimum of 6 characters in length.",
+          message:
+            "User ID must be a combination of at least one letter and one digit, and it should be a minimum of 6 characters in length.",
         });
       }
 
       if (!isValidPassword(password)) {
         return res.status(400).json({
-          message: "Password must at least one digit, one lowercase letter, one uppercase letter, and be 8 to 15 characters long.",
+          message:
+            "Password must at least one digit, one lowercase letter, one uppercase letter, and be 8 to 15 characters long.",
         });
       }
 
@@ -878,7 +898,16 @@ exports.saveEditedUserDetails = async (req, res) => {
   try {
     let updateFields = {};
     if (userWhat === "indian") {
-      if (!fname || !lname || !phone || !address || !gender || !dob || !aadhar || !pan) {
+      if (
+        !fname ||
+        !lname ||
+        !phone ||
+        !address ||
+        !gender ||
+        !dob ||
+        !aadhar ||
+        !pan
+      ) {
         return res.status(400).json({ message: "Please fill all the fields" });
       }
 
@@ -912,21 +941,24 @@ exports.saveEditedUserDetails = async (req, res) => {
       };
     }
 
-    const updatedUser = await User.findOneAndUpdate({ userid: userid }, updateFields, { new: true });
+    const updatedUser = await User.findOneAndUpdate(
+      { userid: userid },
+      updateFields,
+      { new: true }
+    );
 
     if (!updatedUser) {
       return res.status(404).json({ message: "User not found" });
     }
 
-    return res.status(201).json({ message: "User Details Updated", updatedUser });
+    return res
+      .status(201)
+      .json({ message: "User Details Updated", updatedUser });
   } catch (error) {
     console.error("Error updating user details:", error);
     return res.status(500).json({ message: "Internal Server Error" });
   }
 };
-
-
-
 
 // fetchUserNotification
 exports.fetchUserNotification = async (req, res) => {
@@ -1215,52 +1247,25 @@ exports.changeUserPaymentStatus = async (req, res) => {
             });
             console.log(bmm, "bmm");
 
-            if(bmm){
+            if (bmm) {
+              let bmmWallet = bmm.stateHandlerWallet;
+              bmmWallet += transferAmount;
 
-            let bmmWallet = bmm.stateHandlerWallet;
-            bmmWallet += transferAmount;
+              await StateHandler.updateOne(
+                { referralId: franchiseDetails.referredId },
+                { $set: { stateHandlerWallet: bmmWallet } }
+              );
 
-            await StateHandler.updateOne(
-              { referralId: franchiseDetails.referredId },
-              { $set: { stateHandlerWallet: bmmWallet } }
-            );
-
-            const bmmCreditWalletDetails =
-              new StateHandlerCreditWalletTransaction({
-                stateHandlerId: bmm.stateHandlerId,
-                creditAmount: transferAmount,
-                Type: "New",
-                refferUserId: franchiseDetails.frenchiseId,
-              });
-            await bmmCreditWalletDetails.save();
-
+              const bmmCreditWalletDetails =
+                new StateHandlerCreditWalletTransaction({
+                  stateHandlerId: bmm.stateHandlerId,
+                  creditAmount: transferAmount,
+                  Type: "New",
+                  refferUserId: franchiseDetails.frenchiseId,
+                });
+              await bmmCreditWalletDetails.save();
             }
 
-
-
-
-            // const transferPercentage = 2.5;
-            // // const transferAmount = (3500 * transferPercentage) / 100;
-            // const stateHandler = await StateHandler.findOne({
-            //   referralId: franchise.referredId,
-            // });
-            // console.log(stateHandler, ";;;;;");
-            // if (stateHandler) {
-            //   let stateHandlerWallet = stateHandler.stateHandlerWallet;
-            //   stateHandlerWallet += transferAmount;
-            //   await StateHandler.updateOne(
-            //     { referralId: franchise.referredId },
-            //     { $set: { stateHandlerWallet: stateHandlerWallet } }
-            //   );
-            //   const statehandlerCreditWalletDetails =
-            //     new StateHandlerCreditWalletTransaction({
-            //       stateHandlerId: stateHandler.stateHandlerId,
-            //       creditAmount: transferAmount,
-            //       Type: "New",
-            //       refferUserId: franchise.frenchiseId,
-            //     });
-            //   await statehandlerCreditWalletDetails.save();
-            // }
             const admin = await Admin.findOne({
               referralId: bmm.referredId,
             });
@@ -1324,58 +1329,176 @@ exports.changeUserPaymentStatus = async (req, res) => {
               message: "Payment Successful",
             });
           }
+        } else {
+          const findUserFromFranchiseRefferedId = await Franchise.find({
+            referralId: reffered_id,
+          });
+          if (findUserFromFranchiseRefferedId.length > 0 && payment < 1) {
+            const frenchiseId = findUserFromFranchiseRefferedId[0].frenchiseId;
+            const franchiseReferred =
+              findUserFromFranchiseRefferedId[0].referredId;
+
+            const BmmDetails = await StateHandler.findOne({
+              referralId: franchiseReferred,
+            });
+            console.log(BmmDetails, 1342);
+            if (BmmDetails) {
+              const BmmUserid = BmmDetails.stateHandlerId;
+              let BmmWallet = BmmDetails.stateHandlerWallet;
+              const WALLET_CREDIT_AMOUNT = 450;
+              BmmWallet = BmmWallet + WALLET_CREDIT_AMOUNT;
+              // Update franchise wallet
+              await StateHandler.updateOne(
+                { referralId: franchiseReferred },
+                {
+                  $set: {
+                    stateHandlerWallet: BmmWallet,
+                  },
+                }
+              );
+              // Create Bmm credit wallet transaction record
+              const BmmCreditWalletDetails =
+                new StateHandlerCreditWalletTransaction({
+                  stateHandlerId: BmmUserid,
+                  creditAmount: WALLET_CREDIT_AMOUNT,
+                  Type: "New",
+                  refferUserId: frenchiseId,
+                });
+              await BmmCreditWalletDetails.save();
+
+              console.log(BmmDetails.referredId);
+
+              const admin = await Admin.findOne({
+                referralId: BmmDetails.referredId,
+              });
+              console.log(admin, "1376admin details");
+              if (admin) {
+                console.log(admin.adminWallet);
+                let adminWallet = admin.adminWallet;
+                adminWallet += 2150;
+                await Admin.updateOne(
+                  { referralId: BmmDetails.referredId },
+                  { $set: { adminWallet: adminWallet } }
+                );
+                const adminCreditWalletDetails =
+                  new AdminCreditWalletTransaction({
+                    admin_id: admin.admin_id,
+                    creditAmount: 2150,
+                    Type: "New",
+                    refferUserId: BmmDetails.stateHandlerId,
+                  });
+                await adminCreditWalletDetails.save();
+              }
+            }
+
+            let frenchiseWallet =
+              findUserFromFranchiseRefferedId[0].frenchiseWallet;
+            frenchiseWallet = frenchiseWallet + 900;
+            // Update member wallet
+            const insertWalletAmount = await Franchise.updateOne(
+              { frenchiseId },
+              {
+                $set: {
+                  frenchiseWallet,
+                },
+              }
+            );
+            // Create referral details for new member
+            const myReferralDetails = new MyReferral({
+              userid: userExist.userid,
+              joininigDate: userExist.doj,
+              refferal_id: userExist.reffered_id,
+              referralAmount: 900,
+              userType: "New",
+              role: "Franchise",
+              refferUserID: frenchiseId,
+            });
+            await myReferralDetails.save();
+            // Create referral details for new member
+            const franchiseCreditWalletTransactionDetails =
+              new FranchiseCreditWalletTransaction({
+                frenchiseId: findUserFromFranchiseRefferedId[0].frenchiseId,
+                creditAmount: 900,
+                Type: "New",
+                refferUserId: userExist.userid,
+              });
+            await franchiseCreditWalletTransactionDetails.save();
+            if (insertWalletAmount) {
+              return res.status(200).json({
+                message: "Payment Successful",
+              });
+            }
+          } else {
+            const findUserFromBmmRefferedId = await StateHandler.find({
+              referralId: reffered_id,
+            });
+            if (findUserFromBmmRefferedId.length > 0 && payment < 1) {
+              const stateHandlerId =
+                findUserFromBmmRefferedId[0].stateHandlerId;
+              const BmmReferred = findUserFromBmmRefferedId[0].referredId;
+
+              const admin = await Admin.findOne({
+                referralId: BmmReferred,
+              });
+              console.log(admin, "1376admin details");
+              if (admin) {
+                console.log(admin.adminWallet);
+                let adminWallet = admin.adminWallet;
+                adminWallet += 2600;
+                await Admin.updateOne(
+                  { referralId: BmmReferred },
+                  { $set: { adminWallet: adminWallet } }
+                );
+                const adminCreditWalletDetails =
+                  new AdminCreditWalletTransaction({
+                    admin_id: admin.admin_id,
+                    creditAmount: 2600,
+                    Type: "New",
+                    refferUserId: stateHandlerId,
+                  });
+                await adminCreditWalletDetails.save();
+              }
+
+              let stateHandlerWallet =
+                findUserFromBmmRefferedId[0].stateHandlerWallet;
+              stateHandlerWallet = stateHandlerWallet + 900;
+              // Update member wallet
+              const insertWalletAmount = await StateHandler.updateOne(
+                { stateHandlerId },
+                {
+                  $set: {
+                    stateHandlerWallet,
+                  },
+                }
+              );
+              // Create referral details for new member
+              const myReferralDetails = new MyReferral({
+                userid: userExist.userid,
+                joininigDate: userExist.doj,
+                refferal_id: userExist.reffered_id,
+                referralAmount: 900,
+                userType: "New",
+                role: "BMM",
+                refferUserID: stateHandlerId,
+              });
+              await myReferralDetails.save();
+              // Create referral details for new member
+              const BmmCreditWalletTransactionDetails =
+                new StateHandlerCreditWalletTransaction({
+                  stateHandlerId: findUserFromBmmRefferedId[0].stateHandlerId,
+                  creditAmount: 900,
+                  Type: "New",
+                  refferUserId: userExist.userid,
+                });
+              await BmmCreditWalletTransactionDetails.save();
+              if (insertWalletAmount) {
+                return res.status(200).json({
+                  message: "Payment Successful",
+                });
+              }
+            }
+          }
         }
-        // else {
-        //   const memberid = findUserFromMemberRefferedId[0].memberid;
-        //   const referredId = findUserFromMemberRefferedId[0].reffered_id;
-        //   console.log(referredId, "[[[[[[[");
-        //   let wallet = findUserFromMemberRefferedId[0].wallet;
-        //   wallet = wallet + 500;
-        //   // Update member wallet
-        //   const insertWalletAmount = await Member.updateOne(
-        //     { memberid },
-        //     {
-        //       $set: {
-        //         wallet,
-        //       },
-        //     }
-        //   );
-        //   // Create referral details for renewal member
-        //   const myReferralDetails = new MyReferral({
-        //     userid: userExist.userid,
-        //     joininigDate: userExist.doj,
-        //     refferal_id: userExist.reffered_id,
-        //     referralAmount: 500,
-        //     userType: "Renewal",
-        //     role: "Member",
-        //     refferUserID: memberid,
-        //   });
-        //   await myReferralDetails.save();
-        //   const memberCrediwalletTransactionDetails =
-        //     new memberCreditWalletTransaction({
-        //       memberId: memberid,
-        //       Type: "Renewal",
-        //       refferUserId: userExist.userid,
-        //       creditAmount: 500,
-        //     });
-        //   await memberCrediwalletTransactionDetails.save();
-        //   const businessDeveloper = await BusinessDeveloper.findOne({
-        //     referralId: referredId,
-        //   });
-        //   console.log(businessDeveloper, "1630");
-        //   let businessDeveloperWallet =
-        //     businessDeveloper.businessDeveloperWallet;
-        //   businessDeveloperWallet += 200;
-        //   await BusinessDeveloper.updateOne(
-        //     { referralId: referredId },
-        //     { $set: { businessDeveloperWallet: businessDeveloperWallet } }
-        //   );
-        // if (insertWalletAmount) {
-        //   return res.status(200).json({
-        //     message: "Payment Successful",
-        //   });
-        // }
-        // }
       }
     } else {
       console.log(error.message);
@@ -2113,13 +2236,12 @@ exports.changePaymentStatusForRenewal = async (req, res) => {
             referralId: referredId,
           });
 
-          let franchiseWallet =
-          franchise.frenchiseWallet;
+          let franchiseWallet = franchise.frenchiseWallet;
           franchiseWallet += 300;
 
           await Franchise.updateOne(
             { referralId: referredId },
-            { $set: {frenchiseWallet: franchiseWallet } }
+            { $set: { frenchiseWallet: franchiseWallet } }
           );
 
           const franchiseCreditWalletDetails =
@@ -2132,7 +2254,6 @@ exports.changePaymentStatusForRenewal = async (req, res) => {
 
           await franchiseCreditWalletDetails.save();
 
-
           const transferAmount = 300;
 
           const bmm = await StateHandler.findOne({
@@ -2140,17 +2261,17 @@ exports.changePaymentStatusForRenewal = async (req, res) => {
           });
 
           let bmmWallet = bmm.stateHandlerWallet;
-          bmmWallet  += transferAmount;
+          bmmWallet += transferAmount;
 
           await StateHandler.updateOne(
             { referralId: franchise.referredId },
-            { $set: {stateHandlerWallet: bmmWallet } }
+            { $set: { stateHandlerWallet: bmmWallet } }
           );
 
           const bmmCreditWalletDetails =
             new StateHandlerCreditWalletTransaction({
               stateHandlerId: bmm.stateHandlerId,
-              creditAmount:transferAmount,
+              creditAmount: transferAmount,
               Type: "Renewal",
               refferUserId: franchise.frenchiseId,
             });
@@ -2415,7 +2536,7 @@ exports.interactWithVideo = async (req, res) => {
       return res.status(400).json({ message: "User Id is required" });
     }
 
-    const user = await User.findById(userId)
+    const user = await User.findById(userId);
 
     if (!user) {
       return res.status(404).json({ message: "User not found" });
@@ -2485,8 +2606,7 @@ exports.interactWithVideo = async (req, res) => {
           commentToReply.replies.push({
             text: comments,
             userId: userId,
-            userName: user.fname + " " + user.lname, 
-
+            userName: user.fname + " " + user.lname,
           });
         } else {
           return res
@@ -2498,7 +2618,6 @@ exports.interactWithVideo = async (req, res) => {
           text: comments,
           userId: userId,
           userName: user.fname + " " + user.lname,
-
         });
       }
     } else if (action === "view") {
@@ -2556,8 +2675,6 @@ exports.fetchUserOneVideoLike = async (req, res) => {
     res.status(500).json({ message: "Internal Server Error" });
   }
 };
-
-
 
 exports.fetchUserOneVideoDisLike = async (req, res) => {
   try {
