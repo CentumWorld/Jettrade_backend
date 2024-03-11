@@ -160,8 +160,6 @@ exports.getAllUsersInState = async (req, res) => {
       referredId: stateReferralId,
     });
 
-    console.log(franchisesInState, "ffffffffff");
-
     if (franchisesInState.length === 0) {
       return res.status(404).json({
         message: "No franchises found in the given state",

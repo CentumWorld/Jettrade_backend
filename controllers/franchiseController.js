@@ -87,7 +87,6 @@ exports.getUsersInFranchise = async (req, res) => {
     
     const trader = await User.find({ reffered_id: franchiseReferralId });
     if (trader.length > 0) {
-      console.log(trader,90)
       return res.status(200).json({
         message: "Fetched successfully all Users in the state",
         data: trader,
