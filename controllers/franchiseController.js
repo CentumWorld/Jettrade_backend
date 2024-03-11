@@ -84,17 +84,16 @@ exports.getMembersInFranchise = async (req, res) => {
 exports.getUsersInFranchise = async (req, res) => {
   try {
     const { franchiseReferralId } = req.body;
-    // const businessDevelopers = await BusinessDeveloper.find({
-    //   referredId: franchiseReferralId,
-    // });
-    // if (businessDevelopers.length === 0) {
-    //   return res.status(404).json({
-    //     message: "No business developer found in the given franchise",
-    //   });
-    // }
-    // const businessDeveloperReferralIds = businessDevelopers.map(
-    //   (businessDeveloper) => businessDeveloper.referralId
-    // );
+    
+    const trader = await User.find({ reffered_id: franchiseReferralId });
+    if (trader.length > 0) {
+      console.log(trader,90)
+      return res.status(200).json({
+        message: "Fetched successfully all Users in the state",
+        data: trader,
+      });
+    }
+
     const members = await Member.find({
       reffered_id: franchiseReferralId,
     });
