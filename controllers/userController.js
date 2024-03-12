@@ -2897,10 +2897,10 @@ exports.verifyRefferalIdInUser = async (req, res) => {
 exports.traderFetchOwnReferralPayout = async (req,res) => {
   try {
     const {userid} = req.body;
-    const fetchedData = await userCreditWalletTransaction.find({ refferUserId:userid });
+    const fetchedData = await userCreditWalletTransaction.find({ userId:userid });
   
     if (fetchedData.length === 0) {
-      return res.status(404).json({ message: "Invalid refferUserId" });
+      return res.status(204).json({ message: "Invalid refferUserId" });
     }
   
     return res.status(200).json({ message: "Fetched all data", fetchedData });
