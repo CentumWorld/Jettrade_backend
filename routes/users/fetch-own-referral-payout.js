@@ -3,14 +3,14 @@ const router = express.Router();
 
 const userController = require("../../controllers/userController");
 const {
-  authenticateUser,
-  authorizeRole,
+    authenticateUser,
+    authorizeUser,
 } = require("../../middleware/checkAuth");
 
 router.post(
   "/users/fetch-own-referral-payout",
   authenticateUser,
-  authorizeRole(["user"]),
+  authorizeUser,
   userController.traderFetchOwnReferralPayout
 );
 
