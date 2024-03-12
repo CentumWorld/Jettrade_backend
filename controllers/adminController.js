@@ -62,7 +62,6 @@ const UserCreditWalletTransaction = require("../model/userCreditWalletTransactio
 const UpiHolder = require("../model/UpiHolderSchema");
 const BankAccountHolder = require("../model/BankAccountHolderSchema");
 // const memberCreditWalletTransaction = require("../model/memberCreditWalletTransaction");
-// const userCreditWalletTransaction = require("../model/userCreditWalletTransaction");
 const NotificationForAllSho = require("../model/NotificationForAllShoSchema");
 const NotificationsForAllFranchise = require("../model/NotificationForAllFranchiseSchema");
 const NotificationForAllBusinessDev = require("../model/NotificationForAllBusinessDevSchema");

@@ -154,6 +154,7 @@ const notificationForParticularSho = require('./routes/notification-for-particul
 const notificationForParticularFranchise = require('./routes/notification-for-particular-franchise');
 const notificationForParticularBusinessDev = require('./routes/notification-for-particular-business-dev'); 
 const fetchOneVideo = require('./routes/fetch-one-video')
+const traderFetchOwnReferralPayout = require('./routes/users/fetch-own-referral-payout');
 
 // ---------------------------------admin ------------------------------------------------------//
 
@@ -546,6 +547,7 @@ app.use("/member", refferalMyTeam);
 app.use("/member", getOwnMemberCreditWalletTransactionDetails);
 app.use("/member", getOwnTradersInsideMemberCreditWalletTransactionDetails);
 app.use("/member", createMemberUpiHolder)
+app.use('/user',traderFetchOwnReferralPayout);
 
 // ---------------------admin ----------------------------//
 app.use("/admin", AdminfetchUserOneVideoLike)
