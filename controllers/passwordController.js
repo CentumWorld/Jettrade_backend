@@ -115,7 +115,7 @@ exports.allPasswordChange = async (req, res) => {
       );
 
       if (!isPasswordMatch) {
-        return res.status(404).json({
+        return res.status(422).json({
           message: "Old password does not match",
         });
       }
@@ -127,8 +127,7 @@ exports.allPasswordChange = async (req, res) => {
         message: "Password updated successfully",
       });
     } catch (error) {
-      console.error(error);
-      res.status(500).json({
+      return res.status(500).json({
         message: "Server error",
       });
     }
