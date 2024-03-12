@@ -12,7 +12,7 @@ exports.allPasswordChange = async (req, res) => {
   if (usertype === "BMM") {
     try {
       if (!oldpassword || !newpassword) {
-        res.status(422).json({
+        return res.status(422).json({
           message: "Please fill your password",
         });
       }
@@ -43,14 +43,14 @@ exports.allPasswordChange = async (req, res) => {
         message: "Password updated successfully",
       });
     } catch (error) {
-      res.status(500).json({
+      return res.status(500).json({
         message: "Server error",
       });
     }
   } else if (usertype === "FRANCHISE") {
     try {
       if (!oldpassword || !newpassword) {
-        res.status(422).json({
+        return res.status(422).json({
           message: "Please fill your password",
         });
       }
@@ -77,11 +77,11 @@ exports.allPasswordChange = async (req, res) => {
       existdetails.password = hashedNewPassword;
       await existdetails.save();
 
-      res.status(200).json({
+      return res.status(200).json({
         message: "Password updated successfully",
       });
     } catch (error) {
-      res.status(500).json({
+      return res.status(500).json({
         message: "Server error",
       });
     }
