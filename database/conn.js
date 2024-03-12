@@ -7,5 +7,3 @@ mongoose.connect(process.env.MONGOOSE_URI).then(()=>{
 }).catch((err)=>{
     console.log(err);
 })
-
-// hii testing
