@@ -258,10 +258,10 @@ exports.otherCountryMemberRegistration = async (req, res) => {
 
       const memberExist = await Member.findOne({ memberid: memberid });
       if (memberExist) {
-        return res.status(200).json({ message: "Member already exist" });
+        return res.status(422).json({ message: "Member already exist" });
       }
 
-      const existingreferredId = await BusinessDeveloper.findOne({
+      const existingreferredId = await Franchise.findOne({
         referralId: reffered_id,
       });
       console.log(existingreferredId, "242");
