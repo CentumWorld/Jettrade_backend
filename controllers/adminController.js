@@ -249,6 +249,7 @@ exports.fetchMemberDocumentAdminside = async (req, res) => {
 };
 
 // userDetailsEditAdmin
+
 exports.userDetailsEditAdmin = async (req, res) => {
   const {
     userWhat,
@@ -263,61 +264,60 @@ exports.userDetailsEditAdmin = async (req, res) => {
     Id_No,
   } = req.body;
 
-  if (userWhat === "indian") {
-    if (!fname || !lname || !phone || !address || !gender || !aadhar || !pan) {
-      return res.status(400).json({ message: "Please fill all the fields" });
+  try {
+    let updatedUser;
+    if (userWhat === "indian") {
+      if (!fname || !lname || !phone || !address || !gender || !aadhar || !pan) {
+        return res.status(400).json({ message: "Please fill all the fields" });
+      }
+
+      updatedUser = await User.findOneAndUpdate(
+        { _id: id },
+        {
+          $set: {
+            fname: fname,
+            lname: lname,
+            address: address,
+            gender: gender,
+            phone: phone,
+            aadhar: aadhar,
+            pan: pan,
+          },
+        },
+        { new: true } // Return the updated document
+      );
+    } else if (userWhat === "otherCountry") {
+      if (!fname || !lname || !phone || !address || !gender || !Id_No) {
+        return res.status(400).json({ message: "Please fill all the fields" });
+      }
+
+      updatedUser = await User.findOneAndUpdate(
+        { _id: id },
+        {
+          $set: {
+            fname: fname,
+            lname: lname,
+            address: address,
+            gender: gender,
+            phone: phone,
+            Id_No: Id_No,
+          },
+        },
+        { new: true } // Return the updated document
+      );
     }
 
-    // const dateString = dob;
-    // const parts = dateString.split('/');
-    // const year = parseInt(parts[2]);
-    // const month = parseInt(parts[1]);
-    // const day = parseInt(parts[0]);
-    // const dateofbirth = new Date(year, month - 1, day);
-
-    // console.log(dateofbirth.toISOString());
-
-    // User.updateOne({ _id: 'id' })
-    //     .set({ fname: fname, lname: lname, address: address, gender: gender, phone: phone, dob: dateofbirth, aadhar: aadhar, pan: pan })
-    User.updateOne(
-      { _id: id },
-      {
-        $set: {
-          fname: fname,
-          lname: lname,
-          address: address,
-          gender: gender,
-          phone: phone,
-          aadhar: aadhar,
-          pan: pan,
-        },
-      }
-    ).then(() => {
-      return res.status(201).json({ message: "User Details Updated" });
-    });
-  }
-  if (userWhat === "otherCountry") {
-    if (!fname || !lname || !phone || !address || !gender || !Id_No) {
-      return res.status(400).json({ message: "Please fill all the fields" });
+    if (!updatedUser) {
+      return res.status(404).json({ message: "User not found" });
     }
 
-    User.updateOne(
-      { _id: id },
-      {
-        $set: {
-          fname: fname,
-          lname: lname,
-          address: address,
-          gender: gender,
-          phone: phone,
-          Id_No: Id_No,
-        },
-      }
-    ).then(() => {
-      return res.status(201).json({ message: "User Details Updated" });
-    });
+    return res.status(201).json({ message: "User Details Updated", data: updatedUser });
+  } catch (error) {
+    console.error("Error updating user details:", error);
+    return res.status(500).json({ message: "Internal Server Error" });
   }
 };
+
 
 // memberDetailsEditAdmin
 exports.memberDetailsEditAdmin = async (req, res) => {
@@ -3042,12 +3042,12 @@ exports.blockStateByAdmin = async (req, res) => {
     if (!state) {
       return res
         .status(404)
-        .json({ message: "State not found for the given ID" });
+        .json({ message: "BMM not found for the given ID" });
     }
 
     if (block === state.isBlocked) {
       return res.status(400).json({
-        message: `State is already ${block ? "blocked" : "unblocked"}`,
+        message: `BMM is already ${block ? "blocked" : "unblocked"}`,
       });
     }
 
@@ -3057,7 +3057,7 @@ exports.blockStateByAdmin = async (req, res) => {
     );
 
     return res.status(200).json({
-      message: `State ${block ? "blocked" : "unblocked"} successfully`,
+      message: `BMM ${block ? "blocked" : "unblocked"} successfully`,
     });
   } catch (error) {
     console.log(error.message);
@@ -4483,7 +4483,7 @@ exports.verifyState = async (req, res) => {
     );
 
     return res.status(200).json({
-      message: "State verified successfully",
+      message: "Bmm verified successfully",
       state: updatedState,
     });
   } catch (error) {
