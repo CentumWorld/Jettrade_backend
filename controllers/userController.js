@@ -2101,7 +2101,7 @@ exports.changePaymentStatusForRenewal = async (req, res) => {
     );
 
     const memberRefferalTransaction = new memberCreditWalletTransaction({
-      userId: memberUserId, // refer kiya hai
+      memberId: memberUserId, // refer kiya hai
       creditAmount: 500,
       refferUserId: userExist.userid, // jisko refer hua hai
       Type: "Renewal",
@@ -2128,7 +2128,7 @@ exports.changePaymentStatusForRenewal = async (req, res) => {
       { new: true }
     );
 
-    const bmmRefferalTransaction = new stateHandlerCreditWalletTransaction({
+    const bmmRefferalTransaction = new StateHandlerCreditWalletTransaction({
       stateHandlerId: bmm.stateHandlerId, // refer kiya hai
       creditAmount: 300,
       refferUserId: franchise.frenchiseId, // jisko refer hua hai
@@ -2164,6 +2164,7 @@ exports.changePaymentStatusForRenewal = async (req, res) => {
   });
 
   if (referralFranchise) {
+    console.log(referralFranchise)
     const franchiseUserId = referralFranchise.frenchiseId;
 
     const franchise = await Franchise.findOneAndUpdate(
@@ -2173,7 +2174,7 @@ exports.changePaymentStatusForRenewal = async (req, res) => {
     );
 
     const franchiseRefferalTransaction = new FranchiseCreditWalletTransaction({
-      userId: franchiseUserId, // refer kiya hai
+      frenchiseId: franchiseUserId, // refer kiya hai
       creditAmount: 500,
       refferUserId: userExist.userid, // jisko refer hua hai
       Type: "Renewal",
@@ -2186,7 +2187,7 @@ exports.changePaymentStatusForRenewal = async (req, res) => {
       { new: true }
     );
 
-    const bmmRefferalTransaction = new stateHandlerCreditWalletTransaction({
+    const bmmRefferalTransaction = new StateHandlerCreditWalletTransaction({
       stateHandlerId: bmm.stateHandlerId, // refer kiya hai
       creditAmount: 300,
       refferUserId: franchise.frenchiseId, // jisko refer hua hai

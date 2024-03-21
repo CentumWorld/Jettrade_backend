@@ -1040,3 +1040,22 @@ exports.setNotificationToFalse = async (req, res) => {
     });
   }
 };
+
+// countTraderReferralFranchise
+
+exports.countTraderReferralFranchise = async (req,res) => {
+  try {
+   
+    const franchiseCount = await Frenchise.countDocuments();
+    // const referralCount = await Member.countDocuments();
+    // const bmmCount = await StateHandler.countDocuments();
+
+    return res.status(200).json({
+      franchiseCount,
+     
+    });
+  } catch (error) {
+    console.error("Error in counting:", error);
+    return res.status(500).json({ message: "Internal server error" });
+  }
+}
