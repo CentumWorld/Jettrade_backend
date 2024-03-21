@@ -5,7 +5,7 @@ require('dotenv').config();
 const adminController = require('../controllers/adminController');
 const {authenticateAdmin, authorizeRole} = require('../middleware/checkAuth');
 
-router.get('/admin-sum-of-all-new-renewal-user-amount',authenticateAdmin,authorizeRole(["admin"]), adminController.adminSumOfAllNewRenewalUserAmount);
+router.get('/admin-sum-of-all-new-renewal-user-amount',authenticateAdmin,authorizeRole(["admin","subAdmin"]), adminController.adminSumOfAllNewRenewalUserAmount);
 
 
 module.exports = router;
