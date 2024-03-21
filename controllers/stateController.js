@@ -1045,13 +1045,33 @@ exports.setNotificationToFalse = async (req, res) => {
 
 exports.countTraderReferralFranchise = async (req,res) => {
   try {
-   
-    const franchiseCount = await Frenchise.countDocuments();
-    // const referralCount = await Member.countDocuments();
-    // const bmmCount = await StateHandler.countDocuments();
+
+    const {referralId} = req.body
+
+    const franchise = await Frenchise.find({referredId: referralId})
+
+    const franchiseReferralIds = franchise.map(franchise=> franchise.referralId)
+
+    const member = await Member.find({reffered_id: {$in:franchiseReferralIds}})
+
+    const memberReferralIds = member.map(member=> member.refferal_id)
+
+    const traders = await User.find({
+      $or: [
+        { reffered_id: { $in: [referralId, ...franchiseReferralIds, ...memberReferralIds] } }
+      ]
+    });
+
+    
+    const franchiseCount = franchise.length;
+    const memberCount = member.length;
+    const traderCount = traders.length;
+    
 
     return res.status(200).json({
       franchiseCount,
+      memberCount,
+      traderCount
      
     });
   } catch (error) {
