@@ -2019,6 +2019,10 @@ exports.userTotalWithdrawalFromTradingWallet = async (req, res) => {
 
 // changePaymentStatusForRenewal
 exports.changePaymentStatusForRenewal = async (req, res) => {
+
+  try {
+    
+
   const { userid } = req.body;
   const renewAmount = 1500;
 
@@ -2275,6 +2279,12 @@ exports.changePaymentStatusForRenewal = async (req, res) => {
   }
 
   return res.status(200).json({ message: "Your payment successful" });
+} catch (error) {
+  console.log(error.message)
+  return res.status(500).json({ message: "Internal server error" });
+
+    
+}
 };
 
 exports.tradingWalletTransferFromOneUserToAnother = async (req, res) => {

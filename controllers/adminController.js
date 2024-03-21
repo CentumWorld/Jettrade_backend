@@ -4858,3 +4858,22 @@ exports.fetchOneVideo = async (req, res) => {
     return res.status(500).json({ message: "Internal server" });
   }
 };
+
+exports.countsTraderReferralFranchiseBmm = async (req, res) => {
+  try {
+    const traderCount = await User.countDocuments();
+    const franchiseCount = await Franchise.countDocuments();
+    const referralCount = await Member.countDocuments();
+    const bmmCount = await StateHandler.countDocuments();
+
+    return res.status(200).json({
+      traderCount,
+      franchiseCount,
+      referralCount,
+      bmmCount
+    });
+  } catch (error) {
+    console.error("Error in counting:", error);
+    return res.status(500).json({ message: "Internal server error" });
+  }
+};

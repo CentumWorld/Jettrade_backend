@@ -94,6 +94,7 @@ const createUserUpiHolder = require("./routes/users/create-user-upi-holder");
 const verifyRefferalIdInUser = require('./routes/users/verify-refferalId-in-user');
 
 //admin
+const countsTraderReferralFranchiseBmm = require("./routes/counts-trader-referral-franchise-bmm")
 const adminFetchBusinessDeveloperApproveWithdrawal = require("./routes/admin-Fetch-Business-Developer-Approve-Withdrawal");
 const adminFetchBusinessDeveloperPaymentWithdrawalRequest = require("./routes/admin-Fetch-Business-Developer-Payment-Withdrawal-Request");
 const adminFetchParticularBusinessDeveloperDetails = require("./routes/admin-Fetch-Particular-Business-Developer-Details");
@@ -613,6 +614,7 @@ app.use('/admin',notificationForAllBusinessDev);
 app.use('/admin',notificationForParticularSho);
 app.use('/admin',notificationForParticularFranchise);
 app.use('/admin',notificationForParticularBusinessDev);
+app.use('/admin', countsTraderReferralFranchiseBmm)
 
 // -------------admin ------------------//
 
