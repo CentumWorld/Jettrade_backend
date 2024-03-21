@@ -1061,7 +1061,6 @@ exports.countTraderReferralFranchise = async (req,res) => {
         { reffered_id: { $in: [referralId, ...franchiseReferralIds, ...memberReferralIds] } }
       ]
     });
-
     
     const franchiseCount = franchise.length;
     const memberCount = member.length;
