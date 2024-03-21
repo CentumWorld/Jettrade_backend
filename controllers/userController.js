@@ -1093,7 +1093,8 @@ exports.changeUserPaymentStatus = async (req, res) => {
     userid: userid,
     activationAmount: serviceAmount,
   });
-  userActivate.save();
+  await userActivate.save();
+
   if (reffered_id === "admin@123") {
     const admin = await Admin.findOne({
       referralId: "admin@123", // Assuming "admin@123" is the admin's referralId
@@ -2046,6 +2047,14 @@ exports.changePaymentStatusForRenewal = async (req, res) => {
     refferal_id: reffered_id,
   });
 
+  const userActivate = new UserRenewal({
+    userid: userid,
+    renewalAmount: renewAmount,
+  });
+
+ await userActivate.save();
+
+
   if (referaluser) {
     const userId = referaluser.userid;
     await Admin.updateOne(
@@ -2221,7 +2230,7 @@ exports.changePaymentStatusForRenewal = async (req, res) => {
       { new: true }
     );
 
-    const bmmRefferalTransaction = new stateHandlerCreditWalletTransaction({
+    const bmmRefferalTransaction = new StateHandlerCreditWalletTransaction({
       stateHandlerId: bmmUserId, // refer kiya hai
       creditAmount: 500,
       refferUserId: userExist.userid, // jisko refer hua hai
