@@ -905,7 +905,6 @@ exports.saveEditedUserDetails = async (req, res) => {
         !phone ||
         !address ||
         !gender ||
-        !dob ||
         !aadhar ||
         !pan
       ) {
@@ -925,7 +924,7 @@ exports.saveEditedUserDetails = async (req, res) => {
         },
       };
     } else if (userWhat === "other") {
-      if (!fname || !lname || !phone || !address || !gender || !dob || !Id_No) {
+      if (!fname || !lname || !phone || !address || !gender || !Id_No) {
         return res.status(400).json({ message: "Please fill all the fields" });
       }
 
@@ -1687,32 +1686,23 @@ exports.otherCountryProfileVerification = async (req, res) => {
     return res.status(422).json({ message: "All field required" });
   }
   const userid = req.body.userid;
-  // console.log(userid);
-  // ------------------------------------------
-  const user = await User.find({ userid });
-  console.log(user.length, "176");
-  if (user.length > 0) {
-    User.updateOne({ userid: userid })
-      .set({ ID_Card: ID_Card })
-      .then(() => {
-        return res.status(201).json({ message: "Document Updated" });
-      });
-  } else {
-    const userdocument = new User({ userid, ID_Card });
-    const success = await userdocument.save();
-
-    if (success) {
-      return res.send({
-        code: 200,
-        message: "Uploaded Successfully",
-      });
+  User.findOneAndUpdate(
+    { userid: userid },
+    {ID_Card : ID_Card }, 
+    { new: true } 
+  )
+  .then(updatedUser => {
+    if (updatedUser) {
+      return res.status(200).json({ message: "Profile photo updated successfully", user: updatedUser });
     } else {
-      return res.send({
-        code: 500,
-        message: "Service Error",
-      });
+      console.log("User not found with userid:", userid);
+      return res.status(404).json({ message: "User not found" });
     }
-  }
+  })
+  .catch(error => {
+    return res.status(500).json({ message: "Error updating profile photo" });
+  });
+  
 };
 
 // userTotalWithdrawal
