@@ -10,7 +10,7 @@ const {
 router.get(
   "/fetch-user-credit-wallet-transaction-details",
   authenticateAdmin,
-  authorizeRole(["admin"]),
+  authorizeRole(["admin","subAdmin"]),
   adminController.fetchUserCreditwalletTransactionDetails
 );
 
