@@ -156,6 +156,7 @@ const notificationForParticularFranchise = require('./routes/notification-for-pa
 const notificationForParticularBusinessDev = require('./routes/notification-for-particular-business-dev'); 
 const fetchOneVideo = require('./routes/fetch-one-video')
 const traderFetchOwnReferralPayout = require('./routes/users/fetch-own-referral-payout');
+const totalReferralPayoutAmountTrader = require('./routes/users/total-referral-payout-amount-trader');
 
 // ---------------------------------admin ------------------------------------------------------//
 
@@ -296,6 +297,7 @@ const stateVerifyLoginOtp = require('./routes/state/state-verify-login-otp');
 const fetchStateNotification = require('./routes/state/fetch-state-notification');
 const setNotificationToFalse = require('./routes/state/set-notification-to-false-state');
 const countTraderReferralFranchise = require('./routes/state/count-trader-referral-franchise');
+const totalReferralPayoutAmountBMM = require('./routes/state/total-referral-payout-amount-bmm');
 
 
 //======================Frenchise==============================================
@@ -331,6 +333,8 @@ const frenchiseVerifyLoginOtp = require('./routes/frenchise/frenchise-verify-log
 const fetchFranchiseNotification = require('./routes/frenchise/fetch-franchise-notification');
 const setNotificationToFalseFranchise = require('./routes/frenchise/set-notification-to-false-franchise');
 const fetchMemberByReferralIdOfFranchise = require('./routes/frenchise/fetchMemberByReferralIdOfFranchise')
+const countTraderReferral = require('./routes/frenchise/count-trader-referral');
+const totalReferralPayoutAmountFranchise = require('./routes/frenchise/total-referral-payout-amount-franchise')
 
 //=========================Business developer======================================
 const getAllMembersInBusinessDeveloper = require("./routes/businessDeveloper/fetch-all-members-in-business-developer");
@@ -367,6 +371,11 @@ const filterSHOByState = require("./routes/portfolio/filter-sho-by-state")
 const filterFranchiseByState = require("./routes/portfolio/filter-franchise-by-state")
 const createVideoForPortfolio = require("./routes/portfolio/create-video-for-portfolio") 
 const getAllVideosForPortfolio = require("./routes/portfolio/get-all-videos-for-portfolio")
+
+
+// ============================Referral===================================
+TotalCountOfTraders = require('./routes/refferal/total-count-of-traders');
+totalReferralPayoutAmount = require('./routes/refferal/total-referral-payout-amount');
 
 //==========================Video creator===================================
 const videoCreatorLogin = require("./routes/videoCreator/videoCreatorLogin");
@@ -465,6 +474,7 @@ app.use("/user", withdrawlFromWalletAndTradingWallet);
 app.use("/user", fetchWalletWithdrawalHistory);
 app.use("/user", fetchWalletHistory);
 app.use("/user",verifyRefferalIdInUser);
+app.use('/user',totalReferralPayoutAmountTrader);
 
 
 app.use("/admin", totalWithdrawalMoney);
@@ -550,6 +560,7 @@ app.use("/member", getOwnMemberCreditWalletTransactionDetails);
 app.use("/member", getOwnTradersInsideMemberCreditWalletTransactionDetails);
 app.use("/member", createMemberUpiHolder)
 app.use('/user',traderFetchOwnReferralPayout);
+
 
 // ---------------------admin ----------------------------//
 app.use("/admin", AdminfetchUserOneVideoLike)
@@ -653,6 +664,8 @@ app.use("/member", refferalMyTeam);
 app.use("/member", createMemberBankAccountHolder);
 app.use("/member", getMemberOwnBankDetails)
 app.use("/member", getMemberOwnUpi)
+app.use('/member',TotalCountOfTraders);
+app.use('/member',totalReferralPayoutAmount);
 
 //===============================State=============================================
 app.use("/state", getFranchisesByReferralId);
@@ -691,6 +704,7 @@ app.use('/state',stateVerifyLoginOtp);
 app.use('/state',fetchStateNotification);
 app.use('/state',setNotificationToFalse);
 app.use('/state',countTraderReferralFranchise);
+app.use('/state',totalReferralPayoutAmountBMM);
 
 
 //============================Franchise=============================================
@@ -735,6 +749,8 @@ app.use('/franchise',frenchiseVerifyLoginOtp);
 app.use('/franchise',fetchFranchiseNotification);
 app.use('/franchise',setNotificationToFalseFranchise);
 app.use('/franchise', fetchMemberByReferralIdOfFranchise)
+app.use('/franchise',countTraderReferral);
+app.use('/franchise',totalReferralPayoutAmountFranchise);
 
 
 //============================Business developer===========================

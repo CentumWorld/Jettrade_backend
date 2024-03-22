@@ -883,3 +883,70 @@ exports.fetchMemberByReferralIdOfFranchise = async(req, res) => {
     })
   }
 }
+
+// countTraderReferral
+exports.countTraderReferral = async(req,res) => {
+  try {
+
+    const {referralId} = req.body
+
+    const member = await Member.find({reffered_id: referralId})
+
+    const memberReferralIds = member.map(member=> member.refferal_id)
+
+    // const user = await Member.find({reffered_id: {$in:franchiseReferralIds}})
+
+    // const memberReferralIds = member.map(member=> member.refferal_id)
+
+    const traders = await User.find({
+      $or: [
+        { reffered_id: { $in: [referralId, ...memberReferralIds] } }
+      ]
+    });
+    
+    // const franchiseCount = franchise.length;
+    const memberCount = member.length;
+    const traderCount = traders.length;
+    
+
+    return res.status(200).json({
+      // franchiseCount,
+      memberCount,
+      traderCount
+     
+    });
+  } catch (error) {
+    console.error("Error in counting:", error);
+    return res.status(500).json({ message: "Internal server error" });
+  }
+}
+
+// totalReferralPayoutAmountFranchise
+exports.totalReferralPayoutAmountFranchise = async(req,res) => {
+  try {
+    const { frenchiseId } = req.body;
+    const result = await FranchiseCreditWalletTransactionSchema.aggregate([
+      {
+        $match: { frenchiseId: frenchiseId }
+      },
+      {
+        $group: {
+          _id: null, // Grouping without a specific field to sum for all documents
+          totalPayout: { $sum: "$creditAmount" } // Assuming the field for amount is named 'amount'
+        }
+      }
+    ]);
+
+    // result is an array of grouped results. In this case, it should have only one element.
+    const totalPayout = result.length > 0 ? result[0].totalPayout : 0;
+
+    return res.status(200).json({
+      totalPayout
+    });
+
+  } catch (error) {
+    console.error("Error fetching Total payout:", error);
+    return res.status(500).json({ message: "Internal server error" });
+  }
+  
+}
