@@ -295,6 +295,7 @@ const getSHOProfilePhoto = require("./routes/state/get-sho-profile-photo")
 const stateVerifyLoginOtp = require('./routes/state/state-verify-login-otp');
 const fetchStateNotification = require('./routes/state/fetch-state-notification');
 const setNotificationToFalse = require('./routes/state/set-notification-to-false-state');
+const countTraderReferralFranchise = require('./routes/state/count-trader-referral-franchise');
 
 
 //======================Frenchise==============================================
@@ -689,6 +690,7 @@ app.use("/state", getSHOProfilePhoto);
 app.use('/state',stateVerifyLoginOtp);
 app.use('/state',fetchStateNotification);
 app.use('/state',setNotificationToFalse);
+app.use('/state',countTraderReferralFranchise);
 
 
 //============================Franchise=============================================

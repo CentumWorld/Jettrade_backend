@@ -1040,3 +1040,41 @@ exports.setNotificationToFalse = async (req, res) => {
     });
   }
 };
+
+// countTraderReferralFranchise
+
+exports.countTraderReferralFranchise = async (req,res) => {
+  try {
+
+    const {referralId} = req.body
+
+    const franchise = await Frenchise.find({referredId: referralId})
+
+    const franchiseReferralIds = franchise.map(franchise=> franchise.referralId)
+
+    const member = await Member.find({reffered_id: {$in:franchiseReferralIds}})
+
+    const memberReferralIds = member.map(member=> member.refferal_id)
+
+    const traders = await User.find({
+      $or: [
+        { reffered_id: { $in: [referralId, ...franchiseReferralIds, ...memberReferralIds] } }
+      ]
+    });
+    
+    const franchiseCount = franchise.length;
+    const memberCount = member.length;
+    const traderCount = traders.length;
+    
+
+    return res.status(200).json({
+      franchiseCount,
+      memberCount,
+      traderCount
+     
+    });
+  } catch (error) {
+    console.error("Error in counting:", error);
+    return res.status(500).json({ message: "Internal server error" });
+  }
+}

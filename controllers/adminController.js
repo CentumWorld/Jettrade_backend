@@ -4549,30 +4549,24 @@ exports.verifyBusinessDeveloper = async (req, res) => {
 
 // blockSubAdminByAdmin
 exports.blockSubAdminByAdmin = async (req, res) => {
-  const { block, id } = req.body;
-  // console.log(block);
-  let result = await subAdmin.updateOne(
-    { _id: id },
-    {
-      $set: { isBlocked: block },
-    }
-  );
-  if (result.modifiedCount > 0) {
-    if (block) {
-      return res.status(200).json({
-        message: "SubAdmin Blocked",
-      });
-    } else {
-      return res.status(200).json({
-        message: "SubAdmin Unblocked",
-      });
-    }
-  } else {
-    return res.status(404).json({
-      message: "Something Went wrong",
-    });
+  try {
+    const { block, id } = req.body;
+    const message = block ? "SubAdmin Blocked" : "SubAdmin Unblocked";
+
+    const result = await subAdmin.updateOne(
+      { _id: id },
+      { $set: { isBlocked: block } }
+    );
+
+    if (result.modifiedCount > 0) {
+      return res.status(200).json({ message });
+    } 
+  } catch (error) {
+    console.error(error);
+    return res.status(500).json({ message: "Internal server error" });
   }
 };
+
 
 exports.getMemberBankAndUpiDetails = async (req, res) => {
   try {
