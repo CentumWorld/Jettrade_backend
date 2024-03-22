@@ -20,7 +20,7 @@ const validator = require("validator");
 const MyReferral = require("../model/myReferralSchema");
 
 const BusinessDeveloper = require("../model/businessDeveloperSchema");
-const Franchise = require("../model/frenchiseSchema")
+const Franchise = require("../model/frenchiseSchema");
 const MemberCreditWalletTransaction = require("../model/memberCreditWalletTransaction");
 const BankAccountHolder = require("../model/BankAccountHolderSchema");
 const UpiHolder = require("../model/UpiHolderSchema");
@@ -94,7 +94,7 @@ exports.memberRegistration = async (req, res) => {
     return res.status(400).json({ message: "Invalid email address" });
   }
 
-  console.log(phone)
+  console.log(phone);
 
   // if (!isValidPhone('+91'+phone)) {
   //   return res.status(422).json({
@@ -608,9 +608,19 @@ exports.editMemberDetails = async (req, res) => {
 
 exports.saveMemberEditedDetails = async (req, res) => {
   try {
-    const { fname, lname, phone, address, gender, dob, aadhar, pan, userid } = req.body;
+    const { fname, lname, phone, address, gender, dob, aadhar, pan, userid } =
+      req.body;
 
-    if (!fname || !lname || !phone || !address || !gender || !dob || !aadhar || !pan) {
+    if (
+      !fname ||
+      !lname ||
+      !phone ||
+      !address ||
+      !gender ||
+      !dob ||
+      !aadhar ||
+      !pan
+    ) {
       return res.status(400).json({ message: "Please fill all the fields" });
     }
 
@@ -632,7 +642,9 @@ exports.saveMemberEditedDetails = async (req, res) => {
     );
 
     if (updateToMember) {
-      return res.status(200).json({ message: "Member Details Updated", data: updateToMember });
+      return res
+        .status(200)
+        .json({ message: "Member Details Updated", data: updateToMember });
     } else {
       return res.status(404).json({ message: "Member not found" });
     }
@@ -641,7 +653,6 @@ exports.saveMemberEditedDetails = async (req, res) => {
     return res.status(500).json({ message: "Internal Server Error" });
   }
 };
-
 
 // fetchRefferalNotification
 exports.fetchRefferalNotification = async (req, res) => {
@@ -1108,3 +1119,51 @@ exports.getMemberOwnUpi = async (req, res) => {
     return res.status(500).json({ message: "Internal server error" });
   }
 };
+
+exports.TotalCountOfTraders = async (req, res) => {
+  try {
+    const { refferal_id } = req.body;
+    
+    // Find all documents that match the refferal_id
+    const matchedUsers = await User.find({reffered_id: refferal_id});
+    // Count by checking the length of the returned array
+    const traderCount = matchedUsers.length;
+    return res.status(200).json({
+      traderCount
+    });
+  } catch (error) {
+    console.error("Error in finding and counting:", error);
+    return res.status(500).json({ message: "Internal server error" });
+  }
+};
+
+// totalReferralPayoutAmount
+exports.totalReferralPayoutAmount = async (req, res) => {
+  try {
+    const { memberId } = req.body;
+    const result = await MemberCreditWalletTransaction.aggregate([
+      {
+        $match: { memberId: memberId }
+      },
+      {
+        $group: {
+          _id: null, // Grouping without a specific field to sum for all documents
+          totalPayout: { $sum: "$creditAmount" } // Assuming the field for amount is named 'amount'
+        }
+      }
+    ]);
+
+    // result is an array of grouped results. In this case, it should have only one element.
+    const totalPayout = result.length > 0 ? result[0].totalPayout : 0;
+
+    return res.status(200).json({
+      totalPayout
+    });
+
+  } catch (error) {
+    console.error("Error fetching Total payout:", error);
+    return res.status(500).json({ message: "Internal server error" });
+  }
+};
+
+

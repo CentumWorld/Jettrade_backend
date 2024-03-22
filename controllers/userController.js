@@ -2882,3 +2882,32 @@ exports.traderFetchOwnReferralPayout = async (req,res) => {
   }
   
 }
+
+// totalReferralPayoutAmountTrader
+exports.totalReferralPayoutAmountTrader = async (req,res) => {
+  try {
+    const { userId } = req.body;
+    const result = await userCreditWalletTransaction.aggregate([
+      {
+        $match: { userId: userId }
+      },
+      {
+        $group: {
+          _id: null, // Grouping without a specific field to sum for all documents
+          totalPayout: { $sum: "$creditAmount" } // Assuming the field for amount is named 'amount'
+        }
+      }
+    ]);
+
+    // result is an array of grouped results. In this case, it should have only one element.
+    const totalPayout = result.length > 0 ? result[0].totalPayout : 0;
+
+    return res.status(200).json({
+      totalPayout
+    });
+
+  } catch (error) {
+    console.error("Error fetching Total payout:", error);
+    return res.status(500).json({ message: "Internal server error" });
+  }
+}
