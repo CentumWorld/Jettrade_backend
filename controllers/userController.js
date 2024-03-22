@@ -557,7 +557,7 @@ exports.userLogin = async (req, res) => {
 
     const isMatch = await bcrypt.compare(password, userLogin.password);
     const token = jwt.sign(
-      { userId: userLogin._id },
+      { userId: userLogin._id, role:"user" },
       process.env.SECRET_KEY,
       { expiresIn: "8h" } // Set the token to expire in 1 hour
     );

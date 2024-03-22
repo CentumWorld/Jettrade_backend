@@ -2,6 +2,7 @@ const SubAdmin = require("../model/subadminSchema");
 const VideoCreater = require('../model/VideoCreaterSchema');
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
+
 exports.videoCreatorLogin = async (req, res) => {
   try {
     const { userId, password } = req.body;

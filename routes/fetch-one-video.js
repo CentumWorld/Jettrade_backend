@@ -6,7 +6,7 @@ require('dotenv').config();
 const adminController = require('../controllers/adminController');
 const {authenticateAdmin, authorizeAdmin, authorizeRole} = require('../middleware/checkAuth');
 
-router.post('/fetch-one-video',authenticateAdmin,authorizeRole(["admin", "state", "franchise", "businessDeveloper", "subAdmin"]), adminController.fetchOneVideo);
+router.post('/fetch-one-video',authenticateAdmin,authorizeRole(["admin", "state", "franchise", "businessDeveloper", "subAdmin", "user", "member"]), adminController.fetchOneVideo);
 
 
 module.exports = router;

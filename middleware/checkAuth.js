@@ -31,6 +31,10 @@ exports.authenticateAdmin = async (req, res, next) => {
       decoded.businessDeveloperId
     );
     const videoCreator = await VideoCreater.findById(decoded.userId);
+    const user = await User.findById(decoded.userId)
+
+
+    const member  = await Member.findById(decoded.userId)
 
     if (
       !admin &&
@@ -38,7 +42,9 @@ exports.authenticateAdmin = async (req, res, next) => {
       !state &&
       !franchise &&
       !businessDeveloper &&
-      !videoCreator
+      !videoCreator &&
+      !user &&
+      !member
     ) {
       return res.status(401).json({ message: "User not found" });
     }
@@ -69,6 +75,12 @@ exports.authenticateAdmin = async (req, res, next) => {
 
     if (videoCreator) {
       req.userRoles.push("videoCreator");
+    }
+    if (user) {
+      req.userRoles.push("user");
+    }
+    if (member) {
+      req.userRoles.push("member");
     }
 
     next();

@@ -7,7 +7,7 @@ const { authenticateAdmin, authorizeRole } = require("../middleware/checkAuth");
 router.get(
   "/total_Count_Of_Payment_Status_Of_User",
   authenticateAdmin,
-  authorizeRole(["admin"]),
+  authorizeRole(["admin", "subAdmin"]),
   adminController.totalCountOfPaymentStatusOfUser
 );
 

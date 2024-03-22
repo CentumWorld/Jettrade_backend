@@ -1642,7 +1642,7 @@ exports.subAdminLogin = async (req, res) => {
     }
 
     const token = jwt.sign(
-      { subAdminId: subadmin._id },
+      { subAdminId: subadmin._id, role: "subAdmin" },
       process.env.SECRET_KEY,
       { expiresIn: "8h" }
     );
@@ -2420,7 +2420,7 @@ exports.stateHandlerLogin = async (req, res) => {
     );
 
     return res.status(200).json({
-      message: "State handler login successful",
+      message: "BMM login successful",
       statehandlerToken: token,
       stateHandlerDetails: existingStateHandler,
     });
@@ -2599,25 +2599,21 @@ exports.verifyBuisnessDeveloperBeforeRegistration = async (req, res) => {
 exports.interactWithVideoForAdmin = async (req, res) => {
   try {
     const { videoId, action, comments, replyTo } = req.body;
-    const userId =
-      req.userId ||
-      req.stateHandlerId ||
-      req.businessDeveloperId ||
-      req.franchiseId ||
-      req.subAdminId;
+    const userId = req.userId || req.stateHandlerId || req.businessDeveloperId || req.franchiseId || req.subAdminId;
+
 
     let user = null;
 
     if (req.userId) {
-      user = await Admin.findById(userId);
+      user = await Admin.findById(userId) || await User.findById(userId) || await Member.findById(userId);
     } else if (req.stateHandlerId) {
       user = await StateHandler.findById(userId);
     } else if (req.businessDeveloperId) {
       user = await BusinessDeveloper.findById(userId);
     } else if (req.franchiseId) {
-      user = await Frenchise.findById(userId);
+      user = await Franchise.findById(userId); // Corrected typo here (Frenchise -> Franchise)
     } else if (req.subAdminId) {
-      user = await subAdmin.findById(userId);
+      user = await SubAdmin.findById(userId); // Corrected typo here (subAdmin -> SubAdmin)
     }
 
     if (!user) {
