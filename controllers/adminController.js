@@ -4867,3 +4867,49 @@ exports.countsTraderReferralFranchiseBmm = async (req, res) => {
     return res.status(500).json({ message: "Internal server error" });
   }
 };
+
+
+exports.traderReferralFranchiseBmmCountForGraph = async (req, res) => {
+  try {
+    const traderCounts = await User.aggregate([
+      {
+        $group: {
+          _id: { $dateToString: { format: "%Y-%m-%d", date: "$createdAt" } },
+          count: { $sum: 1 }
+        }
+      }
+    ]);
+
+    const referralCounts = await Member.aggregate([
+      {
+        $group: {
+          _id: { $dateToString: { format: "%Y-%m-%d", date: "$createdAt" } },
+          count: { $sum: 1 }
+        }
+      }
+    ]);
+
+    const franchiseCounts = await Frenchise.aggregate([
+      {
+        $group: {
+          _id: { $dateToString: { format: "%Y-%m-%d", date: "$createdAt" } },
+          count: { $sum: 1 }
+        }
+      }
+    ]);
+
+    const bmmCounts = await StateHandler.aggregate([
+      {
+        $group: {
+          _id: { $dateToString: { format: "%Y-%m-%d", date: "$createdAt" } },
+          count: { $sum: 1 }
+        }
+      }
+    ]);
+
+    res.json({ traderCounts, referralCounts, franchiseCounts, bmmCounts });
+  } catch (error) {
+    console.error('Error occurred:', error);
+    res.status(500).json({ error: 'Internal server error' });
+  }
+};

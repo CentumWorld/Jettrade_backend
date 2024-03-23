@@ -114,6 +114,8 @@ const frenchiseSchema = new mongoose.Schema(
   { timestamps: true }
 );
 
+
+
 const frenchise = mongoose.model("Frenchise", frenchiseSchema);
 
 module.exports = frenchise;

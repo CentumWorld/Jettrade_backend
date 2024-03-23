@@ -258,6 +258,8 @@ const verifyBusinessDeveloper = require("./routes/verify-Business-Developer");
 const verifyFranchise = require("./routes/verify-Franchise");
 const fetchParticularMemberDetailsUsingMemberid = require('./routes/fetch-particular-member-details-using-memberid');
 
+const traderReferralFranchiseBmmCountForGraph = require('./routes/trader-referral-franchise-bmm-count-for-graph')
+
 //=======================State=================================================
 
 const getFranchisesByReferralId = require("./routes/state/fetch-frenchise-in-state");
@@ -627,6 +629,7 @@ app.use('/admin',notificationForParticularSho);
 app.use('/admin',notificationForParticularFranchise);
 app.use('/admin',notificationForParticularBusinessDev);
 app.use('/admin', countsTraderReferralFranchiseBmm)
+app.use('/admin', traderReferralFranchiseBmmCountForGraph)
 
 // -------------admin ------------------//
 
