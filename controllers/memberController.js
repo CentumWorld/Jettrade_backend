@@ -608,7 +608,7 @@ exports.editMemberDetails = async (req, res) => {
 
 exports.saveMemberEditedDetails = async (req, res) => {
   try {
-    const { fname, lname, phone, address, gender, dob, aadhar, pan, userid } =
+    const { fname, lname, phone, address, gender, aadhar, pan, userid } =
       req.body;
 
     if (
@@ -617,7 +617,6 @@ exports.saveMemberEditedDetails = async (req, res) => {
       !phone ||
       !address ||
       !gender ||
-      !dob ||
       !aadhar ||
       !pan
     ) {
@@ -633,7 +632,6 @@ exports.saveMemberEditedDetails = async (req, res) => {
           address: address,
           gender: gender,
           phone: phone,
-          dob: dob,
           aadhar: aadhar,
           pan: pan,
         },
