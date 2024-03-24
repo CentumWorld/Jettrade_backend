@@ -69,6 +69,7 @@ const NotificationForParticularSho = require("../model/NotificationForParticular
 const NotificationForParticularFranchise = require("../model/notification-for-particular-franchise");
 const NotificationForParticularBusinessDev = require("../model/NotificationForParticularBusinessDev");
 const VideoCreater = require("../model/VideoCreaterSchema");
+const TotaltradingValue = require("../model/totalTradingValue");
 
 // admin Login
 
@@ -4873,6 +4874,7 @@ exports.traderReferralFranchiseBmmCountForGraph = async (req, res) => {
   try {
     const traderCounts = await User.aggregate([
       {
+
         $group: {
           _id: { $dateToString: { format: "%Y-%m-%d", date: "$createdAt" } },
           count: { $sum: 1 }
@@ -4913,3 +4915,27 @@ exports.traderReferralFranchiseBmmCountForGraph = async (req, res) => {
     res.status(500).json({ error: 'Internal server error' });
   }
 };
+
+
+exports.totalTradingValue = async (req, res) => {
+  try {
+    const { userId, percentage, liquidity } = req.body;
+
+    const totalTradingValue = liquidity + (liquidity * percentage / 100);
+
+    const newTotalTradingValue = new TotaltradingValue({
+      userId,
+      percentage,
+      liquidity,
+      totalTradingValue
+    });
+
+    await newTotalTradingValue.save();
+
+    return res.status(200).json({ message: "Total trading value calculated and saved successfully", data: newTotalTradingValue });
+  } catch (error) {
+    console.error('Error occurred:', error);
+    return res.status(500).json({ error: 'Internal server error' });
+  }
+}
+

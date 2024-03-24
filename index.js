@@ -12,6 +12,9 @@ app.use(express.json());
 app.use(cookieParser());
 app.use(cors());
 
+
+const fetchTotalTradingValue = require("./routes/users/fetch-total-trading-value")
+
 const userRegistration = require("./routes/users/userRegistration");
 const userLogin = require("./routes/users/userLogin");
 const userFetchDeatils = require("./routes/users/userFetchDetails");
@@ -259,6 +262,7 @@ const verifyFranchise = require("./routes/verify-Franchise");
 const fetchParticularMemberDetailsUsingMemberid = require('./routes/fetch-particular-member-details-using-memberid');
 
 const traderReferralFranchiseBmmCountForGraph = require('./routes/trader-referral-franchise-bmm-count-for-graph')
+const totalTradingValue = require("./routes/total-trading-value")
 
 //=======================State=================================================
 
@@ -477,6 +481,7 @@ app.use("/user", fetchWalletWithdrawalHistory);
 app.use("/user", fetchWalletHistory);
 app.use("/user",verifyRefferalIdInUser);
 app.use('/user',totalReferralPayoutAmountTrader);
+app.use('/user', fetchTotalTradingValue)
 
 
 app.use("/admin", totalWithdrawalMoney);
@@ -630,6 +635,7 @@ app.use('/admin',notificationForParticularFranchise);
 app.use('/admin',notificationForParticularBusinessDev);
 app.use('/admin', countsTraderReferralFranchiseBmm)
 app.use('/admin', traderReferralFranchiseBmmCountForGraph)
+app.use('/admin', totalTradingValue)
 
 // -------------admin ------------------//
 

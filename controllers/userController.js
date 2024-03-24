@@ -43,6 +43,7 @@ const userCreditWalletTransaction = require("../model/userCreditWalletTransactio
 const memberCreditWalletTransaction = require("../model/memberCreditWalletTransaction");
 const BankAccountHolder = require("../model/BankAccountHolderSchema");
 const UpiHolder = require("../model/UpiHolderSchema");
+const TotaltradingValue = require("../model/totalTradingValue");
 
 
 //const profilePhoto = require('../model/profilePhotoSchema');
@@ -2909,5 +2910,16 @@ exports.totalReferralPayoutAmountTrader = async (req,res) => {
   } catch (error) {
     console.error("Error fetching Total payout:", error);
     return res.status(500).json({ message: "Internal server error" });
+  }
+}
+
+exports.fetchTotalTradingValue = async(req, res) => {
+  try {
+    const {userId} = req.body
+    const totalTradingValue = await TotaltradingValue.find({userId})
+
+    return res.status(200).json({ message: "Fetched total trading value successfully", data: totalTradingValue });    
+  } catch (error) {
+    
   }
 }
