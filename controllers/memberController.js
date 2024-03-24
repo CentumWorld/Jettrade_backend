@@ -611,15 +611,7 @@ exports.saveMemberEditedDetails = async (req, res) => {
     const { fname, lname, phone, address, gender, aadhar, pan, userid } =
       req.body;
 
-    if (
-      !fname ||
-      !lname ||
-      !phone ||
-      !address ||
-      !gender ||
-      !aadhar ||
-      !pan
-    ) {
+    if (!fname || !lname || !phone || !address || !gender || !aadhar || !pan) {
       return res.status(400).json({ message: "Please fill all the fields" });
     }
 
@@ -1023,6 +1015,15 @@ exports.createMemberBankAccountHolder = async (req, res) => {
       return res.status(404).json({ message: "Member not found" });
     }
 
+    // Check if the user already has a bank account
+    const existingAccount = await BankAccountHolder.findOne({ userId });
+
+    if (existingAccount) {
+      return res
+        .status(400)
+        .json({ message: "Member already has a bank account" });
+    }
+
     const newAccountHolder = new BankAccountHolder({
       userId,
       accountHolderName,
@@ -1058,6 +1059,13 @@ exports.createMemberUpiHolder = async (req, res) => {
     if (!member) {
       return res.status(404).json({ message: "Member not found" });
     }
+
+       // Check if the user already has a upi
+       const existingAccount = await UpiHolder.findOne({ userId });
+
+       if (existingAccount) {
+         return res.status(400).json({ message: "User already has an upi Id" });
+       }
 
     const newUpi = new UpiHolder({
       upiId,
@@ -1121,13 +1129,13 @@ exports.getMemberOwnUpi = async (req, res) => {
 exports.TotalCountOfTraders = async (req, res) => {
   try {
     const { refferal_id } = req.body;
-    
+
     // Find all documents that match the refferal_id
-    const matchedUsers = await User.find({reffered_id: refferal_id});
+    const matchedUsers = await User.find({ reffered_id: refferal_id });
     // Count by checking the length of the returned array
     const traderCount = matchedUsers.length;
     return res.status(200).json({
-      traderCount
+      traderCount,
     });
   } catch (error) {
     console.error("Error in finding and counting:", error);
@@ -1141,27 +1149,24 @@ exports.totalReferralPayoutAmount = async (req, res) => {
     const { memberId } = req.body;
     const result = await MemberCreditWalletTransaction.aggregate([
       {
-        $match: { memberId: memberId }
+        $match: { memberId: memberId },
       },
       {
         $group: {
           _id: null, // Grouping without a specific field to sum for all documents
-          totalPayout: { $sum: "$creditAmount" } // Assuming the field for amount is named 'amount'
-        }
-      }
+          totalPayout: { $sum: "$creditAmount" }, // Assuming the field for amount is named 'amount'
+        },
+      },
     ]);
 
     // result is an array of grouped results. In this case, it should have only one element.
     const totalPayout = result.length > 0 ? result[0].totalPayout : 0;
 
     return res.status(200).json({
-      totalPayout
+      totalPayout,
     });
-
   } catch (error) {
     console.error("Error fetching Total payout:", error);
     return res.status(500).json({ message: "Internal server error" });
   }
 };
-
-

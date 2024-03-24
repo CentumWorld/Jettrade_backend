@@ -2751,6 +2751,13 @@ exports.createUserBankAccountHolder = async (req, res) => {
       return res.status(404).json({ message: "User not found" });
     }
 
+       // Check if the user already has a bank account
+       const existingAccount = await BankAccountHolder.findOne({ userId });
+
+       if (existingAccount) {
+         return res.status(400).json({ message: "User already has a bank account" });
+       }
+
     const newAccountHolder = new BankAccountHolder({
       userId,
       accountHolderName,
