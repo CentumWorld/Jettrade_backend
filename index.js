@@ -202,6 +202,10 @@ const createMemberUpiHolder = require("./routes/refferal/create-member-upi-holde
 const getMemberOwnBankDetails = require("./routes/refferal/get-member-own-bank-details")
 const getMemberOwnUpi = require('./routes/refferal/get-member-own-upi')
 const getMemberBankAndUpiDetails = require('./routes/get-member-bank-and-upi-details')
+const editMemberBankDetails = require ('./routes/refferal/edit-member-bank-details');
+const editMemberUpiId = require('./routes/refferal/edit-member-upiId');
+
+
 //admin
 const videoUpload = require("./routes/adminVideo");
 
@@ -568,6 +572,8 @@ app.use("/member", getOwnMemberCreditWalletTransactionDetails);
 app.use("/member", getOwnTradersInsideMemberCreditWalletTransactionDetails);
 app.use("/member", createMemberUpiHolder)
 app.use('/user',traderFetchOwnReferralPayout);
+app.use('/member',editMemberBankDetails);
+app.use('/member',editMemberUpiId);
 
 
 // ---------------------admin ----------------------------//
