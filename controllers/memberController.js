@@ -1060,12 +1060,12 @@ exports.createMemberUpiHolder = async (req, res) => {
       return res.status(404).json({ message: "Member not found" });
     }
 
-       // Check if the user already has a upi
-       const existingAccount = await UpiHolder.findOne({ userId });
+    // Check if the user already has a upi
+    const existingAccount = await UpiHolder.findOne({ userId });
 
-       if (existingAccount) {
-         return res.status(400).json({ message: "User already has an upi Id" });
-       }
+    if (existingAccount) {
+      return res.status(400).json({ message: "User already has an upi Id" });
+    }
 
     const newUpi = new UpiHolder({
       upiId,
@@ -1171,4 +1171,83 @@ exports.totalReferralPayoutAmount = async (req, res) => {
   }
 };
 
+// editMemberBankDetails
+exports.editMemberBankDetails = async (req, res) => {
+  try {
+    const {
+      accountHolderName,
+      bankName,
+      branchName,
+      accountNumber,
+      ifscCode,
+      userId,
+    } = req.body;
 
+    if (
+      !accountHolderName ||
+      !bankName ||
+      !branchName ||
+      !accountNumber ||
+      !ifscCode
+    ) {
+      return res.status(400).json({ message: "Please fill all the fields" });
+    }
+
+    const updateToMember = await BankAccountHolder.findOneAndUpdate(
+      { userId: userId },
+      {
+        $set: {
+          accountHolderName: accountHolderName,
+          bankName: bankName,
+          branchName: branchName,
+          accountNumber: accountNumber,
+          accountNumber: accountNumber,
+          ifscCode: ifscCode,
+        },
+      },
+      { new: true }
+    );
+
+    if (updateToMember) {
+      return res
+        .status(200)
+        .json({ message: "Member Bank Details Updated", data: updateToMember });
+    } else {
+      return res.status(404).json({ message: "Member not found" });
+    }
+  } catch (error) {
+    console.error(error);
+    return res.status(500).json({ message: "Internal Server Error" });
+  }
+};
+
+// editMemberUpiId
+exports.editMemberUpiId = async (req, res) => {
+  try {
+    const { upiId, userId } = req.body;
+    if (!upiId) {
+      return res.status(400).json({ message: "Please fill all the fields 1" });
+    }
+
+    const updateToMember = await UpiHolder.findOneAndUpdate(
+      { userId: userId },
+      {
+        $set: {
+          upiId: upiId,
+        },
+      },
+      { new: true }
+    );
+
+    if (updateToMember) {
+      return res
+        .status(200)
+        .json({ message: "Member UPI Details Updated", data: updateToMember });
+    } else {
+      return res.status(404).json({ message: "Member not found" });
+    }
+  } catch (error) {
+    console.error(error);
+    return res.status(500).json({ message: "Internal Server Error" });
+  }
+};
