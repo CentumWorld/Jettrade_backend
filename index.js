@@ -12,7 +12,7 @@ app.use(express.json());
 app.use(cookieParser());
 app.use(cors());
 
-
+const traderCountForGraph = require("./routes/users/trader-count-for-graph")
 const fetchTotalTradingValue = require("./routes/users/fetch-total-trading-value")
 
 const userRegistration = require("./routes/users/userRegistration");
@@ -482,6 +482,7 @@ app.use("/user", fetchWalletHistory);
 app.use("/user",verifyRefferalIdInUser);
 app.use('/user',totalReferralPayoutAmountTrader);
 app.use('/user', fetchTotalTradingValue)
+app.use('/user', traderCountForGraph)
 
 
 app.use("/admin", totalWithdrawalMoney);

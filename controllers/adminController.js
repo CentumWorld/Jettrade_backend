@@ -4872,12 +4872,27 @@ exports.countsTraderReferralFranchiseBmm = async (req, res) => {
 
 exports.traderReferralFranchiseBmmCountForGraph = async (req, res) => {
   try {
+    const monthNames = [
+      "January", "February", "March", "April", "May", "June",
+      "July", "August", "September", "October", "November", "December"
+    ];
+
     const traderCounts = await User.aggregate([
       {
-
         $group: {
-          _id: { $dateToString: { format: "%Y-%m-%d", date: "$createdAt" } },
+          _id: {
+            year: { $year: "$createdAt" },
+            month: { $month: "$createdAt" }
+          },
           count: { $sum: 1 }
+        }
+      },
+      {
+        $project: {
+          _id: 0,
+          year: "$_id.year",
+          month: "$_id.month",
+          count: 1
         }
       }
     ]);
@@ -4885,8 +4900,19 @@ exports.traderReferralFranchiseBmmCountForGraph = async (req, res) => {
     const referralCounts = await Member.aggregate([
       {
         $group: {
-          _id: { $dateToString: { format: "%Y-%m-%d", date: "$createdAt" } },
+          _id: {
+            year: { $year: "$createdAt" },
+            month: { $month: "$createdAt" }
+          },
           count: { $sum: 1 }
+        }
+      },
+      {
+        $project: {
+          _id: 0,
+          year: "$_id.year",
+          month: "$_id.month",
+          count: 1
         }
       }
     ]);
@@ -4894,8 +4920,19 @@ exports.traderReferralFranchiseBmmCountForGraph = async (req, res) => {
     const franchiseCounts = await Frenchise.aggregate([
       {
         $group: {
-          _id: { $dateToString: { format: "%Y-%m-%d", date: "$createdAt" } },
+          _id: {
+            year: { $year: "$createdAt" },
+            month: { $month: "$createdAt" }
+          },
           count: { $sum: 1 }
+        }
+      },
+      {
+        $project: {
+          _id: 0,
+          year: "$_id.year",
+          month: "$_id.month",
+          count: 1
         }
       }
     ]);
@@ -4903,18 +4940,56 @@ exports.traderReferralFranchiseBmmCountForGraph = async (req, res) => {
     const bmmCounts = await StateHandler.aggregate([
       {
         $group: {
-          _id: { $dateToString: { format: "%Y-%m-%d", date: "$createdAt" } },
+          _id: {
+            year: { $year: "$createdAt" },
+            month: { $month: "$createdAt" }
+          },
           count: { $sum: 1 }
+        }
+      },
+      {
+        $project: {
+          _id: 0,
+          year: "$_id.year",
+          month: "$_id.month",
+          count: 1
         }
       }
     ]);
 
-    res.json({ traderCounts, referralCounts, franchiseCounts, bmmCounts });
+    // Mapping month number to month name
+    const formattedTraderCounts = traderCounts.map(item => ({
+      ...item,
+      month: monthNames[item.month - 1] // Adjusting month number to array index
+    }));
+
+    const formattedReferralCounts = referralCounts.map(item => ({
+      ...item,
+      month: monthNames[item.month - 1] // Adjusting month number to array index
+    }));
+
+    const formattedFranchiseCounts = franchiseCounts.map(item => ({
+      ...item,
+      month: monthNames[item.month - 1] // Adjusting month number to array index
+    }));
+
+    const formattedBmmCounts = bmmCounts.map(item => ({
+      ...item,
+      month: monthNames[item.month - 1] // Adjusting month number to array index
+    }));
+
+    res.json({ 
+      traderCounts: formattedTraderCounts,
+      referralCounts: formattedReferralCounts,
+      franchiseCounts: formattedFranchiseCounts,
+      bmmCounts: formattedBmmCounts 
+    });
   } catch (error) {
     console.error('Error occurred:', error);
     res.status(500).json({ error: 'Internal server error' });
   }
 };
+
 
 
 exports.totalTradingValue = async (req, res) => {

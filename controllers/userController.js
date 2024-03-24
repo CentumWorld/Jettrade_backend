@@ -2930,3 +2930,47 @@ exports.fetchTotalTradingValue = async(req, res) => {
     
   }
 }
+
+exports.traderCountForGraph = async (req, res) => {
+  try {
+    const { referralId } = req.body;
+
+    // Define an array mapping month numbers to month names
+    const monthNames = [
+      "January", "February", "March", "April", "May", "June",
+      "July", "August", "September", "October", "November", "December"
+    ];
+
+    const traders = await User.aggregate([
+      {
+        $match: {
+          reffered_id: referralId
+        }
+      },
+      {
+        $group: {
+          _id: {
+            year: { $year: "$createdAt" },
+            month: { $month: "$createdAt" }
+          },
+          count: { $sum: 1 }
+        }
+      },
+      {
+        $project: {
+          _id: 0,
+          year: "$_id.year",
+          month: { $arrayElemAt: [monthNames, { $subtract: ["$_id.month", 1] }] }, // Convert month number to month name
+          count: 1
+        }
+      }
+    ]);
+
+    res.json({ traders });
+  } catch (error) {
+    console.error('Error occurred:', error);
+    res.status(500).json({ error: 'Internal server error' });
+  }
+};
+
+
