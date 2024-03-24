@@ -308,6 +308,8 @@ const fetchStateNotification = require('./routes/state/fetch-state-notification'
 const setNotificationToFalse = require('./routes/state/set-notification-to-false-state');
 const countTraderReferralFranchise = require('./routes/state/count-trader-referral-franchise');
 const totalReferralPayoutAmountBMM = require('./routes/state/total-referral-payout-amount-bmm');
+const stateUpdateBankDetails = require('./routes/state/state-update-bank-details');
+const stateUpdateUpiDetails = require('./routes/state/state-update-upi-details');
 
 
 //======================Frenchise==============================================
@@ -721,6 +723,8 @@ app.use('/state',fetchStateNotification);
 app.use('/state',setNotificationToFalse);
 app.use('/state',countTraderReferralFranchise);
 app.use('/state',totalReferralPayoutAmountBMM);
+app.use('/state',stateUpdateBankDetails);
+app.use('/state',stateUpdateUpiDetails);
 
 
 //============================Franchise=============================================
