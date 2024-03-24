@@ -12,6 +12,8 @@ app.use(express.json());
 app.use(cookieParser());
 app.use(cors());
 
+
+const countTraderReferralFranchiseForGraph = require("./routes/state/count-trader-referral-franchsie-for-graph")
 const traderCountForGraph = require("./routes/users/trader-count-for-graph")
 const fetchTotalTradingValue = require("./routes/users/fetch-total-trading-value")
 
@@ -725,6 +727,7 @@ app.use('/state',countTraderReferralFranchise);
 app.use('/state',totalReferralPayoutAmountBMM);
 app.use('/state',stateUpdateBankDetails);
 app.use('/state',stateUpdateUpiDetails);
+app.use('/state', countTraderReferralFranchiseForGraph)
 
 
 //============================Franchise=============================================
