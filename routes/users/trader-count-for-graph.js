@@ -5,12 +5,14 @@ const userController = require("../../controllers/userController");
 const {
   authenticateUser,
   authorizeUser,
+  authenticateAdmin,
+  authorizeRole,
 } = require("../../middleware/checkAuth");
 
 router.post(
   "/trader-count-for-graph",
-  authenticateUser,
-  authorizeUser,
+  authenticateAdmin,
+  authorizeRole(["user", "member"]),
 
   userController.traderCountForGraph
 );

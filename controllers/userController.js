@@ -2941,7 +2941,7 @@ exports.traderCountForGraph = async (req, res) => {
       "July", "August", "September", "October", "November", "December"
     ];
 
-    const traders = await User.aggregate([
+    const traderCounts = await User.aggregate([
       {
         $match: {
           reffered_id: referralId
@@ -2966,7 +2966,7 @@ exports.traderCountForGraph = async (req, res) => {
       }
     ]);
 
-    res.json({ traders });
+    res.json({ traderCounts });
   } catch (error) {
     console.error('Error occurred:', error);
     res.status(500).json({ error: 'Internal server error' });
