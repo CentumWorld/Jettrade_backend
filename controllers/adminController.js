@@ -5014,12 +5014,17 @@ exports.totalTradingValue = async (req, res) => {
   }
 }
 
+
 exports.fetchtotalTradingValue = async (req, res) => {
   try {
+    // Find the last document in the collection
+    const lastTotalTradingValue = await TotaltradingValue.findOne().sort({ _id: -1 }).limit(1);
 
-    const totalTradingValues = await TotaltradingValue.find()  
+    if (!lastTotalTradingValue) {
+      return res.status(404).json({ error: 'No total trading value found' });
+    }
 
-    return res.status(200).json({ message: "Fetch total trading value successfully", data: totalTradingValues });
+    return res.status(200).json({ message: "Fetch total trading value successfully", data: lastTotalTradingValue });
   } catch (error) {
     console.error('Error occurred:', error);
     return res.status(500).json({ error: 'Internal server error' });
