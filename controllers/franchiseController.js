@@ -1031,3 +1031,62 @@ exports.franchiseUpdateUpiDetails = async (req,res) => {
     return res.status(500).json({ message: "Internal Server Error" });
   }
 }
+
+
+exports.countTraderReferralForGraph = async (req, res) => {
+  try {
+    const { referralId } = req.body;
+    console.log(referralId, "referralid")
+ 
+    // Get members associated with the  referralIds
+    const member = await Member.find({ reffered_id:  referralId});
+    const memberReferralIds = member.map(member => member.refferal_id);
+
+    // Get traders associated with the referralId,, and member referralIds
+    const traders = await User.find({
+      reffered_id: { $in: [referralId, ...memberReferralIds] }
+    });
+
+    // Aggregate counts based on year and month
+    const counts = {
+      traderCounts: [],
+      referralCounts: []
+    };
+
+    // Function to add counts to the 'counts' object
+    const addCount = (year, month, type) => {
+      const monthNames = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
+      const monthName = monthNames[month - 1]; // Months are zero-indexed, so subtract 1
+      const countObj = { count: 1, year, month: monthName };
+      counts[`${type}Counts`].push(countObj);
+    };
+
+    // Add counts for members
+    member.forEach(member => {
+      const { year, month } = extractYearMonth(member.createdAt);
+      addCount(year, month, 'referral');
+    });
+
+    // Add counts for traders
+    traders.forEach(trader => {
+      const { year, month } = extractYearMonth(trader.createdAt);
+      addCount(year, month, 'trader');
+    });
+
+    // Destructure counts object and directly return traderCounts, and referralCounts
+    const { traderCounts, referralCounts } = counts;
+
+    return res.status(200).json({ traderCounts, referralCounts });
+  } catch (error) {
+    console.error("Error in counting:", error);
+    return res.status(500).json({ message: "Internal server error" });
+  }
+}
+
+
+// Helper function to extract year and month from a date
+const extractYearMonth = (date) => {
+  const year = date.getFullYear();
+  const month = date.getMonth() + 1; // Months are zero-indexed, so add 1
+  return { year, month };
+};
