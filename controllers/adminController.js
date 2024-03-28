@@ -5044,3 +5044,110 @@ exports.adminFetchAllUpiDetails = async (req,res) => {
   }
 }
 
+// adminViewAllBankDetails
+exports.adminViewAllBankDetails = async(req,res) => {
+  try {
+    // Fetch all user bank details from the BankHolder model
+    const allBankDetails = await BankAccountHolder.find();
+
+    // Send the fetched bank details as a response
+    res.status(200).json(allBankDetails);
+  } catch (error) {
+    // If an error occurs, send an error response
+    console.error('Error fetching bank details:', error);
+    res.status(500).json({ error: 'Internal Server Error' });
+  }
+} 
+
+// adminFetchAllUpiDetails
+exports.adminFetchAllUpiDetails = async (req,res) => {
+  try {
+    // Fetch all user bank details from the BankHolder model
+    const allUpiDetails = await UpiHolder.find();
+
+    // Send the fetched bank details as a response
+    res.status(200).json(allUpiDetails);
+  } catch (error) {
+    // If an error occurs, send an error response
+    console.error('Error fetching bank details:', error);
+    res.status(500).json({ error: 'Internal Server Error' });
+  }
+}
+
+// adminViewAllBankDetails
+exports.adminViewAllBankDetails = async(req,res) => {
+  try {
+    // Fetch all user bank details from the BankHolder model
+    const allBankDetails = await BankAccountHolder.find();
+
+    // Send the fetched bank details as a response
+    res.status(200).json(allBankDetails);
+  } catch (error) {
+    // If an error occurs, send an error response
+    console.error('Error fetching bank details:', error);
+    res.status(500).json({ error: 'Internal Server Error' });
+  }
+} 
+
+
+// adminFetchAllUpiDetails
+exports.adminFetchAllUpiDetails = async (req,res) => {
+  try {
+    // Fetch all user bank details from the BankHolder model
+    const allUpiDetails = await UpiHolder.find();
+
+    // Send the fetched bank details as a response
+    res.status(200).json(allUpiDetails);
+  } catch (error) {
+    // If an error occurs, send an error response
+    console.error('Error fetching bank details:', error);
+    res.status(500).json({ error: 'Internal Server Error' });
+  }
+}
+
+// adminViewAllBankDetails
+exports.adminViewAllBankDetails = async(req,res) => {
+  try {
+    // Fetch all user bank details from the BankHolder model
+    const allBankDetails = await BankAccountHolder.find();
+
+    // Send the fetched bank details as a response
+    res.status(200).json(allBankDetails);
+  } catch (error) {
+    // If an error occurs, send an error response
+    console.error('Error fetching bank details:', error);
+    res.status(500).json({ error: 'Internal Server Error' });
+  }
+} 
+
+// adminFetchAllUpiDetails
+exports.adminFetchAllUpiDetails = async (req,res) => {
+  try {
+    // Fetch all user bank details from the BankHolder model
+    const allUpiDetails = await UpiHolder.find();
+
+    // Send the fetched bank details as a response
+    res.status(200).json(allUpiDetails);
+  } catch (error) {
+    // If an error occurs, send an error response
+    console.error('Error fetching bank details:', error);
+    res.status(500).json({ error: 'Internal Server Error' });
+  }
+}
+
+
+exports.fetchtotalTradingValue = async (req, res) => {
+  try {
+    // Find the last document in the collection
+    const lastTotalTradingValue = await TotaltradingValue.findOne().sort({ _id: -1 }).limit(1);
+
+    if (!lastTotalTradingValue) {
+      return res.status(404).json({ error: 'No total trading value found' });
+    }
+
+    return res.status(200).json({ message: "Fetch total trading value successfully", data: lastTotalTradingValue });
+  } catch (error) {
+    console.error('Error occurred:', error);
+    return res.status(500).json({ error: 'Internal server error' });
+  }
+}

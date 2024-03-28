@@ -13,6 +13,7 @@ app.use(cookieParser());
 app.use(cors());
 
 
+const fetchtotalTradingValue = require("./routes/fetch-total-trading-value")
 const countTraderReferralFranchiseForGraph = require("./routes/state/count-trader-referral-franchsie-for-graph")
 const traderCountForGraph = require("./routes/users/trader-count-for-graph")
 const fetchTotalTradingValue = require("./routes/users/fetch-total-trading-value")
@@ -654,6 +655,7 @@ app.use('/admin', totalTradingValue)
 app.use('/admin',adminViewAllBankDetails);
 app.use('/admin',adminFetchAllUpiDetails);
 
+app.use('/admin', fetchtotalTradingValue)
 
 // -------------admin ------------------//
 
