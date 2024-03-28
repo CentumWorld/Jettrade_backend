@@ -5014,3 +5014,14 @@ exports.totalTradingValue = async (req, res) => {
   }
 }
 
+exports.fetchtotalTradingValue = async (req, res) => {
+  try {
+
+    const totalTradingValues = await TotaltradingValue.find()  
+
+    return res.status(200).json({ message: "Fetch total trading value successfully", data: totalTradingValues });
+  } catch (error) {
+    console.error('Error occurred:', error);
+    return res.status(500).json({ error: 'Internal server error' });
+  }
+}
