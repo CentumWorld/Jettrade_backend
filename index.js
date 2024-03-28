@@ -349,6 +349,8 @@ const setNotificationToFalseFranchise = require('./routes/frenchise/set-notifica
 const fetchMemberByReferralIdOfFranchise = require('./routes/frenchise/fetchMemberByReferralIdOfFranchise')
 const countTraderReferral = require('./routes/frenchise/count-trader-referral');
 const totalReferralPayoutAmountFranchise = require('./routes/frenchise/total-referral-payout-amount-franchise')
+const franchieUpdateOwnbankDetails = require('./routes/frenchise/franchise-update-own-bank-details');
+const franchiseUpdateUpiDetails = require('./routes/frenchise/franchise-update-upi-details')
 
 //=========================Business developer======================================
 const getAllMembersInBusinessDeveloper = require("./routes/businessDeveloper/fetch-all-members-in-business-developer");
@@ -774,6 +776,8 @@ app.use('/franchise',setNotificationToFalseFranchise);
 app.use('/franchise', fetchMemberByReferralIdOfFranchise)
 app.use('/franchise',countTraderReferral);
 app.use('/franchise',totalReferralPayoutAmountFranchise);
+app.use('/franchise',franchieUpdateOwnbankDetails);
+app.use('/franchise',franchiseUpdateUpiDetails);
 
 
 //============================Business developer===========================

@@ -950,3 +950,84 @@ exports.totalReferralPayoutAmountFranchise = async(req,res) => {
   }
   
 }
+
+// franchieUpdateOwnbankDetails
+exports.franchieUpdateOwnbankDetails = async(req,res) => {
+  try {
+    const {
+      accountHolderName,
+      bankName,
+      branchName,
+      accountNumber,
+      ifscCode,
+      userId,
+    } = req.body;
+
+    if (
+      !accountHolderName ||
+      !bankName ||
+      !branchName ||
+      !accountNumber ||
+      !ifscCode
+    ) {
+      return res.status(400).json({ message: "Please fill all the fields" });
+    }
+
+    const updateToFranchise = await BankAccountHolder.findOneAndUpdate(
+      { userId: userId },
+      {
+        $set: {
+          accountHolderName: accountHolderName,
+          bankName: bankName,
+          branchName: branchName,
+          accountNumber: accountNumber,
+          accountNumber: accountNumber,
+          ifscCode: ifscCode,
+        },
+      },
+      { new: true }
+    );
+
+    if (updateToFranchise) {
+      return res
+        .status(200)
+        .json({ message: "Franchise Bank Details Updated", data: updateToFranchise });
+    } else {
+      return res.status(404).json({ message: "Franchise not found" });
+    }
+  } catch (error) {
+    console.error(error);
+    return res.status(500).json({ message: "Internal Server Error" });
+  }
+}
+
+// franchiseUpdateUpiDetails
+exports.franchiseUpdateUpiDetails = async (req,res) => {
+  try {
+    const { upiId, userId } = req.body;
+    if (!upiId) {
+      return res.status(400).json({ message: "Please fill all the fields 1" });
+    }
+
+    const updateToFranchise = await UpiHolder.findOneAndUpdate(
+      { userId: userId },
+      {
+        $set: {
+          upiId: upiId,
+        },
+      },
+      { new: true }
+    );
+
+    if (updateToFranchise) {
+      return res
+        .status(200)
+        .json({ message: "Franchise UPI Details Updated", data: updateToFranchise });
+    } else {
+      return res.status(404).json({ message: "Franchise not found" });
+    }
+  } catch (error) {
+    console.error(error);
+    return res.status(500).json({ message: "Internal Server Error" });
+  }
+}
