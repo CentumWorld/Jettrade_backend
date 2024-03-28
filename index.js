@@ -269,6 +269,8 @@ const fetchParticularMemberDetailsUsingMemberid = require('./routes/fetch-partic
 
 const traderReferralFranchiseBmmCountForGraph = require('./routes/trader-referral-franchise-bmm-count-for-graph')
 const totalTradingValue = require("./routes/total-trading-value")
+const adminViewAllBankDetails = require('./routes/admin-view-all-bank-details');
+const adminFetchAllUpiDetails = require('./routes/admin-fetch-all-upi-details');
 
 //=======================State=================================================
 
@@ -649,6 +651,9 @@ app.use('/admin',notificationForParticularBusinessDev);
 app.use('/admin', countsTraderReferralFranchiseBmm)
 app.use('/admin', traderReferralFranchiseBmmCountForGraph)
 app.use('/admin', totalTradingValue)
+app.use('/admin',adminViewAllBankDetails);
+app.use('/admin',adminFetchAllUpiDetails);
+
 
 // -------------admin ------------------//
 
