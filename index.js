@@ -311,6 +311,8 @@ const fetchStateNotification = require('./routes/state/fetch-state-notification'
 const setNotificationToFalse = require('./routes/state/set-notification-to-false-state');
 const countTraderReferralFranchise = require('./routes/state/count-trader-referral-franchise');
 const totalReferralPayoutAmountBMM = require('./routes/state/total-referral-payout-amount-bmm');
+const stateUpdateBankDetails = require('./routes/state/state-update-bank-details');
+const stateUpdateUpiDetails = require('./routes/state/state-update-upi-details');
 
 
 //======================Frenchise==============================================
@@ -348,6 +350,8 @@ const setNotificationToFalseFranchise = require('./routes/frenchise/set-notifica
 const fetchMemberByReferralIdOfFranchise = require('./routes/frenchise/fetchMemberByReferralIdOfFranchise')
 const countTraderReferral = require('./routes/frenchise/count-trader-referral');
 const totalReferralPayoutAmountFranchise = require('./routes/frenchise/total-referral-payout-amount-franchise')
+const franchieUpdateOwnbankDetails = require('./routes/frenchise/franchise-update-own-bank-details');
+const franchiseUpdateUpiDetails = require('./routes/frenchise/franchise-update-upi-details')
 
 //=========================Business developer======================================
 const getAllMembersInBusinessDeveloper = require("./routes/businessDeveloper/fetch-all-members-in-business-developer");
@@ -725,6 +729,8 @@ app.use('/state',fetchStateNotification);
 app.use('/state',setNotificationToFalse);
 app.use('/state',countTraderReferralFranchise);
 app.use('/state',totalReferralPayoutAmountBMM);
+app.use('/state',stateUpdateBankDetails);
+app.use('/state',stateUpdateUpiDetails);
 app.use('/state', countTraderReferralFranchiseForGraph)
 
 
@@ -772,6 +778,8 @@ app.use('/franchise',setNotificationToFalseFranchise);
 app.use('/franchise', fetchMemberByReferralIdOfFranchise)
 app.use('/franchise',countTraderReferral);
 app.use('/franchise',totalReferralPayoutAmountFranchise);
+app.use('/franchise',franchieUpdateOwnbankDetails);
+app.use('/franchise',franchiseUpdateUpiDetails);
 
 
 //============================Business developer===========================
