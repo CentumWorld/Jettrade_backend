@@ -1217,13 +1217,24 @@ exports.countTraderReferralFranchiseForGraph = async (req, res) => {
       referralCounts: []
     };
 
-    // Function to add counts to the 'counts' object
-    const addCount = (year, month, type) => {
-      const monthNames = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
-      const monthName = monthNames[month - 1]; // Months are zero-indexed, so subtract 1
-      const countObj = { count: 1, year, month: monthName };
-      counts[`${type}Counts`].push(countObj);
-    };
+  // Function to add counts to the 'counts' object
+const addCount = (year, month, type) => {
+  const monthAbbreviations = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+  const monthAbbreviation = monthAbbreviations[month - 1]; // Months are zero-indexed, so subtract 1
+  const monthYearKey = `${year}-${monthAbbreviation}`;
+  
+  // Check if the month-year combination already exists in the counts object
+  if (counts[`${type}Counts`].some(item => item.year === year && item.month === monthAbbreviation)) {
+    // If it exists, find the index of the existing item and increment its count
+    const index = counts[`${type}Counts`].findIndex(item => item.year === year && item.month === monthAbbreviation);
+    counts[`${type}Counts`][index].count++;
+  } else {
+    // If it doesn't exist, add a new count object
+    const countObj = { count: 1, year, month: monthAbbreviation };
+    counts[`${type}Counts`].push(countObj);
+  }
+};
+
 
     // Add counts for franchise members
     franchise.forEach(franchise => {
@@ -1259,4 +1270,3 @@ const extractYearMonth = (date) => {
   const month = date.getMonth() + 1; // Months are zero-indexed, so add 1
   return { year, month };
 };
-

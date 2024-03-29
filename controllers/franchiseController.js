@@ -1032,17 +1032,16 @@ exports.franchiseUpdateUpiDetails = async (req,res) => {
   }
 }
 
-
 exports.countTraderReferralForGraph = async (req, res) => {
   try {
     const { referralId } = req.body;
     console.log(referralId, "referralid")
  
-    // Get members associated with the  referralIds
+    // Get members associated with the referralIds
     const member = await Member.find({ reffered_id:  referralId});
     const memberReferralIds = member.map(member => member.refferal_id);
 
-    // Get traders associated with the referralId,, and member referralIds
+    // Get traders associated with the referralId and member referralIds
     const traders = await User.find({
       reffered_id: { $in: [referralId, ...memberReferralIds] }
     });
@@ -1055,10 +1054,20 @@ exports.countTraderReferralForGraph = async (req, res) => {
 
     // Function to add counts to the 'counts' object
     const addCount = (year, month, type) => {
-      const monthNames = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
-      const monthName = monthNames[month - 1]; // Months are zero-indexed, so subtract 1
-      const countObj = { count: 1, year, month: monthName };
-      counts[`${type}Counts`].push(countObj);
+      const monthAbbreviations = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+      const monthAbbreviation = monthAbbreviations[month - 1]; // Months are zero-indexed, so subtract 1
+      const monthYearKey = `${year}-${monthAbbreviation}`;
+      
+      // Check if the month-year combination already exists in the counts object
+      if (counts[`${type}Counts`].some(item => item.year === year && item.month === monthAbbreviation)) {
+        // If it exists, find the index of the existing item and increment its count
+        const index = counts[`${type}Counts`].findIndex(item => item.year === year && item.month === monthAbbreviation);
+        counts[`${type}Counts`][index].count++;
+      } else {
+        // If it doesn't exist, add a new count object
+        const countObj = { count: 1, year, month: monthAbbreviation };
+        counts[`${type}Counts`].push(countObj);
+      }
     };
 
     // Add counts for members
@@ -1082,7 +1091,6 @@ exports.countTraderReferralForGraph = async (req, res) => {
     return res.status(500).json({ message: "Internal server error" });
   }
 }
-
 
 // Helper function to extract year and month from a date
 const extractYearMonth = (date) => {
