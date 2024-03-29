@@ -777,6 +777,13 @@ exports.createStateBankAccountHolder = async (req, res) => {
       return res.status(404).json({ message: "State not found" });
     }
 
+    const existingAccount = await BankAccountHolder.findOne({ userId });
+    if (existingAccount) {
+      return res
+        .status(400)
+        .json({ message: "You already have a bank account." });
+    }
+
     const newAccountHolder = new BankAccountHolder({
       userId,
       accountHolderName,
@@ -811,6 +818,11 @@ exports.createStateUpiHolder = async (req, res) => {
 
     if (!state) {
       return res.status(404).json({ message: "State not found" });
+    }
+
+    const existingUpiId = await UpiHolder.findOne({ userId });
+    if (existingUpiId) {
+      return res.status(409).json({ message: "You already have a UPI ID" });
     }
 
     const newUpi = new UpiHolder({
@@ -1043,73 +1055,77 @@ exports.setNotificationToFalse = async (req, res) => {
 
 // countTraderReferralFranchise
 
-exports.countTraderReferralFranchise = async (req,res) => {
+exports.countTraderReferralFranchise = async (req, res) => {
   try {
+    const { referralId } = req.body;
 
-    const {referralId} = req.body
+    const franchise = await Frenchise.find({ referredId: referralId });
 
-    const franchise = await Frenchise.find({referredId: referralId})
+    const franchiseReferralIds = franchise.map(
+      (franchise) => franchise.referralId
+    );
 
-    const franchiseReferralIds = franchise.map(franchise=> franchise.referralId)
+    const member = await Member.find({
+      reffered_id: { $in: franchiseReferralIds },
+    });
 
-    const member = await Member.find({reffered_id: {$in:franchiseReferralIds}})
-
-    const memberReferralIds = member.map(member=> member.refferal_id)
+    const memberReferralIds = member.map((member) => member.refferal_id);
 
     const traders = await User.find({
       $or: [
-        { reffered_id: { $in: [referralId, ...franchiseReferralIds, ...memberReferralIds] } }
-      ]
+        {
+          reffered_id: {
+            $in: [referralId, ...franchiseReferralIds, ...memberReferralIds],
+          },
+        },
+      ],
     });
-    
+
     const franchiseCount = franchise.length;
     const memberCount = member.length;
     const traderCount = traders.length;
-    
 
     return res.status(200).json({
       franchiseCount,
       memberCount,
-      traderCount
-     
+      traderCount,
     });
   } catch (error) {
     console.error("Error in counting:", error);
     return res.status(500).json({ message: "Internal server error" });
   }
-}
+};
 
 // totalReferralPayoutAmountBMM
-exports.totalReferralPayoutAmountBMM = async(req,res) => {
+exports.totalReferralPayoutAmountBMM = async (req, res) => {
   try {
     const { stateHandlerId } = req.body;
     const result = await StateHandlerCreditWalletTransactionScema.aggregate([
       {
-        $match: { stateHandlerId: stateHandlerId }
+        $match: { stateHandlerId: stateHandlerId },
       },
       {
         $group: {
           _id: null, // Grouping without a specific field to sum for all documents
-          totalPayout: { $sum: "$creditAmount" } // Assuming the field for amount is named 'amount'
-        }
-      }
+          totalPayout: { $sum: "$creditAmount" }, // Assuming the field for amount is named 'amount'
+        },
+      },
     ]);
 
     // result is an array of grouped results. In this case, it should have only one element.
     const totalPayout = result.length > 0 ? result[0].totalPayout : 0;
 
     return res.status(200).json({
-      totalPayout
+      totalPayout,
     });
-
   } catch (error) {
     console.error("Error fetching Total payout:", error);
     return res.status(500).json({ message: "Internal server error" });
   }
-}
+};
 
 // stateUpdateBankDetails
-exports.stateUpdateBankDetails = async(req,res) => {
+exports.stateUpdateBankDetails = async (req, res) => {
   try {
     const {
       accountHolderName,
@@ -1156,10 +1172,10 @@ exports.stateUpdateBankDetails = async(req,res) => {
     console.error(error);
     return res.status(500).json({ message: "Internal Server Error" });
   }
-}
+};
 
 // stateUpdateUpiDetails
-exports.stateUpdateUpiDetails = async(req,res) => {
+exports.stateUpdateUpiDetails = async (req, res) => {
   try {
     const { upiId, userId } = req.body;
     if (!upiId) {
@@ -1187,34 +1203,38 @@ exports.stateUpdateUpiDetails = async(req,res) => {
     console.error(error);
     return res.status(500).json({ message: "Internal Server Error" });
   }
-}
-
-
+};
 
 exports.countTraderReferralFranchiseForGraph = async (req, res) => {
   try {
     const { referralId } = req.body;
 
-    console.log(referralId, "referralid")
+    console.log(referralId, "referralid");
 
     // Get franchise members associated with the referralId
     const franchise = await Frenchise.find({ referredId: referralId });
-    const franchiseReferralIds = franchise.map(franchise => franchise.referralId);
+    const franchiseReferralIds = franchise.map(
+      (franchise) => franchise.referralId
+    );
 
     // Get members associated with the franchise referralIds
-    const member = await Member.find({ reffered_id: { $in: franchiseReferralIds } });
-    const memberReferralIds = member.map(member => member.refferal_id);
+    const member = await Member.find({
+      reffered_id: { $in: franchiseReferralIds },
+    });
+    const memberReferralIds = member.map((member) => member.refferal_id);
 
     // Get traders associated with the referralId, franchise referralIds, and member referralIds
     const traders = await User.find({
-      reffered_id: { $in: [referralId, ...franchiseReferralIds, ...memberReferralIds] }
+      reffered_id: {
+        $in: [referralId, ...franchiseReferralIds, ...memberReferralIds],
+      },
     });
 
     // Aggregate counts based on year and month
     const counts = {
       traderCounts: [],
       franchiseCounts: [],
-      referralCounts: []
+      referralCounts: [],
     };
 
   // Function to add counts to the 'counts' object
@@ -1237,27 +1257,29 @@ const addCount = (year, month, type) => {
 
 
     // Add counts for franchise members
-    franchise.forEach(franchise => {
+    franchise.forEach((franchise) => {
       const { year, month } = extractYearMonth(franchise.createdAt);
-      addCount(year, month, 'franchise');
+      addCount(year, month, "franchise");
     });
 
     // Add counts for members
-    member.forEach(member => {
+    member.forEach((member) => {
       const { year, month } = extractYearMonth(member.createdAt);
-      addCount(year, month, 'referral');
+      addCount(year, month, "referral");
     });
 
     // Add counts for traders
-    traders.forEach(trader => {
+    traders.forEach((trader) => {
       const { year, month } = extractYearMonth(trader.createdAt);
-      addCount(year, month, 'trader');
+      addCount(year, month, "trader");
     });
 
     // Destructure counts object and directly return traderCounts, franchiseCounts, and referralCounts
     const { traderCounts, franchiseCounts, referralCounts } = counts;
 
-    return res.status(200).json({ traderCounts, franchiseCounts, referralCounts });
+    return res
+      .status(200)
+      .json({ traderCounts, franchiseCounts, referralCounts });
   } catch (error) {
     console.error("Error in counting:", error);
     return res.status(500).json({ message: "Internal server error" });
