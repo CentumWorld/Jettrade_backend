@@ -4869,12 +4869,11 @@ exports.countsTraderReferralFranchiseBmm = async (req, res) => {
   }
 };
 
-
 exports.traderReferralFranchiseBmmCountForGraph = async (req, res) => {
   try {
-    const monthNames = [
-      "January", "February", "March", "April", "May", "June",
-      "July", "August", "September", "October", "November", "December"
+    const monthAbbreviations = [
+      "Jan", "Feb", "Mar", "Apr", "May", "Jun",
+      "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"
     ];
 
     const traderCounts = await User.aggregate([
@@ -4957,25 +4956,25 @@ exports.traderReferralFranchiseBmmCountForGraph = async (req, res) => {
       }
     ]);
 
-    // Mapping month number to month name
+    // Mapping month number to abbreviated month name
     const formattedTraderCounts = traderCounts.map(item => ({
       ...item,
-      month: monthNames[item.month - 1] // Adjusting month number to array index
+      month: monthAbbreviations[item.month - 1] // Adjusting month number to array index
     }));
 
     const formattedReferralCounts = referralCounts.map(item => ({
       ...item,
-      month: monthNames[item.month - 1] // Adjusting month number to array index
+      month: monthAbbreviations[item.month - 1] // Adjusting month number to array index
     }));
 
     const formattedFranchiseCounts = franchiseCounts.map(item => ({
       ...item,
-      month: monthNames[item.month - 1] // Adjusting month number to array index
+      month: monthAbbreviations[item.month - 1] // Adjusting month number to array index
     }));
 
     const formattedBmmCounts = bmmCounts.map(item => ({
       ...item,
-      month: monthNames[item.month - 1] // Adjusting month number to array index
+      month: monthAbbreviations[item.month - 1] // Adjusting month number to array index
     }));
 
     res.json({ 
@@ -4989,6 +4988,7 @@ exports.traderReferralFranchiseBmmCountForGraph = async (req, res) => {
     res.status(500).json({ error: 'Internal server error' });
   }
 };
+
 
 
 

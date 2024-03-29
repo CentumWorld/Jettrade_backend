@@ -28,9 +28,9 @@ const UpiHolder = require("../model/UpiHolderSchema");
 const MemberCreditWalletTransaction = require("../model/memberCreditWalletTransaction");
 const UserCreditWalletTransaction = require("../model/userCreditWalletTransaction");
 const ProfilePhoto = require("../model/profilePhotoSchema");
-const notificationForAll = require('../model/notificationForAllSchema');
-const notificationForAllFranchise = require('../model/NotificationForAllFranchiseSchema');
-const notificationForParticularFranchise = require('../model/notification-for-particular-franchise');
+const notificationForAll = require("../model/notificationForAllSchema");
+const notificationForAllFranchise = require("../model/NotificationForAllFranchiseSchema");
+const notificationForParticularFranchise = require("../model/notification-for-particular-franchise");
 
 exports.getBusinessDevelopersInFranchise = async (req, res) => {
   try {
@@ -84,7 +84,7 @@ exports.getMembersInFranchise = async (req, res) => {
 exports.getUsersInFranchise = async (req, res) => {
   try {
     const { franchiseReferralId } = req.body;
-    
+
     const trader = await User.find({ reffered_id: franchiseReferralId });
     if (trader.length > 0) {
       return res.status(200).json({
@@ -603,6 +603,14 @@ exports.createFranchiseBankAccountHolder = async (req, res) => {
       return res.status(400).json({ message: "Franchise not found" });
     }
 
+    // Checking for duplicate Bank Account
+    const existingAccount = await BankAccountHolder.findOne({ userId });
+    if (existingAccount) {
+      return res.status(400).json({
+        message: "You already have a Bank Account",
+      });
+    }
+
     const newAccountHolder = new BankAccountHolder({
       accountHolderName,
       accountNumber,
@@ -635,6 +643,13 @@ exports.createFranchiseUpiHolder = async (req, res) => {
 
     if (!franchise) {
       return res.status(400).json({ message: "Franchise not found" });
+    }
+
+    const existingUpiId = await UpiHolder.findOne({userId});
+    if(existingUpiId){
+      return res.status(400).json({
+        message:"You already have a UPI ID"
+      })
     }
 
     const newUpi = new UpiHolder({
@@ -740,12 +755,10 @@ exports.uploadFranchiseProfilePhoto = async (req, res) => {
     if (existingProfilePhoto) {
       existingProfilePhoto.imageUrl = profilePhoto;
       await existingProfilePhoto.save();
-      return res
-        .status(200)
-        .json({
-          message: "Profile photo uploaded successfully",
-          data: existingProfilePhoto,
-        });
+      return res.status(200).json({
+        message: "Profile photo uploaded successfully",
+        data: existingProfilePhoto,
+      });
     } else {
       const newProfilePhoto = new ProfilePhoto({
         userid: userid,
@@ -753,15 +766,13 @@ exports.uploadFranchiseProfilePhoto = async (req, res) => {
       });
       await newProfilePhoto.save();
 
-      return res
-        .status(200)
-        .json({
-          message: "Profile photo uploaded successfully",
-          data: newProfilePhoto,
-        });
+      return res.status(200).json({
+        message: "Profile photo uploaded successfully",
+        data: newProfilePhoto,
+      });
     }
   } catch (error) {
-    console.log(error.message)
+    console.log(error.message);
     return res.status(500).json({ message: "Internal server error" });
   }
 };
@@ -769,47 +780,46 @@ exports.uploadFranchiseProfilePhoto = async (req, res) => {
 //==================================get franchise profile photo=============
 exports.getFranchiseProfilePhoto = async (req, res) => {
   try {
-
-    let userid = req.body.userid
-    const photo = await ProfilePhoto.findOne({ userid })
+    let userid = req.body.userid;
+    const photo = await ProfilePhoto.findOne({ userid });
     if (!photo) {
-      return res.status(404).json({ message: "Profile photo not found" })
+      return res.status(404).json({ message: "Profile photo not found" });
     }
 
-    return res.status(200).json({ message: "profile photo fetched successfully", data: photo })
-
+    return res
+      .status(200)
+      .json({ message: "profile photo fetched successfully", data: photo });
   } catch (error) {
-    console.log(error.message)
+    console.log(error.message);
     return res.status(500).json({ message: "Internal server error" });
   }
-}
+};
 
 // frenchiseVerifyLoginOtp
 exports.frenchiseVerifyLoginOtp = async (req, res) => {
-  const { loginOtp, frenchiseId } = req.body
+  const { loginOtp, frenchiseId } = req.body;
 
-  const findOneFrenchise = await Frenchise.findOne({ frenchiseId: frenchiseId })
-
+  const findOneFrenchise = await Frenchise.findOne({
+    frenchiseId: frenchiseId,
+  });
 
   if (findOneFrenchise) {
-
-    const verificationOtp = findOneFrenchise.loginOtp
-    if ((verificationOtp === loginOtp)) {
+    const verificationOtp = findOneFrenchise.loginOtp;
+    if (verificationOtp === loginOtp) {
       return res.status(200).json({
-        message: "Otp Verified"
-      })
-    }
-    else {
+        message: "Otp Verified",
+      });
+    } else {
       return res.status(404).json({
-        message: 'Invalid PIN '
-      })
+        message: "Invalid PIN ",
+      });
     }
   } else {
     return res.status(500).json({
-      message: "Internal server error"
-    })
+      message: "Internal server error",
+    });
   }
-}
+};
 
 // fetchFranchiseNotification
 exports.fetchFranchiseNotification = async (req, res) => {
@@ -820,9 +830,10 @@ exports.fetchFranchiseNotification = async (req, res) => {
     if (allNotitfication) {
       const allFranchiseNotification = await notificationForAllFranchise.find();
       if (allFranchiseNotification) {
-        const particularFranchise = await notificationForParticularFranchise.find({
-          frenchiseId: frenchiseId,
-        });
+        const particularFranchise =
+          await notificationForParticularFranchise.find({
+            frenchiseId: frenchiseId,
+          });
         if (particularFranchise) {
           res.status(200).json({
             message: "Franchise notification fetched",
@@ -835,13 +846,13 @@ exports.fetchFranchiseNotification = async (req, res) => {
     }
   } catch (error) {
     return res.status(500).json({
-      message: "Internal server error"
-    })
+      message: "Internal server error",
+    });
   }
-}
+};
 
 // setNotificationToFalseFranchise
-exports.setNotificationToFalseFranchise = async (req,res) => {
+exports.setNotificationToFalseFranchise = async (req, res) => {
   try {
     const { frenchiseId } = req.body;
 
@@ -858,102 +869,95 @@ exports.setNotificationToFalseFranchise = async (req,res) => {
     }
   } catch (error) {
     return res.status(500).json({
-      message: "Internal server error"
-    })
+      message: "Internal server error",
+    });
   }
-}
+};
 
-exports.fetchMemberByReferralIdOfFranchise = async(req, res) => {
+exports.fetchMemberByReferralIdOfFranchise = async (req, res) => {
   try {
-    const {referralId} = req.body 
+    const { referralId } = req.body;
 
     const member = await Member.find({
-      reffered_id: referralId
-    })
-    if(!member){
-      return res.status(404).json({message: "Member not found"})
+      reffered_id: referralId,
+    });
+    if (!member) {
+      return res.status(404).json({ message: "Member not found" });
     }
 
-    return res.status(200).json({message: "Member fetched successfully", data: member})
-
-    
+    return res
+      .status(200)
+      .json({ message: "Member fetched successfully", data: member });
   } catch (error) {
-    console.log(error.message)
+    console.log(error.message);
     return res.status(500).json({
-      message: "Internal server error"
-    })
+      message: "Internal server error",
+    });
   }
-}
+};
 
 // countTraderReferral
-exports.countTraderReferral = async(req,res) => {
+exports.countTraderReferral = async (req, res) => {
   try {
+    const { referralId } = req.body;
 
-    const {referralId} = req.body
+    const member = await Member.find({ reffered_id: referralId });
 
-    const member = await Member.find({reffered_id: referralId})
-
-    const memberReferralIds = member.map(member=> member.refferal_id)
+    const memberReferralIds = member.map((member) => member.refferal_id);
 
     // const user = await Member.find({reffered_id: {$in:franchiseReferralIds}})
 
     // const memberReferralIds = member.map(member=> member.refferal_id)
 
     const traders = await User.find({
-      $or: [
-        { reffered_id: { $in: [referralId, ...memberReferralIds] } }
-      ]
+      $or: [{ reffered_id: { $in: [referralId, ...memberReferralIds] } }],
     });
-    
+
     // const franchiseCount = franchise.length;
     const memberCount = member.length;
     const traderCount = traders.length;
-    
 
     return res.status(200).json({
       // franchiseCount,
       memberCount,
-      traderCount
-     
+      traderCount,
     });
   } catch (error) {
     console.error("Error in counting:", error);
     return res.status(500).json({ message: "Internal server error" });
   }
-}
+};
 
 // totalReferralPayoutAmountFranchise
-exports.totalReferralPayoutAmountFranchise = async(req,res) => {
+exports.totalReferralPayoutAmountFranchise = async (req, res) => {
   try {
     const { frenchiseId } = req.body;
     const result = await FranchiseCreditWalletTransactionSchema.aggregate([
       {
-        $match: { frenchiseId: frenchiseId }
+        $match: { frenchiseId: frenchiseId },
       },
       {
         $group: {
           _id: null, // Grouping without a specific field to sum for all documents
-          totalPayout: { $sum: "$creditAmount" } // Assuming the field for amount is named 'amount'
-        }
-      }
+          totalPayout: { $sum: "$creditAmount" }, // Assuming the field for amount is named 'amount'
+        },
+      },
     ]);
 
     // result is an array of grouped results. In this case, it should have only one element.
     const totalPayout = result.length > 0 ? result[0].totalPayout : 0;
 
     return res.status(200).json({
-      totalPayout
+      totalPayout,
     });
-
   } catch (error) {
     console.error("Error fetching Total payout:", error);
     return res.status(500).json({ message: "Internal server error" });
   }
-  
-}
+};
 
 // franchieUpdateOwnbankDetails
-exports.franchieUpdateOwnbankDetails = async(req,res) => {
+exports.franchieUpdateOwnbankDetails = async (req, res) => {
   try {
     const {
       accountHolderName,
@@ -992,7 +996,10 @@ exports.franchieUpdateOwnbankDetails = async(req,res) => {
     if (updateToFranchise) {
       return res
         .status(200)
-        .json({ message: "Franchise Bank Details Updated", data: updateToFranchise });
+        .json({
+          message: "Franchise Bank Details Updated",
+          data: updateToFranchise,
+        });
     } else {
       return res.status(404).json({ message: "Franchise not found" });
     }
@@ -1000,10 +1007,10 @@ exports.franchieUpdateOwnbankDetails = async(req,res) => {
     console.error(error);
     return res.status(500).json({ message: "Internal Server Error" });
   }
-}
+};
 
 // franchiseUpdateUpiDetails
-exports.franchiseUpdateUpiDetails = async (req,res) => {
+exports.franchiseUpdateUpiDetails = async (req, res) => {
   try {
     const { upiId, userId } = req.body;
     if (!upiId) {
@@ -1023,7 +1030,10 @@ exports.franchiseUpdateUpiDetails = async (req,res) => {
     if (updateToFranchise) {
       return res
         .status(200)
-        .json({ message: "Franchise UPI Details Updated", data: updateToFranchise });
+        .json({
+          message: "Franchise UPI Details Updated",
+          data: updateToFranchise,
+        });
     } else {
       return res.status(404).json({ message: "Franchise not found" });
     }
@@ -1032,3 +1042,70 @@ exports.franchiseUpdateUpiDetails = async (req,res) => {
     return res.status(500).json({ message: "Internal Server Error" });
   }
 }
+
+exports.countTraderReferralForGraph = async (req, res) => {
+  try {
+    const { referralId } = req.body;
+    console.log(referralId, "referralid")
+ 
+    // Get members associated with the referralIds
+    const member = await Member.find({ reffered_id:  referralId});
+    const memberReferralIds = member.map(member => member.refferal_id);
+
+    // Get traders associated with the referralId and member referralIds
+    const traders = await User.find({
+      reffered_id: { $in: [referralId, ...memberReferralIds] },
+    });
+
+    // Aggregate counts based on year and month
+    const counts = {
+      traderCounts: [],
+      referralCounts: [],
+    };
+
+    // Function to add counts to the 'counts' object
+    const addCount = (year, month, type) => {
+      const monthAbbreviations = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+      const monthAbbreviation = monthAbbreviations[month - 1]; // Months are zero-indexed, so subtract 1
+      const monthYearKey = `${year}-${monthAbbreviation}`;
+      
+      // Check if the month-year combination already exists in the counts object
+      if (counts[`${type}Counts`].some(item => item.year === year && item.month === monthAbbreviation)) {
+        // If it exists, find the index of the existing item and increment its count
+        const index = counts[`${type}Counts`].findIndex(item => item.year === year && item.month === monthAbbreviation);
+        counts[`${type}Counts`][index].count++;
+      } else {
+        // If it doesn't exist, add a new count object
+        const countObj = { count: 1, year, month: monthAbbreviation };
+        counts[`${type}Counts`].push(countObj);
+      }
+    };
+
+    // Add counts for members
+    member.forEach((member) => {
+      const { year, month } = extractYearMonth(member.createdAt);
+      addCount(year, month, "referral");
+    });
+
+    // Add counts for traders
+    traders.forEach((trader) => {
+      const { year, month } = extractYearMonth(trader.createdAt);
+      addCount(year, month, "trader");
+    });
+
+    // Destructure counts object and directly return traderCounts, and referralCounts
+    const { traderCounts, referralCounts } = counts;
+
+    return res.status(200).json({ traderCounts, referralCounts });
+  } catch (error) {
+    console.error("Error in counting:", error);
+    return res.status(500).json({ message: "Internal server error" });
+  }
+}
+
+// Helper function to extract year and month from a date
+const extractYearMonth = (date) => {
+  const year = date.getFullYear();
+  const month = date.getMonth() + 1; // Months are zero-indexed, so add 1
+  return { year, month };
+};

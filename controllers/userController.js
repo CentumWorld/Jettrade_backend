@@ -2935,11 +2935,8 @@ exports.traderCountForGraph = async (req, res) => {
   try {
     const { referralId } = req.body;
 
-    // Define an array mapping month numbers to month names
-    const monthNames = [
-      "January", "February", "March", "April", "May", "June",
-      "July", "August", "September", "October", "November", "December"
-    ];
+    // Define an array mapping month numbers to month abbreviations
+    const monthNames = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
 
     const traderCounts = await User.aggregate([
       {
@@ -2960,7 +2957,7 @@ exports.traderCountForGraph = async (req, res) => {
         $project: {
           _id: 0,
           year: "$_id.year",
-          month: { $arrayElemAt: [monthNames, { $subtract: ["$_id.month", 1] }] }, // Convert month number to month name
+          month: { $arrayElemAt: [monthNames, { $subtract: ["$_id.month", 1] }] }, // Convert month number to month abbreviation
           count: 1
         }
       }
@@ -2972,5 +2969,6 @@ exports.traderCountForGraph = async (req, res) => {
     res.status(500).json({ error: 'Internal server error' });
   }
 };
+
 
 
