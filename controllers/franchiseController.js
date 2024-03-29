@@ -374,6 +374,7 @@ exports.getOwnMembersInsideFranchiseCreditWalletTransactionDetails = async (
   res
 ) => {
   const { franchiseId } = req.body;
+  console.log(franchiseId,377)
 
   // Find the franchise based on the given franchiseId
   const franchise = await Frenchise.findOne({ frenchiseId: franchiseId });
