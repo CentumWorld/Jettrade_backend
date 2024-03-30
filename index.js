@@ -12,6 +12,9 @@ app.use(express.json());
 app.use(cookieParser());
 app.use(cors());
 
+
+const traderUpdateBankDetails = require("./routes/users/trader-update-bank-details")
+const traderUpdateUpiDetails = require("./routes/users/trader-update-upi-details")
 const authoriseUpiId = require("./routes/authorise-upi-id")
  
 const authoriseBank = require("./routes/authorise-bank")
@@ -409,6 +412,10 @@ const allPasswordChange = require('./routes/passwordChange/allPasswordChange')
 // app.use(express.urlencoded({ extended: true }));
 // app.use(express.json());
 // app.use(cookieParser());
+
+
+app.use("/user", traderUpdateBankDetails)
+app.use("/user", traderUpdateUpiDetails)
 
 app.use("/admin", adminLogin);
 app.use("/admin", adminLogout);

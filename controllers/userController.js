@@ -2979,4 +2979,91 @@ exports.traderCountForGraph = async (req, res) => {
 };
 
 
+// traderUpdateBankDetails
+exports.traderUpdateBankDetails = async (req, res) => {
+  try {
+    const {
+      accountHolderName,
+      bankName,
+      branchName,
+      accountNumber,
+      ifscCode,
+      userId,
+    } = req.body;
+
+    if (
+      !accountHolderName ||
+      !bankName ||
+      !branchName ||
+      !accountNumber ||
+      !ifscCode
+    ) {
+      return res.status(400).json({ message: "Please fill all the fields" });
+    }
+
+    const updateToBank = await BankAccountHolder.findOneAndUpdate(
+      { userId: userId },
+      {
+        $set: {
+          accountHolderName: accountHolderName,
+          bankName: bankName,
+          branchName: branchName,
+          accountNumber: accountNumber,
+          accountNumber: accountNumber,
+          ifscCode: ifscCode,
+          isAuthorised:false,
+        },
+      },
+      { new: true }
+    );
+
+    if (updateToBank) {
+      return res
+        .status(200)
+        .json({ message: "Your Bank Details Updated Successfully", data: updateToBank });
+    } else {
+      return res.status(404).json({ message: "Trader not found" });
+    }
+  } catch (error) {
+    console.error(error);
+    return res.status(500).json({ message: "Internal Server Error" });
+  }
+};
+
+// traderUpdateUpiDetails
+exports.traderUpdateUpiDetails = async (req, res) => {
+  try {
+    const { upiId, userId } = req.body;
+    if (!upiId) {
+      return res.status(400).json({ message: "Please fill all the fields 1" });
+    }
+
+    const updateToUpiId = await UpiHolder.findOneAndUpdate(
+      { userId: userId },
+      {
+        $set: {
+          upiId: upiId,
+          isAuthorised: false,
+        },
+      },
+      { new: true }
+    );
+
+    if (updateToUpiId) {
+      return res
+        .status(200)
+        .json({ message: "Your UPI Details Updated Successfully", data: updateToUpiId });
+    } else {
+      return res.status(404).json({ message: "Trader not found" });
+    }
+  } catch (error) {
+    console.error(error);
+    return res.status(500).json({ message: "Internal Server Error" });
+  }
+};
+
+
+
+
+
 
