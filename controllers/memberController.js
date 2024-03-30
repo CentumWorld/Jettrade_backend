@@ -916,19 +916,20 @@ exports.getOwnMemberCreditWalletTransactionDetails = async (req, res) => {
     console.log(memberId, "memberid");
 
     // Fetch member based on the given member ID
-    const member = await Member.findOne({ memberid: memberId });
+    // const member = await Member.findOne({ memberid: memberId });
 
-    console.log(member, "member");
+    // console.log(member, "member");
 
     // Check if the member exists
-    if (!member) {
-      return res.status(404).json({ message: "Member not found" });
-    }
+    // if (!member) {
+    //   return res.status(404).json({ message: "Member not found" });
+    // }
 
     // Fetch member credit wallet transactions based on member ID
     const memberTransactions = await MemberCreditWalletTransaction.find({
       memberId: memberId,
     });
+    console.log(memberTransactions,932)
 
     if (memberTransactions.length == 0) {
       return res.status(400).json({ message: "member transaction not found" });
