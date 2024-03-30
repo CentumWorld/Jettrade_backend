@@ -1022,7 +1022,7 @@ exports.createMemberBankAccountHolder = async (req, res) => {
     if (existingAccount) {
       return res
         .status(400)
-        .json({ message: "Member already has a bank account" });
+        .json({ message: "Referral already has a bank account" });
     }
 
     const newAccountHolder = new BankAccountHolder({
@@ -1053,7 +1053,7 @@ exports.createMemberUpiHolder = async (req, res) => {
     const { upiId, userId } = req.body;
 
     if (!upiId) {
-      return res.status(400).json({ message: "UpiId is required" });
+      return res.status(400).json({ message: "UPI Id is required" });
     }
     const member = await Member.findOne({ memberid: userId });
 
@@ -1065,7 +1065,7 @@ exports.createMemberUpiHolder = async (req, res) => {
     const existingAccount = await UpiHolder.findOne({ userId });
 
     if (existingAccount) {
-      return res.status(400).json({ message: "User already has an upi Id" });
+      return res.status(400).json({ message: "Referral already has an UPI Id" });
     }
 
     const newUpi = new UpiHolder({
