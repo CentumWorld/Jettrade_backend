@@ -5029,6 +5029,7 @@ exports.totalTradingValue = async (req, res) => {
     }
 
     return res.status(200).json({
+      status: true,
       message: "Total trading value calculated and saved successfully",
     });
   } catch (error) {
@@ -5178,3 +5179,19 @@ exports.fetchtotalTradingValue = async (req, res) => {
     return res.status(500).json({ error: "Internal server error" });
   }
 };
+
+exports.authoriseBank = async(req, res) => {
+  try {
+    const {userId} = req.body
+
+     await BankAccountHolder.updateOne({
+      userId, 
+      $set: {
+        isAuthorised: true
+      }
+     })
+    
+  } catch (error) {
+    
+  }
+}

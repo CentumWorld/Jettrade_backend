@@ -24,6 +24,10 @@ const BankAccountHolderSchema = new mongoose.Schema({
     type: String,
     required: true,
   },
+  isAuthorised:{
+    type: Boolean,
+    default: false
+  },
 }, {timestamps:true});
 
 const BankAccountHolder = mongoose.model('BankAccountHolder', BankAccountHolderSchema);
