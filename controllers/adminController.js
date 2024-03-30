@@ -5012,9 +5012,9 @@ exports.totalTradingValue = async (req, res) => {
       const liquidity = user.tradingWallet;
 
       // Calculate the increase based on the percentage
-      const increase = (user.tradingWallet * percentage) / 100;
+      const increase = ((user.tradingWallet * percentage) / 100);
       // Add the increase to the original tradingWallet value
-      user.tradingWallet += increase;
+      user.tradingWallet = (user.tradingWallet + increase).toFixed(2);
       await user.save();
 
       // Create and save TotaltradingValue document for the current user
@@ -5065,97 +5065,7 @@ exports.adminFetchAllUpiDetails = async (req, res) => {
   } catch (error) {
     // If an error occurs, send an error response
     console.error("Error fetching bank details:", error);
-    res.status(500).json({ error: "Internal Server Error" });
-  }
-};
-
-// adminViewAllBankDetails
-exports.adminViewAllBankDetails = async (req, res) => {
-  try {
-    // Fetch all user bank details from the BankHolder model
-    const allBankDetails = await BankAccountHolder.find();
-
-    // Send the fetched bank details as a response
-    res.status(200).json(allBankDetails);
-  } catch (error) {
-    // If an error occurs, send an error response
-    console.error("Error fetching bank details:", error);
-    res.status(500).json({ error: "Internal Server Error" });
-  }
-};
-
-// adminFetchAllUpiDetails
-exports.adminFetchAllUpiDetails = async (req, res) => {
-  try {
-    // Fetch all user bank details from the BankHolder model
-    const allUpiDetails = await UpiHolder.find();
-
-    // Send the fetched bank details as a response
-    res.status(200).json(allUpiDetails);
-  } catch (error) {
-    // If an error occurs, send an error response
-    console.error("Error fetching bank details:", error);
-    res.status(500).json({ error: "Internal Server Error" });
-  }
-};
-
-// adminViewAllBankDetails
-exports.adminViewAllBankDetails = async (req, res) => {
-  try {
-    // Fetch all user bank details from the BankHolder model
-    const allBankDetails = await BankAccountHolder.find();
-
-    // Send the fetched bank details as a response
-    res.status(200).json(allBankDetails);
-  } catch (error) {
-    // If an error occurs, send an error response
-    console.error("Error fetching bank details:", error);
-    res.status(500).json({ error: "Internal Server Error" });
-  }
-};
-
-// adminFetchAllUpiDetails
-exports.adminFetchAllUpiDetails = async (req, res) => {
-  try {
-    // Fetch all user bank details from the BankHolder model
-    const allUpiDetails = await UpiHolder.find();
-
-    // Send the fetched bank details as a response
-    res.status(200).json(allUpiDetails);
-  } catch (error) {
-    // If an error occurs, send an error response
-    console.error("Error fetching bank details:", error);
-    res.status(500).json({ error: "Internal Server Error" });
-  }
-};
-
-// adminViewAllBankDetails
-exports.adminViewAllBankDetails = async (req, res) => {
-  try {
-    // Fetch all user bank details from the BankHolder model
-    const allBankDetails = await BankAccountHolder.find();
-
-    // Send the fetched bank details as a response
-    res.status(200).json(allBankDetails);
-  } catch (error) {
-    // If an error occurs, send an error response
-    console.error("Error fetching bank details:", error);
-    res.status(500).json({ error: "Internal Server Error" });
-  }
-};
-
-// adminFetchAllUpiDetails
-exports.adminFetchAllUpiDetails = async (req, res) => {
-  try {
-    // Fetch all user bank details from the BankHolder model
-    const allUpiDetails = await UpiHolder.find();
-
-    // Send the fetched bank details as a response
-    res.status(200).json(allUpiDetails);
-  } catch (error) {
-    // If an error occurs, send an error response
-    console.error("Error fetching bank details:", error);
-    res.status(500).json({ error: "Internal Server Error" });
+    res.status(500).json({ message: "Internal Server Error" });
   }
 };
 
@@ -5176,22 +5086,27 @@ exports.fetchtotalTradingValue = async (req, res) => {
     });
   } catch (error) {
     console.error("Error occurred:", error);
-    return res.status(500).json({ error: "Internal server error" });
+    return res.status(500).json({ message: "Internal server error" });
   }
 };
 
-exports.authoriseBank = async(req, res) => {
+exports.authoriseBank = async (req, res) => {
   try {
-    const {userId} = req.body
+    const { userId } = req.body;
 
-     await BankAccountHolder.updateOne({
-      userId, 
-      $set: {
-        isAuthorised: true
-      }
-     })
-    
+  const updatedBank =  await BankAccountHolder.findOneAndUpdate(
+      { userId },
+      {
+        $set: {
+          isAuthorised: true
+        }
+      }, 
+      {new: true}
+    );
+
+    return res.status(200).json({status: true, message: "Bank account authorised successfully", data: updatedBank });
   } catch (error) {
-    
+    console.error("Error occurred:", error.message);
+    return res.status(500).json({ message: "Internal server error" });
   }
-}
+};

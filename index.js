@@ -11,7 +11,8 @@ app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
 app.use(cookieParser());
 app.use(cors());
-
+ 
+const authoriseBank = require("./routes/authorise-bank")
 const countTraderReferralForGraph = require("./routes/frenchise/count-trader-referral-for-graph")
 const fetchtotalTradingValue = require("./routes/fetch-total-trading-value")
 const countTraderReferralFranchiseForGraph = require("./routes/state/count-trader-referral-franchsie-for-graph")
@@ -656,6 +657,7 @@ app.use('/admin',adminViewAllBankDetails);
 app.use('/admin',adminFetchAllUpiDetails);
 
 app.use('/admin', fetchtotalTradingValue)
+app.use('/admin', authoriseBank)
 
 // -------------admin ------------------//
 
