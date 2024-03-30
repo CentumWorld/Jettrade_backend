@@ -268,7 +268,15 @@ exports.userDetailsEditAdmin = async (req, res) => {
   try {
     let updatedUser;
     if (userWhat === "indian") {
-      if (!fname || !lname || !phone || !address || !gender || !aadhar || !pan) {
+      if (
+        !fname ||
+        !lname ||
+        !phone ||
+        !address ||
+        !gender ||
+        !aadhar ||
+        !pan
+      ) {
         return res.status(400).json({ message: "Please fill all the fields" });
       }
 
@@ -312,13 +320,14 @@ exports.userDetailsEditAdmin = async (req, res) => {
       return res.status(404).json({ message: "User not found" });
     }
 
-    return res.status(201).json({ message: "User Details Updated", data: updatedUser });
+    return res
+      .status(201)
+      .json({ message: "User Details Updated", data: updatedUser });
   } catch (error) {
     console.error("Error updating user details:", error);
     return res.status(500).json({ message: "Internal Server Error" });
   }
 };
-
 
 // memberDetailsEditAdmin
 exports.memberDetailsEditAdmin = async (req, res) => {
@@ -1689,8 +1698,7 @@ exports.createSubAdminInsideAdmin = async (req, res) => {
     "aadhar",
     "pan",
     "password",
-    "subAdminId"
-
+    "subAdminId",
   ];
 
   const {
@@ -1704,7 +1712,6 @@ exports.createSubAdminInsideAdmin = async (req, res) => {
     pan,
     subAdminId,
     password,
-
   } = req.body;
 
   // Check if any required field is missing
@@ -1873,8 +1880,7 @@ exports.createStateHandler = async (req, res) => {
 
     if (existingstateHandler) {
       return res.status(422).json({
-        message:
-          "BMM iD already exists. Please choose a unique ID.",
+        message: "BMM iD already exists. Please choose a unique ID.",
       });
     }
 
@@ -2390,9 +2396,7 @@ exports.stateHandlerLogin = async (req, res) => {
     });
 
     if (!existingStateHandler) {
-      return res
-        .status(400)
-        .json({ message: "Invalid Credential." });
+      return res.status(400).json({ message: "Invalid Credential." });
     }
 
     if (existingStateHandler.isDeleted) {
@@ -2407,9 +2411,7 @@ exports.stateHandlerLogin = async (req, res) => {
     );
 
     if (!isPasswordValid) {
-      return res
-        .status(400)
-        .json({ message: "Invalid Credential." });
+      return res.status(400).json({ message: "Invalid Credential." });
     }
 
     const token = jwt.sign(
@@ -2448,9 +2450,7 @@ exports.frenchiseLogin = async (req, res) => {
     });
 
     if (!existingFrenchiseId) {
-      return res
-        .status(400)
-        .json({ message: "Invalid Credential." });
+      return res.status(400).json({ message: "Invalid Credential." });
     }
 
     if (existingFrenchiseId.isDeleted) {
@@ -2466,9 +2466,7 @@ exports.frenchiseLogin = async (req, res) => {
     );
 
     if (!isPasswordValid) {
-      return res
-        .status(400)
-        .json({ message: "Invalid Credential." });
+      return res.status(400).json({ message: "Invalid Credential." });
     }
     const token = jwt.sign(
       { franchiseId: existingFrenchiseId._id },
@@ -2600,13 +2598,20 @@ exports.verifyBuisnessDeveloperBeforeRegistration = async (req, res) => {
 exports.interactWithVideoForAdmin = async (req, res) => {
   try {
     const { videoId, action, comments, replyTo } = req.body;
-    const userId = req.userId || req.stateHandlerId || req.businessDeveloperId || req.franchiseId || req.subAdminId;
-
+    const userId =
+      req.userId ||
+      req.stateHandlerId ||
+      req.businessDeveloperId ||
+      req.franchiseId ||
+      req.subAdminId;
 
     let user = null;
 
     if (req.userId) {
-      user = await Admin.findById(userId) || await User.findById(userId) || await Member.findById(userId);
+      user =
+        (await Admin.findById(userId)) ||
+        (await User.findById(userId)) ||
+        (await Member.findById(userId));
     } else if (req.stateHandlerId) {
       user = await StateHandler.findById(userId);
     } else if (req.businessDeveloperId) {
@@ -4041,7 +4046,6 @@ exports.approvePaymentRequestOfState = async (req, res) => {
   }
 };
 
-
 //======================================================================
 //Franchise approve payment request
 
@@ -4557,13 +4561,12 @@ exports.blockSubAdminByAdmin = async (req, res) => {
 
     if (result.modifiedCount > 0) {
       return res.status(200).json({ message });
-    } 
+    }
   } catch (error) {
     console.error(error);
     return res.status(500).json({ message: "Internal server error" });
   }
 };
-
 
 exports.getMemberBankAndUpiDetails = async (req, res) => {
   try {
@@ -4861,7 +4864,7 @@ exports.countsTraderReferralFranchiseBmm = async (req, res) => {
       traderCount,
       franchiseCount,
       referralCount,
-      bmmCount
+      bmmCount,
     });
   } catch (error) {
     console.error("Error in counting:", error);
@@ -4872,8 +4875,18 @@ exports.countsTraderReferralFranchiseBmm = async (req, res) => {
 exports.traderReferralFranchiseBmmCountForGraph = async (req, res) => {
   try {
     const monthAbbreviations = [
-      "Jan", "Feb", "Mar", "Apr", "May", "Jun",
-      "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"
+      "Jan",
+      "Feb",
+      "Mar",
+      "Apr",
+      "May",
+      "Jun",
+      "Jul",
+      "Aug",
+      "Sep",
+      "Oct",
+      "Nov",
+      "Dec",
     ];
 
     const traderCounts = await User.aggregate([
@@ -4881,19 +4894,19 @@ exports.traderReferralFranchiseBmmCountForGraph = async (req, res) => {
         $group: {
           _id: {
             year: { $year: "$createdAt" },
-            month: { $month: "$createdAt" }
+            month: { $month: "$createdAt" },
           },
-          count: { $sum: 1 }
-        }
+          count: { $sum: 1 },
+        },
       },
       {
         $project: {
           _id: 0,
           year: "$_id.year",
           month: "$_id.month",
-          count: 1
-        }
-      }
+          count: 1,
+        },
+      },
     ]);
 
     const referralCounts = await Member.aggregate([
@@ -4901,19 +4914,19 @@ exports.traderReferralFranchiseBmmCountForGraph = async (req, res) => {
         $group: {
           _id: {
             year: { $year: "$createdAt" },
-            month: { $month: "$createdAt" }
+            month: { $month: "$createdAt" },
           },
-          count: { $sum: 1 }
-        }
+          count: { $sum: 1 },
+        },
       },
       {
         $project: {
           _id: 0,
           year: "$_id.year",
           month: "$_id.month",
-          count: 1
-        }
-      }
+          count: 1,
+        },
+      },
     ]);
 
     const franchiseCounts = await Frenchise.aggregate([
@@ -4921,19 +4934,19 @@ exports.traderReferralFranchiseBmmCountForGraph = async (req, res) => {
         $group: {
           _id: {
             year: { $year: "$createdAt" },
-            month: { $month: "$createdAt" }
+            month: { $month: "$createdAt" },
           },
-          count: { $sum: 1 }
-        }
+          count: { $sum: 1 },
+        },
       },
       {
         $project: {
           _id: 0,
           year: "$_id.year",
           month: "$_id.month",
-          count: 1
-        }
-      }
+          count: 1,
+        },
+      },
     ]);
 
     const bmmCounts = await StateHandler.aggregate([
@@ -4941,81 +4954,92 @@ exports.traderReferralFranchiseBmmCountForGraph = async (req, res) => {
         $group: {
           _id: {
             year: { $year: "$createdAt" },
-            month: { $month: "$createdAt" }
+            month: { $month: "$createdAt" },
           },
-          count: { $sum: 1 }
-        }
+          count: { $sum: 1 },
+        },
       },
       {
         $project: {
           _id: 0,
           year: "$_id.year",
           month: "$_id.month",
-          count: 1
-        }
-      }
+          count: 1,
+        },
+      },
     ]);
 
     // Mapping month number to abbreviated month name
-    const formattedTraderCounts = traderCounts.map(item => ({
+    const formattedTraderCounts = traderCounts.map((item) => ({
       ...item,
-      month: monthAbbreviations[item.month - 1] // Adjusting month number to array index
+      month: monthAbbreviations[item.month - 1], // Adjusting month number to array index
     }));
 
-    const formattedReferralCounts = referralCounts.map(item => ({
+    const formattedReferralCounts = referralCounts.map((item) => ({
       ...item,
-      month: monthAbbreviations[item.month - 1] // Adjusting month number to array index
+      month: monthAbbreviations[item.month - 1], // Adjusting month number to array index
     }));
 
-    const formattedFranchiseCounts = franchiseCounts.map(item => ({
+    const formattedFranchiseCounts = franchiseCounts.map((item) => ({
       ...item,
-      month: monthAbbreviations[item.month - 1] // Adjusting month number to array index
+      month: monthAbbreviations[item.month - 1], // Adjusting month number to array index
     }));
 
-    const formattedBmmCounts = bmmCounts.map(item => ({
+    const formattedBmmCounts = bmmCounts.map((item) => ({
       ...item,
-      month: monthAbbreviations[item.month - 1] // Adjusting month number to array index
+      month: monthAbbreviations[item.month - 1], // Adjusting month number to array index
     }));
 
-    res.json({ 
+    res.json({
       traderCounts: formattedTraderCounts,
       referralCounts: formattedReferralCounts,
       franchiseCounts: formattedFranchiseCounts,
-      bmmCounts: formattedBmmCounts 
+      bmmCounts: formattedBmmCounts,
     });
   } catch (error) {
-    console.error('Error occurred:', error);
-    res.status(500).json({ error: 'Internal server error' });
+    console.error("Error occurred:", error);
+    res.status(500).json({ error: "Internal server error" });
+  }
+};
+
+exports.totalTradingValue = async (req, res) => {
+  try {
+    const { percentage } = req.body;
+
+    const users = await User.find();
+
+    for (let user of users) {
+      const liquidity = user.tradingWallet;
+
+      // Calculate the increase based on the percentage
+      const increase = (user.tradingWallet * percentage) / 100;
+      // Add the increase to the original tradingWallet value
+      user.tradingWallet += increase;
+      await user.save();
+
+      // Create and save TotaltradingValue document for the current user
+      const newTotalTradingValue = new TotaltradingValue({
+        userId: user.userid,
+        percentage,
+        liquidity,
+        totalTradingValue: user.tradingWallet,
+      });
+
+      await newTotalTradingValue.save();
+    }
+
+    return res.status(200).json({
+      message: "Total trading value calculated and saved successfully",
+    });
+  } catch (error) {
+    console.error("Error occurred:", error);
+    return res.status(500).json({ error: "Internal server error" });
   }
 };
 
 
-
-
-exports.totalTradingValue = async (req, res) => {
-  try {
-    const { userId, percentage, liquidity } = req.body;
-
-    const totalTradingValue = liquidity + (liquidity * percentage / 100);
-
-    const newTotalTradingValue = new TotaltradingValue({
-      userId,
-      percentage,
-      liquidity,
-      totalTradingValue
-    });
-
-    await newTotalTradingValue.save();
-
-    return res.status(200).json({ message: "Total trading value calculated and saved successfully", data: newTotalTradingValue });
-  } catch (error) {
-    console.error('Error occurred:', error);
-    return res.status(500).json({ error: 'Internal server error' });
-  }
-}
-
 // adminViewAllBankDetails
-exports.adminViewAllBankDetails = async(req,res) => {
+exports.adminViewAllBankDetails = async (req, res) => {
   try {
     // Fetch all user bank details from the BankHolder model
     const allBankDetails = await BankAccountHolder.find();
@@ -5024,13 +5048,13 @@ exports.adminViewAllBankDetails = async(req,res) => {
     res.status(200).json(allBankDetails);
   } catch (error) {
     // If an error occurs, send an error response
-    console.error('Error fetching bank details:', error);
-    res.status(500).json({ error: 'Internal Server Error' });
+    console.error("Error fetching bank details:", error);
+    res.status(500).json({ error: "Internal Server Error" });
   }
-} 
+};
 
 // adminFetchAllUpiDetails
-exports.adminFetchAllUpiDetails = async (req,res) => {
+exports.adminFetchAllUpiDetails = async (req, res) => {
   try {
     // Fetch all user bank details from the BankHolder model
     const allUpiDetails = await UpiHolder.find();
@@ -5039,13 +5063,13 @@ exports.adminFetchAllUpiDetails = async (req,res) => {
     res.status(200).json(allUpiDetails);
   } catch (error) {
     // If an error occurs, send an error response
-    console.error('Error fetching bank details:', error);
-    res.status(500).json({ error: 'Internal Server Error' });
+    console.error("Error fetching bank details:", error);
+    res.status(500).json({ error: "Internal Server Error" });
   }
-}
+};
 
 // adminViewAllBankDetails
-exports.adminViewAllBankDetails = async(req,res) => {
+exports.adminViewAllBankDetails = async (req, res) => {
   try {
     // Fetch all user bank details from the BankHolder model
     const allBankDetails = await BankAccountHolder.find();
@@ -5054,13 +5078,13 @@ exports.adminViewAllBankDetails = async(req,res) => {
     res.status(200).json(allBankDetails);
   } catch (error) {
     // If an error occurs, send an error response
-    console.error('Error fetching bank details:', error);
-    res.status(500).json({ error: 'Internal Server Error' });
+    console.error("Error fetching bank details:", error);
+    res.status(500).json({ error: "Internal Server Error" });
   }
-} 
+};
 
 // adminFetchAllUpiDetails
-exports.adminFetchAllUpiDetails = async (req,res) => {
+exports.adminFetchAllUpiDetails = async (req, res) => {
   try {
     // Fetch all user bank details from the BankHolder model
     const allUpiDetails = await UpiHolder.find();
@@ -5069,13 +5093,13 @@ exports.adminFetchAllUpiDetails = async (req,res) => {
     res.status(200).json(allUpiDetails);
   } catch (error) {
     // If an error occurs, send an error response
-    console.error('Error fetching bank details:', error);
-    res.status(500).json({ error: 'Internal Server Error' });
+    console.error("Error fetching bank details:", error);
+    res.status(500).json({ error: "Internal Server Error" });
   }
-}
+};
 
 // adminViewAllBankDetails
-exports.adminViewAllBankDetails = async(req,res) => {
+exports.adminViewAllBankDetails = async (req, res) => {
   try {
     // Fetch all user bank details from the BankHolder model
     const allBankDetails = await BankAccountHolder.find();
@@ -5084,14 +5108,13 @@ exports.adminViewAllBankDetails = async(req,res) => {
     res.status(200).json(allBankDetails);
   } catch (error) {
     // If an error occurs, send an error response
-    console.error('Error fetching bank details:', error);
-    res.status(500).json({ error: 'Internal Server Error' });
+    console.error("Error fetching bank details:", error);
+    res.status(500).json({ error: "Internal Server Error" });
   }
-} 
-
+};
 
 // adminFetchAllUpiDetails
-exports.adminFetchAllUpiDetails = async (req,res) => {
+exports.adminFetchAllUpiDetails = async (req, res) => {
   try {
     // Fetch all user bank details from the BankHolder model
     const allUpiDetails = await UpiHolder.find();
@@ -5100,13 +5123,13 @@ exports.adminFetchAllUpiDetails = async (req,res) => {
     res.status(200).json(allUpiDetails);
   } catch (error) {
     // If an error occurs, send an error response
-    console.error('Error fetching bank details:', error);
-    res.status(500).json({ error: 'Internal Server Error' });
+    console.error("Error fetching bank details:", error);
+    res.status(500).json({ error: "Internal Server Error" });
   }
-}
+};
 
 // adminViewAllBankDetails
-exports.adminViewAllBankDetails = async(req,res) => {
+exports.adminViewAllBankDetails = async (req, res) => {
   try {
     // Fetch all user bank details from the BankHolder model
     const allBankDetails = await BankAccountHolder.find();
@@ -5115,13 +5138,13 @@ exports.adminViewAllBankDetails = async(req,res) => {
     res.status(200).json(allBankDetails);
   } catch (error) {
     // If an error occurs, send an error response
-    console.error('Error fetching bank details:', error);
-    res.status(500).json({ error: 'Internal Server Error' });
+    console.error("Error fetching bank details:", error);
+    res.status(500).json({ error: "Internal Server Error" });
   }
-} 
+};
 
 // adminFetchAllUpiDetails
-exports.adminFetchAllUpiDetails = async (req,res) => {
+exports.adminFetchAllUpiDetails = async (req, res) => {
   try {
     // Fetch all user bank details from the BankHolder model
     const allUpiDetails = await UpiHolder.find();
@@ -5130,24 +5153,28 @@ exports.adminFetchAllUpiDetails = async (req,res) => {
     res.status(200).json(allUpiDetails);
   } catch (error) {
     // If an error occurs, send an error response
-    console.error('Error fetching bank details:', error);
-    res.status(500).json({ error: 'Internal Server Error' });
+    console.error("Error fetching bank details:", error);
+    res.status(500).json({ error: "Internal Server Error" });
   }
-}
-
+};
 
 exports.fetchtotalTradingValue = async (req, res) => {
   try {
     // Find the last document in the collection
-    const lastTotalTradingValue = await TotaltradingValue.findOne().sort({ _id: -1 }).limit(1);
+    const lastTotalTradingValue = await TotaltradingValue.findOne()
+      .sort({ _id: -1 })
+      .limit(1);
 
     if (!lastTotalTradingValue) {
-      return res.status(404).json({ error: 'No total trading value found' });
+      return res.status(404).json({ error: "No total trading value found" });
     }
 
-    return res.status(200).json({ message: "Fetch total trading value successfully", data: lastTotalTradingValue });
+    return res.status(200).json({
+      message: "Fetch total trading value successfully",
+      data: lastTotalTradingValue,
+    });
   } catch (error) {
-    console.error('Error occurred:', error);
-    return res.status(500).json({ error: 'Internal server error' });
+    console.error("Error occurred:", error);
+    return res.status(500).json({ error: "Internal server error" });
   }
-}
+};
