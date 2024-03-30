@@ -5009,30 +5009,37 @@ exports.totalTradingValue = async (req, res) => {
     // Fetch all users and their tradingWallet values in a single query
     const users = await User.find({}, 'userid tradingWallet');
 
-    console.log(users)
-
-    // Create an array to store the updated TotaltradingValue documents
+    // Array to store updated TotaltradingValue documents
     const totalTradingValues = [];
 
-    // Loop through the users array and calculate/update trading values
+    // Calculate updates for each user
     for (let user of users) {
       const liquidity = user.tradingWallet;
 
       // Calculate the increase based on the percentage
-      const increase = (user.tradingWallet * percentage) / 100;
-      // Add the increase to the original tradingWallet value
-      user.tradingWallet = (user.tradingWallet + increase).toFixed(2);
-      await user.save();
-      // Push the updated trading value to the array
+      const increase = user.tradingWallet * (percentage / 100);
+
+      // Store the updated trading value without rounding
+      const updatedTradingWallet = (user.tradingWallet + increase).toFixed(2);
+
+      // Store updates for bulk insertion
       totalTradingValues.push({
         userId: user.userid,
         percentage,
         liquidity,
-        totalTradingValue:  user.tradingWallet,
+        totalTradingValue: updatedTradingWallet,
       });
     }
 
-    // Bulk insert all TotaltradingValue documents into the database
+    // Update all users in bulk
+    const updatedUsers = await User.bulkWrite(totalTradingValues.map(({ userId, totalTradingValue }) => ({
+      updateOne: {
+        filter: { userid: userId },
+        update: { tradingWallet: totalTradingValue}, // Rounding here
+      }
+    })));
+
+    // Insert all TotaltradingValue documents into the database
     await TotaltradingValue.insertMany(totalTradingValues);
 
     return res.status(200).json({
