@@ -5075,7 +5075,7 @@ exports.adminViewAllBankDetails = async (req, res) => {
 exports.adminFetchAllUpiDetails = async (req, res) => {
   try {
     // Fetch all user bank details from the BankHolder model
-    const allUpiDetails = await UpiHolder.find();
+    const allUpiDetails = await UpiHolder.find().sort({isAuthorised:1});
 
     // Send the fetched bank details as a response
     res.status(200).json(allUpiDetails);
@@ -5127,6 +5127,33 @@ exports.authoriseBank = async (req, res) => {
         status: true,
         message: "Bank account authorised successfully",
         data: updatedBank,
+      });
+  } catch (error) {
+    console.error("Error occurred:", error.message);
+    return res.status(500).json({ message: "Internal server error" });
+  }
+};
+
+exports.authoriseUpiId = async (req, res) => {
+  try {
+    const { userId } = req.body;
+
+    const updatedUpiId = await UpiHolder.findOneAndUpdate(
+      { userId },
+      {
+        $set: {
+          isAuthorised: true,
+        },
+      },
+      { new: true }
+    );
+
+    return res
+      .status(200)
+      .json({
+        status: true,
+        message: "UPI Id authorised successfully",
+        data: updatedUpiId,
       });
   } catch (error) {
     console.error("Error occurred:", error.message);

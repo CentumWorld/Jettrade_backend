@@ -8,6 +8,10 @@ const UpiHolderSchema = new mongoose.Schema({
     type: String,
     required: true,
   },
+  isAuthorised: {
+    type: Boolean,
+    default:false,
+  }
 });
 
 const UpiHolder = mongoose.model('UpiHolder', UpiHolderSchema);

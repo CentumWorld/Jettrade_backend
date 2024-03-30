@@ -822,7 +822,7 @@ exports.createStateUpiHolder = async (req, res) => {
 
     const existingUpiId = await UpiHolder.findOne({ userId });
     if (existingUpiId) {
-      return res.status(409).json({ message: "You already have a UPI ID" });
+      return res.status(400).json({ message: "You already have an UPI ID" });
     }
 
     const newUpi = new UpiHolder({
@@ -1156,6 +1156,7 @@ exports.stateUpdateBankDetails = async (req, res) => {
           accountNumber: accountNumber,
           accountNumber: accountNumber,
           ifscCode: ifscCode,
+          isAuthorised:false,
         },
       },
       { new: true }
@@ -1164,7 +1165,7 @@ exports.stateUpdateBankDetails = async (req, res) => {
     if (updateToMember) {
       return res
         .status(200)
-        .json({ message: "Member Bank Details Updated", data: updateToMember });
+        .json({ message: "Your Bank Details Updated", data: updateToMember });
     } else {
       return res.status(404).json({ message: "Member not found" });
     }
@@ -1187,6 +1188,7 @@ exports.stateUpdateUpiDetails = async (req, res) => {
       {
         $set: {
           upiId: upiId,
+          isAuthorised: false,
         },
       },
       { new: true }
@@ -1195,7 +1197,7 @@ exports.stateUpdateUpiDetails = async (req, res) => {
     if (updateToMember) {
       return res
         .status(200)
-        .json({ message: "Member UPI Details Updated", data: updateToMember });
+        .json({ message: "Your UPI Details Updated", data: updateToMember });
     } else {
       return res.status(404).json({ message: "Member not found" });
     }

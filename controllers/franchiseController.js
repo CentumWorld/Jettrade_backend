@@ -648,7 +648,7 @@ exports.createFranchiseUpiHolder = async (req, res) => {
     const existingUpiId = await UpiHolder.findOne({userId});
     if(existingUpiId){
       return res.status(400).json({
-        message:"You already have a UPI ID"
+        message:"You already have an UPI Id"
       })
     }
 
@@ -988,6 +988,7 @@ exports.franchieUpdateOwnbankDetails = async (req, res) => {
           accountNumber: accountNumber,
           accountNumber: accountNumber,
           ifscCode: ifscCode,
+          isAuthorised:false,
         },
       },
       { new: true }
@@ -1022,6 +1023,7 @@ exports.franchiseUpdateUpiDetails = async (req, res) => {
       {
         $set: {
           upiId: upiId,
+          isAuthorised:false,
         },
       },
       { new: true }

@@ -1037,7 +1037,7 @@ exports.createMemberBankAccountHolder = async (req, res) => {
     const savedAccountHolder = await newAccountHolder.save();
 
     return res.status(201).json({
-      message: "Member Account holder created successfully",
+      message: "Referral Bank Account details saved successfully",
       accountHolder: savedAccountHolder,
     });
   } catch (error) {
@@ -1076,7 +1076,7 @@ exports.createMemberUpiHolder = async (req, res) => {
     const savedUpi = await newUpi.save();
     return res
       .status(201)
-      .json({ message: "Member upi created successfully", savedUpi });
+      .json({ message: "UPI Id saved successfully", savedUpi });
   } catch (error) {
     console.error("Error creating UPI ID:", error.message);
     res.status(500).json({ message: "Internal server error" });
@@ -1204,6 +1204,7 @@ exports.editMemberBankDetails = async (req, res) => {
           accountNumber: accountNumber,
           accountNumber: accountNumber,
           ifscCode: ifscCode,
+          isAuthorised:false,
         },
       },
       { new: true }
@@ -1212,7 +1213,7 @@ exports.editMemberBankDetails = async (req, res) => {
     if (updateToMember) {
       return res
         .status(200)
-        .json({ message: "Member Bank Details Updated", data: updateToMember });
+        .json({ message: "Referral Bank Details Updated", data: updateToMember });
     } else {
       return res.status(404).json({ message: "Member not found" });
     }
@@ -1235,6 +1236,7 @@ exports.editMemberUpiId = async (req, res) => {
       {
         $set: {
           upiId: upiId,
+          isAuthorised:false,
         },
       },
       { new: true }
@@ -1243,7 +1245,7 @@ exports.editMemberUpiId = async (req, res) => {
     if (updateToMember) {
       return res
         .status(200)
-        .json({ message: "Member UPI Details Updated", data: updateToMember });
+        .json({ message: "Referral UPI Id Updated", data: updateToMember });
     } else {
       return res.status(404).json({ message: "Member not found" });
     }
