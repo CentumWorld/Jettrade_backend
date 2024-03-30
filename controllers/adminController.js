@@ -5007,7 +5007,7 @@ exports.totalTradingValue = async (req, res) => {
     const { percentage } = req.body;
 
     // Fetch all users and their tradingWallet values in a single query
-    const users = await User.find({}, 'userid tradingWallet');
+    const users = await User.find({}, "userid tradingWallet");
 
     // Array to store updated TotaltradingValue documents
     const totalTradingValues = [];
@@ -5032,12 +5032,14 @@ exports.totalTradingValue = async (req, res) => {
     }
 
     // Update all users in bulk
-    const updatedUsers = await User.bulkWrite(totalTradingValues.map(({ userId, totalTradingValue }) => ({
-      updateOne: {
-        filter: { userid: userId },
-        update: { tradingWallet: totalTradingValue}, // Rounding here
-      }
-    })));
+    const updatedUsers = await User.bulkWrite(
+      totalTradingValues.map(({ userId, totalTradingValue }) => ({
+        updateOne: {
+          filter: { userid: userId },
+          update: { tradingWallet: totalTradingValue }, // Rounding here
+        },
+      }))
+    );
 
     // Insert all TotaltradingValue documents into the database
     await TotaltradingValue.insertMany(totalTradingValues);
@@ -5052,13 +5054,13 @@ exports.totalTradingValue = async (req, res) => {
   }
 };
 
-
-
 // adminViewAllBankDetails
 exports.adminViewAllBankDetails = async (req, res) => {
   try {
     // Fetch all user bank details from the BankHolder model
-    const allBankDetails = await BankAccountHolder.find();
+    const allBankDetails = await BankAccountHolder.find().sort({
+      isAuthorised: 1,
+    });
 
     // Send the fetched bank details as a response
     res.status(200).json(allBankDetails);
@@ -5109,17 +5111,23 @@ exports.authoriseBank = async (req, res) => {
   try {
     const { userId } = req.body;
 
-  const updatedBank =  await BankAccountHolder.findOneAndUpdate(
+    const updatedBank = await BankAccountHolder.findOneAndUpdate(
       { userId },
       {
         $set: {
-          isAuthorised: true
-        }
-      }, 
-      {new: true}
+          isAuthorised: true,
+        },
+      },
+      { new: true }
     );
 
-    return res.status(200).json({status: true, message: "Bank account authorised successfully", data: updatedBank });
+    return res
+      .status(200)
+      .json({
+        status: true,
+        message: "Bank account authorised successfully",
+        data: updatedBank,
+      });
   } catch (error) {
     console.error("Error occurred:", error.message);
     return res.status(500).json({ message: "Internal server error" });

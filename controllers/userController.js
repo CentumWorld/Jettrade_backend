@@ -2788,6 +2788,13 @@ exports.createUserUpiHolder = async (req, res) => {
     if (!upiId) {
       return res.status(400).json({ message: "UPI Id is required" });
     }
+
+    const existingUpi = await UpiHolder.findOne({ userId });
+
+    if (existingUpi) {
+      return res.status(400).json({ message: "User has already an UPI Id " });
+    }
+
     const user = await User.findOne({ memberid: userId });
 
     if (!user) {
@@ -2802,12 +2809,13 @@ exports.createUserUpiHolder = async (req, res) => {
     const savedUpi = await newUpi.save();
     return res
       .status(201)
-      .json({ message: "User UPI created successfully", savedUpi });
+      .json({ message: "UPI Id saved successfully", savedUpi });
   } catch (error) {
     console.error("Error creating UPI ID:", error.message);
     res.status(500).json({ message: "Internal server error" });
   }
 };
+
 //==============================================================
 
 exports.getOwnUserBankAndUpiDetails = async (req, res) => {
