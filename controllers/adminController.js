@@ -5006,37 +5006,45 @@ exports.totalTradingValue = async (req, res) => {
   try {
     const { percentage } = req.body;
 
-    const users = await User.find();
+    // Fetch all users and their tradingWallet values in a single query
+    const users = await User.find({}, 'userid tradingWallet');
 
+    console.log(users)
+
+    // Create an array to store the updated TotaltradingValue documents
+    const totalTradingValues = [];
+
+    // Loop through the users array and calculate/update trading values
     for (let user of users) {
       const liquidity = user.tradingWallet;
 
       // Calculate the increase based on the percentage
-      const increase = ((user.tradingWallet * percentage) / 100);
+      const increase = (user.tradingWallet * percentage) / 100;
       // Add the increase to the original tradingWallet value
       user.tradingWallet = (user.tradingWallet + increase).toFixed(2);
       await user.save();
-
-      // Create and save TotaltradingValue document for the current user
-      const newTotalTradingValue = new TotaltradingValue({
+      // Push the updated trading value to the array
+      totalTradingValues.push({
         userId: user.userid,
         percentage,
         liquidity,
-        totalTradingValue: user.tradingWallet,
+        totalTradingValue:  user.tradingWallet,
       });
-
-      await newTotalTradingValue.save();
     }
+
+    // Bulk insert all TotaltradingValue documents into the database
+    await TotaltradingValue.insertMany(totalTradingValues);
 
     return res.status(200).json({
       status: true,
-      message: "Total trading value calculated and saved successfully",
+      message: "Total trading values calculated and saved successfully",
     });
   } catch (error) {
     console.error("Error occurred:", error);
     return res.status(500).json({ error: "Internal server error" });
   }
 };
+
 
 
 // adminViewAllBankDetails
