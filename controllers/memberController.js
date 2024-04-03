@@ -346,60 +346,58 @@ exports.memberLogin = async (req, res) => {
 };
 
 // memberProfileVerification
+
 exports.memberProfileVerification = async (req, res) => {
-  if (
-    !req.files ||
-    !req.files["aadhar_front_side"] ||
-    !req.files["aadhar_back_side"] ||
-    !req.files["pan_card"]
-  ) {
-    return res.status(422).json({ message: "Please Fill all Details!" });
-  }
+  try {
+    const adharFront = req.files["aadhar_front_side"]
+      ? req.files["aadhar_front_side"][0]?.location
+      : null;
 
-  //console.log(req.files);
-  const { memberid } = req.body;
-  const aadhar_front_side = req.files.aadhar_front_side[0].location;
-  const aadhar_back_side = req.files.aadhar_back_side[0].location;
-  const pan_card = req.files.pan_card[0].location;
-  console.log(aadhar_back_side, aadhar_front_side, pan_card, memberid, "140");
+    const adharBack = req.files["aadhar_back_side"]
+      ? req.files["aadhar_back_side"][0]?.location
+      : null;
 
-  if (!aadhar_front_side || !aadhar_back_side || !pan_card) {
-    return res.status(422).json({ message: "All field required" });
-  }
-  // console.log(userid);
-  // ------------------------------------------
-  const member = await Member.find({ memberid });
+    const panCard = req.files["pan_card"]
+      ? req.files["pan_card"][0]?.location
+      : null;
 
-  if (member.length > 0) {
-    Member.updateOne({ memberid: memberid })
-      .set({
-        aadhar_front_side: aadhar_front_side,
-        aadhar_back_side: aadhar_back_side,
-        pan_card: pan_card,
-      })
-      .then(() => {
-        return res.status(201).json({ message: "Document Updated" });
-      });
-  } else {
-    const memberdocument = new Member({
-      memberid,
-      aadhar_front_side,
-      aadhar_back_side,
-      pan_card,
-    });
-    const success = await memberdocument.save();
+    const memberid = req.body.memberid;
 
-    if (success) {
-      return res.send({
-        code: 200,
-        message: "Uploaded Successfully",
-      });
-    } else {
-      return res.send({
-        code: 500,
-        message: "Service Error",
-      });
+    if (!memberid) {
+      return res.status(400).json({ message: "User Id is required" });
     }
+
+    let updateFields = {};
+
+    if (adharFront) {
+      updateFields.aadhar_front_side = adharFront;
+    }
+
+    if (adharBack) {
+      updateFields.aadhar_back_side = adharBack;
+    }
+
+    if (panCard) {
+      updateFields.pan_card = panCard;
+    }
+
+   const userDocuments = await Member.findOneAndUpdate(
+      { memberid: memberid },
+      { $set: updateFields },
+      { new: true }
+    );
+
+    if (!userDocuments) {
+      return res.status(404).json({ message: "User not found" });
+    }
+    
+    return res.status(200).json({
+      message: "All documents uploaded successfully.",
+      data: userDocuments,
+    });
+  } catch (error) {
+    console.log(error.message);
+    res.status(500).json({ message: "Internal server error" });
   }
 };
 
