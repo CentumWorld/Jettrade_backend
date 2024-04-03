@@ -901,6 +901,7 @@ exports.countTraderReferral = async (req, res) => {
   try {
     const { referralId } = req.body;
 
+
     const member = await Member.find({ reffered_id: referralId });
 
     const memberReferralIds = member.map((member) => member.refferal_id);
@@ -1052,12 +1053,21 @@ exports.countTraderReferralForGraph = async (req, res) => {
  
     // Get members associated with the referralIds
     const member = await Member.find({ reffered_id:  referralId});
-    const memberReferralIds = member.map(member => member.refferal_id);
+
+    console.log(member, "member list")
+
+
+    const memberReferralIds = member.map(member => member.refferal_id);4
+
+    console.log(memberReferralIds, "member referral ids")
+
 
     // Get traders associated with the referralId and member referralIds
     const traders = await User.find({
       reffered_id: { $in: [referralId, ...memberReferralIds] },
     });
+
+    console.log(traders)
 
     // Aggregate counts based on year and month
     const counts = {
