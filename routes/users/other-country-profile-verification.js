@@ -9,6 +9,8 @@ const userController = require("../../controllers/userController");
 const {
   authenticateUser,
   authorizeUser,
+  authenticateAdmin,
+  authorizeRole,
 } = require("../../middleware/checkAuth");
 
 AWS.config.update({
@@ -39,8 +41,8 @@ var singleUpload = upload.single("ID_Card");
 router.post(
   "/users/other-country-profile-verification",
   singleUpload,
-  authenticateUser,
-  authorizeUser,
+  authenticateAdmin,
+  authorizeRole(["user","member"]),
   userController.otherCountryProfileVerification
 );
 
