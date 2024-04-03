@@ -1356,11 +1356,9 @@ exports.updateDocuments = async (req, res) => {
       { $set: updateFields },
       { new: true }
     );
-
-    // If user is not found in StateHandler collection, check in Franchise collection
     if (!userDocuments) {
       userDocuments = await Frenchise.findOneAndUpdate(
-        { franchiseId: userId },
+        { frenchiseId: userId },
         { $set: updateFields },
         { new: true }
       );

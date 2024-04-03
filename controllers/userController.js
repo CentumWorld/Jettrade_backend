@@ -604,38 +604,63 @@ exports.userFetchDeatils = async (req, res) => {
 // profileVerification
 exports.profileVerification = async (req, res) => {
   try {
+    const adharFront = req.files["aadhar_front_side"]
+      ? req.files["aadhar_front_side"][0]?.location
+      : null;
+
+    const adharBack = req.files["aadhar_back_side"]
+      ? req.files["aadhar_back_side"][0]?.location
+      : null;
+
+    const panCard = req.files["pan_card"]
+      ? req.files["pan_card"][0]?.location
+      : null;
+
     const userid = req.body.userid;
-    const aadhar_front_side = req.files["aadhar_front_side"] ? req.files["aadhar_front_side"][0].location : null;
-    const aadhar_back_side = req.files["aadhar_back_side"] ? req.files["aadhar_back_side"][0].location : null;
-    const pan_card = req.files["pan_card"] ? req.files["pan_card"][0].location : null;
 
-    if (!aadhar_front_side && !aadhar_back_side && !pan_card) {
-      return res.status(422).json({ message: "Please provide at least one document" });
+    if (!userid) {
+      return res.status(400).json({ message: "User Id is required" });
     }
 
-    const user = await User.findOne({ id: userid });
-    if (user) {
-      await User.updateOne({ id: userid }, {
-        $set: {
-          aadhar_front_side: aadhar_front_side || user.aadhar_front_side,
-          aadhar_back_side: aadhar_back_side || user.aadhar_back_side,
-          pan_card: pan_card || user.pan_card,
-        }
-      });
-      return res.status(201).json({ message: "Documents Updated" });
-    } else {
-      const userdocument = new User({
-        userid,
-        aadhar_front_side,
-        aadhar_back_side,
-        pan_card,
-      });
-      await userdocument.save();
-      return res.status(200).json({ message: "Documents Uploaded Successfully" });
+    let updateFields = {};
+
+    if (adharFront) {
+      updateFields.aadhar_front_side = adharFront;
     }
+
+    if (adharBack) {
+      updateFields.aadhar_back_side = adharBack;
+    }
+
+    if (panCard) {
+      updateFields.pan_card = panCard;
+    }
+
+    // Update documents in StateHandler collection
+   const userDocuments = await User.findOneAndUpdate(
+      { userid: userid },
+      { $set: updateFields },
+      { new: true }
+    );
+    // if (!userDocuments) {
+    //   userDocuments = await Frenchise.findOneAndUpdate(
+    //     { franchiseId: userId },
+    //     { $set: updateFields },
+    //     { new: true }
+    //   );
+    // }
+
+    if (!userDocuments) {
+      return res.status(404).json({ message: "User not found" });
+    }
+    
+    return res.status(200).json({
+      message: "All documents uploaded successfully.",
+      data: userDocuments,
+    });
   } catch (error) {
-    console.error(error);
-    return res.status(500).json({ message: "Internal Server Error" });
+    console.log(error.message);
+    res.status(500).json({ message: "Internal server error" });
   }
 };
 

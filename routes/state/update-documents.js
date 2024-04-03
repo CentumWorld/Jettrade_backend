@@ -11,8 +11,9 @@ router.patch(
   "/upload-documents/:userId",
   upload.fields([{  name: 'adhar_front_side' }, { name: 'adhar_back_side' },{name:'panCard'}]),
   authenticateAdmin,
-  authorizeRole(["state", "franchise"]),
+  authorizeRole(["state", "franchise", "user", "member"]),
   updateDocuments
 );
 
 module.exports = router;
+
