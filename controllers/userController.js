@@ -636,19 +636,11 @@ exports.profileVerification = async (req, res) => {
       updateFields.pan_card = panCard;
     }
 
-    // Update documents in StateHandler collection
    const userDocuments = await User.findOneAndUpdate(
       { userid: userid },
       { $set: updateFields },
       { new: true }
     );
-    // if (!userDocuments) {
-    //   userDocuments = await Frenchise.findOneAndUpdate(
-    //     { franchiseId: userId },
-    //     { $set: updateFields },
-    //     { new: true }
-    //   );
-    // }
 
     if (!userDocuments) {
       return res.status(404).json({ message: "User not found" });
