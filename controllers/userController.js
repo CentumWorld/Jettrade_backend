@@ -1661,32 +1661,47 @@ exports.setNotificationToFalseUser = async (req, res) => {
 
 // otherCountryProfileVerification
 exports.otherCountryProfileVerification = async (req, res) => {
-  if (!req.file) {
-    return res.status(400).json({ message: "No File Uploaded" });
-  }
-  const ID_Card = req.file.location;
+  try {
+    if (!req.file) {
+      return res.status(400).json({ message: "No File Uploaded" });
+    }
+    
+    const ID_Card = req.file.location;
 
-  if (!ID_Card) {
-    return res.status(422).json({ message: "All field required" });
-  }
-  const userid = req.body.userid;
-  User.findOneAndUpdate(
-    { userid: userid },
-    {ID_Card : ID_Card }, 
-    { new: true } 
-  )
-  .then(updatedUser => {
-    if (updatedUser) {
-      return res.status(200).json({ message: "Profile photo updated successfully", user: updatedUser });
+    if (!ID_Card) {
+      return res.status(422).json({ message: "ID Card field is required" });
+    }
+    
+    const userid = req.body.userid;
+
+    let updatedUser, updatedMember;
+
+    // Update user document
+    updatedUser = await User.findOneAndUpdate(
+      { userid: userid },
+      { $set: { ID_Card: ID_Card } },
+      { new: true }
+    );
+
+    // If user not found, update member document
+    if (!updatedUser) {
+      updatedMember = await Member.findOneAndUpdate(
+        { memberid: userid },
+        { $set: { ID_Card: ID_Card } },
+        { new: true }
+      );
+    }
+
+    if (updatedUser || updatedMember) {
+      return res.status(200).json({ message: "Profile photo updated successfully", user: updatedUser || updatedMember });
     } else {
       console.log("User not found with userid:", userid);
       return res.status(404).json({ message: "User not found" });
     }
-  })
-  .catch(error => {
+  } catch (error) {
+    console.error("Error updating profile photo:", error);
     return res.status(500).json({ message: "Error updating profile photo" });
-  });
-  
+  }
 };
 
 // userTotalWithdrawal
