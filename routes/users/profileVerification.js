@@ -10,8 +10,7 @@ const { profileVerification } = require("../../controllers/userController");
 router.post(
   "/profileVerification",
   upload.fields([{  name: 'aadhar_front_side' }, { name: 'aadhar_back_side' },{name:'pan_card'}]),
-  authenticateAdmin,
-  authorizeRole([ "user"]),
+
   profileVerification
 );
 
