@@ -1320,49 +1320,54 @@ exports.updateDocuments = async (req, res) => {
       ? req.files["adhar_front_side"][0]?.location
       : null;
 
-    if (!adharFront) {
-      return res
-        .status(400)
-        .json({ message: "Please upload aadhaar card front side" });
-    }
-
     const adharBack = req.files["adhar_back_side"]
       ? req.files["adhar_back_side"][0]?.location
       : null;
-
-    if (!adharBack) {
-      return res
-        .status(400)
-        .json({ message: "Please upload aadhaar card back side" });
-    }
 
     const panCard = req.files["panCard"]
       ? req.files["panCard"][0]?.location
       : null;
 
-    if (!panCard) {
-      return res.status(400).json({ message: "Please upload PAN card" });
-    }
-
     const userId = req.params.userId;
 
-    let userDocuments = await StateHandler.findOneAndUpdate({ stateHandlerId: userId }, {
-      $set: {
-        adhar_front_side: adharFront,
-        adhar_back_side: adharBack,
-        panCard: panCard
-      }
-    }, { new: true });
+    if (!userId) {
+      return res.status(400).json({ message: "User Id is required" });
+    }
+
+    let updateFields = {};
+
+    if (adharFront) {
+      updateFields.adhar_front_side = adharFront;
+    }
+
+    if (adharBack) {
+      updateFields.adhar_back_side = adharBack;
+    }
+
+    if (panCard) {
+      updateFields.panCard = panCard;
+    }
+
+    let userDocuments;
+
+    // Update documents in StateHandler collection
+    userDocuments = await StateHandler.findOneAndUpdate(
+      { stateHandlerId: userId },
+      { $set: updateFields },
+      { new: true }
+    );
 
     // If user is not found in StateHandler collection, check in Franchise collection
     if (!userDocuments) {
-      userDocuments = await Frenchise.findOneAndUpdate({ franchiseId: userId }, {
-        $set: {
-          adhar_front_side: adharFront,
-          adhar_back_side: adharBack,
-          panCard: panCard
-        }
-      }, { new: true });
+      userDocuments = await Frenchise.findOneAndUpdate(
+        { franchiseId: userId },
+        { $set: updateFields },
+        { new: true }
+      );
+    }
+
+    if (!userDocuments) {
+      return res.status(404).json({ message: "User not found" });
     }
     
     return res.status(200).json({
@@ -1374,3 +1379,4 @@ exports.updateDocuments = async (req, res) => {
     res.status(500).json({ message: "Internal server error" });
   }
 };
+
