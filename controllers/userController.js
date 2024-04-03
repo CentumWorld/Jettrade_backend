@@ -603,76 +603,42 @@ exports.userFetchDeatils = async (req, res) => {
 
 // profileVerification
 exports.profileVerification = async (req, res) => {
-  if (
-    !req.files ||
-    !req.files["aadhar_front_side"] ||
-    !req.files["aadhar_back_side"] ||
-    !req.files["pan_card"]
-  ) {
-    return res.status(422).json({ message: "Please Fill all Details!" });
-  }
+  try {
+    const userid = req.body.userid;
+    const aadhar_front_side = req.files["aadhar_front_side"] ? req.files["aadhar_front_side"][0].location : null;
+    const aadhar_back_side = req.files["aadhar_back_side"] ? req.files["aadhar_back_side"][0].location : null;
+    const pan_card = req.files["pan_card"] ? req.files["pan_card"][0].location : null;
 
-  console.log(req.files);
-  const userid = req.body.userid;
-  const aadhar_front_side = req.files.aadhar_front_side[0].location;
-  const aadhar_back_side = req.files.aadhar_back_side[0].location;
-  const pan_card = req.files.pan_card[0].location;
-  console.log(aadhar_back_side, aadhar_front_side, pan_card, userid, "140");
-
-  if (!aadhar_front_side || !aadhar_back_side || !pan_card) {
-    return res.status(422).json({ message: "All field required" });
-  }
-  // console.log(userid);
-  // ------------------------------------------
-  const user = await User.find({ id: userid });
-  if (user) {
-    User.updateMany({ id: userid })
-      .set({
-        aadhar_front_side: aadhar_front_side,
-        aadhar_back_side: aadhar_back_side,
-        pan_card: pan_card,
-      })
-      .then(() => {
-        return res.status(201).json({ message: "Document Updated" });
-      });
-  } else {
-    const userdocument = new User({
-      userid,
-      aadhar_front_side,
-      aadhar_back_side,
-      pan_card,
-    });
-    const success = await userdocument.save();
-
-    if (success) {
-      return res.send({
-        code: 200,
-        message: "Uploaded Successfully",
-      });
-    } else {
-      return res.send({
-        code: 500,
-        message: "Service Error",
-      });
+    if (!aadhar_front_side && !aadhar_back_side && !pan_card) {
+      return res.status(422).json({ message: "Please provide at least one document" });
     }
+
+    const user = await User.findOne({ id: userid });
+    if (user) {
+      await User.updateOne({ id: userid }, {
+        $set: {
+          aadhar_front_side: aadhar_front_side || user.aadhar_front_side,
+          aadhar_back_side: aadhar_back_side || user.aadhar_back_side,
+          pan_card: pan_card || user.pan_card,
+        }
+      });
+      return res.status(201).json({ message: "Documents Updated" });
+    } else {
+      const userdocument = new User({
+        userid,
+        aadhar_front_side,
+        aadhar_back_side,
+        pan_card,
+      });
+      await userdocument.save();
+      return res.status(200).json({ message: "Documents Uploaded Successfully" });
+    }
+  } catch (error) {
+    console.error(error);
+    return res.status(500).json({ message: "Internal Server Error" });
   }
-
-  // --------------------------
-  //
-
-  // try {
-  //     token = req.token;
-  //     const userDetails = await User.findOne({token})
-  //     if (userDetails) {
-  //         const upload_doc = await userDetails.add_document( doc_type,front_side, back_side);
-
-  //         await userDetails.save();
-  //         return res.status(201).json({ message: "Document Uploaded Successfully" })
-  //     }
-  // } catch (error) {
-  //     console.log(error);
-  // }
 };
+
 
 // resetPassword
 exports.changePassword = async (req, res) => {
