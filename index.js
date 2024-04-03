@@ -280,6 +280,7 @@ const adminViewAllBankDetails = require('./routes/admin-view-all-bank-details');
 const adminFetchAllUpiDetails = require('./routes/admin-fetch-all-upi-details');
 
 //=======================State=================================================
+ const updateDocuments = require("./routes/state/update-documents")
 
 const getFranchisesByReferralId = require("./routes/state/fetch-frenchise-in-state");
 
@@ -709,6 +710,7 @@ app.use('/member',TotalCountOfTraders);
 app.use('/member',totalReferralPayoutAmount);
 
 //===============================State=============================================
+app.use("/state", updateDocuments)
 app.use("/state", getFranchisesByReferralId);
 app.use("/state", getBusinessDevelopersInState);
 app.use("/state", getAllMembersInState);

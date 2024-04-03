@@ -17,15 +17,6 @@ AWS.config.update({
 
 const s3 = new AWS.S3();
 
-// var storage = multer.diskStorage({
-//     destination: function (req, file, cb) {
-//         cb(null, 'public/img/users/doc')
-//     },
-//     filename: function (req, file, cb) {
-//         cb(null, `${file.originalname}-${Date.now()}`)
-//     }
-// })
-//const upload = multer({ storage: storage })
 
 const upload = multer({
   storage: multerS3({

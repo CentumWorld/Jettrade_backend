@@ -1156,7 +1156,7 @@ exports.stateUpdateBankDetails = async (req, res) => {
           accountNumber: accountNumber,
           accountNumber: accountNumber,
           ifscCode: ifscCode,
-          isAuthorised:false,
+          isAuthorised: false,
         },
       },
       { new: true }
@@ -1239,24 +1239,42 @@ exports.countTraderReferralFranchiseForGraph = async (req, res) => {
       referralCounts: [],
     };
 
-  // Function to add counts to the 'counts' object
-const addCount = (year, month, type) => {
-  const monthAbbreviations = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
-  const monthAbbreviation = monthAbbreviations[month - 1]; // Months are zero-indexed, so subtract 1
-  const monthYearKey = `${year}-${monthAbbreviation}`;
-  
-  // Check if the month-year combination already exists in the counts object
-  if (counts[`${type}Counts`].some(item => item.year === year && item.month === monthAbbreviation)) {
-    // If it exists, find the index of the existing item and increment its count
-    const index = counts[`${type}Counts`].findIndex(item => item.year === year && item.month === monthAbbreviation);
-    counts[`${type}Counts`][index].count++;
-  } else {
-    // If it doesn't exist, add a new count object
-    const countObj = { count: 1, year, month: monthAbbreviation };
-    counts[`${type}Counts`].push(countObj);
-  }
-};
+    // Function to add counts to the 'counts' object
+    const addCount = (year, month, type) => {
+      const monthAbbreviations = [
+        "Jan",
+        "Feb",
+        "Mar",
+        "Apr",
+        "May",
+        "Jun",
+        "Jul",
+        "Aug",
+        "Sep",
+        "Oct",
+        "Nov",
+        "Dec",
+      ];
+      const monthAbbreviation = monthAbbreviations[month - 1]; // Months are zero-indexed, so subtract 1
+      const monthYearKey = `${year}-${monthAbbreviation}`;
 
+      // Check if the month-year combination already exists in the counts object
+      if (
+        counts[`${type}Counts`].some(
+          (item) => item.year === year && item.month === monthAbbreviation
+        )
+      ) {
+        // If it exists, find the index of the existing item and increment its count
+        const index = counts[`${type}Counts`].findIndex(
+          (item) => item.year === year && item.month === monthAbbreviation
+        );
+        counts[`${type}Counts`][index].count++;
+      } else {
+        // If it doesn't exist, add a new count object
+        const countObj = { count: 1, year, month: monthAbbreviation };
+        counts[`${type}Counts`].push(countObj);
+      }
+    };
 
     // Add counts for franchise members
     franchise.forEach((franchise) => {
@@ -1293,4 +1311,66 @@ const extractYearMonth = (date) => {
   const year = date.getFullYear();
   const month = date.getMonth() + 1; // Months are zero-indexed, so add 1
   return { year, month };
+};
+
+
+exports.updateDocuments = async (req, res) => {
+  try {
+    const adharFront = req.files["adhar_front_side"]
+      ? req.files["adhar_front_side"][0]?.location
+      : null;
+
+    if (!adharFront) {
+      return res
+        .status(400)
+        .json({ message: "Please upload aadhaar card front side" });
+    }
+
+    const adharBack = req.files["adhar_back_side"]
+      ? req.files["adhar_back_side"][0]?.location
+      : null;
+
+    if (!adharBack) {
+      return res
+        .status(400)
+        .json({ message: "Please upload aadhaar card back side" });
+    }
+
+    const panCard = req.files["panCard"]
+      ? req.files["panCard"][0]?.location
+      : null;
+
+    if (!panCard) {
+      return res.status(400).json({ message: "Please upload PAN card" });
+    }
+
+    const userId = req.params.userId;
+
+    let userDocuments = await StateHandler.findOneAndUpdate({ stateHandlerId: userId }, {
+      $set: {
+        adhar_front_side: adharFront,
+        adhar_back_side: adharBack,
+        panCard: panCard
+      }
+    }, { new: true });
+
+    // If user is not found in StateHandler collection, check in Franchise collection
+    if (!userDocuments) {
+      userDocuments = await Frenchise.findOneAndUpdate({ franchiseId: userId }, {
+        $set: {
+          adhar_front_side: adharFront,
+          adhar_back_side: adharBack,
+          panCard: panCard
+        }
+      }, { new: true });
+    }
+    
+    return res.status(200).json({
+      message: "All documents uploaded successfully.",
+      data: userDocuments,
+    });
+  } catch (error) {
+    console.log(error.message);
+    res.status(500).json({ message: "Internal server error" });
+  }
 };
