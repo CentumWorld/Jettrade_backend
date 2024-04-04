@@ -85,14 +85,6 @@ exports.getUsersInFranchise = async (req, res) => {
   try {
     const { franchiseReferralId } = req.body;
 
-    const trader = await User.find({ reffered_id: franchiseReferralId });
-    if (trader.length > 0) {
-      return res.status(200).json({
-        message: "Fetched successfully all Users in the state",
-        data: trader,
-      });
-    }
-
     const members = await Member.find({
       reffered_id: franchiseReferralId,
     });
@@ -102,17 +94,22 @@ exports.getUsersInFranchise = async (req, res) => {
       });
     }
     const memberReferralIds = members.map((member) => member.refferal_id);
-    const users = await User.find({
-      reffered_id: { $in: memberReferralIds },
+
+    const traders = await User.find({
+      reffered_id: {
+        $in: [franchiseReferralId, ...memberReferralIds],
+      },
     });
-    if (users.length === 0) {
+
+
+    if (traders.length === 0) {
       return res.status(404).json({
-        message: "No user found in the given franchise",
+        message: "No trader found in the given franchise",
       });
     }
     res.status(200).json({
-      message: "Fetched successfully all users in the franchise",
-      data: users,
+      message: "Fetched successfully all traders in the franchise",
+      data: traders,
     });
   } catch (error) {
     console.log(error.message);
@@ -1057,7 +1054,7 @@ exports.countTraderReferralForGraph = async (req, res) => {
     console.log(member, "member list")
 
 
-    const memberReferralIds = member.map(member => member.refferal_id);4
+    const memberReferralIds = member.map(member => member.refferal_id);
 
     console.log(memberReferralIds, "member referral ids")
 

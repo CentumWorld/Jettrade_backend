@@ -148,14 +148,6 @@ exports.getAllUsersInState = async (req, res) => {
   try {
     const stateReferralId = req.body.stateReferralId;
 
-    const trader = await User.find({ reffered_id: stateReferralId });
-    if (trader.length > 0) {
-      return res.status(200).json({
-        message: "Fetched successfully all Users in the state",
-        data: trader,
-      });
-    }
-
     const franchisesInState = await Frenchise.find({
       referredId: stateReferralId,
     });
@@ -182,16 +174,22 @@ exports.getAllUsersInState = async (req, res) => {
 
     const memberReferralIds = members.map((member) => member.refferal_id);
 
-    const users = await User.find({ reffered_id: { $in: memberReferralIds } });
-    if (users.length === 0) {
+
+    const traders = await User.find({
+      reffered_id: {
+        $in: [stateReferralId, ...franchiseReferralIds, ...memberReferralIds],
+      },
+    });
+
+    if (traders.length === 0) {
       return res.status(404).json({
-        message: "No users found in the given state",
+        message: "No traders found in the given state",
       });
     }
 
     res.status(200).json({
       message: "Fetched successfully all Users in the state",
-      data: users,
+      data: traders,
     });
   } catch (error) {
     console.log(error.message);
