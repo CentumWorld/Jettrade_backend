@@ -27,7 +27,7 @@ exports.videoCreatorLogin = async (req, res) => {
 
         const userId = videoCreaterLogin.userId;
         res.status(201).json({
-          message: "Admin Login Successfully",
+          message: "Login Successfully",
           videoCreaterToken: token,
           userId,
           expires: new Date().getTime() + 60000,
