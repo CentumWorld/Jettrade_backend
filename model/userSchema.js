@@ -130,7 +130,11 @@ const userSchema = new mongoose.Schema({
   ,
   verifyDate: {
     type: Date
-  }
+  },
+  invoiceNumber: {
+    type: String
+  },
+  
 }, {timestamps:true});
 
 // Hash your password using bcrypt

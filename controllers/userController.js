@@ -45,7 +45,6 @@ const BankAccountHolder = require("../model/BankAccountHolderSchema");
 const UpiHolder = require("../model/UpiHolderSchema");
 const TotaltradingValue = require("../model/totalTradingValue");
 
-
 //const profilePhoto = require('../model/profilePhotoSchema');
 
 // userRegistartion
@@ -558,7 +557,7 @@ exports.userLogin = async (req, res) => {
 
     const isMatch = await bcrypt.compare(password, userLogin.password);
     const token = jwt.sign(
-      { userId: userLogin._id, role:"user" },
+      { userId: userLogin._id, role: "user" },
       process.env.SECRET_KEY,
       { expiresIn: "8h" } // Set the token to expire in 1 hour
     );
@@ -636,7 +635,7 @@ exports.profileVerification = async (req, res) => {
       updateFields.pan_card = panCard;
     }
 
-   const userDocuments = await User.findOneAndUpdate(
+    const userDocuments = await User.findOneAndUpdate(
       { userid: userid },
       { $set: updateFields },
       { new: true }
@@ -645,7 +644,7 @@ exports.profileVerification = async (req, res) => {
     if (!userDocuments) {
       return res.status(404).json({ message: "User not found" });
     }
-    
+
     return res.status(200).json({
       message: "All documents uploaded successfully.",
       data: userDocuments,
@@ -655,7 +654,6 @@ exports.profileVerification = async (req, res) => {
     res.status(500).json({ message: "Internal server error" });
   }
 };
-
 
 // resetPassword
 exports.changePassword = async (req, res) => {
@@ -1042,6 +1040,46 @@ exports.changeUserPaymentStatus = async (req, res) => {
   const userExist = await User.findOne({ userid: userid });
   const payment = userExist.paymentCount;
   const reffered_id = userExist.reffered_id;
+
+  // Find the document with the highest invoice number
+  const latestUserInvoice = await User.aggregate([
+    {
+      $group: {
+        _id: null,
+        maxInvoiceNumber: { $max: { $toInt: "$invoiceNumber" } },
+      },
+    },
+    {
+      $project: {
+        _id: 0,
+        maxInvoiceNumber: { $toString: "$maxInvoiceNumber" },
+      },
+    },
+  ]);
+
+  console.log(latestUserInvoice, 1060);
+
+  if (latestUserInvoice[0].maxInvoiceNumber === null) {
+    console.log("No invoices found");
+    const latestUserInvoiceNumber = "000001";
+    // Update the user document with the default invoice number
+    await User.updateOne(
+      { userid },
+      { $set: { invoiceNumber: latestUserInvoiceNumber } }
+    );
+    console.log("Default invoice number updated successfully");
+  } else {
+    const maxInvoiceNumber = latestUserInvoice[0].maxInvoiceNumber;
+    const updateToInVoiceNumber = String(
+      parseInt(maxInvoiceNumber) + 1
+    ).padStart(6, "0");
+    await User.updateOne(
+      { userid },
+      { $set: { invoiceNumber: updateToInVoiceNumber } }
+    );
+    console.log("invoice number updated successfully");
+  }
+
   const user = await User.updateOne(
     { userid: userid },
     {
@@ -1059,7 +1097,6 @@ exports.changeUserPaymentStatus = async (req, res) => {
 
   if (referaluser) {
     const userId = referaluser.userid;
-    console.log(userId, "1028");
     await Admin.updateOne(
       { referralId: "admin@123" },
       { $inc: { adminWallet: 2600 } }
@@ -1109,7 +1146,6 @@ exports.changeUserPaymentStatus = async (req, res) => {
       const findUserFromRefferedId = await User.find({
         refferal_id: reffered_id,
       });
-      console.log(findUserFromRefferedId, "592");
       if (findUserFromRefferedId.length > 0) {
         const findUserfromUser = await User.find({ refferal_id: reffered_id });
         if (findUserfromUser.length > 0 && payment < 1) {
@@ -1665,13 +1701,13 @@ exports.otherCountryProfileVerification = async (req, res) => {
     if (!req.file) {
       return res.status(400).json({ message: "No File Uploaded" });
     }
-    
+
     const ID_Card = req.file.location;
 
     if (!ID_Card) {
       return res.status(422).json({ message: "ID Card field is required" });
     }
-    
+
     const userid = req.body.userid;
 
     let updatedUser, updatedMember;
@@ -1693,7 +1729,10 @@ exports.otherCountryProfileVerification = async (req, res) => {
     }
 
     if (updatedUser || updatedMember) {
-      return res.status(200).json({ message: "Profile photo updated successfully", user: updatedUser || updatedMember });
+      return res.status(200).json({
+        message: "Profile photo updated successfully",
+        user: updatedUser || updatedMember,
+      });
     } else {
       console.log("User not found with userid:", userid);
       return res.status(404).json({ message: "User not found" });
@@ -2009,281 +2048,302 @@ exports.userTotalWithdrawalFromTradingWallet = async (req, res) => {
 
 // changePaymentStatusForRenewal
 exports.changePaymentStatusForRenewal = async (req, res) => {
-
   try {
-    
+    const { userid } = req.body;
+    const renewAmount = 1500;
 
-  const { userid } = req.body;
-  const renewAmount = 1500;
-
-  const userExist = await User.findOne({ userid: userid });
-
-  const payment = userExist.paymentCount;
-  const reffered_id = userExist.reffered_id;
-
-  await User.updateOne(
-    { userid: userid },
-    {
-      $set: {
-        paymentStatus: true,
-        paymentCount: payment + 1,
-        doj: new Date(),
+    // Find the document with the highest invoice number
+    const latestUserInvoice = await User.aggregate([
+      {
+        $group: {
+          _id: null,
+          maxInvoiceNumber: { $max: { $toInt: "$invoiceNumber" } },
+        },
       },
-    }
-  );
-
-  const referaluser = await User.findOne({
-    refferal_id: reffered_id,
-  });
-
-  const userActivate = new UserRenewal({
-    userid: userid,
-    renewalAmount: renewAmount,
-  });
-
- await userActivate.save();
-
-
-  if (referaluser) {
-    const userId = referaluser.userid;
-    await Admin.updateOne(
-      { referralId: "admin@123" },
-      { $inc: { adminWallet: 1000 } }
+      {
+        $project: {
+          _id: 0,
+          maxInvoiceNumber: { $toString: "$maxInvoiceNumber" },
+        },
+      },
+    ]);
+    const maxInvoiceNumber = latestUserInvoice[0].maxInvoiceNumber;
+    const updateToInVoiceNumber = String(
+      parseInt(maxInvoiceNumber) + 1
+    ).padStart(6, "0");
+    await User.updateOne(
+      { userid },
+      { $set: { invoiceNumber: updateToInVoiceNumber } }
     );
-    const adminRefferalTransaction = new AdminCreditWalletTransaction({
-      admin_id: "admin",
-      creditAmount: 1000,
-      refferUserId: userId,
-      Type: "Renewal",
-    });
-    adminRefferalTransaction.save();
+    const userExist = await User.findOne({ userid: userid });
+
+    const payment = userExist.paymentCount;
+    const reffered_id = userExist.reffered_id;
 
     await User.updateOne(
+      { userid: userid },
       {
-        refferal_id: reffered_id,
-      },
-      { $inc: { wallet: 500 } }
+        $set: {
+          paymentStatus: true,
+          paymentCount: payment + 1,
+          doj: new Date(),
+        },
+      }
     );
 
-    const userRefferalTransaction = new userCreditWalletTransaction({
-      userId: userId, // refer kiya hai
-      creditAmount: 500,
-      refferUserId: userExist.userid, // jisko refer hua hai
-      Type: "Renewal",
-    });
-    userRefferalTransaction.save();
-  }
-
-  //trader refer by member
-  const referralMember = await Member.findOne({
-    refferal_id: reffered_id,
-  });
-
-  if (referralMember) {
-    const memberUserId = referralMember.memberid;
-
-    const member = await Member.findOneAndUpdate(
-      {
-        refferal_id: reffered_id,
-      },
-      { $inc: { wallet: 500 } }
-    );
-
-    const memberRefferalTransaction = new memberCreditWalletTransaction({
-      memberId: memberUserId, // refer kiya hai
-      creditAmount: 500,
-      refferUserId: userExist.userid, // jisko refer hua hai
-      Type: "Renewal",
-    });
-    await memberRefferalTransaction.save();
-
-    const franchise = await Franchise.findOneAndUpdate(
-      { referralId: referralMember.reffered_id },
-      { $inc: { frenchiseWallet: 300 } },
-      { new: true }
-    );
-
-    const franchiseRefferalTransaction = new FranchiseCreditWalletTransaction({
-      frenchiseId: franchise.frenchiseId, // refer kiya hai
-      creditAmount: 300,
-      refferUserId: memberUserId, // jisko refer hua hai
-      Type: "Renewal",
-    });
-    await franchiseRefferalTransaction.save();
-
-    const bmm = await StateHandler.findOneAndUpdate(
-      { referralId: franchise.referredId },
-      { $inc: { stateHandlerWallet: 300 } },
-      { new: true }
-    );
-
-    const bmmRefferalTransaction = new StateHandlerCreditWalletTransaction({
-      stateHandlerId: bmm.stateHandlerId, // refer kiya hai
-      creditAmount: 300,
-      refferUserId: franchise.frenchiseId, // jisko refer hua hai
-      Type: "Renewal",
-    });
-    await bmmRefferalTransaction.save();
-
-    const admin = await Admin.findOne({
-      referralId: bmm.referredId,
+    const referaluser = await User.findOne({
+      refferal_id: reffered_id,
     });
 
-    let adminWallet = admin.adminWallet;
-    adminWallet += 400;
-
-    await Admin.updateOne(
-      { referralId: bmm.referredId },
-      { $set: { adminWallet } }
-    );
-
-    const adminCreditWalletDetails = new AdminCreditWalletTransaction({
-      admin_id: admin.admin_id,
-      creditAmount: 400,
-      Type: "Renewal",
-      refferUserId: bmm.stateHandlerId,
+    const userActivate = new UserRenewal({
+      userid: userid,
+      renewalAmount: renewAmount,
     });
 
-    await adminCreditWalletDetails.save();
-  }
+    await userActivate.save();
 
-  //trader refer by franchise
-  const referralFranchise = await Franchise.findOne({
-    referralId: reffered_id,
-  });
-
-  if (referralFranchise) {
-    console.log(referralFranchise)
-    const franchiseUserId = referralFranchise.frenchiseId;
-
-    const franchise = await Franchise.findOneAndUpdate(
-      { referralId: reffered_id },
-      { $inc: { frenchiseWallet: 500 } },
-      { new: true }
-    );
-
-    const franchiseRefferalTransaction = new FranchiseCreditWalletTransaction({
-      frenchiseId: franchiseUserId, // refer kiya hai
-      creditAmount: 500,
-      refferUserId: userExist.userid, // jisko refer hua hai
-      Type: "Renewal",
-    });
-    franchiseRefferalTransaction.save();
-
-    const bmm = await StateHandler.findOneAndUpdate(
-      { referralId: franchise.referredId },
-      { $inc: { stateHandlerWallet: 300 } },
-      { new: true }
-    );
-
-    const bmmRefferalTransaction = new StateHandlerCreditWalletTransaction({
-      stateHandlerId: bmm.stateHandlerId, // refer kiya hai
-      creditAmount: 300,
-      refferUserId: franchise.frenchiseId, // jisko refer hua hai
-      Type: "Renewal",
-    });
-    await bmmRefferalTransaction.save();
-
-    const admin = await Admin.findOne({
-      referralId: bmm.referredId,
-    });
-
-    let adminWallet = admin.adminWallet;
-    adminWallet += 700;
-
-    await Admin.updateOne(
-      { referralId: bmm.referredId },
-      { $set: { adminWallet } }
-    );
-
-    const adminCreditWalletDetails = new AdminCreditWalletTransaction({
-      admin_id: admin.admin_id,
-      creditAmount: 700,
-      Type: "Renewal",
-      refferUserId: bmm.stateHandlerId,
-    });
-
-    await adminCreditWalletDetails.save();
-  }
-
-  //trader refer by bmm
-  const referralBmm = await StateHandler.findOne({
-    referralId: reffered_id,
-  });
-
-  if (referralBmm) {
-    const bmmUserId = referralBmm.stateHandlerId;
-
-    const bmm = await StateHandler.findOneAndUpdate(
-      { referralId: reffered_id },
-      { $inc: { stateHandlerWallet: 500 } },
-      { new: true }
-    );
-
-    const bmmRefferalTransaction = new StateHandlerCreditWalletTransaction({
-      stateHandlerId: bmmUserId, // refer kiya hai
-      creditAmount: 500,
-      refferUserId: userExist.userid, // jisko refer hua hai
-      Type: "Renewal",
-    });
-    await bmmRefferalTransaction.save();
-
-    const admin = await Admin.findOne({
-      referralId: bmm.referredId,
-    });
-
-    let adminWallet = admin.adminWallet;
-    adminWallet += 1000;
-
-    await Admin.updateOne(
-      { referralId: bmm.referredId },
-      { $set: { adminWallet } }
-    );
-
-    const adminCreditWalletDetails = new AdminCreditWalletTransaction({
-      admin_id: admin.admin_id,
-      creditAmount: 1000,
-      Type: "Renewal",
-      refferUserId: bmmUserId,
-    });
-
-    await adminCreditWalletDetails.save();
-  }
-
-  if (reffered_id === "admin@123") {
-    const admin = await Admin.findOne({
-      referralId: "admin@123",
-    });
-
-    if (admin) {
-      let adminWallet = admin.adminWallet;
-
-      adminWallet += 1500;
-
+    if (referaluser) {
+      const userId = referaluser.userid;
       await Admin.updateOne(
         { referralId: "admin@123" },
-        { $set: { adminWallet: adminWallet } }
+        { $inc: { adminWallet: 1000 } }
       );
-
-      const adminCreditWalletTransaction = new AdminCreditWalletTransaction({
-        admin_id: admin.admin_id,
-        creditAmount: 1500,
-        refferUserId: userid,
+      const adminRefferalTransaction = new AdminCreditWalletTransaction({
+        admin_id: "admin",
+        creditAmount: 1000,
+        refferUserId: userId,
         Type: "Renewal",
       });
+      adminRefferalTransaction.save();
 
-      // Save the AdminCreditWalletTransaction document
-      await adminCreditWalletTransaction.save();
+      await User.updateOne(
+        {
+          refferal_id: reffered_id,
+        },
+        { $inc: { wallet: 500 } }
+      );
+
+      const userRefferalTransaction = new userCreditWalletTransaction({
+        userId: userId, // refer kiya hai
+        creditAmount: 500,
+        refferUserId: userExist.userid, // jisko refer hua hai
+        Type: "Renewal",
+      });
+      userRefferalTransaction.save();
     }
+
+    //trader refer by member
+    const referralMember = await Member.findOne({
+      refferal_id: reffered_id,
+    });
+
+    if (referralMember) {
+      const memberUserId = referralMember.memberid;
+
+      const member = await Member.findOneAndUpdate(
+        {
+          refferal_id: reffered_id,
+        },
+        { $inc: { wallet: 500 } }
+      );
+
+      const memberRefferalTransaction = new memberCreditWalletTransaction({
+        memberId: memberUserId, // refer kiya hai
+        creditAmount: 500,
+        refferUserId: userExist.userid, // jisko refer hua hai
+        Type: "Renewal",
+      });
+      await memberRefferalTransaction.save();
+
+      const franchise = await Franchise.findOneAndUpdate(
+        { referralId: referralMember.reffered_id },
+        { $inc: { frenchiseWallet: 300 } },
+        { new: true }
+      );
+
+      const franchiseRefferalTransaction = new FranchiseCreditWalletTransaction(
+        {
+          frenchiseId: franchise.frenchiseId, // refer kiya hai
+          creditAmount: 300,
+          refferUserId: memberUserId, // jisko refer hua hai
+          Type: "Renewal",
+        }
+      );
+      await franchiseRefferalTransaction.save();
+
+      const bmm = await StateHandler.findOneAndUpdate(
+        { referralId: franchise.referredId },
+        { $inc: { stateHandlerWallet: 300 } },
+        { new: true }
+      );
+
+      const bmmRefferalTransaction = new StateHandlerCreditWalletTransaction({
+        stateHandlerId: bmm.stateHandlerId, // refer kiya hai
+        creditAmount: 300,
+        refferUserId: franchise.frenchiseId, // jisko refer hua hai
+        Type: "Renewal",
+      });
+      await bmmRefferalTransaction.save();
+
+      const admin = await Admin.findOne({
+        referralId: bmm.referredId,
+      });
+
+      let adminWallet = admin.adminWallet;
+      adminWallet += 400;
+
+      await Admin.updateOne(
+        { referralId: bmm.referredId },
+        { $set: { adminWallet } }
+      );
+
+      const adminCreditWalletDetails = new AdminCreditWalletTransaction({
+        admin_id: admin.admin_id,
+        creditAmount: 400,
+        Type: "Renewal",
+        refferUserId: bmm.stateHandlerId,
+      });
+
+      await adminCreditWalletDetails.save();
+    }
+
+    //trader refer by franchise
+    const referralFranchise = await Franchise.findOne({
+      referralId: reffered_id,
+    });
+
+    if (referralFranchise) {
+      console.log(referralFranchise);
+      const franchiseUserId = referralFranchise.frenchiseId;
+
+      const franchise = await Franchise.findOneAndUpdate(
+        { referralId: reffered_id },
+        { $inc: { frenchiseWallet: 500 } },
+        { new: true }
+      );
+
+      const franchiseRefferalTransaction = new FranchiseCreditWalletTransaction(
+        {
+          frenchiseId: franchiseUserId, // refer kiya hai
+          creditAmount: 500,
+          refferUserId: userExist.userid, // jisko refer hua hai
+          Type: "Renewal",
+        }
+      );
+      franchiseRefferalTransaction.save();
+
+      const bmm = await StateHandler.findOneAndUpdate(
+        { referralId: franchise.referredId },
+        { $inc: { stateHandlerWallet: 300 } },
+        { new: true }
+      );
+
+      const bmmRefferalTransaction = new StateHandlerCreditWalletTransaction({
+        stateHandlerId: bmm.stateHandlerId, // refer kiya hai
+        creditAmount: 300,
+        refferUserId: franchise.frenchiseId, // jisko refer hua hai
+        Type: "Renewal",
+      });
+      await bmmRefferalTransaction.save();
+
+      const admin = await Admin.findOne({
+        referralId: bmm.referredId,
+      });
+
+      let adminWallet = admin.adminWallet;
+      adminWallet += 700;
+
+      await Admin.updateOne(
+        { referralId: bmm.referredId },
+        { $set: { adminWallet } }
+      );
+
+      const adminCreditWalletDetails = new AdminCreditWalletTransaction({
+        admin_id: admin.admin_id,
+        creditAmount: 700,
+        Type: "Renewal",
+        refferUserId: bmm.stateHandlerId,
+      });
+
+      await adminCreditWalletDetails.save();
+    }
+
+    //trader refer by bmm
+    const referralBmm = await StateHandler.findOne({
+      referralId: reffered_id,
+    });
+
+    if (referralBmm) {
+      const bmmUserId = referralBmm.stateHandlerId;
+
+      const bmm = await StateHandler.findOneAndUpdate(
+        { referralId: reffered_id },
+        { $inc: { stateHandlerWallet: 500 } },
+        { new: true }
+      );
+
+      const bmmRefferalTransaction = new StateHandlerCreditWalletTransaction({
+        stateHandlerId: bmmUserId, // refer kiya hai
+        creditAmount: 500,
+        refferUserId: userExist.userid, // jisko refer hua hai
+        Type: "Renewal",
+      });
+      await bmmRefferalTransaction.save();
+
+      const admin = await Admin.findOne({
+        referralId: bmm.referredId,
+      });
+
+      let adminWallet = admin.adminWallet;
+      adminWallet += 1000;
+
+      await Admin.updateOne(
+        { referralId: bmm.referredId },
+        { $set: { adminWallet } }
+      );
+
+      const adminCreditWalletDetails = new AdminCreditWalletTransaction({
+        admin_id: admin.admin_id,
+        creditAmount: 1000,
+        Type: "Renewal",
+        refferUserId: bmmUserId,
+      });
+
+      await adminCreditWalletDetails.save();
+    }
+
+    if (reffered_id === "admin@123") {
+      const admin = await Admin.findOne({
+        referralId: "admin@123",
+      });
+
+      if (admin) {
+        let adminWallet = admin.adminWallet;
+
+        adminWallet += 1500;
+
+        await Admin.updateOne(
+          { referralId: "admin@123" },
+          { $set: { adminWallet: adminWallet } }
+        );
+
+        const adminCreditWalletTransaction = new AdminCreditWalletTransaction({
+          admin_id: admin.admin_id,
+          creditAmount: 1500,
+          refferUserId: userid,
+          Type: "Renewal",
+        });
+
+        // Save the AdminCreditWalletTransaction document
+        await adminCreditWalletTransaction.save();
+      }
+    }
+
+    return res.status(200).json({ message: "Your payment successful" });
+  } catch (error) {
+    console.log(error.message);
+    return res.status(500).json({ message: "Internal server error" });
   }
-
-  return res.status(200).json({ message: "Your payment successful" });
-} catch (error) {
-  console.log(error.message)
-  return res.status(500).json({ message: "Internal server error" });
-
-    
-}
 };
 
 exports.tradingWalletTransferFromOneUserToAnother = async (req, res) => {
@@ -2749,12 +2809,14 @@ exports.createUserBankAccountHolder = async (req, res) => {
       return res.status(404).json({ message: "User not found" });
     }
 
-       // Check if the user already has a bank account
-       const existingAccount = await BankAccountHolder.findOne({ userId });
+    // Check if the user already has a bank account
+    const existingAccount = await BankAccountHolder.findOne({ userId });
 
-       if (existingAccount) {
-         return res.status(400).json({ message: "User already has a bank account" });
-       }
+    if (existingAccount) {
+      return res
+        .status(400)
+        .json({ message: "User already has a bank account" });
+    }
 
     const newAccountHolder = new BankAccountHolder({
       userId,
@@ -2880,102 +2942,117 @@ exports.verifyRefferalIdInUser = async (req, res) => {
   }
 };
 
-exports.traderFetchOwnReferralPayout = async (req,res) => {
+exports.traderFetchOwnReferralPayout = async (req, res) => {
   try {
-    const {userid} = req.body;
-    const fetchedData = await userCreditWalletTransaction.find({ userId:userid });
-  
+    const { userid } = req.body;
+    const fetchedData = await userCreditWalletTransaction.find({
+      userId: userid,
+    });
+
     if (fetchedData.length === 0) {
       return res.status(204).json({ message: "Invalid refferUserId" });
     }
-  
+
     return res.status(200).json({ message: "Fetched all data", fetchedData });
   } catch (error) {
     console.log(error.message);
     return res.status(500).json({ message: "Internal server error" });
   }
-  
-}
+};
 
 // totalReferralPayoutAmountTrader
-exports.totalReferralPayoutAmountTrader = async (req,res) => {
+exports.totalReferralPayoutAmountTrader = async (req, res) => {
   try {
     const { userId } = req.body;
     const result = await userCreditWalletTransaction.aggregate([
       {
-        $match: { userId: userId }
+        $match: { userId: userId },
       },
       {
         $group: {
           _id: null, // Grouping without a specific field to sum for all documents
-          totalPayout: { $sum: "$creditAmount" } // Assuming the field for amount is named 'amount'
-        }
-      }
+          totalPayout: { $sum: "$creditAmount" }, // Assuming the field for amount is named 'amount'
+        },
+      },
     ]);
 
     // result is an array of grouped results. In this case, it should have only one element.
     const totalPayout = result.length > 0 ? result[0].totalPayout : 0;
 
     return res.status(200).json({
-      totalPayout
+      totalPayout,
     });
-
   } catch (error) {
     console.error("Error fetching Total payout:", error);
     return res.status(500).json({ message: "Internal server error" });
   }
-}
+};
 
-exports.fetchTotalTradingValue = async(req, res) => {
+exports.fetchTotalTradingValue = async (req, res) => {
   try {
-    const {userId} = req.body
-    const totalTradingValue = await TotaltradingValue.find({userId})
+    const { userId } = req.body;
+    const totalTradingValue = await TotaltradingValue.find({ userId });
 
-    return res.status(200).json({ message: "Fetched total trading value successfully", data: totalTradingValue });    
-  } catch (error) {
-    
-  }
-}
+    return res.status(200).json({
+      message: "Fetched total trading value successfully",
+      data: totalTradingValue,
+    });
+  } catch (error) {}
+};
 
 exports.traderCountForGraph = async (req, res) => {
   try {
     const { referralId } = req.body;
 
     // Define an array mapping month numbers to month abbreviations
-    const monthNames = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+    const monthNames = [
+      "Jan",
+      "Feb",
+      "Mar",
+      "Apr",
+      "May",
+      "Jun",
+      "Jul",
+      "Aug",
+      "Sep",
+      "Oct",
+      "Nov",
+      "Dec",
+    ];
 
     const traderCounts = await User.aggregate([
       {
         $match: {
-          reffered_id: referralId
-        }
+          reffered_id: referralId,
+        },
       },
       {
         $group: {
           _id: {
             year: { $year: "$createdAt" },
-            month: { $month: "$createdAt" }
+            month: { $month: "$createdAt" },
           },
-          count: { $sum: 1 }
-        }
+          count: { $sum: 1 },
+        },
       },
       {
         $project: {
           _id: 0,
           year: "$_id.year",
-          month: { $arrayElemAt: [monthNames, { $subtract: ["$_id.month", 1] }] }, // Convert month number to month abbreviation
-          count: 1
-        }
-      }
+          month: {
+            $arrayElemAt: [monthNames, { $subtract: ["$_id.month", 1] }],
+          }, // Convert month number to month abbreviation
+          count: 1,
+        },
+      },
     ]);
 
     res.json({ traderCounts });
   } catch (error) {
-    console.error('Error occurred:', error);
-    res.status(500).json({ error: 'Internal server error' });
+    console.error("Error occurred:", error);
+    res.status(500).json({ error: "Internal server error" });
   }
 };
-
 
 // traderUpdateBankDetails
 exports.traderUpdateBankDetails = async (req, res) => {
@@ -3009,16 +3086,17 @@ exports.traderUpdateBankDetails = async (req, res) => {
           accountNumber: accountNumber,
           accountNumber: accountNumber,
           ifscCode: ifscCode,
-          isAuthorised:false,
+          isAuthorised: false,
         },
       },
       { new: true }
     );
 
     if (updateToBank) {
-      return res
-        .status(200)
-        .json({ message: "Your Bank Details Updated Successfully", data: updateToBank });
+      return res.status(200).json({
+        message: "Your Bank Details Updated Successfully",
+        data: updateToBank,
+      });
     } else {
       return res.status(404).json({ message: "Trader not found" });
     }
@@ -3048,9 +3126,10 @@ exports.traderUpdateUpiDetails = async (req, res) => {
     );
 
     if (updateToUpiId) {
-      return res
-        .status(200)
-        .json({ message: "Your UPI Details Updated Successfully", data: updateToUpiId });
+      return res.status(200).json({
+        message: "Your UPI Details Updated Successfully",
+        data: updateToUpiId,
+      });
     } else {
       return res.status(404).json({ message: "Trader not found" });
     }
@@ -3059,9 +3138,3 @@ exports.traderUpdateUpiDetails = async (req, res) => {
     return res.status(500).json({ message: "Internal Server Error" });
   }
 };
-
-
-
-
-
-
