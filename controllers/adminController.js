@@ -1976,8 +1976,17 @@ exports.createStateHandler = async (req, res) => {
 
     const savedData = await newStateHandler.save();
 
+    const token = jwt.sign(
+      { stateHandlerId: savedData._id },
+      process.env.SECRET_KEY,
+      {
+        expiresIn: "8h",
+      }
+    );
+
     return res.status(201).json({
       message: "BMM registed successfully.",
+      token,
       savedData,
     });
   } catch (error) {
@@ -2188,8 +2197,16 @@ exports.createFrenchise = async (req, res) => {
 
     const savedFranchise = await newFranchise.save();
 
+    const token = jwt.sign(
+      { franchiseId: savedFranchise._id },
+      process.env.SECRET_KEY,
+      {
+        expiresIn: "8h",
+      }
+    );
+
     return res.status(201).json({
-      message: "Franchise registed successfully",
+      message: "Franchise registed successfully",token,
       savedFranchise,
     });
   } catch (error) {

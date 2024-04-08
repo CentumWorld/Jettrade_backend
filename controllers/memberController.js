@@ -178,7 +178,12 @@ exports.memberRegistration = async (req, res) => {
       userType: "indian",
     });
     await member.save();
-    res.status(201).json({ message: "Member registered successfully", member });
+    const token = jwt.sign(
+      { userId: member._id },
+      process.env.SECRET_KEY,
+      { expiresIn: "8h" }
+    );
+    res.status(201).json({ message: "Referral registered successfully",token, member });
   } catch (error) {
     console.log(error);
   }
@@ -272,6 +277,8 @@ exports.otherCountryMemberRegistration = async (req, res) => {
         });
       }
 
+   
+
       const member = new Member({
         fname,
         lname,
@@ -289,9 +296,15 @@ exports.otherCountryMemberRegistration = async (req, res) => {
         userType: "other",
       });
       await member.save();
+
+      const token = jwt.sign(
+        { userId: member._id },
+        process.env.SECRET_KEY,
+        { expiresIn: "8h" }
+      );
       res
         .status(201)
-        .json({ message: "Member registered successfully", member });
+        .json({ message: "Referral registered successfully",token,  member });
     } catch (error) {
       console.log(error);
     }
