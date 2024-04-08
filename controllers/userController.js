@@ -221,13 +221,8 @@ exports.userRegistration = async (req, res) => {
 
       res.status(201).json({
         message: "User registered successfully",
-        _id: user._id,
-        fname,
-        refferal_id,
-        userType,
-        userid,
         token,
-        password,
+      userLogin: user,
       });
     } catch (error) {
       console.log(error);
@@ -289,13 +284,9 @@ exports.userRegistration = async (req, res) => {
       );
       res.status(201).json({
         message: "User registered successfully",
-        _id: user._id,
-        fname,
-        refferal_id,
-        userType,
-        userid,
         token,
-        password,
+        userLogin:user
+       
       });
     } catch (error) {
       console.log(error);
@@ -441,15 +432,14 @@ exports.otherCountryUserRegistration = async (req, res) => {
         process.env.SECRET_KEY,
         { expiresIn: 6000 } // Set the token to expire in 1 hour
       );
+
       return res.status(201).json({
         message: "User registered successfully",
-        _id: user._id,
-        fname,
-        referral_id: refferal_id,
-        userType,
-        userid: generatedUserId,
         token,
-        password: generatedPassword,
+        userLogin: user,
+
+
+       
       });
     } else {
       if (!userid) {
@@ -515,13 +505,9 @@ exports.otherCountryUserRegistration = async (req, res) => {
       );
       return res.status(201).json({
         message: "User registered successfully",
-        _id: user._id,
-        fname,
-        referral_id: refferal_id,
-        userType,
-        userid,
         token,
-        password,
+        userLogin: user
+       
       });
     }
   } catch (error) {
