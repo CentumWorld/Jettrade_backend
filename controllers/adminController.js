@@ -1987,7 +1987,7 @@ exports.createStateHandler = async (req, res) => {
     return res.status(201).json({
       message: "BMM registed successfully.",
       token,
-      savedData,
+      stateHandlerDetails: savedData,
     });
   } catch (error) {
     console.error(error);
@@ -2206,8 +2206,9 @@ exports.createFrenchise = async (req, res) => {
     );
 
     return res.status(201).json({
-      message: "Franchise registed successfully",token,
-      savedFranchise,
+      message: "Franchise registed successfully",
+      token,
+      frenchiseDetails: savedFranchise,
     });
   } catch (error) {
     console.error(error);
@@ -5092,7 +5093,7 @@ exports.adminViewAllBankDetails = async (req, res) => {
 exports.adminFetchAllUpiDetails = async (req, res) => {
   try {
     // Fetch all user bank details from the BankHolder model
-    const allUpiDetails = await UpiHolder.find().sort({isAuthorised:1});
+    const allUpiDetails = await UpiHolder.find().sort({ isAuthorised: 1 });
 
     // Send the fetched bank details as a response
     res.status(200).json(allUpiDetails);
@@ -5138,13 +5139,11 @@ exports.authoriseBank = async (req, res) => {
       { new: true }
     );
 
-    return res
-      .status(200)
-      .json({
-        status: true,
-        message: "Bank account authorised successfully",
-        data: updatedBank,
-      });
+    return res.status(200).json({
+      status: true,
+      message: "Bank account authorised successfully",
+      data: updatedBank,
+    });
   } catch (error) {
     console.error("Error occurred:", error.message);
     return res.status(500).json({ message: "Internal server error" });
@@ -5165,13 +5164,11 @@ exports.authoriseUpiId = async (req, res) => {
       { new: true }
     );
 
-    return res
-      .status(200)
-      .json({
-        status: true,
-        message: "UPI Id authorised successfully",
-        data: updatedUpiId,
-      });
+    return res.status(200).json({
+      status: true,
+      message: "UPI Id authorised successfully",
+      data: updatedUpiId,
+    });
   } catch (error) {
     console.error("Error occurred:", error.message);
     return res.status(500).json({ message: "Internal server error" });

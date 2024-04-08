@@ -183,7 +183,7 @@ exports.memberRegistration = async (req, res) => {
       process.env.SECRET_KEY,
       { expiresIn: "8h" }
     );
-    res.status(201).json({ message: "Referral registered successfully",token, member });
+    res.status(201).json({ message: "Referral registered successfully",token, memberLogin:member });
   } catch (error) {
     console.log(error);
   }
@@ -304,7 +304,7 @@ exports.otherCountryMemberRegistration = async (req, res) => {
       );
       res
         .status(201)
-        .json({ message: "Referral registered successfully",token,  member });
+        .json({ message: "Referral registered successfully",token,memberLogin:  member });
     } catch (error) {
       console.log(error);
     }
