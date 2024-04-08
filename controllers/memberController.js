@@ -1265,3 +1265,18 @@ exports.editMemberUpiId = async (req, res) => {
     return res.status(500).json({ message: "Internal Server Error" });
   }
 };
+
+exports.getTradersInReferral = async (req, res) => {
+  try {
+    const { referralId } = req.body;
+
+    // Find all documents that match the refferal_id
+    const traders = await User.find({ reffered_id: referralId });
+    return res.status(200).json({
+      traders,
+    });
+  } catch (error) {
+    console.error("Error in getting traders in referral:", error);
+    return res.status(500).json({ message: "Internal server error" });
+  }
+};

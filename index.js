@@ -13,6 +13,7 @@ app.use(cookieParser());
 app.use(cors());
 
 
+const getTradersInReferral = require("./routes/refferal/get-traders-in-referral")
 const traderUpdateBankDetails = require("./routes/users/trader-update-bank-details")
 const traderUpdateUpiDetails = require("./routes/users/trader-update-upi-details")
 const authoriseUpiId = require("./routes/authorise-upi-id")
@@ -708,6 +709,7 @@ app.use("/member", getMemberOwnBankDetails)
 app.use("/member", getMemberOwnUpi)
 app.use('/member',TotalCountOfTraders);
 app.use('/member',totalReferralPayoutAmount);
+app.use('/member', getTradersInReferral)
 
 //===============================State=============================================
 app.use("/state", updateDocuments)
