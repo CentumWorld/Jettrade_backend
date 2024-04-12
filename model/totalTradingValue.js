@@ -19,6 +19,7 @@ const totalTradingValueSchema = new Schema({
     type: Number,
     required: true,
   },
+
 }, {timestamps: true});
 
 const TotaltradingValue = mongoose.model(

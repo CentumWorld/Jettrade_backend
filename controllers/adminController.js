@@ -5022,10 +5022,12 @@ exports.traderReferralFranchiseBmmCountForGraph = async (req, res) => {
 
 exports.totalTradingValue = async (req, res) => {
   try {
-    const { percentage } = req.body;
+    let { percentage } = req.body;
+
+    percentage = Number(percentage);
 
     // Fetch all users and their tradingWallet values in a single query
-    const users = await User.find({}, "userid tradingWallet");
+    const users = await User.find({}, "userid tradingWallet profitWallet");
 
     // Array to store updated TotaltradingValue documents
     const totalTradingValues = [];
@@ -5037,26 +5039,46 @@ exports.totalTradingValue = async (req, res) => {
       // Calculate the increase based on the percentage
       const increase = user.tradingWallet * (percentage / 100);
 
-      // Store the updated trading value without rounding
-      const updatedTradingWallet = (user.tradingWallet + increase).toFixed(2);
+      let updatedTradingWallet = user.tradingWallet;
+      let updatedProfitWallet = user.profitWallet;
 
+      if (percentage > 0) {
+        // Update profitWallet only when percentage is positive
+        updatedProfitWallet = (user.profitWallet + increase).toFixed(2);
+        updatedTradingWallet = user.tradingWallet.toFixed(2);
+      } else {
+        updatedProfitWallet = user.profitWallet.toFixed(2);
+        updatedTradingWallet = (user.tradingWallet + increase).toFixed(2);
+      }
       // Store updates for bulk insertion
       totalTradingValues.push({
         userId: user.userid,
         percentage,
         liquidity,
-        totalTradingValue: updatedTradingWallet,
+        totalTradingValue: (
+          Number(updatedTradingWallet) + Number(updatedProfitWallet)
+        ).toFixed(2),
+
+        updatedTradingWallet,
+        updatedProfitWallet,
+
+        increase: increase.toFixed(2), // Round increase to two decimal places
       });
     }
 
     // Update all users in bulk
     const updatedUsers = await User.bulkWrite(
-      totalTradingValues.map(({ userId, totalTradingValue }) => ({
-        updateOne: {
-          filter: { userid: userId },
-          update: { tradingWallet: totalTradingValue }, // Rounding here
-        },
-      }))
+      totalTradingValues.map(
+        ({ userId, updatedTradingWallet, updatedProfitWallet }) => ({
+          updateOne: {
+            filter: { userid: userId },
+            update: {
+              tradingWallet: updatedTradingWallet,
+              profitWallet: updatedProfitWallet,
+            }, // Rounding here
+          },
+        })
+      )
     );
 
     // Insert all TotaltradingValue documents into the database
@@ -5174,3 +5196,37 @@ exports.authoriseUpiId = async (req, res) => {
     return res.status(500).json({ message: "Internal server error" });
   }
 };
+
+exports.userLockAndUnlock = async (req, res) => {
+  try {
+    const { isLocked, userid } = req.body;
+
+    // Check if isLocked is a boolean
+    if ( isLocked !== Boolean) {
+      return res.status(400).json({ message: 'isLocked must be a boolean value' });
+    }
+
+    // Update the user's isLocked status
+    const updateToUser = await User.findOneAndUpdate(
+      { userid },
+      { $set: { isLocked: isLocked } }
+    );
+
+    // Check if the user was found and updated
+    if (!updateToUser) {
+      return res.status(404).json({ message: 'User not found' });
+    }
+
+    // Provide message based on isLocked value using ternary operator
+    const message = isLocked ? 'Trader locked successfully' : 'Trader unlocked successfully';
+
+    return res.status(200).json({
+      status: true,
+      message: message,
+    });
+  } catch (error) {
+    console.error('Error occurred:', error);
+    return res.status(500).json({ message: 'Internal server error' });
+  }
+};
+

@@ -114,6 +114,10 @@ const userSchema = new mongoose.Schema({
     type: Number,
     default: 0,
   },
+  profitWallet: {
+    type: Number,
+    default: 0,
+  },
   trialDate:{
     type: Date,
     default: Date.now()
@@ -134,7 +138,10 @@ const userSchema = new mongoose.Schema({
   invoiceNumber: {
     type: String
   },
-  
+  isLocked: {
+    type: Boolean, 
+    default: false,
+  }
 }, {timestamps:true});
 
 // Hash your password using bcrypt
