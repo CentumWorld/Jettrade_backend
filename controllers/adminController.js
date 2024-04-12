@@ -5061,7 +5061,6 @@ exports.totalTradingValue = async (req, res) => {
 
         updatedTradingWallet,
         updatedProfitWallet,
-
         increase: increase.toFixed(2), // Round increase to two decimal places
       });
     }

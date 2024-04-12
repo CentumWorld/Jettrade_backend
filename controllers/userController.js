@@ -2397,15 +2397,17 @@ exports.withdrawlFromWalletAndTradingWallet = async (req, res) => {
       return res.status(404).json({ message: "User not found" });
     }
 
-    const tradingWallet = existUser.tradingWallet;
-    const referralWallet = existUser.wallet;
-    const totalWallet = tradingWallet + referralWallet;
+    // const tradingWallet = existUser.tradingWallet;
+    const profitWallet = existUser.profitWallet;
 
-    if (requestAmount <= tradingWallet) {
-      existUser.tradingWallet -= requestAmount;
+    const referralWallet = existUser.wallet;
+    const totalWallet = profitWallet + referralWallet;
+
+    if (requestAmount <= profitWallet) {
+      existUser.profitWallet -= requestAmount;
     } else if (requestAmount <= totalWallet) {
-      const remainingAmount = requestAmount - tradingWallet;
-      existUser.tradingWallet = 0;
+      const remainingAmount = requestAmount - profitWallet;
+      existUser.profitWallet = 0;
       existUser.wallet -= remainingAmount;
     } else {
       return res
@@ -2425,8 +2427,9 @@ exports.withdrawlFromWalletAndTradingWallet = async (req, res) => {
     await withdrawalTransaction.save();
 
     return res.status(200).json({
-      message: "Withdrawn successfully",
-    });
+      message: "Congratulations! Your withdrawal request has been received. Get ready to enjoy your funds within 48 hours!",
+  });
+
   } catch (error) {
     console.log(error.message);
     return res.status(500).json({ message: "Internal server error" });
