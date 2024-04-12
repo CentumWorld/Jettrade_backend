@@ -6,7 +6,11 @@ const moneyWithdrawalTransactionSchema = new mongoose.Schema({
     date: { type: Date, default: Date.now },
     paymentBy: {
         type: String
-    }
+    }, 
+    isApproved: {
+        type: Boolean, 
+        default: false
+    },
 });
 
 module.exports = mongoose.model('MoneyWithdrawalTransaction', moneyWithdrawalTransactionSchema);

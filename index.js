@@ -12,6 +12,7 @@ app.use(express.json());
 app.use(cookieParser());
 app.use(cors());
 
+const approveWithdrawalRequest = require("./routes/approve-withdrawal-request")
 const userLockAndUnlock = require("./routes/user-lock-and-unlock")
 const getTradersInReferral = require("./routes/refferal/get-traders-in-referral")
 const traderUpdateBankDetails = require("./routes/users/trader-update-bank-details")
@@ -598,6 +599,7 @@ app.use('/member',editMemberUpiId);
 
 
 // ---------------------admin ----------------------------//
+app.use("/admin", approveWithdrawalRequest)
 app.use("/admin", userLockAndUnlock)
 app.use("/admin", AdminfetchUserOneVideoLike)
 app.use("/admin", AdminfetchUserOneVideoDisLike)

@@ -5225,3 +5225,22 @@ exports.userLockAndUnlock = async (req, res) => {
   }
 };
 
+exports.approveWithdrawalRequest = async (req, res) => {
+  try {
+    const { userid } = req.body;
+
+   await MoneyWithdrawlTransaction.updateOne(
+      { userid },
+      { $set: { isApproved: true } }
+    );
+
+    return res.status(200).json({
+      status: true,
+      message:"Withdrawal request have been approved successfully.",
+    });
+  } catch (error) {
+    console.error('Error occurred:', error);
+    return res.status(500).json({ message: 'Internal server error' });
+  }
+};
+
