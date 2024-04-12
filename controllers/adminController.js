@@ -5227,10 +5227,10 @@ exports.userLockAndUnlock = async (req, res) => {
 
 exports.approveWithdrawalRequest = async (req, res) => {
   try {
-    const { userid } = req.body;
+    const { id } = req.params;
 
    await MoneyWithdrawlTransaction.updateOne(
-      { userid },
+      { _id:id },
       { $set: { isApproved: true } }
     );
 
