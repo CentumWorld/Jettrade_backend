@@ -5200,10 +5200,6 @@ exports.userLockAndUnlock = async (req, res) => {
   try {
     const { isLocked, userid } = req.body;
 
-    // Check if isLocked is a boolean
-    if ( isLocked !== Boolean) {
-      return res.status(400).json({ message: 'isLocked must be a boolean value' });
-    }
 
     // Update the user's isLocked status
     const updateToUser = await User.findOneAndUpdate(
