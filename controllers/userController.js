@@ -1942,16 +1942,11 @@ exports.addingAmountToTradingWallet = async (req, res) => {
 };
 
 exports.withdrawlAmountFromTradingWallet = async (req, res) => {
-  const { userid, amountWithdrawn, date, paymentBy } = req.body;
+  const { userid, amountWithdrawn, paymentBy } = req.body;
 
   // Validate that the "amountWithdrawn" is a valid number and greater than zero
   if (isNaN(amountWithdrawn) || amountWithdrawn <= 0) {
     return res.status(400).json({ error: "Invalid amount withdrawn" });
-  }
-
-  // Validate that the "date" is a valid date
-  if (!Date.parse(date)) {
-    return res.status(400).json({ error: "Invalid date format" });
   }
 
   try {
@@ -1978,7 +1973,7 @@ exports.withdrawlAmountFromTradingWallet = async (req, res) => {
     const transaction = new MoneyWithdrawalTransaction({
       userid: userid,
       amountWithdrawn: amountWithdrawn,
-      date: date,
+      date:  new Date(),
       paymentBy,
     });
 
