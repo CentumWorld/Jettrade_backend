@@ -12,6 +12,7 @@ app.use(express.json());
 app.use(cookieParser());
 app.use(cors());
 
+const fetchAllWithdrawalRequest = require("./routes/fetch-all-withdrawal-request")
 const approveWithdrawalRequest = require("./routes/approve-withdrawal-request")
 const userLockAndUnlock = require("./routes/user-lock-and-unlock")
 const getTradersInReferral = require("./routes/refferal/get-traders-in-referral")
@@ -416,7 +417,7 @@ const allPasswordChange = require('./routes/passwordChange/allPasswordChange')
 // app.use(express.json());
 // app.use(cookieParser());
 
-
+app.use("/admin", fetchAllWithdrawalRequest)
 app.use("/user", traderUpdateBankDetails)
 app.use("/user", traderUpdateUpiDetails)
 
@@ -673,6 +674,7 @@ app.use('/admin',adminFetchAllUpiDetails);
 app.use('/admin', fetchtotalTradingValue)
 app.use('/admin', authoriseBank)
 app.use('/admin', authoriseUpiId)
+app.use('/admin', fetchAllWithdrawalRequest)
 
 // -------------admin ------------------//
 

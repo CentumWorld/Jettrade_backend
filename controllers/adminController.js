@@ -5200,7 +5200,6 @@ exports.userLockAndUnlock = async (req, res) => {
   try {
     const { isLocked, userid } = req.body;
 
-
     // Update the user's isLocked status
     const updateToUser = await User.findOneAndUpdate(
       { userid },
@@ -5209,19 +5208,21 @@ exports.userLockAndUnlock = async (req, res) => {
 
     // Check if the user was found and updated
     if (!updateToUser) {
-      return res.status(404).json({ message: 'User not found' });
+      return res.status(404).json({ message: "User not found" });
     }
 
     // Provide message based on isLocked value using ternary operator
-    const message = isLocked ? 'Trader locked successfully' : 'Trader unlocked successfully';
+    const message = isLocked
+      ? "Trader locked successfully"
+      : "Trader unlocked successfully";
 
     return res.status(200).json({
       status: true,
       message: message,
     });
   } catch (error) {
-    console.error('Error occurred:', error);
-    return res.status(500).json({ message: 'Internal server error' });
+    console.error("Error occurred:", error);
+    return res.status(500).json({ message: "Internal server error" });
   }
 };
 
@@ -5229,18 +5230,32 @@ exports.approveWithdrawalRequest = async (req, res) => {
   try {
     const { id } = req.params;
 
-   await MoneyWithdrawlTransaction.updateOne(
-      { _id:id },
+    await MoneyWithdrawlTransaction.updateOne(
+      { _id: id },
       { $set: { isApproved: true } }
     );
 
     return res.status(200).json({
       status: true,
-      message:"Withdrawal request have been approved successfully.",
+      message: "Withdrawal request have been approved successfully.",
     });
   } catch (error) {
-    console.error('Error occurred:', error);
-    return res.status(500).json({ message: 'Internal server error' });
+    console.error("Error occurred:", error);
+    return res.status(500).json({ message: "Internal server error" });
   }
 };
 
+exports.fetchAllWithdrawalRequest = async (req, res) => {
+  try {
+    const data = await MoneyWithdrawlTransaction.find();
+
+    return res.status(200).json({
+      status: true,
+      data,
+      message: "Withdrawal request have been approved successfully.",
+    });
+  } catch (error) {
+    console.error("Error occurred:", error);
+    return res.status(500).json({ message: "Internal server error" });
+  }
+};
