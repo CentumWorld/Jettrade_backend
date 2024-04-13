@@ -1946,14 +1946,18 @@ exports.withdrawlAmountFromTradingWallet = async (req, res) => {
 
   // Validate that the "amountWithdrawn" is a valid number and greater than zero
   if (isNaN(amountWithdrawn) || amountWithdrawn <= 0) {
-    return res.status(400).json({ error: "Invalid amount withdrawn" });
+    return res.status(400).json({ message: "Invalid amount withdrawn" });
+  }
+
+  if(!paymentBy){
+    return res.staus(400).json({message: "Please select payment method"})
   }
 
   try {
     // Find the user by their ID
     const user = await User.findOne({ userid: userid });
     if (!user) {
-      return res.status(404).json({ error: "User not found" });
+      return res.status(404).json({ message: "User not found" });
     }
 
     // Check if the user has sufficient balance in the trading wallet
