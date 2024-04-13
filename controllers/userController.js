@@ -1985,7 +1985,7 @@ exports.withdrawlAmountFromTradingWallet = async (req, res) => {
     await transaction.save();
 
     // Respond with the updated user document or any other appropriate response
-    res.json({ message: "Amount withdrawn successfully", user: user });
+    res.json({ message: "Congratulations! Your emergency withdrawal request received. Your funds will be ready for you within 48 hours!", user: user });
   } catch (error) {
     console.error(
       "Error withdrawing amount from trading wallet:",
