@@ -1950,7 +1950,7 @@ exports.withdrawlAmountFromTradingWallet = async (req, res) => {
   }
 
   if(!paymentBy){
-    return res.staus(400).json({message: "Please select payment method"})
+    return res.status(400).json({message: "Please select payment method"})
   }
 
   try {
