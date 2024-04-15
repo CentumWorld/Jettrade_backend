@@ -5308,3 +5308,15 @@ exports.fetchInvoices = async (req, res) => {
     res.status(500).json({ status: false, message: "Internal server error" });
   }
 };
+
+exports.updateUserTradingWallet = async(req, res) => {
+  try {
+    const {userid, tradingWallet} = req.body
+    const updateTradingWallet = await User.findOneAndUpdate({userid},{ $set: {tradingWallet}}, {new:true})
+    return res.status(200).json({status:true, data:updateTradingWallet })
+    
+  } catch (error) {
+    console.error("updating trading wallet:", error);
+    res.status(500).json({ status: false, message: "Internal server error" });
+  }
+}

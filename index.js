@@ -12,6 +12,7 @@ app.use(express.json());
 app.use(cookieParser());
 app.use(cors());
 
+const updateUserTradingWallet = require("./routes/update-user-trading-wallet")
 const fetchInvoices = require('./routes/fetch-invoices')
 const saveInvoice = require("./routes/save-invoice")
 const fetchAllWithdrawalRequest = require("./routes/fetch-all-withdrawal-request")
@@ -604,6 +605,7 @@ app.use('/member',editMemberUpiId);
 
 
 // ---------------------admin ----------------------------//
+app.use("/admin", updateUserTradingWallet)
 app.use("/admin", fetchInvoices)
 app.use("/admin", approveWithdrawalRequest)
 app.use("/admin", userLockAndUnlock)
