@@ -1102,9 +1102,17 @@ exports.changeUserPaymentStatus = async (req, res) => {
     });
     adminRefferalTransaction.save();
   }
+
+  const firstTimeUser = await User.findOne({userid: userid})
+
   const userActivate = new AllNewPaidUser({
     userid: userid,
     activationAmount: serviceAmount,
+    firstName: firstTimeUser.fname,
+    lastName: firstTimeUser.lname,
+    phoneNumber: firstTimeUser.phone,
+    invoiceNumber: firstTimeUser.invoiceNumber,
+
   });
   await userActivate.save();
 
@@ -2087,9 +2095,16 @@ exports.changePaymentStatusForRenewal = async (req, res) => {
       refferal_id: reffered_id,
     });
 
+    const renwwalUser = await User.findOne({userid}) 
+
     const userActivate = new UserRenewal({
       userid: userid,
       renewalAmount: renewAmount,
+      firstName: renwwalUser.fname,
+      lastName: renwwalUser.lname,
+      phoneNumber: renwwalUser.phone,
+      invoiceNumber: renwwalUser.invoiceNumber,
+      
     });
 
     await userActivate.save();

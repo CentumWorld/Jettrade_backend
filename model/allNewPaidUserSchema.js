@@ -11,6 +11,26 @@ const allNewPaidUserSchema = new mongoose.Schema({
     activationDate:{
         type:Date,
         default:Date.now
+    },
+
+    firstName: {
+        type: String,
+        required: true
+
+    },
+    lastName: {
+        type: String,
+        required: true
+
+    },
+    phoneNumber: {
+        type: String,
+        required: true
+    },
+    invoiceNumber: {
+        type: String, 
+        required: true
+
     }
 })
 
