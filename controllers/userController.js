@@ -44,6 +44,7 @@ const memberCreditWalletTransaction = require("../model/memberCreditWalletTransa
 const BankAccountHolder = require("../model/BankAccountHolderSchema");
 const UpiHolder = require("../model/UpiHolderSchema");
 const TotaltradingValue = require("../model/totalTradingValue");
+const Invoice = require("../model/Invoice");
 
 //const profilePhoto = require('../model/profilePhotoSchema');
 
@@ -3126,3 +3127,5 @@ exports.traderUpdateUpiDetails = async (req, res) => {
     return res.status(500).json({ message: "Internal Server Error" });
   }
 };
+
+

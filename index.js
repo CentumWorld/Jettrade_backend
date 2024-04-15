@@ -12,6 +12,8 @@ app.use(express.json());
 app.use(cookieParser());
 app.use(cors());
 
+const fetchInvoices = require('./routes/fetch-invoices')
+const saveInvoice = require("./routes/save-invoice")
 const fetchAllWithdrawalRequest = require("./routes/fetch-all-withdrawal-request")
 const approveWithdrawalRequest = require("./routes/approve-withdrawal-request")
 const userLockAndUnlock = require("./routes/user-lock-and-unlock")
@@ -327,6 +329,7 @@ const stateUpdateBankDetails = require('./routes/state/state-update-bank-details
 const stateUpdateUpiDetails = require('./routes/state/state-update-upi-details');
 
 
+
 //======================Frenchise==============================================
 const getBusinessDevelopersInFranchise = require("./routes/frenchise/fetch-bdeveloper-in-franchise");
 const getMembersInFranchise = require("./routes/frenchise/fetch-members-in-franchise");
@@ -510,6 +513,7 @@ app.use("/user",verifyRefferalIdInUser);
 app.use('/user',totalReferralPayoutAmountTrader);
 app.use('/user', fetchTotalTradingValue)
 app.use('/user', traderCountForGraph)
+app.use('/admin', saveInvoice)
 
 
 app.use("/admin", totalWithdrawalMoney);
@@ -600,6 +604,7 @@ app.use('/member',editMemberUpiId);
 
 
 // ---------------------admin ----------------------------//
+app.use("/admin", fetchInvoices)
 app.use("/admin", approveWithdrawalRequest)
 app.use("/admin", userLockAndUnlock)
 app.use("/admin", AdminfetchUserOneVideoLike)

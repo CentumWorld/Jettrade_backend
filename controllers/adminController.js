@@ -70,6 +70,7 @@ const NotificationForParticularFranchise = require("../model/notification-for-pa
 const NotificationForParticularBusinessDev = require("../model/NotificationForParticularBusinessDev");
 const VideoCreater = require("../model/VideoCreaterSchema");
 const TotaltradingValue = require("../model/totalTradingValue");
+const Invoice = require("../model/Invoice");
 
 // admin Login
 
@@ -5257,5 +5258,53 @@ exports.fetchAllWithdrawalRequest = async (req, res) => {
   } catch (error) {
     console.error("Error occurred:", error);
     return res.status(500).json({ message: "Internal server error" });
+  }
+};
+
+exports.saveInvoice = async (req, res) => {
+  try {
+    const { userId, invoiceNumber, type } = req.body;
+    const invoiceFile = req.files["invoice"]
+      ? req.files["invoice"][0]?.location
+      : null;
+    //userId validation if not exist
+    const user = await User.findOne({ userid: userId });
+    if (!user) {
+      return res
+        .status(400)
+        .json({ status: false, message: "User not exist." });
+    }
+    const saveInvoice = await Invoice.create({
+      userId,
+      invoiceNumber,
+      invoice: invoiceFile,
+      type,
+    });
+    // Handle success response
+    res.status(200).json({
+      status: true,
+      message: "Invoice saved successfully",
+      data: saveInvoice,
+    });
+  } catch (error) {
+    // Handle error response
+    console.error("Error saving invoice:", error);
+    res.status(500).json({ status: false, message: "Internal server error" });
+  }
+};
+
+exports.fetchInvoices = async (req, res) => {
+  try {
+    const invoices = await Invoice.find();
+    return res
+      .status(200)
+      .json({
+        status: true,
+        message: "Invoices fetched successfully",
+        data: invoices,
+      });
+  } catch (error) {
+    console.error("Error fetching invoices:", error);
+    res.status(500).json({ status: false, message: "Internal server error" });
   }
 };
