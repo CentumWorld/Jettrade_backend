@@ -100,6 +100,7 @@ exports.userRegistration = async (req, res) => {
     userid,
     password,
     doj,
+    rig
   } = req.body;
 
   // Check if any required field is missing
@@ -209,6 +210,7 @@ exports.userRegistration = async (req, res) => {
         userType,
         userid,
         password,
+        rig
       });
       await user.save();
       const phone1 = "+" + user.phone;
@@ -273,6 +275,7 @@ exports.userRegistration = async (req, res) => {
         userType,
         userid,
         password,
+        rig
       });
       await user.save();
       const phone2 = "+" + user.phone;
@@ -331,6 +334,7 @@ exports.otherCountryUserRegistration = async (req, res) => {
       userid,
       password,
       doj,
+      rig
     } = req.body;
 
     // Check if any required field is missing
@@ -422,6 +426,7 @@ exports.otherCountryUserRegistration = async (req, res) => {
         userType,
         userid: generatedUserId,
         password: generatedPassword,
+        rig
       });
 
       await user.save();
@@ -494,6 +499,7 @@ exports.otherCountryUserRegistration = async (req, res) => {
         userType,
         userid,
         password,
+        rig
       });
 
       await user.save();

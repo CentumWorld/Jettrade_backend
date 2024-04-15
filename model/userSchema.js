@@ -67,6 +67,10 @@ const userSchema = new mongoose.Schema({
     type: Boolean,
     default: false,
   },
+  rig:{
+    type:Boolean,
+    default:false,
+  },
   aadhar_front_side: {
     type: String,
   },
