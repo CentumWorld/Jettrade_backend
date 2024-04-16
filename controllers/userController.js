@@ -181,7 +181,7 @@ exports.userRegistration = async (req, res) => {
 
       if (!isValidPassword(password)) {
         return res.status(400).json({
-          message: "Password must be minimum length of 8 charector!",
+          message: "Password must be 8 to 15 characters long and contain at least one lowercase letter, one uppercase letter, and one digit.",
         });
       }
 
