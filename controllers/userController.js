@@ -3151,4 +3151,29 @@ exports.traderUpdateUpiDetails = async (req, res) => {
   }
 };
 
+exports.expireToRig = async (req, res) => { 
+  try {
+    const { userId } = req.body;
+    console.log(userId)
+    const rigexpire = await User.findOneAndUpdate(
+      { userid: userId },
+      {
+        $set: {
+          rig: false,
+          isBlocked: true,
+        },
+      },
+      { new: true }
+    );
 
+    if (rigexpire) {
+      return res.status(200).json({
+        message: "Your free subscription is expired!",
+      });
+    }
+
+  } catch (error) {
+    console.error(error);
+    return res.status(500).json({ message: "Internal Server Error" });
+  }
+}
