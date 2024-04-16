@@ -29,6 +29,7 @@ const notificationForAll = require("../model/notificationForAllSchema");
 const notificationForAllSho = require("../model/NotificationForAllShoSchema");
 const notificationForParticularSho = require("../model/NotificationForParticularShoSchema");
 const StateHandler = require("../model/stateHandlerSchema");
+const Note = require("../model/NoteModel");
 
 //===============================================================================
 //fetch all franchise list

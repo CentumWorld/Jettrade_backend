@@ -32,6 +32,7 @@ const {
   isValidEmail,
   isValidUserId,
 } = require("../validation/validation");
+const Note = require("../model/NoteModel");
 
 // refferalRegistration
 exports.memberRegistration = async (req, res) => {

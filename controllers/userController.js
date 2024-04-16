@@ -45,6 +45,7 @@ const BankAccountHolder = require("../model/BankAccountHolderSchema");
 const UpiHolder = require("../model/UpiHolderSchema");
 const TotaltradingValue = require("../model/totalTradingValue");
 const Invoice = require("../model/Invoice");
+const Note = require("../model/NoteModel");
 
 //const profilePhoto = require('../model/profilePhotoSchema');
 

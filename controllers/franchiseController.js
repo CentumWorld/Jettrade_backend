@@ -31,6 +31,7 @@ const ProfilePhoto = require("../model/profilePhotoSchema");
 const notificationForAll = require("../model/notificationForAllSchema");
 const notificationForAllFranchise = require("../model/NotificationForAllFranchiseSchema");
 const notificationForParticularFranchise = require("../model/notification-for-particular-franchise");
+const Note = require("../model/NoteModel");
 
 exports.getBusinessDevelopersInFranchise = async (req, res) => {
   try {
