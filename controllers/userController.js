@@ -2415,6 +2415,10 @@ exports.withdrawlFromWalletAndTradingWallet = async (req, res) => {
         .json({ message: "Minimum amount should be 500 rupees" });
     }
 
+    if(!paymentBy){
+      return res.status(400).json({message: "Please select payment method"})
+    }
+
     let existUser = await User.findOne({ userid: userid });
     if (!existUser) {
       return res.status(404).json({ message: "User not found" });
