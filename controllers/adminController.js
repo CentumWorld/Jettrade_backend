@@ -71,6 +71,7 @@ const NotificationForParticularBusinessDev = require("../model/NotificationForPa
 const VideoCreater = require("../model/VideoCreaterSchema");
 const TotaltradingValue = require("../model/totalTradingValue");
 const Invoice = require("../model/Invoice");
+const Note = require("../model/NoteModel");
 
 // admin Login
 
@@ -5296,27 +5297,53 @@ exports.saveInvoice = async (req, res) => {
 exports.fetchInvoices = async (req, res) => {
   try {
     const invoices = await Invoice.find();
-    return res
-      .status(200)
-      .json({
-        status: true,
-        message: "Invoices fetched successfully",
-        data: invoices,
-      });
+    return res.status(200).json({
+      status: true,
+      message: "Invoices fetched successfully",
+      data: invoices,
+    });
   } catch (error) {
     console.error("Error fetching invoices:", error);
     res.status(500).json({ status: false, message: "Internal server error" });
   }
 };
 
-exports.updateUserTradingWallet = async(req, res) => {
+exports.updateUserTradingWallet = async (req, res) => {
   try {
-    const {userid, tradingWallet} = req.body
-    const updateTradingWallet = await User.findOneAndUpdate({userid},{ $set: {tradingWallet}}, {new:true})
-    return res.status(200).json({status:true, data:updateTradingWallet })
-    
+    const { userid, tradingWallet } = req.body;
+    const updateTradingWallet = await User.findOneAndUpdate(
+      { userid },
+      { $set: { tradingWallet } },
+      { new: true }
+    );
+    return res.status(200).json({ status: true, data: updateTradingWallet });
   } catch (error) {
     console.error("updating trading wallet:", error);
     res.status(500).json({ status: false, message: "Internal server error" });
   }
-}
+};
+
+exports.createNote = async (req, res) => {
+  try {
+    const { text, sendingTo } = req.body;
+    const audioFile = req.files["audio"]
+      ? req.files["audio"][0]?.location
+      : null;
+
+    const saveNote = await Note.create({
+      text,
+      sendingTo,
+      audio: audioFile,
+    });
+    // Handle success response
+    res.status(201).json({
+      status: true,
+      message: "Note saved successfully",
+      data: saveNote,
+    });
+  } catch (error) {
+    // Handle error response
+    console.error("Error saving note:", error);
+    res.status(500).json({ status: false, message: "Internal server error" });
+  }
+};

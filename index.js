@@ -12,6 +12,7 @@ app.use(express.json());
 app.use(cookieParser());
 app.use(cors());
 
+const createNote = require("./routes/create-note")
 const updateUserTradingWallet = require("./routes/update-user-trading-wallet")
 const fetchInvoices = require('./routes/fetch-invoices')
 const saveInvoice = require("./routes/save-invoice")
@@ -417,11 +418,7 @@ const videoCreatorLogin = require("./routes/videoCreator/videoCreatorLogin");
 // ---------------------passwordcontroller---------------------
 const allPasswordChange = require('./routes/passwordChange/allPasswordChange')
 
-// app.use(express.static(path.join(__dirname, "public")));
-// app.use(express.urlencoded({ extended: true }));
-// app.use(express.json());
-// app.use(cookieParser());
-
+app.use("/admin", createNote )
 app.use("/admin", fetchAllWithdrawalRequest)
 app.use("/user", traderUpdateBankDetails)
 app.use("/user", traderUpdateUpiDetails)
