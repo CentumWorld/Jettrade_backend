@@ -3186,11 +3186,17 @@ exports.fetchUserNote = async (req, res) => {
       sendingTo: { $in: ["traders", "all"] },
     })
       .sort({ createdAt: -1 }) // Sort by createdAt field in descending order
-      .limit(1); // Limit the query to return only one document
+      .limit(5); // Limit the query to return only one document
 
-    res.status(200).json(latestNote);
+    res
+      .status(200)
+      .json({
+        status: true,
+        message: "Note fetched successfully",
+        data: latestNote,
+      });
   } catch (error) {
     console.log(error);
-    res.status(500).json({ error: "Internal server error" });
+    res.status(500).json({ status: true, message: "Internal server error" });
   }
 };
