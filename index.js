@@ -181,7 +181,9 @@ const totalReferralPayoutAmountTrader = require('./routes/users/total-referral-p
 
 // ---------------------------------admin ------------------------------------------------------//
 
+
 // refferal
+const fetchReferralNote = require("./routes/refferal/fetch-referral-note")
 const memberRegistration = require("./routes/refferal/member-registration");
 const memberLogin = require("./routes/refferal/member-login");
 const fetchMemberDetails = require("./routes/fetch-member-details");
@@ -331,10 +333,12 @@ const countTraderReferralFranchise = require('./routes/state/count-trader-referr
 const totalReferralPayoutAmountBMM = require('./routes/state/total-referral-payout-amount-bmm');
 const stateUpdateBankDetails = require('./routes/state/state-update-bank-details');
 const stateUpdateUpiDetails = require('./routes/state/state-update-upi-details');
+const fetchBmmNote = require("./routes/state/fetch-bmm-note")
 
 
 
 //======================Frenchise==============================================
+const fetchFranchiseNote = require("./routes/frenchise/fetch-franchise-note")
 const getBusinessDevelopersInFranchise = require("./routes/frenchise/fetch-bdeveloper-in-franchise");
 const getMembersInFranchise = require("./routes/frenchise/fetch-members-in-franchise");
 const fetchChatDetailsFrenchisee = require("./routes/frenchise/fetch-chat-details-frenchisee");
@@ -723,8 +727,9 @@ app.use("/member", getMemberOwnUpi)
 app.use('/member',TotalCountOfTraders);
 app.use('/member',totalReferralPayoutAmount);
 app.use('/member', getTradersInReferral)
-
+app.use('/member',fetchReferralNote)
 //===============================State=============================================
+app.use("/state", fetchBmmNote)
 app.use("/state", updateDocuments)
 app.use("/state", getFranchisesByReferralId);
 app.use("/state", getBusinessDevelopersInState);
@@ -769,6 +774,7 @@ app.use('/state', countTraderReferralFranchiseForGraph)
 
 
 //============================Franchise=============================================
+app.use("/franchise", fetchFranchiseNote)
 app.use('/franchise', countTraderReferralForGraph)
 app.use("/franchise", getBusinessDevelopersInFranchise);
 app.use("/franchise", getMembersInFranchise);

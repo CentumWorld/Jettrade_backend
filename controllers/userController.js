@@ -3179,10 +3179,11 @@ exports.expireToRig = async (req, res) => {
   }
 };
 
+
 exports.fetchUserNote = async (req, res) => {
   try {
     // Find the latest note intended for traders or all users
-    const latestNote = await Note.findOne({
+    const latestNote = await Note.find({
       sendingTo: { $in: ["traders", "all"] },
     })
       .sort({ createdAt: -1 }) // Sort by createdAt field in descending order

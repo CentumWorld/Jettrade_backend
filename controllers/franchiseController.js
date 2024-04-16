@@ -1118,3 +1118,25 @@ const extractYearMonth = (date) => {
   const month = date.getMonth() + 1; // Months are zero-indexed, so add 1
   return { year, month };
 };
+
+exports.fetchFranchiseNote = async (req, res) => {
+  try {
+    // Find the latest note intended for traders or all users
+    const latestNote = await Note.find({
+      sendingTo: { $in: ["franchises", "all"] },
+    })
+      .sort({ createdAt: -1 }) // Sort by createdAt field in descending order
+      .limit(5); // Limit the query to return only one document
+
+    res
+      .status(200)
+      .json({
+        status: true,
+        message: "Note fetched successfully",
+        data: latestNote,
+      });
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({ status: true, message: "Internal server error" });
+  }
+};
