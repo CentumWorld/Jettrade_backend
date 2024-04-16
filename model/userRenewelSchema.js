@@ -5,11 +5,11 @@ const userRenewalSchema = new mongoose.Schema({
     userid:{
         type:String
     },
-    renewalAmount:{
+    activationAmount:{
         type:Number,
         default:0
     },
-    renewalDate:{
+    activationDate:{
         type:Date,
         default:Date.now
     },

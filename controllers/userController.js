@@ -2100,7 +2100,7 @@ exports.changePaymentStatusForRenewal = async (req, res) => {
 
     const userActivate = new UserRenewal({
       userid: userid,
-      renewalAmount: renewAmount,
+      activationAmount: renewAmount,
       firstName: renwwalUser.fname,
       lastName: renwwalUser.lname,
       phoneNumber: renwwalUser.phone,
