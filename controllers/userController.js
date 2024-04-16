@@ -1112,6 +1112,7 @@ exports.changeUserPaymentStatus = async (req, res) => {
     lastName: firstTimeUser.lname,
     phoneNumber: firstTimeUser.phone,
     invoiceNumber: firstTimeUser.invoiceNumber,
+    paymentCount: firstTimeUser.paymentCount
 
   });
   await userActivate.save();
@@ -2104,6 +2105,7 @@ exports.changePaymentStatusForRenewal = async (req, res) => {
       lastName: renwwalUser.lname,
       phoneNumber: renwwalUser.phone,
       invoiceNumber: renwwalUser.invoiceNumber,
+      paymentCount: renwwalUser.paymentCount
       
     });
 

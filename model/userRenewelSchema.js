@@ -31,6 +31,10 @@ const userRenewalSchema = new mongoose.Schema({
         type: String, 
         required: true
 
+    },
+    paymentCount: {
+        type: Number,
+        required: true
     }
 
 })
