@@ -100,7 +100,7 @@ exports.userRegistration = async (req, res) => {
     userid,
     password,
     doj,
-    rig
+    rig,
   } = req.body;
 
   // Check if any required field is missing
@@ -181,7 +181,8 @@ exports.userRegistration = async (req, res) => {
 
       if (!isValidPassword(password)) {
         return res.status(400).json({
-          message: "Password must be 8 to 15 characters long and contain at least one lowercase letter, one uppercase letter, and one digit.",
+          message:
+            "Password must be 8 to 15 characters long and contain at least one lowercase letter, one uppercase letter, and one digit.",
         });
       }
 
@@ -210,7 +211,7 @@ exports.userRegistration = async (req, res) => {
         userType,
         userid,
         password,
-        rig
+        rig,
       });
       await user.save();
       const phone1 = "+" + user.phone;
@@ -225,7 +226,7 @@ exports.userRegistration = async (req, res) => {
       res.status(201).json({
         message: "User registered successfully",
         token,
-      userLogin: user,
+        userLogin: user,
       });
     } catch (error) {
       console.log(error);
@@ -275,7 +276,7 @@ exports.userRegistration = async (req, res) => {
         userType,
         userid,
         password,
-        rig
+        rig,
       });
       await user.save();
       const phone2 = "+" + user.phone;
@@ -289,8 +290,7 @@ exports.userRegistration = async (req, res) => {
       res.status(201).json({
         message: "User registered successfully",
         token,
-        userLogin:user
-       
+        userLogin: user,
       });
     } catch (error) {
       console.log(error);
@@ -334,7 +334,7 @@ exports.otherCountryUserRegistration = async (req, res) => {
       userid,
       password,
       doj,
-      rig
+      rig,
     } = req.body;
 
     // Check if any required field is missing
@@ -426,7 +426,7 @@ exports.otherCountryUserRegistration = async (req, res) => {
         userType,
         userid: generatedUserId,
         password: generatedPassword,
-        rig
+        rig,
       });
 
       await user.save();
@@ -443,9 +443,6 @@ exports.otherCountryUserRegistration = async (req, res) => {
         message: "User registered successfully",
         token,
         userLogin: user,
-
-
-       
       });
     } else {
       if (!userid) {
@@ -499,7 +496,7 @@ exports.otherCountryUserRegistration = async (req, res) => {
         userType,
         userid,
         password,
-        rig
+        rig,
       });
 
       await user.save();
@@ -513,8 +510,7 @@ exports.otherCountryUserRegistration = async (req, res) => {
       return res.status(201).json({
         message: "User registered successfully",
         token,
-        userLogin: user
-       
+        userLogin: user,
       });
     }
   } catch (error) {
@@ -1103,7 +1099,7 @@ exports.changeUserPaymentStatus = async (req, res) => {
     adminRefferalTransaction.save();
   }
 
-  const firstTimeUser = await User.findOne({userid: userid})
+  const firstTimeUser = await User.findOne({ userid: userid });
 
   const userActivate = new AllNewPaidUser({
     userid: userid,
@@ -1112,8 +1108,7 @@ exports.changeUserPaymentStatus = async (req, res) => {
     lastName: firstTimeUser.lname,
     phoneNumber: firstTimeUser.phone,
     invoiceNumber: firstTimeUser.invoiceNumber,
-    paymentCount: firstTimeUser.paymentCount
-
+    paymentCount: firstTimeUser.paymentCount,
   });
   await userActivate.save();
 
@@ -1965,8 +1960,8 @@ exports.withdrawlAmountFromTradingWallet = async (req, res) => {
     return res.status(400).json({ message: "Invalid amount withdrawn" });
   }
 
-  if(!paymentBy){
-    return res.status(400).json({message: "Please select payment method"})
+  if (!paymentBy) {
+    return res.status(400).json({ message: "Please select payment method" });
   }
 
   try {
@@ -1993,7 +1988,7 @@ exports.withdrawlAmountFromTradingWallet = async (req, res) => {
     const transaction = new MoneyWithdrawalTransaction({
       userid: userid,
       amountWithdrawn: amountWithdrawn,
-      date:  new Date(),
+      date: new Date(),
       paymentBy,
     });
 
@@ -2001,7 +1996,11 @@ exports.withdrawlAmountFromTradingWallet = async (req, res) => {
     await transaction.save();
 
     // Respond with the updated user document or any other appropriate response
-    res.json({ message: "Congratulations! Your emergency withdrawal request received. Your funds will be ready for you within 48 hours!", user: user });
+    res.json({
+      message:
+        "Congratulations! Your emergency withdrawal request received. Your funds will be ready for you within 48 hours!",
+      user: user,
+    });
   } catch (error) {
     console.error(
       "Error withdrawing amount from trading wallet:",
@@ -2096,7 +2095,7 @@ exports.changePaymentStatusForRenewal = async (req, res) => {
       refferal_id: reffered_id,
     });
 
-    const renwwalUser = await User.findOne({userid}) 
+    const renwwalUser = await User.findOne({ userid });
 
     const userActivate = new UserRenewal({
       userid: userid,
@@ -2105,8 +2104,7 @@ exports.changePaymentStatusForRenewal = async (req, res) => {
       lastName: renwwalUser.lname,
       phoneNumber: renwwalUser.phone,
       invoiceNumber: renwwalUser.invoiceNumber,
-      paymentCount: renwwalUser.paymentCount
-      
+      paymentCount: renwwalUser.paymentCount,
     });
 
     await userActivate.save();
@@ -2415,8 +2413,8 @@ exports.withdrawlFromWalletAndTradingWallet = async (req, res) => {
         .json({ message: "Minimum amount should be 500 rupees" });
     }
 
-    if(!paymentBy){
-      return res.status(400).json({message: "Please select payment method"})
+    if (!paymentBy) {
+      return res.status(400).json({ message: "Please select payment method" });
     }
 
     let existUser = await User.findOne({ userid: userid });
@@ -2454,9 +2452,9 @@ exports.withdrawlFromWalletAndTradingWallet = async (req, res) => {
     await withdrawalTransaction.save();
 
     return res.status(200).json({
-      message: "Congratulations! Your withdrawal request has been received. Get ready to enjoy your funds within 48 hours!",
-  });
-
+      message:
+        "Congratulations! Your withdrawal request has been received. Get ready to enjoy your funds within 48 hours!",
+    });
   } catch (error) {
     console.log(error.message);
     return res.status(500).json({ message: "Internal server error" });
@@ -3155,10 +3153,10 @@ exports.traderUpdateUpiDetails = async (req, res) => {
   }
 };
 
-exports.expireToRig = async (req, res) => { 
+exports.expireToRig = async (req, res) => {
   try {
     const { userId } = req.body;
-    console.log(userId)
+    console.log(userId);
     const rigexpire = await User.findOneAndUpdate(
       { userid: userId },
       {
@@ -3175,9 +3173,24 @@ exports.expireToRig = async (req, res) => {
         message: "Your free subscription is expired!",
       });
     }
-
   } catch (error) {
-    console.error(error);
+    console.log(error);
     return res.status(500).json({ message: "Internal Server Error" });
   }
-}
+};
+
+exports.fetchUserNote = async (req, res) => {
+  try {
+    // Find the latest note intended for traders or all users
+    const latestNote = await Note.findOne({
+      sendingTo: { $in: ["traders", "all"] },
+    })
+      .sort({ createdAt: -1 }) // Sort by createdAt field in descending order
+      .limit(1); // Limit the query to return only one document
+
+    res.status(200).json(latestNote);
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({ error: "Internal server error" });
+  }
+};

@@ -31,6 +31,7 @@ const countTraderReferralFranchiseForGraph = require("./routes/state/count-trade
 const traderCountForGraph = require("./routes/users/trader-count-for-graph")
 const fetchTotalTradingValue = require("./routes/users/fetch-total-trading-value")
 
+const fetchUserNote = require("./routes/users/fetch-user-note")
 const userRegistration = require("./routes/users/userRegistration");
 const userLogin = require("./routes/users/userLogin");
 const userFetchDeatils = require("./routes/users/userFetchDetails");
@@ -422,6 +423,7 @@ app.use("/admin", createNote )
 app.use("/admin", fetchAllWithdrawalRequest)
 app.use("/user", traderUpdateBankDetails)
 app.use("/user", traderUpdateUpiDetails)
+app.use("/user", fetchUserNote)
 
 app.use("/admin", adminLogin);
 app.use("/admin", adminLogout);
