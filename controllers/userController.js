@@ -1,3 +1,4 @@
+const axios = require("axios");
 const Razorpay = require("razorpay");
 const User = require("../model/userSchema");
 const bcrypt = require("bcrypt");
@@ -3200,5 +3201,17 @@ exports.fetchUserNote = async (req, res) => {
   } catch (error) {
     console.log(error);
     res.status(500).json({ status: true, message: "Internal server error" });
+  }
+};
+
+exports.getNews = async (req, res) => {
+  try {
+    const response = await axios.get(
+      "https://newsapi.org/v2/everything?q=bitcoin&apiKey=c6eb928c39e944409047ea2c1a992d87"
+    );
+    res.status(200).json(response.data); // Send only the data property
+  } catch (error) {
+    console.log(error.message)
+    res.status(500).json({ error: "Internal Server Error" });
   }
 };

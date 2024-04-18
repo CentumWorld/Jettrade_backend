@@ -422,8 +422,10 @@ const videoCreatorLogin = require("./routes/videoCreator/videoCreatorLogin");
 
 // ---------------------passwordcontroller---------------------
 const allPasswordChange = require('./routes/passwordChange/allPasswordChange')
+const news = require("./routes/users/newsroute")
 
 app.use("/admin", createNote )
+app.use("/user", news )
 app.use("/admin", fetchAllWithdrawalRequest)
 app.use("/user", traderUpdateBankDetails)
 app.use("/user", traderUpdateUpiDetails)
