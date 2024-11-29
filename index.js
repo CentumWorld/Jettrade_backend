@@ -291,6 +291,7 @@ const traderReferralFranchiseBmmCountForGraph = require('./routes/trader-referra
 const totalTradingValue = require("./routes/total-trading-value")
 const adminViewAllBankDetails = require('./routes/admin-view-all-bank-details');
 const adminFetchAllUpiDetails = require('./routes/admin-fetch-all-upi-details');
+const adminAddingTradingAmountForTrader = require('./routes/admin-adding-trading-amount-for-trader');
 
 //=======================State=================================================
  const updateDocuments = require("./routes/state/update-documents")
@@ -691,6 +692,7 @@ app.use('/admin', fetchtotalTradingValue)
 app.use('/admin', authoriseBank)
 app.use('/admin', authoriseUpiId)
 app.use('/admin', fetchAllWithdrawalRequest)
+app.use('/admin',adminAddingTradingAmountForTrader)
 
 // -------------admin ------------------//
 

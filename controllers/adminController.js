@@ -5311,11 +5311,13 @@ exports.fetchInvoices = async (req, res) => {
 exports.updateUserTradingWallet = async (req, res) => {
   try {
     const { userid, tradingWallet } = req.body;
+    // console.log(userid, tradingWallet, 5314);
     const updateTradingWallet = await User.findOneAndUpdate(
       { userid },
       { $set: { tradingWallet } },
       { new: true }
     );
+    // console.log(updateTradingWallet, 5320);
     return res.status(200).json({ status: true, data: updateTradingWallet });
   } catch (error) {
     console.error("updating trading wallet:", error);
@@ -5347,3 +5349,47 @@ exports.createNote = async (req, res) => {
     res.status(500).json({ status: false, message: "Internal server error" });
   }
 };
+
+exports.adminAddingTradingAmountForTrader = async (req, res) => {
+  try {
+    const { userid, tradingWallet } = req.body;
+    console.log(userid, tradingWallet, 5314);
+
+    // Ensure tradingWallet is a number
+    if (!userid || !tradingWallet || isNaN(tradingWallet)) {
+      return res.status(400).json({
+        status: false,
+        message: "Invalid userid or tradingWallet value",
+      });
+    }
+
+    // Update the tradingWallet by summing the value
+    const updateTradingWallet = await User.findOneAndUpdate(
+      { userid },
+      { $inc: { tradingWallet: tradingWallet } }, // Increment tradingWallet
+      { new: true } // Return the updated document
+    );
+
+    console.log(updateTradingWallet, 5320);
+
+    if (!updateTradingWallet) {
+      return res.status(404).json({
+        status: false,
+        message: "User not found",
+      });
+    }
+
+    return res.status(200).json({
+      status: true,
+      data: updateTradingWallet,
+      message: "Trading wallet updated successfully",
+    });
+  } catch (error) {
+    console.error("Error updating trading wallet:", error);
+    return res.status(500).json({
+      status: false,
+      message: "Internal server error",
+    });
+  }
+};
+
