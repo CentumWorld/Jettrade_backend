@@ -632,28 +632,62 @@ exports.userRegistrationByAdmin = async (req, res) => {
 };
 
 // blockUser
+
 exports.blockUser = async (req, res) => {
-  const { block, id } = req.body;
-  // console.log(block);
-  let result = await User.updateOne(
-    { _id: id },
-    {
-      $set: { isBlocked: block },
-    }
-  );
-  if (result.modifiedCount > 0) {
-    if (block) {
-      return res.status(200).json({
-        message: "User Blocked",
-      });
+  try {
+    const { block, id } = req.body;
+    let findUserData = await User.findOne({ _id: id });
+    console.log(findUserData, 639);
+    if (findUserData.paymentCount < 1 && !findUserData.paymentStatus) {
+      let result = await User.updateOne(
+        { _id: id },
+        {
+          $set: { isBlocked: block, doj : new Date() },
+        }
+      );
+      if (result.modifiedCount > 0) {
+        if (block) {
+          return res.status(200).json({
+            message: "User Blocked",
+          });
+        } else {
+          return res.status(200).json({
+            message: "User Unblocked",
+          });
+        }
+      } else {
+        return res.status(404).json({
+          message: "Something Went wrong",
+        });
+      }
     } else {
-      return res.status(200).json({
-        message: "User Unblocked",
-      });
+      let result = await User.updateOne(
+        { _id: id },
+        {
+          $set: { isBlocked: block },
+        }
+      );
+      if (result.modifiedCount > 0) {
+        if (block) {
+          return res.status(200).json({
+            message: "User Blocked",
+          });
+        } else {
+          return res.status(200).json({
+            message: "User Unblocked",
+          });
+        }
+      } else {
+        return res.status(404).json({
+          message: "Something Went wrong",
+        });
+      }
     }
-  } else {
-    return res.status(404).json({
-      message: "Something Went wrong",
+  } catch (error) {
+    return res.status(500).json({
+      success: false,
+      message: "Server error",
+      error: error.message || error,
     });
   }
 };
@@ -5392,4 +5426,3 @@ exports.adminAddingTradingAmountForTrader = async (req, res) => {
     });
   }
 };
-
