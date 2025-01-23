@@ -5426,3 +5426,86 @@ exports.adminAddingTradingAmountForTrader = async (req, res) => {
     });
   }
 };
+
+exports.userDetailsEditAdmin = async (req, res) => {
+  const {
+    userWhat,
+    fname,
+    lname,
+    phone,
+    address,
+    gender,
+    aadhar,
+    pan,
+    id,
+    Id_No,
+    tradingWallet,
+  } = req.body;
+
+  try {
+    let updatedUser;
+    if (userWhat === "indian") {
+      if (
+        !fname ||
+        !lname ||
+        !phone ||
+        !address ||
+        !gender ||
+        !aadhar ||
+        !pan 
+      ) {
+        return res.status(400).json({ message: "Please fill all the fields" });
+      }
+
+      updatedUser = await User.findOneAndUpdate(
+        { _id: id },
+        {
+          $set: {
+            fname: fname,
+            lname: lname,
+            address: address,
+            gender: gender,
+            phone: phone,
+            aadhar: aadhar,
+            pan: pan,
+            tradingWallet :tradingWallet,
+          },
+        },
+        { new: true } // Return the updated document
+      );
+    } else if (userWhat === "otherCountry") {
+      if (!fname || !lname || !phone || !address || !gender || !Id_No) {
+        return res.status(400).json({ message: "Please fill all the fields" });
+      }
+
+      updatedUser = await User.findOneAndUpdate(
+        { _id: id },
+        {
+          $set: {
+            fname: fname,
+            lname: lname,
+            address: address,
+            gender: gender,
+            phone: phone,
+            Id_No: Id_No,
+          },
+        },
+        { new: true } // Return the updated document
+      );
+    }
+
+    if (!updatedUser) {
+      return res.status(404).json({ message: "User not found" });
+    }
+
+    return res
+      .status(201)
+      .json({ message: "User Details Updated",
+         data: updatedUser,
+         status:true,
+       });
+  } catch (error) {
+    console.error("Error updating user details:", error);
+    return res.status(500).json({ message: "Internal Server Error" ,status:false});
+  }
+};
