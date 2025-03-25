@@ -72,6 +72,7 @@ const VideoCreater = require("../model/VideoCreaterSchema");
 const TotaltradingValue = require("../model/totalTradingValue");
 const Invoice = require("../model/Invoice");
 const Note = require("../model/NoteModel");
+const TradingHistory = require("../model/tradingHistory");
 
 // admin Login
 
@@ -5064,7 +5065,7 @@ exports.totalTradingValue = async (req, res) => {
 
     // Fetch all users and their tradingWallet values in a single query
     const users = await User.find({}, "userid tradingWallet profitWallet");
-
+    // console.log(users,5072)
     // Array to store updated TotaltradingValue documents
     const totalTradingValues = [];
 
@@ -5077,6 +5078,13 @@ exports.totalTradingValue = async (req, res) => {
 
       let updatedTradingWallet = user.tradingWallet;
       let updatedProfitWallet = user.profitWallet;
+
+      const history = new TradingHistory({
+        userId: user._id,
+        percentage,
+        amountAdded:increase,
+      })
+      await history.save();
 
       if (percentage > 0) {
         // Update profitWallet only when percentage is positive
@@ -5507,5 +5515,20 @@ exports.userDetailsEditAdmin = async (req, res) => {
   } catch (error) {
     console.error("Error updating user details:", error);
     return res.status(500).json({ message: "Internal Server Error" ,status:false});
+  }
+};
+
+exports.fetchTradingHistory = async (req, res) => {
+  try {
+    const {userId} = req.body
+    const tradingHistory = await TradingHistory.find({userId});
+    return res.status(200).json({
+      status: true,
+      message: "Trading history fetched successfully",
+      data: tradingHistory,
+    });
+  } catch (error) {
+    console.error("Error fetching invoices:", error);
+    res.status(500).json({ status: false, message: "Internal server error" });
   }
 };
