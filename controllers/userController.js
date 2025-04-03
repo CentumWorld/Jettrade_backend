@@ -3215,3 +3215,25 @@ exports.getNews = async (req, res) => {
     res.status(500).json({ error: "Internal Server Error" });
   }
 };
+
+exports.sumOfUserWithdrawal = async (req, res) => {
+  try {
+    const { userId } = req.body;
+
+    if (!userId) {
+      return res.status(400).json({ success: false, error: "User ID is required" });
+    }
+
+    const result = await MoneyWithdrawalTransaction.aggregate([
+      { $match: { userid: userId } }, // Filter by user ID
+      { $group: { _id: null, totalWithdrawn: { $sum: "$amountWithdrawn" } } } // Sum the amountWithdrawn
+    ]);
+
+    const totalWithdrawn = result.length > 0 ? result[0].totalWithdrawn : 0;
+
+    return res.status(200).json({ success: true, totalWithdrawn });
+  } catch (error) {
+    console.error(error);
+    return res.status(500).json({ success: false, error: "Server error" });
+  }
+};

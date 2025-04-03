@@ -115,6 +115,7 @@ const createUserBankAccountHolder = require("./routes/users/create-user-bank-acc
 const createUserUpiHolder = require("./routes/users/create-user-upi-holder");
 const verifyRefferalIdInUser = require('./routes/users/verify-refferalId-in-user');
 const rigpartnerExpire = require('./routes/users/expire-to-rigpartner');
+const sumOfUserWithdrawal = require('./routes/users/user-withdrawal-sum');
 
 //admin
 const countsTraderReferralFranchiseBmm = require("./routes/counts-trader-referral-franchise-bmm")
@@ -576,6 +577,7 @@ app.use("/admin", getUserBankAndUpiDetails)
 app.use("/user", changePaymentStatus)
 app.use("/admin", updateAdharCardBackSideFranchise)
 app.use("/admin", fetchOneVideo)
+app.use("/user",sumOfUserWithdrawal);
 // refferal
 app.use("/member", memberRegistration);
 app.use("/member", memberLogin);
