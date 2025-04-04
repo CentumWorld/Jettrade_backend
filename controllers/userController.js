@@ -47,6 +47,7 @@ const UpiHolder = require("../model/UpiHolderSchema");
 const TotaltradingValue = require("../model/totalTradingValue");
 const Invoice = require("../model/Invoice");
 const Note = require("../model/NoteModel");
+const TradingHistory = require("../model/tradingHistory");
 
 //const profilePhoto = require('../model/profilePhotoSchema');
 
