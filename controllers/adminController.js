@@ -5532,3 +5532,18 @@ exports.fetchTradingHistory = async (req, res) => {
     res.status(500).json({ status: false, message: "Internal server error" });
   }
 };
+
+exports.fetchTradingValueAddingHistory = async (req, res) => {
+  try {
+    const {userId} = req.body
+    const tradingValueHistory = await WalletTransaction.find({userId});
+    return res.status(200).json({
+      status: true,
+      message: "Trading value history fetched successfully",
+      data: tradingValueHistory,
+    });
+  } catch (error) {
+    console.error("Error fetching invoices:", error);
+    res.status(500).json({ status: false, message: "Internal server error" });
+  }
+};

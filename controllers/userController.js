@@ -3237,3 +3237,15 @@ exports.sumOfUserWithdrawal = async (req, res) => {
     return res.status(500).json({ success: false, error: "Server error" });
   }
 };
+
+exports.userFetchTradingHistory = async (req, res) => {
+  try {
+    const { userid } = req.body;
+    const tradingHistory = await TradingHistory.find({ userId:userid });
+
+    return res.status(200).json({
+      message: "Fetched trading history successfully",
+      tradingHistory,
+    });
+  } catch (error) {}
+};

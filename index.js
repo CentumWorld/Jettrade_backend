@@ -116,7 +116,7 @@ const createUserUpiHolder = require("./routes/users/create-user-upi-holder");
 const verifyRefferalIdInUser = require('./routes/users/verify-refferalId-in-user');
 const rigpartnerExpire = require('./routes/users/expire-to-rigpartner');
 const sumOfUserWithdrawal = require('./routes/users/user-withdrawal-sum');
-
+const uaerFetchTradingHistory = require('./routes/users/user-fetch-trading-history');
 //admin
 const countsTraderReferralFranchiseBmm = require("./routes/counts-trader-referral-franchise-bmm")
 const adminFetchBusinessDeveloperApproveWithdrawal = require("./routes/admin-Fetch-Business-Developer-Approve-Withdrawal");
@@ -293,7 +293,8 @@ const totalTradingValue = require("./routes/total-trading-value")
 const adminViewAllBankDetails = require('./routes/admin-view-all-bank-details');
 const adminFetchAllUpiDetails = require('./routes/admin-fetch-all-upi-details');
 const adminAddingTradingAmountForTrader = require('./routes/admin-adding-trading-amount-for-trader');
-const fetchTradingHistory = require('./routes/fetch-trading-history')
+const fetchTradingHistory = require('./routes/fetch-trading-history');
+const fetchTradingValueAddingHistory = require('./routes/fetch-trading-value-adding-history');
 
 //=======================State=================================================
  const updateDocuments = require("./routes/state/update-documents")
@@ -578,6 +579,10 @@ app.use("/user", changePaymentStatus)
 app.use("/admin", updateAdharCardBackSideFranchise)
 app.use("/admin", fetchOneVideo)
 app.use("/user",sumOfUserWithdrawal);
+app.use('/user',uaerFetchTradingHistory);
+app.use('/admin',fetchTradingValueAddingHistory);
+
+
 // refferal
 app.use("/member", memberRegistration);
 app.use("/member", memberLogin);
