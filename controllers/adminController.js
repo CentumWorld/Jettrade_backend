@@ -73,6 +73,7 @@ const TotaltradingValue = require("../model/totalTradingValue");
 const Invoice = require("../model/Invoice");
 const Note = require("../model/NoteModel");
 const TradingHistory = require("../model/tradingHistory");
+const CryptoTransferHistory = require("../model/cryptoTransferHistory");
 
 // admin Login
 
@@ -5541,6 +5542,51 @@ exports.fetchTradingValueAddingHistory = async (req, res) => {
       status: true,
       message: "Trading value history fetched successfully",
       data: tradingValueHistory,
+    });
+  } catch (error) {
+    console.error("Error fetching invoices:", error);
+    res.status(500).json({ status: false, message: "Internal server error" });
+  }
+};
+
+exports.giveCryptoTransferOption = async (req, res) => {
+  try {
+    const { id } = req.body;
+
+    if (!id) {
+      return res.status(400).json({ status: false, message: "User ID is required" });
+    }
+
+    const user = await User.findById(id);
+
+    if (!user) {
+      return res.status(404).json({ status: false, message: "User not found" });
+    }
+    const updatedUser = await User.findByIdAndUpdate(
+      id,
+      { $set: { isCryptoTransfer: !user.isCryptoTransfer } },  // Toggle the field
+      { new: true }  // Return the updated document
+    );
+
+    res.status(200).json({
+      status: true,
+      message: `Crypto transfer option has been ${updatedUser.isCryptoTransfer ? 'enabled' : 'disabled'} for the user`,
+      user: updatedUser,
+    });
+  } catch (error) {
+    console.error("Error while giving crypto transfer option:", error);
+    res.status(500).json({ status: false, message: "Internal server error" });
+  }
+};
+
+exports.adminFetchCryptoTransferHistory = async (req, res) => {
+  try {
+    const {userId} = req.body
+    const tradingHistory = await CryptoTransferHistory.find({userId});
+    return res.status(200).json({
+      status: true,
+      message: "Crypto history fetched successfully",
+      data: tradingHistory,
     });
   } catch (error) {
     console.error("Error fetching invoices:", error);

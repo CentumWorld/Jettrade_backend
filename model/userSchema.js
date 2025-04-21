@@ -145,7 +145,16 @@ const userSchema = new mongoose.Schema({
   isLocked: {
     type: Boolean, 
     default: false,
-  }
+  },
+  isCryptoTransfer:{
+    type:Boolean,
+    default:false,
+  },
+  cryptoWallet:{
+    type: Number,
+    default: 0,
+  },
+
 }, {timestamps:true});
 
 // Hash your password using bcrypt

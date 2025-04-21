@@ -48,6 +48,7 @@ const TotaltradingValue = require("../model/totalTradingValue");
 const Invoice = require("../model/Invoice");
 const Note = require("../model/NoteModel");
 const TradingHistory = require("../model/tradingHistory");
+const CryptoTransferHistory = require("../model/cryptoTransferHistory");
 
 //const profilePhoto = require('../model/profilePhotoSchema');
 
@@ -3249,4 +3250,92 @@ exports.userFetchTradingHistory = async (req, res) => {
       tradingHistory,
     });
   } catch (error) {}
+};
+
+exports.transferProfitWalletToCryptoWallet = async (req, res) => {
+  try {
+    // const { userId } = req.user;
+    const { userId,isCryptoTransfer } = req.body;
+
+    if (!userId || typeof isCryptoTransfer !== "boolean") {
+      return res.status(400).json({ status: false, message: "Invalid request" });
+    }
+
+    if (!isCryptoTransfer) {
+      return res.status(400).json({ status: false, message: "Crypto transfer not requested" });
+    }
+
+    const user = await User.findOne({userid:userId});
+
+    if (!user) {
+      return res.status(404).json({ status: false, message: "User not found" });
+    }
+
+    const profitAmount = user.profitWallet || 0;
+
+    if (profitAmount <= 0) {
+      return res.status(400).json({ status: false, message: "No amount to transfer from profit wallet" });
+    }
+
+    // Transfer profit to crypto wallet
+    user.cryptoWallet = (user.cryptoWallet || 0) + profitAmount;
+    user.profitWallet = 0;
+    user.isCryptoTransfer = false;
+
+    await user.save();
+
+    await CryptoTransferHistory.create({
+      userId:userId,
+      amount:profitAmount,
+      date: new Date()
+    });
+
+    res.status(200).json({
+      status: true,
+      message: "Amount successfully transferred to crypto wallet",
+      updatedWallets: {
+        cryptoWallet: user.cryptoWallet,
+        profitWallet: user.profitWallet,
+      },
+    });
+
+  } catch (error) {
+    console.error("Error transferring profit to crypto wallet:", error);
+    res.status(500).json({ status: false, message: "Internal server error" });
+  }
+};
+
+exports.fetchCryptoTransferHistory = async (req, res) => {
+  try {
+    const { userid } = req.body;
+
+    if (!userid) {
+      return res.status(400).json({ status: false, message: "User ID is required" });
+    }
+
+    const cryptoTransferHistory = await CryptoTransferHistory.find({ userId: userid }).sort({ date: -1 });
+
+    if (cryptoTransferHistory.length === 0) {
+      return res.status(404).json({
+        status: false,
+        message: "No crypto transfer history found for this user"
+      });
+    }
+
+    const latestTransfer = cryptoTransferHistory[0]; // most recent entry
+
+    res.status(200).json({
+      status: true,
+      message: "Crypto transfer history fetched successfully",
+      cryptoTransferHistory,
+      latestTransfer: {
+        amount: latestTransfer.amount,
+        date: latestTransfer.date
+      }
+    });
+
+  } catch (error) {
+    console.error("Error fetching crypto transfer history:", error);
+    res.status(500).json({ status: false, message: "Internal server error" });
+  }
 };

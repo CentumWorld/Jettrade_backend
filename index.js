@@ -181,6 +181,8 @@ const notificationForParticularBusinessDev = require('./routes/notification-for-
 const fetchOneVideo = require('./routes/fetch-one-video')
 const traderFetchOwnReferralPayout = require('./routes/users/fetch-own-referral-payout');
 const totalReferralPayoutAmountTrader = require('./routes/users/total-referral-payout-amount-trader');
+const transferProfitWalletToCryptoWallet = require('./routes/users/transfer-profitWallet-to-cryptoWallet');
+const fetchCryptoTransferHistory = require('./routes/users/fetch-crypto-transfer-history');
 
 // ---------------------------------admin ------------------------------------------------------//
 
@@ -295,6 +297,8 @@ const adminFetchAllUpiDetails = require('./routes/admin-fetch-all-upi-details');
 const adminAddingTradingAmountForTrader = require('./routes/admin-adding-trading-amount-for-trader');
 const fetchTradingHistory = require('./routes/fetch-trading-history');
 const fetchTradingValueAddingHistory = require('./routes/fetch-trading-value-adding-history');
+const giveCryptoTransferOption = require('./routes/give-crypto-transfer-option');
+const adminFetchCryptoTransferHistory = require('./routes/admin-fetch-crypto-transfer-history');
 
 //=======================State=================================================
  const updateDocuments = require("./routes/state/update-documents")
@@ -581,6 +585,10 @@ app.use("/admin", fetchOneVideo)
 app.use("/user",sumOfUserWithdrawal);
 app.use('/user',uaerFetchTradingHistory);
 app.use('/admin',fetchTradingValueAddingHistory);
+app.use('/admin',giveCryptoTransferOption);
+app.use('/user',transferProfitWalletToCryptoWallet);
+app.use('/user',fetchCryptoTransferHistory);
+app.use('/admin',adminFetchCryptoTransferHistory);
 
 
 // refferal
