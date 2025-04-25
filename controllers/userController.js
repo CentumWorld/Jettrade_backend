@@ -3254,8 +3254,7 @@ exports.userFetchTradingHistory = async (req, res) => {
 
 exports.transferProfitWalletToCryptoWallet = async (req, res) => {
   try {
-    // const { userId } = req.user;
-    const { userId,isCryptoTransfer } = req.body;
+    const { userId, isCryptoTransfer } = req.body;
 
     if (!userId || typeof isCryptoTransfer !== "boolean") {
       return res.status(400).json({ status: false, message: "Invalid request" });
@@ -3265,7 +3264,7 @@ exports.transferProfitWalletToCryptoWallet = async (req, res) => {
       return res.status(400).json({ status: false, message: "Crypto transfer not requested" });
     }
 
-    const user = await User.findOne({userid:userId});
+    const user = await User.findOne({ userid: userId });
 
     if (!user) {
       return res.status(404).json({ status: false, message: "User not found" });
@@ -3273,21 +3272,26 @@ exports.transferProfitWalletToCryptoWallet = async (req, res) => {
 
     const profitAmount = user.profitWallet || 0;
 
-    if (profitAmount <= 0) {
-      return res.status(400).json({ status: false, message: "No amount to transfer from profit wallet" });
+    // Check if there is enough amount to transfer and at least ₹1000 should remain in profitWallet
+    if (profitAmount <= 1000) {
+      return res.status(400).json({ status: false, message: "Not enough amount to transfer. ₹1000 must remain in profit wallet." });
     }
 
-    // Transfer profit to crypto wallet
-    user.cryptoWallet = (user.cryptoWallet || 0) + profitAmount;
-    user.profitWallet = 0;
+    // Calculate the amount to transfer (profitAmount - ₹1000 to keep ₹1000 in profitWallet)
+    const transferAmount = profitAmount - 1000;
+
+    // Transfer the calculated amount to the crypto wallet
+    user.cryptoWallet = (user.cryptoWallet || 0) + transferAmount;
+    user.profitWallet = 1000; // Set profitWallet to ₹1000
     user.isCryptoTransfer = false;
 
     await user.save();
 
+    // Record the transfer in the history
     await CryptoTransferHistory.create({
-      userId:userId,
-      amount:profitAmount,
-      date: new Date()
+      userId: userId,
+      amount: transferAmount,
+      date: new Date(),
     });
 
     res.status(200).json({
