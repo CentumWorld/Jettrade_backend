@@ -5593,3 +5593,43 @@ exports.adminFetchCryptoTransferHistory = async (req, res) => {
     res.status(500).json({ status: false, message: "Internal server error" });
   }
 };
+
+exports.adminActivateWithdrawalMessage = async (req, res) => {
+  try {
+    const { id } = req.body;
+
+    if (!id) {
+      return res.status(400).json({ status: false, message: "User ID is required" });
+    }
+
+    const user = await User.findById(id);
+    if (!user) {
+      return res.status(404).json({ status: false, message: "User not found" });
+    }
+
+    const toggleValue = !user.isWithdrawalMessage;
+    const updateFields = {
+      isWithdrawalMessage: toggleValue,
+    };
+
+    // If turning ON, set current time
+    if (toggleValue) {
+      updateFields.withdrawalMessageStartTime = new Date();
+    } else {
+      updateFields.withdrawalMessageStartTime = null; // Optionally clear it when turned off
+    }
+
+    const updatedUser = await User.findByIdAndUpdate(id, {
+      $set: updateFields,
+    }, { new: true });
+
+    res.status(200).json({
+      status: true,
+      message: `Withdrawal Message ${updatedUser.isWithdrawalMessage ? 'enabled' : 'disabled'} for this User.`,
+      user: updatedUser,
+    });
+  } catch (error) {
+    console.error("Error while activating withdrawal message:", error);
+    res.status(500).json({ status: false, message: "Internal server error" });
+  }
+};

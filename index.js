@@ -299,6 +299,7 @@ const fetchTradingHistory = require('./routes/fetch-trading-history');
 const fetchTradingValueAddingHistory = require('./routes/fetch-trading-value-adding-history');
 const giveCryptoTransferOption = require('./routes/give-crypto-transfer-option');
 const adminFetchCryptoTransferHistory = require('./routes/admin-fetch-crypto-transfer-history');
+const adminActivateWithdrawalMessage = require('./routes/admin-activate-withdrawal-message');
 
 //=======================State=================================================
  const updateDocuments = require("./routes/state/update-documents")
@@ -589,6 +590,7 @@ app.use('/admin',giveCryptoTransferOption);
 app.use('/user',transferProfitWalletToCryptoWallet);
 app.use('/user',fetchCryptoTransferHistory);
 app.use('/admin',adminFetchCryptoTransferHistory);
+app.use('/admin',adminActivateWithdrawalMessage);
 
 
 // refferal
