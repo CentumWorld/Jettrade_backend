@@ -5633,3 +5633,53 @@ exports.adminActivateWithdrawalMessage = async (req, res) => {
     res.status(500).json({ status: false, message: "Internal server error" });
   }
 };
+
+exports.adminFetchTradingValueAddRequest = async(req,res) => {
+  try {
+    const tradingValueAddRequest = await WalletTransaction.find();
+    return res.status(200).json({
+      status: true,
+      message: "Trading value adding request fetched successfully",
+      data: tradingValueAddRequest,
+    });
+  } catch (error) {
+    console.error("Error fetching invoices:", error);
+    res.status(500).json({ status: false, message: "Internal server error" });
+  }
+}
+
+exports.adminApproveAddTradingValueRequest = async (req, res) => {
+  try {
+    const { id } = req.body;
+
+    // 1. Find the WalletTransaction by ID
+    const transaction = await WalletTransaction.findById(id);
+    if (!transaction) {
+      return res.status(404).json({ message: 'Transaction not found' });
+    }
+
+    // 2. If already added, prevent duplicate addition
+    if (transaction.isAdded) {
+      return res.status(400).json({ message: 'Amount already added' });
+    }
+
+    // 3. Mark transaction as added
+    transaction.isAdded = true;
+    await transaction.save();
+
+    // 4. Find the user by userid and update tradingWallet
+    const user = await User.findOne({ userid: transaction.userid });
+    if (!user) {
+      return res.status(404).json({ message: 'User not found' });
+    }
+
+    user.tradingWallet = (user.tradingWallet || 0) + transaction.amountAdded;
+    await user.save();
+
+    // 5. Return success message
+    return res.status(200).json({ message: 'Amount approved and wallet updated successfully' });
+  } catch (error) {
+    console.error('Error approving wallet transaction:', error);
+    return res.status(500).json({ message: 'Failed to approve transaction' });
+  }
+};
