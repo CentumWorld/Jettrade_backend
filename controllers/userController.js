@@ -1896,25 +1896,20 @@ exports.userFetchAllVideo = async (req, res) => {
 // Function to add money to user's wallet and create a transaction document
 const addMoneyToWallet = async (userid, amountAdded, date) => {
   try {
-    // Find the user by their ID
     const user = await User.findOne({ userid: userid });
     if (!user) {
-      throw new Error("User not found"); // Use "throw" instead of "new Error()" to throw the error
+      throw new Error("User not found"); 
     }
 
-    console.log(user, "uyuhyu");
 
-    // Update the wallet balance for the user
-    user.tradingWallet += amountAdded;
+    // user.tradingWallet += amountAdded;
 
-    // Save the updated user document
-    await user.save();
+    // await user.save();
 
-    // Create a transaction document
     const transaction = new WalletTransaction({
       userid: userid,
       amountAdded,
-      date: date, // Include the provided date in the transaction document
+      date: date, 
     });
 
     // Save the transaction document
@@ -1948,7 +1943,7 @@ exports.addingAmountToTradingWallet = async (req, res) => {
     );
 
     // Respond with the updated user document or any other appropriate response
-    res.json({ message: "Money added successfully", user: updatedUser });
+    res.json({ message: "Money add requested and it will be done within 24hr once approve by admin. ", user: updatedUser });
   } catch (error) {
     // Handle errors appropriately
     console.error(error);
