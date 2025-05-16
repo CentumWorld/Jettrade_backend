@@ -1,696 +1,696 @@
 
 const http = require('http');
 const app = require('./index');
-const cors = require("cors");
-const { Server } = require("socket.io");
-const ChatType = require('./model/chatType');
-const RefferalChatType = require('./model/refferalChatType');
-const chatMessage = require('./model/chatMessageSchema');
-const User = require('./model/userSchema');
-const Admin = require('./model/adminSchema');
-const Member = require('./model/memberSchema');
-const RefferalChatMessage = require('./model/refferalChatMessageSchema');
-const StateChatType = require('./model/StateChatTypeSchema');
-const StateHandler = require('./model/stateHandlerSchema');
-const StateChatMessage = require('./model/StateChatMessageSchema');
-const FrenchChatType = require('./model/FrenchChatTypeSchema');
-const Frenchisee = require('./model/frenchiseSchema');
-const FrenchChatMessage = require('./model/FrenchChatMessageSchema');
-const BusinessDeveloperChatMessage = require('./model/BusinessDeveloperChatMessageSchema');
-const BusinessDeveloperChatType = require('./model/BusinessDeveloperChatTypeSchema');
-const BusinessDeveloper = require('./model/businessDeveloperSchema');
-const FrenchChatTypeWithSHO = require('./model/FrenchiseChatTypeWithSHOSchema');
-const FrenchChatMessageWithSHO = require('./model/FrenchiseChatMessageWithSHOSchema');
-const FrenchChatTypeWithBD = require('./model/FrenchChatTypeWithBDSchema');
-const FrenchiseChatMessageWithBD = require('./model/FrenchiseChatMessageWithBDSchema');
+// const cors = require("cors");
+// const { Server } = require("socket.io");
+// const ChatType = require('./model/chatType');
+// const RefferalChatType = require('./model/refferalChatType');
+// const chatMessage = require('./model/chatMessageSchema');
+// const User = require('./model/userSchema');
+// const Admin = require('./model/adminSchema');
+// const Member = require('./model/memberSchema');
+// const RefferalChatMessage = require('./model/refferalChatMessageSchema');
+// const StateChatType = require('./model/StateChatTypeSchema');
+// const StateHandler = require('./model/stateHandlerSchema');
+// const StateChatMessage = require('./model/StateChatMessageSchema');
+// const FrenchChatType = require('./model/FrenchChatTypeSchema');
+// const Frenchisee = require('./model/frenchiseSchema');
+// const FrenchChatMessage = require('./model/FrenchChatMessageSchema');
+// const BusinessDeveloperChatMessage = require('./model/BusinessDeveloperChatMessageSchema');
+// const BusinessDeveloperChatType = require('./model/BusinessDeveloperChatTypeSchema');
+// const BusinessDeveloper = require('./model/businessDeveloperSchema');
+// const FrenchChatTypeWithSHO = require('./model/FrenchiseChatTypeWithSHOSchema');
+// const FrenchChatMessageWithSHO = require('./model/FrenchiseChatMessageWithSHOSchema');
+// const FrenchChatTypeWithBD = require('./model/FrenchChatTypeWithBDSchema');
+// const FrenchiseChatMessageWithBD = require('./model/FrenchiseChatMessageWithBDSchema');
 
 
 
 const server = http.createServer(app);
 
-const io = new Server(server, {
-    // cors: {
-    //     origin: ["http://localhost:3000", "http://localhost:3001","http://localhost:3002"],
-    //     methods: ["GET", "POST"]
-    // }
-})
+// const io = new Server(server, {
+//     cors: {
+//         origin: ["http://localhost:3000", "http://localhost:3001","http://localhost:3002"],
+//         methods: ["GET", "POST"]
+//     }
+// })
 
 
 
-io.on("connection", (socket) => {
-    console.log(`User Connnected : ${socket.id}`);
+// io.on("connection", (socket) => {
+//     console.log(`User Connnected : ${socket.id}`);
 
-    socket.on("join_room", (data, type) => {
-        console.log(data,type,'50')
-        socket.join(data);
-        const data1 = data;
-        console.log(`User with Id: ${socket.id} joined room : ${data}`)
-        console.log(typeof (data), type, '38');
-        if (type === 'USER') {
+//     socket.on("join_room", (data, type) => {
+//         console.log(data,type,'50')
+//         socket.join(data);
+//         const data1 = data;
+//         console.log(`User with Id: ${socket.id} joined room : ${data}`)
+//         console.log(typeof (data), type, '38');
+//         if (type === 'USER') {
 
-            ChatType.find({ userid: data1 }, (err, result) => {
-                if (err) {
-                    console.error(err);
-                    // Handle the error response here
-                } else {
-                    if (result) {
-                        const resultLength = Object.keys(result).length;
-                        console.log('Result length:', resultLength);
-                        if (resultLength === 0) {
-                            const user = ChatType({ userid: data1 })
-                            user.save();
+//             ChatType.find({ userid: data1 }, (err, result) => {
+//                 if (err) {
+//                     console.error(err);
+                    
+//                 } else {
+//                     if (result) {
+//                         const resultLength = Object.keys(result).length;
+//                         console.log('Result length:', resultLength);
+//                         if (resultLength === 0) {
+//                             const user = ChatType({ userid: data1 })
+//                             user.save();
 
-                        }
-                    }
-                    User.updateOne(
-                        { userid: data1 },
-                        { $set: { isOnline: true } },
-                        (err, result) => {
-                          if (err) {
-                            console.error('Failed to update document:', err);
-                            return;
-                          }
-                          //userOnline
-                          socket.to(data).emit("userOnline", data1);
-                        //   console.log('Document updated successfully');
-                        //   console.log('Modified document count:', result.modifiedCount);
-                        }
-                      );
+//                         }
+//                     }
+//                     User.updateOne(
+//                         { userid: data1 },
+//                         { $set: { isOnline: true } },
+//                         (err, result) => {
+//                           if (err) {
+//                             console.error('Failed to update document:', err);
+//                             return;
+//                           }
+//                           //userOnline
+//                           socket.to(data).emit("userOnline", data1);
+//                         //   console.log('Document updated successfully');
+//                         //   console.log('Modified document count:', result.modifiedCount);
+//                         }
+//                       );
 
-                    // Handle the result/response here
-                }
-            });
-
-
-        }
-
-        if (type === 'REFFERAL') {
-
-            RefferalChatType.find({ memberid: data1 }, (err, result) => {
-                if (err) {
-                    console.error(err);
-                    // Handle the error response here
-                } else {
-                    if (result) {
-                        const resultLength = Object.keys(result).length;
-                        console.log('Result length:', resultLength);
-                        if (resultLength === 0) {
-                            const member = RefferalChatType({ memberid: data1 })
-                            member.save();
-
-                        }
-                    }
-                    Member.updateOne(
-                        { memberid: data1 },
-                        { $set: { isOnline: true } },
-                        (err, result) => {
-                          if (err) {
-                            console.error('Failed to update document:', err);
-                            return;
-                          }
-                          //userOnline
-                          socket.to(data).emit("memberOnline", data1);
-                        //   console.log('Document updated successfully');
-                        //   console.log('Modified document count:', result.modifiedCount);
-                        }
-                      );
-
-                    // Handle the result/response here
-                }
-            });
+//                     // Handle the result/response here
+//                 }
+//             });
 
 
-        }
+//         }
 
-        if (type === "ADMIN") {
-            Admin.updateOne(
-            { admin_id: "admin" },
-            { $set: { isOnline: true } },
-            (err, result) => {
-              if (err) {
-                console.error('Failed to update document:', err);
-                return;
-              }
-              //userOnline
-              socket.to(data).emit("adminOnline", data1);
+//         if (type === 'REFFERAL') {
+
+//             RefferalChatType.find({ memberid: data1 }, (err, result) => {
+//                 if (err) {
+//                     console.error(err);
+//                     // Handle the error response here
+//                 } else {
+//                     if (result) {
+//                         const resultLength = Object.keys(result).length;
+//                         console.log('Result length:', resultLength);
+//                         if (resultLength === 0) {
+//                             const member = RefferalChatType({ memberid: data1 })
+//                             member.save();
+
+//                         }
+//                     }
+//                     Member.updateOne(
+//                         { memberid: data1 },
+//                         { $set: { isOnline: true } },
+//                         (err, result) => {
+//                           if (err) {
+//                             console.error('Failed to update document:', err);
+//                             return;
+//                           }
+//                           //userOnline
+//                           socket.to(data).emit("memberOnline", data1);
+//                         //   console.log('Document updated successfully');
+//                         //   console.log('Modified document count:', result.modifiedCount);
+//                         }
+//                       );
+
+//                     // Handle the result/response here
+//                 }
+//             });
+
+
+//         }
+
+//         if (type === "ADMIN") {
+//             Admin.updateOne(
+//             { admin_id: "admin" },
+//             { $set: { isOnline: true } },
+//             (err, result) => {
+//               if (err) {
+//                 console.error('Failed to update document:', err);
+//                 return;
+//               }
+//               //userOnline
+//               socket.to(data).emit("adminOnline", data1);
            
-            }
-          );
-        }
+//             }
+//           );
+//         }
         
-        // state Type
-        if (type === 'STATE') {
-            console.log(data1,"137")
-            StateChatType.find({ stateHandlerId: data1 }, (err, result) => {
-                if (err) {
-                    console.error(err);
-                    // Handle the error response here
-                } else {
-                    if (result) {
-                        const resultLength = Object.keys(result).length;
-                        console.log('Result length:', resultLength);
-                        if (resultLength === 0) {
-                            const stateHandler = StateChatType({ stateHandlerId: data1 })
-                            stateHandler.save();
-                        }
-                    }
-                    StateHandler.updateOne(
-                        {stateHandlerId: data1 },
-                        { $set: { isOnline: true } },
-                        (err, result) => {
-                          if (err) {
-                            console.error('Failed to update document:', err);
-                            return;
-                          }
-                          //userOnline
-                          socket.to(data).emit("userOnline", data1);
-                        }
-                      );
-                }
-            });
-        }
+//         // state Type
+//         if (type === 'STATE') {
+//             console.log(data1,"137")
+//             StateChatType.find({ stateHandlerId: data1 }, (err, result) => {
+//                 if (err) {
+//                     console.error(err);
+//                     // Handle the error response here
+//                 } else {
+//                     if (result) {
+//                         const resultLength = Object.keys(result).length;
+//                         console.log('Result length:', resultLength);
+//                         if (resultLength === 0) {
+//                             const stateHandler = StateChatType({ stateHandlerId: data1 })
+//                             stateHandler.save();
+//                         }
+//                     }
+//                     StateHandler.updateOne(
+//                         {stateHandlerId: data1 },
+//                         { $set: { isOnline: true } },
+//                         (err, result) => {
+//                           if (err) {
+//                             console.error('Failed to update document:', err);
+//                             return;
+//                           }
+//                           //userOnline
+//                           socket.to(data).emit("userOnline", data1);
+//                         }
+//                       );
+//                 }
+//             });
+//         }
 
-        if (type === 'FRENCH') {
-            console.log("hii")
-            FrenchChatType.find({ frenchiseId: data1 }, (err, result) => {
-                if (err) {
-                    console.error(err);
-                    // Handle the error response here
-                } else {
-                    if (result) {
-                        const resultLength = Object.keys(result).length;
-                        console.log('Result length:', resultLength);
-                        if (resultLength === 0) {
-                            const frenchise = FrenchChatType({frenchiseId: data1 })
-                            frenchise.save();
+//         if (type === 'FRENCH') {
+//             console.log("hii")
+//             FrenchChatType.find({ frenchiseId: data1 }, (err, result) => {
+//                 if (err) {
+//                     console.error(err);
+//                     // Handle the error response here
+//                 } else {
+//                     if (result) {
+//                         const resultLength = Object.keys(result).length;
+//                         console.log('Result length:', resultLength);
+//                         if (resultLength === 0) {
+//                             const frenchise = FrenchChatType({frenchiseId: data1 })
+//                             frenchise.save();
 
-                        }
-                    }
-                    Frenchisee.updateOne(
-                        { frenchiseId: data1 },
-                        { $set: { isOnline: true } },
-                        (err, result) => {
-                          if (err) {
-                            console.error('Failed to update document:', err);
-                            return;
-                          }
-                          //userOnline
-                          socket.to(data).emit("frenchiseOnline", data1);
-                        //   console.log('Document updated successfully');
-                        //   console.log('Modified document count:', result.modifiedCount);
-                        }
-                      );
+//                         }
+//                     }
+//                     Frenchisee.updateOne(
+//                         { frenchiseId: data1 },
+//                         { $set: { isOnline: true } },
+//                         (err, result) => {
+//                           if (err) {
+//                             console.error('Failed to update document:', err);
+//                             return;
+//                           }
+//                           //userOnline
+//                           socket.to(data).emit("frenchiseOnline", data1);
+//                         //   console.log('Document updated successfully');
+//                         //   console.log('Modified document count:', result.modifiedCount);
+//                         }
+//                       );
 
-                    // Handle the result/response here
-                }
-            });
-        }
+//                     // Handle the result/response here
+//                 }
+//             });
+//         }
 
-        if (type === 'BUSINESS') {
+//         if (type === 'BUSINESS') {
 
-            BusinessDeveloperChatType.find({ businessDeveloperId: data1 }, (err, result) => {
-                if (err) {
-                    console.error(err);
-                    // Handle the error response here
-                } else {
-                    if (result) {
-                        const resultLength = Object.keys(result).length;
-                        console.log('Result length:', resultLength);
-                        if (resultLength === 0) {
-                            const businessD = BusinessDeveloperChatType({businessDeveloperId: data1 })
-                            businessD.save();
+//             BusinessDeveloperChatType.find({ businessDeveloperId: data1 }, (err, result) => {
+//                 if (err) {
+//                     console.error(err);
+//                     // Handle the error response here
+//                 } else {
+//                     if (result) {
+//                         const resultLength = Object.keys(result).length;
+//                         console.log('Result length:', resultLength);
+//                         if (resultLength === 0) {
+//                             const businessD = BusinessDeveloperChatType({businessDeveloperId: data1 })
+//                             businessD.save();
 
-                        }
-                    }
-                    BusinessDeveloper.updateOne(
-                        { businessDeveloperId: data1 },
-                        { $set: { isOnline: true } },
-                        (err, result) => {
-                          if (err) {
-                            console.error('Failed to update document:', err);
-                            return;
-                          }
-                          console.log('updated to true',result)
-                          //userOnline
-                          socket.to(data).emit("businessOnline", data1);
-                        }
-                      );
+//                         }
+//                     }
+//                     BusinessDeveloper.updateOne(
+//                         { businessDeveloperId: data1 },
+//                         { $set: { isOnline: true } },
+//                         (err, result) => {
+//                           if (err) {
+//                             console.error('Failed to update document:', err);
+//                             return;
+//                           }
+//                           console.log('updated to true',result)
+//                           //userOnline
+//                           socket.to(data).emit("businessOnline", data1);
+//                         }
+//                       );
 
-                    // Handle the result/response here
-                }
-            });
-        }
-        // -----------
+//                     // Handle the result/response here
+//                 }
+//             });
+//         }
+//         // -----------
 
 
-        if (type === 'FRENCHWITHSHO') {
-            // Fetch Frenchisee details
-            Frenchisee.findOne({ frenchiseId: data1 }, (err, result) => {
-                if (err) {
-                    console.error(err);
-                    console.log(data1,'252')
-                    // Handle the error response here
-                    return res.status(400).json({
-                        message: "Not Found"
-                    });
-                }
-                const fetchDetails =  result.referredId
-                console.log(fetchDetails,'260')
+//         if (type === 'FRENCHWITHSHO') {
+//             // Fetch Frenchisee details
+//             Frenchisee.findOne({ frenchiseId: data1 }, (err, result) => {
+//                 if (err) {
+//                     console.error(err);
+//                     console.log(data1,'252')
+//                     // Handle the error response here
+//                     return res.status(400).json({
+//                         message: "Not Found"
+//                     });
+//                 }
+//                 const fetchDetails =  result.referredId
+//                 console.log(fetchDetails,'260')
         
-                // Fetch FrenchChatTypeWithSHO data
-                FrenchChatTypeWithSHO.find({ frenchiseId: data1 }, (err, result) => {
-                    if (err) {
-                        console.error(err);
-                        // Handle the error response here
-                    } else {
-                        if (result) {
-                            const resultLength = Object.keys(result).length;
-                            console.log('Result length:', resultLength);
-                            if (resultLength === 0) {
-                                const frenchise = FrenchChatTypeWithSHO({ frenchiseId: data1 ,refferedId:fetchDetails});
-                                frenchise.save();
-                            }
-                        }
-                        // Update Frenchisee status
-                        Frenchisee.updateOne(
-                            { frenchiseId: data1 },
-                            { $set: { isOnline: true } },
-                            (err, updateResult) => {
-                                if (err) {
-                                    console.error('Failed to update document:', err);
-                                    return;
-                                }
-                                console.log('Updated to true:', updateResult);
+//                 // Fetch FrenchChatTypeWithSHO data
+//                 FrenchChatTypeWithSHO.find({ frenchiseId: data1 }, (err, result) => {
+//                     if (err) {
+//                         console.error(err);
+//                         // Handle the error response here
+//                     } else {
+//                         if (result) {
+//                             const resultLength = Object.keys(result).length;
+//                             console.log('Result length:', resultLength);
+//                             if (resultLength === 0) {
+//                                 const frenchise = FrenchChatTypeWithSHO({ frenchiseId: data1 ,refferedId:fetchDetails});
+//                                 frenchise.save();
+//                             }
+//                         }
+//                         // Update Frenchisee status
+//                         Frenchisee.updateOne(
+//                             { frenchiseId: data1 },
+//                             { $set: { isOnline: true } },
+//                             (err, updateResult) => {
+//                                 if (err) {
+//                                     console.error('Failed to update document:', err);
+//                                     return;
+//                                 }
+//                                 console.log('Updated to true:', updateResult);
         
-                                // Emit socket event
-                                socket.to(data).emit("frenchWithSHOOnline", data1);
-                            }
-                        );
-                    }
-                });
-            });
-        }
+//                                 // Emit socket event
+//                                 socket.to(data).emit("frenchWithSHOOnline", data1);
+//                             }
+//                         );
+//                     }
+//                 });
+//             });
+//         }
 
-        // BUSINESSWITHFRENCHISE
-        if (type === 'BUSINESSWITHFRENCHISE') {
-            // Fetch Business details
-            BusinessDeveloper.findOne({ businessDeveloperId: data1 }, (err, result) => {
-                if (err) {
-                    console.error(err);
-                    // Handle the error response here
-                    return res.status(400).json({
-                        message: "Not Found"
-                    });
-                }
-                const fetchDetails =  result.referredId
-                console.log(fetchDetails,'260')
+//         // BUSINESSWITHFRENCHISE
+//         if (type === 'BUSINESSWITHFRENCHISE') {
+//             // Fetch Business details
+//             BusinessDeveloper.findOne({ businessDeveloperId: data1 }, (err, result) => {
+//                 if (err) {
+//                     console.error(err);
+//                     // Handle the error response here
+//                     return res.status(400).json({
+//                         message: "Not Found"
+//                     });
+//                 }
+//                 const fetchDetails =  result.referredId
+//                 console.log(fetchDetails,'260')
         
-                // Fetch FrenchChatTypeWithBD data
-                FrenchChatTypeWithBD.find({ businessDeveloperId: data1 }, (err, result) => {
-                    if (err) {
-                        console.error(err);
-                        // Handle the error response here
-                    } else {
-                        if (result) {
-                            const resultLength = Object.keys(result).length;
-                            console.log('Result length:', resultLength);
-                            if (resultLength === 0) {
-                                const businessD = FrenchChatTypeWithBD({ businessDeveloperId: data1,refferedId:fetchDetails });
-                                businessD.save();
-                            }
-                        }
-                        // Update Frenchisee status
-                        BusinessDeveloper.updateOne(
-                            { businessDeveloperId: data1 },
-                            { $set: { isOnline: true } },
-                            (err, updateResult) => {
-                                if (err) {
-                                    console.error('Failed to update document:', err);
-                                    return;
-                                }
-                                console.log('Updated to true:', updateResult);
+//                 // Fetch FrenchChatTypeWithBD data
+//                 FrenchChatTypeWithBD.find({ businessDeveloperId: data1 }, (err, result) => {
+//                     if (err) {
+//                         console.error(err);
+//                         // Handle the error response here
+//                     } else {
+//                         if (result) {
+//                             const resultLength = Object.keys(result).length;
+//                             console.log('Result length:', resultLength);
+//                             if (resultLength === 0) {
+//                                 const businessD = FrenchChatTypeWithBD({ businessDeveloperId: data1,refferedId:fetchDetails });
+//                                 businessD.save();
+//                             }
+//                         }
+//                         // Update Frenchisee status
+//                         BusinessDeveloper.updateOne(
+//                             { businessDeveloperId: data1 },
+//                             { $set: { isOnline: true } },
+//                             (err, updateResult) => {
+//                                 if (err) {
+//                                     console.error('Failed to update document:', err);
+//                                     return;
+//                                 }
+//                                 console.log('Updated to true:', updateResult);
         
-                                // Emit socket event
-                                socket.to(data).emit("BusinessWithFrenchOnline", data1);
-                            }
-                        );
-                    }
-                });
-            });
-        }
+//                                 // Emit socket event
+//                                 socket.to(data).emit("BusinessWithFrenchOnline", data1);
+//                             }
+//                         );
+//                     }
+//                 });
+//             });
+//         }
 
-    })
+//     })
 
-    // chatting system
-    socket.on("userMessage", (data) => {
-        console.log(data);
-        const { room, author, message, time } = data;
-        const newChat = new chatMessage({ room, author, message, time });
-        newChat.save()
-            .then((savedChat) => {
+//     // chatting system
+//     socket.on("userMessage", (data) => {
+//         console.log(data);
+//         const { room, author, message, time } = data;
+//         const newChat = new chatMessage({ room, author, message, time });
+//         newChat.save()
+//             .then((savedChat) => {
 
-                console.log('User message saved:', savedChat);
+//                 console.log('User message saved:', savedChat);
               
-            })
-            .catch((error) => {
-                console.error('Error saving user message:', error);
+//             })
+//             .catch((error) => {
+//                 console.error('Error saving user message:', error);
 
-            });
-        socket.to(data.room).emit("admin_receive_message", data);
-         // Emit a notification event to the admin
-    })
+//             });
+//         socket.to(data.room).emit("admin_receive_message", data);
+//          // Emit a notification event to the admin
+//     })
 
-    // refferal chatting
+//     // refferal chatting
 
-    socket.on("refferalMessage", (data) => {
-        console.log(data);
-        const { room, author, message, time } = data;
-        const newChat = new RefferalChatMessage({ room, author, message, time });
-        newChat.save()
-            .then((savedChat) => {
-                console.log('Refferal message saved:', savedChat);
-            })
-            .catch((error) => {
-                console.error('Error saving refferal message:', error);
+//     socket.on("refferalMessage", (data) => {
+//         console.log(data);
+//         const { room, author, message, time } = data;
+//         const newChat = new RefferalChatMessage({ room, author, message, time });
+//         newChat.save()
+//             .then((savedChat) => {
+//                 console.log('Refferal message saved:', savedChat);
+//             })
+//             .catch((error) => {
+//                 console.error('Error saving refferal message:', error);
 
-            });
-        socket.to(data.room).emit("admin_receive_message", data);
-    })
-    // --------------
+//             });
+//         socket.to(data.room).emit("admin_receive_message", data);
+//     })
+//     // --------------
 
-    socket.on("adminMessgae", (data) => {
-        const { room, author, message, time } = data;
-        const newChat = new chatMessage({ room, author, message, time });
-        newChat.save()
-            .then((savedChat) => {
-                console.log('User message saved:', savedChat);
-            })
-            .catch((error) => {
-                console.error('Error saving user message:', error);
+//     socket.on("adminMessgae", (data) => {
+//         const { room, author, message, time } = data;
+//         const newChat = new chatMessage({ room, author, message, time });
+//         newChat.save()
+//             .then((savedChat) => {
+//                 console.log('User message saved:', savedChat);
+//             })
+//             .catch((error) => {
+//                 console.error('Error saving user message:', error);
 
-            });
-        socket.to(data.room).emit("user_receive_message", data);
-    })
+//             });
+//         socket.to(data.room).emit("user_receive_message", data);
+//     })
 
-    // admin-refferal message
-    socket.on("adminMessgaeRefferal", (data) => {
-        const { room, author, message, time } = data;
-        const newChat = new RefferalChatMessage({ room, author, message, time });
-        newChat.save()
-            .then((savedChat) => {
-                console.log('Refferal message saved:', savedChat);
-            })
-            .catch((error) => {
-                console.error('Error saving refferal message:', error);
+//     // admin-refferal message
+//     socket.on("adminMessgaeRefferal", (data) => {
+//         const { room, author, message, time } = data;
+//         const newChat = new RefferalChatMessage({ room, author, message, time });
+//         newChat.save()
+//             .then((savedChat) => {
+//                 console.log('Refferal message saved:', savedChat);
+//             })
+//             .catch((error) => {
+//                 console.error('Error saving refferal message:', error);
 
-            });
-        socket.to(data.room).emit("refferal_receive_message", data);
-    })
-    // ------------
+//             });
+//         socket.to(data.room).emit("refferal_receive_message", data);
+//     })
+//     // ------------
 
-    // state message
+//     // state message
 
-    socket.on("stateMessage", (data) => {
-        console.log(data);
-        const { room, author, message, time } = data;
-        const newChat = new StateChatMessage({ room, author, message, time });
-        newChat.save()
-            .then((savedChat) => {
+//     socket.on("stateMessage", (data) => {
+//         console.log(data);
+//         const { room, author, message, time } = data;
+//         const newChat = new StateChatMessage({ room, author, message, time });
+//         newChat.save()
+//             .then((savedChat) => {
 
-                console.log('State message saved:', savedChat);
+//                 console.log('State message saved:', savedChat);
               
-            })
-            .catch((error) => {
-                console.error('Error saving user message:', error);
+//             })
+//             .catch((error) => {
+//                 console.error('Error saving user message:', error);
 
-            });
-        socket.to(data.room).emit("admin_receive_message", data);
-         // Emit a notification event to the admin  
-    })
+//             });
+//         socket.to(data.room).emit("admin_receive_message", data);
+//          // Emit a notification event to the admin  
+//     })
 
-    // state-admin message
+//     // state-admin message
 
-    socket.on("adminMessgaeState", (data) => {
-        const { room, author, message, time } = data;
-        const newChat = new StateChatMessage({ room, author, message, time });
-        newChat.save()
-            .then((savedChat) => {
-                console.log('State message saved:', savedChat);
-            })
-            .catch((error) => {
-                console.error('Error saving refferal message:', error);
+//     socket.on("adminMessgaeState", (data) => {
+//         const { room, author, message, time } = data;
+//         const newChat = new StateChatMessage({ room, author, message, time });
+//         newChat.save()
+//             .then((savedChat) => {
+//                 console.log('State message saved:', savedChat);
+//             })
+//             .catch((error) => {
+//                 console.error('Error saving refferal message:', error);
 
-            });
-        socket.to(data.room).emit("state_receive_message", data);
-    })
+//             });
+//         socket.to(data.room).emit("state_receive_message", data);
+//     })
 
-    // frenchise chatting
-    socket.on("frenchMessage", (data) => {
-        console.log(data);
-        const { room, author, message, time } = data;
-        const newChat = new FrenchChatMessage({ room, author, message, time });
-        newChat.save()
-            .then((savedChat) => {
+//     // frenchise chatting
+//     socket.on("frenchMessage", (data) => {
+//         console.log(data);
+//         const { room, author, message, time } = data;
+//         const newChat = new FrenchChatMessage({ room, author, message, time });
+//         newChat.save()
+//             .then((savedChat) => {
 
-                console.log('Frenchise message saved:', savedChat);
+//                 console.log('Frenchise message saved:', savedChat);
               
-            })
-            .catch((error) => {
-                console.error('Error saving user message:', error);
+//             })
+//             .catch((error) => {
+//                 console.error('Error saving user message:', error);
 
-            });
-        socket.to(data.room).emit("admin_receive_message", data);
-         // Emit a notification event to the admin  
-    })
+//             });
+//         socket.to(data.room).emit("admin_receive_message", data);
+//          // Emit a notification event to the admin  
+//     })
 
-    // frenchise-admin message
+//     // frenchise-admin message
 
-    socket.on("adminMessgaeFrench", (data) => {
-        const { room, author, message, time } = data;
-        const newChat = new FrenchChatMessage({ room, author, message, time });
-        newChat.save()
-            .then((savedChat) => {
-                console.log('French message saved:', savedChat);
-            })
-            .catch((error) => {
-                console.error('Error saving refferal message:', error);
+//     socket.on("adminMessgaeFrench", (data) => {
+//         const { room, author, message, time } = data;
+//         const newChat = new FrenchChatMessage({ room, author, message, time });
+//         newChat.save()
+//             .then((savedChat) => {
+//                 console.log('French message saved:', savedChat);
+//             })
+//             .catch((error) => {
+//                 console.error('Error saving refferal message:', error);
 
-            });
-        socket.to(data.room).emit("french_receive_message", data);
-    })
+//             });
+//         socket.to(data.room).emit("french_receive_message", data);
+//     })
 
-    // Business developer chatting
-    socket.on("businessMessage", (data) => {
-        console.log(data);
-        const { room, author, message, time } = data;
-        const newChat = new BusinessDeveloperChatMessage({ room, author, message, time });
-        newChat.save()
-            .then((savedChat) => {
+//     // Business developer chatting
+//     socket.on("businessMessage", (data) => {
+//         console.log(data);
+//         const { room, author, message, time } = data;
+//         const newChat = new BusinessDeveloperChatMessage({ room, author, message, time });
+//         newChat.save()
+//             .then((savedChat) => {
 
-                console.log('BusinessD message saved:', savedChat);
+//                 console.log('BusinessD message saved:', savedChat);
               
-            })
-            .catch((error) => {
-                console.error('Error saving user message:', error);
+//             })
+//             .catch((error) => {
+//                 console.error('Error saving user message:', error);
 
-            });
-        socket.to(data.room).emit("admin_receive_message", data);
-         // Emit a notification event to the admin  
-    })
+//             });
+//         socket.to(data.room).emit("admin_receive_message", data);
+//          // Emit a notification event to the admin  
+//     })
 
-    // BusinessD-admin message
+//     // BusinessD-admin message
 
-    socket.on("adminMessgaeBusiness", (data) => {
-        const { room, author, message, time } = data;
-        const newChat = new BusinessDeveloperChatMessage({ room, author, message, time });
-        newChat.save()
-            .then((savedChat) => {
-                console.log('BusinessD message saved:', savedChat);
-            })
-            .catch((error) => {
-                console.error('Error saving refferal message:', error);
+//     socket.on("adminMessgaeBusiness", (data) => {
+//         const { room, author, message, time } = data;
+//         const newChat = new BusinessDeveloperChatMessage({ room, author, message, time });
+//         newChat.save()
+//             .then((savedChat) => {
+//                 console.log('BusinessD message saved:', savedChat);
+//             })
+//             .catch((error) => {
+//                 console.error('Error saving refferal message:', error);
 
-            });
-        socket.to(data.room).emit("business_receive_message", data);
-    })
+//             });
+//         socket.to(data.room).emit("business_receive_message", data);
+//     })
 
-// frenchise chat with SHO
-    socket.on("frenchWithSHOMessage", (data) => {
-        console.log(data);
-        const { room, author, message, time,referredId } = data;
-        const newChat = new FrenchChatMessageWithSHO({ room, author, message, time,referredId});
-        newChat.save()
-            .then((savedChat) => {
+// // frenchise chat with SHO
+//     socket.on("frenchWithSHOMessage", (data) => {
+//         console.log(data);
+//         const { room, author, message, time,referredId } = data;
+//         const newChat = new FrenchChatMessageWithSHO({ room, author, message, time,referredId});
+//         newChat.save()
+//             .then((savedChat) => {
 
-                console.log('FrenchWithSHO message saved:', savedChat);
+//                 console.log('FrenchWithSHO message saved:', savedChat);
               
-            })
-            .catch((error) => {
-                console.error('Error saving user message:', error);
+//             })
+//             .catch((error) => {
+//                 console.error('Error saving user message:', error);
 
-            });
-        socket.to(data.room).emit("admin_receive_message", data);
-         // Emit a notification event to the admin  
-    })
+//             });
+//         socket.to(data.room).emit("admin_receive_message", data);
+//          // Emit a notification event to the admin  
+//     })
 
-    //SHO chat with Frenchise
-    socket.on("SHOMessgaeFrench", (data) => {
-        const { room, author, message, time,referredId } = data;
-        const newChat = new FrenchChatMessageWithSHO({ room, author, message, time,referredId });
-        newChat.save()
-            .then((savedChat) => {
-                console.log('State message saved:', savedChat);
-            })
-            .catch((error) => {
-                console.error('Error saving refferal message:', error);
+//     //SHO chat with Frenchise
+//     socket.on("SHOMessgaeFrench", (data) => {
+//         const { room, author, message, time,referredId } = data;
+//         const newChat = new FrenchChatMessageWithSHO({ room, author, message, time,referredId });
+//         newChat.save()
+//             .then((savedChat) => {
+//                 console.log('State message saved:', savedChat);
+//             })
+//             .catch((error) => {
+//                 console.error('Error saving refferal message:', error);
 
-            });
-        socket.to(data.room).emit("business_receive_message", data);
-    })
+//             });
+//         socket.to(data.room).emit("business_receive_message", data);
+//     })
 
-     // Business chat with French
-     socket.on("businessWithFrenchMessage", (data) => {
-        console.log(data);
-        const { room, author, message, time } = data;
-        const newChat = new FrenchiseChatMessageWithBD({ room, author, message, time });
-        newChat.save()
-            .then((savedChat) => {
+//      // Business chat with French
+//      socket.on("businessWithFrenchMessage", (data) => {
+//         console.log(data);
+//         const { room, author, message, time } = data;
+//         const newChat = new FrenchiseChatMessageWithBD({ room, author, message, time });
+//         newChat.save()
+//             .then((savedChat) => {
 
-                console.log('BusinessD message saved:', savedChat);
+//                 console.log('BusinessD message saved:', savedChat);
               
-            })
-            .catch((error) => {
-                console.error('Error saving user message:', error);
+//             })
+//             .catch((error) => {
+//                 console.error('Error saving user message:', error);
 
-            });
-        socket.to(data.room).emit("admin_receive_message", data);
-         // Emit a notification event to the admin  
-    })
+//             });
+//         socket.to(data.room).emit("admin_receive_message", data);
+//          // Emit a notification event to the admin  
+//     })
 
-    // french chat with Business
-    socket.on("frenchMessgaeBusiness", (data) => {
-        const { room, author, message, time,referredId } = data;
-        const newChat = new FrenchiseChatMessageWithBD({ room, author, message, time,referredId });
-        newChat.save()
-            .then((savedChat) => {
-                console.log('French message saved:', savedChat);
-            })
-            .catch((error) => {
-                console.error('Error saving refferal message:', error);
+//     // french chat with Business
+//     socket.on("frenchMessgaeBusiness", (data) => {
+//         const { room, author, message, time,referredId } = data;
+//         const newChat = new FrenchiseChatMessageWithBD({ room, author, message, time,referredId });
+//         newChat.save()
+//             .then((savedChat) => {
+//                 console.log('French message saved:', savedChat);
+//             })
+//             .catch((error) => {
+//                 console.error('Error saving refferal message:', error);
 
-            });
-        socket.to(data.room).emit("business_receive_message", data);
-    })
+//             });
+//         socket.to(data.room).emit("business_receive_message", data);
+//     })
 
-    //User logout event
-    socket.on('userLogout', (userId)=>{ 
-        console.log('126');
-        User.updateOne(
-            { userid: userId },
-            { $set: { isOnline: false } },
-            (err, result) => {
-              if (err) {
-                console.error('Failed to update document:', err);
-                return;
-              }
-            socket.to(userId).emit("userOffline", userId);
-            }
-          );  
-    })
+//     //User logout event
+//     socket.on('userLogout', (userId)=>{ 
+//         console.log('126');
+//         User.updateOne(
+//             { userid: userId },
+//             { $set: { isOnline: false } },
+//             (err, result) => {
+//               if (err) {
+//                 console.error('Failed to update document:', err);
+//                 return;
+//               }
+//             socket.to(userId).emit("userOffline", userId);
+//             }
+//           );  
+//     })
 
 
-     //Refferal logout event
-     socket.on('refferalLogout', (memberId)=>{ 
-        console.log('126');
-        Member.updateOne(
-            { memberid: memberId },
-            { $set: { isOnline: false } },
-            (err, result) => {
-              if (err) {
-                console.error('Failed to update document:', err);
-                return;
-              }
-            socket.to(memberId).emit("refferalOffline", memberId);
-            }
-          );  
-    })
+//      //Refferal logout event
+//      socket.on('refferalLogout', (memberId)=>{ 
+//         console.log('126');
+//         Member.updateOne(
+//             { memberid: memberId },
+//             { $set: { isOnline: false } },
+//             (err, result) => {
+//               if (err) {
+//                 console.error('Failed to update document:', err);
+//                 return;
+//               }
+//             socket.to(memberId).emit("refferalOffline", memberId);
+//             }
+//           );  
+//     })
 
-    //admin logout event
-    socket.on('adminLogout',(adminId) => {
-        console.log(adminId,'155');
-        Admin.updateOne(
-            {admin_id:adminId},
-            {$set:{isOnline:false}},
-            (err,result) => {
-                if(err){
-                    console.error('failed to update document:',err);
-                    return;
-                }
-                socket.to(adminId).emit("falnaOffline",adminId);
-            }
-        );
-    })
+//     //admin logout event
+//     socket.on('adminLogout',(adminId) => {
+//         console.log(adminId,'155');
+//         Admin.updateOne(
+//             {admin_id:adminId},
+//             {$set:{isOnline:false}},
+//             (err,result) => {
+//                 if(err){
+//                     console.error('failed to update document:',err);
+//                     return;
+//                 }
+//                 socket.to(adminId).emit("falnaOffline",adminId);
+//             }
+//         );
+//     })
 
-    // stateHandler logout
+//     // stateHandler logout
 
-    socket.on('stateLogout', (userId)=>{ 
-        console.log(userId,'638');
-        StateHandler.updateOne(
-            { stateHandlerId: userId },
-            { $set: { isOnline: false } },
-            (err, result) => {
-              if (err) {
-                console.error('Failed to update document:', err);
-                return;
-              }
-            socket.to(userId).emit("stateOffline", userId);
-            }
-          );  
-    })
+//     socket.on('stateLogout', (userId)=>{ 
+//         console.log(userId,'638');
+//         StateHandler.updateOne(
+//             { stateHandlerId: userId },
+//             { $set: { isOnline: false } },
+//             (err, result) => {
+//               if (err) {
+//                 console.error('Failed to update document:', err);
+//                 return;
+//               }
+//             socket.to(userId).emit("stateOffline", userId);
+//             }
+//           );  
+//     })
 
-     // Franchisee logout
+//      // Franchisee logout
 
-     socket.on('frenchLogout', (userId)=>{ 
-        console.log('126');
-        Frenchisee.updateOne(
-            { frenchiseId: userId },
-            { $set: { isOnline: false } },
-            (err, result) => {
-              if (err) {
-                console.error('Failed to update document:', err);
-                return;
-              }
-            socket.to(userId).emit("frenchOffline", userId);
-            }
-          );  
-    })
+//      socket.on('frenchLogout', (userId)=>{ 
+//         console.log('126');
+//         Frenchisee.updateOne(
+//             { frenchiseId: userId },
+//             { $set: { isOnline: false } },
+//             (err, result) => {
+//               if (err) {
+//                 console.error('Failed to update document:', err);
+//                 return;
+//               }
+//             socket.to(userId).emit("frenchOffline", userId);
+//             }
+//           );  
+//     })
 
-    // BusinessD logout
+//     // BusinessD logout
 
-    socket.on('businessLogout', (userId)=>{ 
-        console.log('126');
-        BusinessDeveloper.updateOne(
-            { businessDeveloperId: userId },
-            { $set: { isOnline: false } },
-            (err, result) => {
-              if (err) {
-                console.error('Failed to update document:', err);
-                return;
-              }
-            socket.to(userId).emit("businessOffline", userId);
-            }
-          );  
-    })
+//     socket.on('businessLogout', (userId)=>{ 
+//         console.log('126');
+//         BusinessDeveloper.updateOne(
+//             { businessDeveloperId: userId },
+//             { $set: { isOnline: false } },
+//             (err, result) => {
+//               if (err) {
+//                 console.error('Failed to update document:', err);
+//                 return;
+//               }
+//             socket.to(userId).emit("businessOffline", userId);
+//             }
+//           );  
+//     })
 
-    socket.on("disconnect", () => {
-        console.log(`user ${socket.id} disconnected`);
-        // const userId = Object.keys(users).find((key)=>users[key] === socket.id);
-        // if(userId){
-        //     delete users[userId];
-        //     io.emit('userOffline', userId);
-        // }
-    })
-})
+//     socket.on("disconnect", () => {
+//         console.log(`user ${socket.id} disconnected`);
+//         // const userId = Object.keys(users).find((key)=>users[key] === socket.id);
+//         // if(userId){
+//         //     delete users[userId];
+//         //     io.emit('userOffline', userId);
+//         // }
+//     })
+// })
 
 
 
